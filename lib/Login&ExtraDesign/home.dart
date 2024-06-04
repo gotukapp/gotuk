@@ -154,7 +154,7 @@ class _homeState extends State<home> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Recomended Hotel",
+                            "Recommended",
                             style: TextStyle(
                                 fontFamily: "Gilroy Bold",
                                 color: notifire.getwhiteblackcolor),
@@ -292,8 +292,8 @@ class _homeState extends State<home> {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             hotelsystem(
-                                                image: "assets/images/Bed.png",
-                                                text: "2 Beds",
+                                                image: "assets/images/User.svg.png",
+                                                text: "2 Pax",
                                                 radi: 3),
                                             hotelsystem(
                                                 image: "assets/images/wifi.png",
@@ -301,7 +301,7 @@ class _homeState extends State<home> {
                                                 radi: 3),
                                             hotelsystem(
                                                 image: "assets/images/gym.png",
-                                                text: "Gym",
+                                                text: "2 hours",
                                                 radi: 0),
                                           ],
                                         )

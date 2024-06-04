@@ -154,17 +154,10 @@ AccountSetting(
 List hotelList = [
   {
     "id": "1",
-    "title": "Grand Park City Hotel",
-    "img": "assets/images/SingaporeHotel.jpg",
-    "price": "\$26/Night",
+    "title": "Eco Tuk Tours",
+    "img": "assets/images/eco-tuk-tours.jpg",
+    "price": "\$26",
     "address": "155 Rajadamri Road, Bangkok 10330 Thailand"
-  },
-  {
-    "id": "2",
-    "title": "Voco an ihg hotel",
-    "img": "assets/images/VocoHotel.jpg",
-    "price": "\$28/Night",
-    "address": "Chao Anou Road, 112 Vat Chan Village, Chanthabouly District"
   },
   {
     "id": "3",

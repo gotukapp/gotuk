@@ -130,7 +130,7 @@ class _ShowallHotelState extends State<ShowallHotel> {
                         children: [
                           hotelsystem(
                               image: "assets/images/Bed.png",
-                              text: "2 Beds",
+                              text: "2 pax",
                               radi: 4),
                           SizedBox(
                               width: MediaQuery.of(context).size.width * 0.02),

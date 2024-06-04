@@ -270,8 +270,8 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         hotelsystem(
-                                            image: "assets/images/Bed.png",
-                                            text: "2 Beds",
+                                            image: "assets/images/User.svg.png",
+                                            text: "2 pax",
                                             radi: 3),
                                         hotelsystem(
                                             image: "assets/images/wifi.png",

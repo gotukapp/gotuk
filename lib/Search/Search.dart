@@ -389,8 +389,8 @@ class _SearchState extends State<Search> {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             hotelsystem(
-                                                image: "assets/images/Bed.png",
-                                                text: "2 Beds",
+                                                image: "assets/images/wifi.png",
+                                                text: "2 Pax",
                                                 radi: 4),
                                             hotelsystem(
                                                 image: "assets/images/wifi.png",
