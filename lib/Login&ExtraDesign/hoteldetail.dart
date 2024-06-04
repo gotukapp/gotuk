@@ -286,7 +286,7 @@ class _hoteldetailpageState extends State<hoteldetailpage> {
                         Column(
                           children: [
                             Image.asset(
-                              "assets/images/gym.png",
+                              "assets/images/timer.svg.png",
                               height: 30,
                               color: notifire.getwhiteblackcolor,
                             ),

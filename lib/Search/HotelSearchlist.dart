@@ -278,7 +278,7 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                                             text: "Wifi",
                                             radi: 3),
                                         hotelsystem(
-                                            image: "assets/images/gym.png",
+                                            image: "assets/images/timer.svg.png",
                                             text: "Gym",
                                             radi: 3),
                                         hotelsystem(

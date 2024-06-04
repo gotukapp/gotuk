@@ -397,7 +397,7 @@ class _SearchState extends State<Search> {
                                                 text: "Wifi",
                                                 radi: 4),
                                             hotelsystem(
-                                                image: "assets/images/gym.png",
+                                                image: "assets/images/timer.svg.png",
                                                 text: "Gym",
                                                 radi: 0),
                                           ],

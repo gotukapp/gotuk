@@ -66,7 +66,7 @@ class BoardingPage extends StatefulWidget {
 }
 
 class _BoardingScreenState extends State<BoardingPage> {
-  // creating all the widget before making our home screeen
+  // creating all the widget before making our home screen
 
   void initState() {
     getdarkmodepreviousstate();
@@ -75,11 +75,11 @@ class _BoardingScreenState extends State<BoardingPage> {
     _currentPage = 0;
 
     slides = [
-      Slide("assets/images/onbording11.png", "Tuk Tuk booking with GoTuk ",
-          "Best accommodation at best prices"),
-      Slide("assets/images/onbording12.png", " Best trip experience",
-          "Get the best deals on Hotels - every day!"),
-      Slide("assets/images/onbording13.png", "Just Signup on GoTuk",
+      Slide("assets/images/onboarding1.jpg", "Tuk Tuk booking with GoTuk ",
+          "Best trips at best prices"),
+      Slide("assets/images/onboarding2.jpg", " Best trip experience",
+          "Get the best deals on tuk tuk trips - every day!"),
+      Slide("assets/images/onboarding3.jpg", "Just Signup on GoTuk",
           "Largest & Most Trusted Tuk Tuk App"),
     ];
     _pageController = PageController(initialPage: _currentPage);
@@ -323,7 +323,7 @@ class _loginpageState extends State<loginpage> {
             ),
             const SizedBox(height: 10),
             Text(
-                "If you are new here please create your accountfirst before book the Tuk Tuk.",
+                "If you are new here please create your account before booking the Tuk Tuk.",
                 style: TextStyle(
                     fontSize: 14,
                     color: notifire.getgreycolor,

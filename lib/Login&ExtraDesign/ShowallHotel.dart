@@ -141,7 +141,7 @@ class _ShowallHotelState extends State<ShowallHotel> {
                           SizedBox(
                               width: MediaQuery.of(context).size.width * 0.02),
                           hotelsystem(
-                              image: "assets/images/gym.png",
+                              image: "assets/images/timer.svg.png",
                               text: "Gym",
                               radi: 0),
                         ],

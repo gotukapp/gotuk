@@ -94,7 +94,7 @@ class _homeState extends State<home> {
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.01),
                       Text(
-                        "Hello, yagnik! 👋",
+                        "Hello, Joaquim! 👋",
                         style: TextStyle(
                             color: notifire.getgreycolor,
                             fontSize: 15,
@@ -292,15 +292,11 @@ class _homeState extends State<home> {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             hotelsystem(
-                                                image: "assets/images/User.svg.png",
-                                                text: "2 Pax",
-                                                radi: 3),
+                                                image: "assets/images/user.png",
+                                                text: "2 travelers",
+                                                radi: 0),
                                             hotelsystem(
-                                                image: "assets/images/wifi.png",
-                                                text: "Wifi",
-                                                radi: 3),
-                                            hotelsystem(
-                                                image: "assets/images/gym.png",
+                                                image: "assets/images/timer.png",
                                                 text: "2 hours",
                                                 radi: 0),
                                           ],

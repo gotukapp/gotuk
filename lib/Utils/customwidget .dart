@@ -156,64 +156,56 @@ List hotelList = [
     "id": "1",
     "title": "Eco Tuk Tours",
     "img": "assets/images/eco-tuk-tours.jpg",
-    "price": "\$26",
+    "price": "€ 26",
     "address": "155 Rajadamri Road, Bangkok 10330 Thailand"
   },
   {
-    "id": "3",
-    "title": "Mandarin Oriental",
-    "img": "assets/images/BangkokHotel.jpg",
-    "price": "\$30/Night",
-    "address": "1091/336 New Patchier Road, 10400 Bangkok, Thailand"
-  },
-  {
     "id": "4",
-    "title": "Anantara Siam hotel",
-    "img": "assets/images/AnantaraHotel.jpg",
-    "price": "\$32/Night",
+    "title": "Anantara Siam Tuk Tuk",
+    "img": "",
+    "price": "€ 32",
     "address": "87 Wireless Road, Phatumwan, 10330, Bangkok"
   },
   {
     "id": "5",
-    "title": "Boutique Hotel",
-    "img": "assets/images/BoutiqueHotel.jpg",
-    "price": "\$34/Night",
+    "title": "Boutique Tuk Tuk",
+    "img": "",
+    "price": "€ 34",
     "address": "Sheikh Mohammed Bin Rashed Boulevard, Downtown Dubai"
   },
   {
     "id": "6",
-    "title": "Sterling Hotel",
-    "img": "assets/images/SterlingHotel.jpeg",
-    "price": "\$36/Night",
+    "title": "Sterling Tuk Tuk",
+    "img": "",
+    "price": "€ 36",
     "address": "103 River Street, Ballina, Ballina, Australia"
   },
   {
     "id": "7",
-    "title": "Royal Fort Hotel",
-    "img": "assets/images/RoyalHotel.jpg",
-    "price": "\$38/Night",
+    "title": "Royal Fort Tuk Tuk",
+    "img": "",
+    "price": "€ 38",
     "address": "449 Sainte-Hélène St Montréal, Quebec, H2Y 2K9 Canada"
   },
   {
     "id": "8",
-    "title": "Singapore Hotel",
-    "img": "assets/images/SwissHotel.jpg",
-    "price": "\$40/Night",
+    "title": "Singapore Tuk Tuk",
+    "img": "",
+    "price": "€ 40",
     "address": "1, Voznesensky Avenue"
   },
   {
     "id": "9",
-    "title": "Hyatt Hotel",
-    "img": "assets/images/HyattHotel.jpg",
-    "price": "\$42/Night",
-    "address":
-        "Bandra Kurla Complex Vicinity, Mumbai, Maharashtra, India, 400 055"
+    "title": "Hyatt Tuk Tuk",
+    "img": "",
+    "price": "€ 42",
+    "address": "Bandra Kurla Complex Vicinity, Mumbai, Maharashtra, India, 400 055"
   },
   {
     "id": "10",
-    "title": "Luxury Hotel",
-    "img": "assets/images/LuxuryHotel.jpg",
-    "price": "\$44/Night",
+    "title": "Luxury Tuk Tuk",
+    "img": "",
+    "price": "€ 44",
     "address": "14, Moyka river embankment."
   },
 ];
@@ -221,7 +213,7 @@ List hotelList = [
 List hotelList2 = [
   {
     "id": "1",
-    "title": "Grand Park City Hotel",
+    "title": "Grand Park City Tuk Tuk",
     "img": "assets/images/SwissHotel.jpg",
     "price": "\$26/",
     "address": "155 Rajadamri Road, Bangkok 10330 Thailand",
