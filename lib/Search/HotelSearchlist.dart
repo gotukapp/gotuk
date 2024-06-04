@@ -94,7 +94,7 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                       const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
                   child: TextField(
                     decoration: InputDecoration(
-                      hintText: 'Search hotel',
+                      hintText: 'Search a tour',
                       hintStyle: TextStyle(color: notifire.getgreycolor),
                       prefixIcon: Padding(
                         padding: const EdgeInsets.all(8.0),

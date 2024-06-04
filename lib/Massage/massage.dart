@@ -77,7 +77,7 @@ class _massageState extends State<massage> {
                           padding: const EdgeInsets.symmetric(vertical: 6),
                           child: TextField(
                             decoration: InputDecoration(
-                              hintText: 'Search hotel',
+                              hintText: 'Search a tour',
                               hintStyle: TextStyle(
                                   color: notifire.getgreycolor,
                                   fontFamily: "Gilroy Medium"),

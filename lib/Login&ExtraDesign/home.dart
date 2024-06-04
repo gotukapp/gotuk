@@ -59,7 +59,7 @@ class _homeState extends State<home> {
                           color: Darkblue,
                         ),
                         Text(
-                          "Surat Gujrat,India",
+                          "Lisboa, Portugal",
                           style: TextStyle(
                               color: notifire.getwhiteblackcolor,
                               fontFamily: "Gilroy Medium"),
@@ -103,7 +103,7 @@ class _homeState extends State<home> {
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.012),
                       Text(
-                        "Let’s find best hotel",
+                        "Let’s find best Tuk Tuk",
                         style: TextStyle(
                             fontSize: 20,
                             color: notifire.getwhiteblackcolor,
@@ -130,7 +130,7 @@ class _homeState extends State<home> {
                               },
                               readOnly: true,
                               decoration: InputDecoration(
-                                hintText: 'Search hotel',
+                                hintText: 'Search a tour',
                                 hintStyle: TextStyle(
                                     color: notifire.getgreycolor,
                                     fontFamily: "Gilroy Medium"),
@@ -318,7 +318,7 @@ class _homeState extends State<home> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Nearby Hotels",
+                            "Nearby Tuk Tuk",
                             style: TextStyle(
                                 fontFamily: "Gilroy Bold",
                                 color: notifire.getwhiteblackcolor),

@@ -136,7 +136,7 @@ class _SearchState extends State<Search> {
                           builder: (context) => const HotelSearchlist()));
                     },
                     decoration: InputDecoration(
-                      hintText: 'Search hotel',
+                      hintText: 'Search a tour',
                       hintStyle: TextStyle(
                           color: notifire.getgreycolor,
                           fontFamily: "Gilroy Medium"),
@@ -233,7 +233,7 @@ class _SearchState extends State<Search> {
                                                     .width *
                                                 0.80,
                                             child: Text(
-                                                "Dominic Hotel, Luxury Royale Hotel, Hotel Santika",
+                                                "Dominic Hotel, Luxury Royale Hotel, Tuk Tuk Santika",
                                                 style: TextStyle(
                                                     fontSize: 15,
                                                     fontFamily: "Gilroy Medium",

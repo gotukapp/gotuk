@@ -220,7 +220,7 @@ class _hoteldetailpageState extends State<hoteldetailpage> {
                     SizedBox(
                         height: MediaQuery.of(context).size.height * 0.015),
                     ReadMoreText(
-                      "Diamond Heart Hotel is high rated hotels in Middle Java Purwokerto with 120+ reviews and have high attitude service.",
+                      "Diamond Heart Tuk Tuk is high rated hotels in Middle Java Purwokerto with 120+ reviews and have high attitude service.",
                       trimLines: 2,
                       trimMode: TrimMode.Line,
                       style: TextStyle(

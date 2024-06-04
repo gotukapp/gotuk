@@ -29,7 +29,7 @@ class _NearbyallHotelState extends State<NearbyallHotel> {
       appBar: PreferredSize(
           preferredSize: const Size.fromHeight(75),
           child: CustomAppbar(
-              centertext: "Nearby hotel for you",
+              centertext: "Nearby Tuk Tuk for you",
               ActionIcon: null,
               bgcolor: notifire.getbgcolor,
               actioniconcolor: notifire.getwhiteblackcolor,

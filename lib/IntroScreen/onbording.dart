@@ -75,12 +75,12 @@ class _BoardingScreenState extends State<BoardingPage> {
     _currentPage = 0;
 
     slides = [
-      Slide("assets/images/onbording11.png", "Hotel booking with GoTuk ",
+      Slide("assets/images/onbording11.png", "Tuk Tuk booking with GoTuk ",
           "Best accommodation at best prices"),
       Slide("assets/images/onbording12.png", " Best trip experience",
           "Get the best deals on Hotels - every day!"),
       Slide("assets/images/onbording13.png", "Just Signup on GoTuk",
-          "Largest & Most Trusted Hotel App"),
+          "Largest & Most Trusted Tuk Tuk App"),
     ];
     _pageController = PageController(initialPage: _currentPage);
     super.initState();
@@ -323,7 +323,7 @@ class _loginpageState extends State<loginpage> {
             ),
             const SizedBox(height: 10),
             Text(
-                "If you are new here please create your accountfirst before book the hotel.",
+                "If you are new here please create your accountfirst before book the Tuk Tuk.",
                 style: TextStyle(
                     fontSize: 14,
                     color: notifire.getgreycolor,

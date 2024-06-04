@@ -348,7 +348,7 @@ List hotelList4 = [
     "title": "John kennedy",
     "img": "assets/images/person.jpg",
     "price": "\$26/Night",
-    "massage": "hotel is named among the best hotels in the state",
+    "massage": "Tuk Tuk is named among the best hotels in the state",
     "review": "4.8",
   },
   {
@@ -372,7 +372,7 @@ List hotelList4 = [
     "title": "Jamison",
     "img": "assets/images/person12.jpg",
     "price": "\$32/Night",
-    "massage": "You will have more fun in  hotel than any other hotel",
+    "massage": "You will have more fun in  Tuk Tuk than any other hotel",
     "review": "4.4",
   },
   {
@@ -388,7 +388,7 @@ List hotelList4 = [
     "title": "Albert",
     "img": "assets/images/person6.jpg",
     "price": "\$36/Night",
-    "massage": "This hotel is better than other hotel",
+    "massage": "This Tuk Tuk is better than other hotel",
     "review": "4.6",
   },
   {
@@ -404,7 +404,7 @@ List hotelList4 = [
     "title": "Alessandro",
     "img": "assets/images/person8.jpg",
     "price": "\$40/Night",
-    "massage": "hotel is named among the best hotels in the state",
+    "massage": "Tuk Tuk is named among the best hotels in the state",
     "review": "4.1",
   },
   {
@@ -429,7 +429,7 @@ List hotelList5 = [
   {
     "title": "Kim Hayo Send You a Message",
     "subtitle":
-        "Hi mariana, are you looking for hotel in Purwokerto? You can check our hotel",
+        "Hi mariana, are you looking for Tuk Tuk in Purwokerto? You can check our hotel",
     "massagetime": "1:m Ago"
   },
   {
@@ -441,7 +441,7 @@ List hotelList5 = [
   {
     "title": "Alexander Send You a Message",
     "subtitle":
-        "The hotels give me amazing view, I really like it!. All people must try this hotel.",
+        "The hotels give me amazing view, I really like it!. All people must try this Tuk Tuk.",
     "massagetime": "3:m Ago"
   },
   {
@@ -458,13 +458,13 @@ List hotelList5 = [
   },
   {
     "title": "Lawrence Send You a Message",
-    "subtitle": "You will have more fun in  hotel than any other hotel",
+    "subtitle": "You will have more fun in  Tuk Tuk than any other hotel",
     "massagetime": "6:m Ago"
   },
   {
     "title": "Quentin Send You a Message",
     "subtitle":
-        "The hotels give me amazing view, I really like it!. All people must try this hotel.",
+        "The hotels give me amazing view, I really like it!. All people must try this Tuk Tuk.",
     "massagetime": "7:m Ago"
   },
   {
@@ -476,7 +476,7 @@ List hotelList5 = [
   {
     "title": "Emanuel Send You a Message",
     "subtitle":
-        "Hi mariana, are you looking for hotel in Purwokerto? You can check our hotel",
+        "Hi mariana, are you looking for Tuk Tuk in Purwokerto? You can check our hotel",
     "massagetime": "9:m Ago"
   },
   {
