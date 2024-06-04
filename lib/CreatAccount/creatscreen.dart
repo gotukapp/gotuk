@@ -48,7 +48,7 @@ class _creatscreenState extends State<creatscreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Welcome to GoHotel",
+                    "Welcome to GoTuk",
                     style: TextStyle(
                         fontSize: 24,
                         fontFamily: "Gilroy Bold",

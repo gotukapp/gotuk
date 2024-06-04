@@ -46,7 +46,7 @@ class _loginscreenState extends State<loginscreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Welcome to GoHotel",
+                  "Welcome to GoTuk",
                   style: TextStyle(
                     fontSize: 24,
                     fontFamily: "Gilroy Bold",

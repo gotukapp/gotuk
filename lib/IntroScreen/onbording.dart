@@ -75,11 +75,11 @@ class _BoardingScreenState extends State<BoardingPage> {
     _currentPage = 0;
 
     slides = [
-      Slide("assets/images/onbording11.png", "Hotel booking with GoHotel ",
+      Slide("assets/images/onbording11.png", "Hotel booking with GoTuk ",
           "Best accommodation at best prices"),
       Slide("assets/images/onbording12.png", " Best trip experience",
           "Get the best deals on Hotels - every day!"),
-      Slide("assets/images/onbording13.png", "Just Signup on GoHotel",
+      Slide("assets/images/onbording13.png", "Just Signup on GoTuk",
           "Largest & Most Trusted Hotel App"),
     ];
     _pageController = PageController(initialPage: _currentPage);
@@ -315,7 +315,7 @@ class _loginpageState extends State<loginpage> {
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.05),
             Text(
-              "Welcome to GoHotel",
+              "Welcome to GoTuk",
               style: TextStyle(
                   fontSize: 25,
                   fontFamily: "Gilroy Bold",
