@@ -215,103 +215,32 @@ List hotelList2 = [
     "id": "1",
     "title": "Grand Park City Tuk Tuk",
     "img": "assets/images/SwissHotel.jpg",
-    "price": "\$26/",
+    "price": "26€/",
     "address": "155 Rajadamri Road, Bangkok 10330 Thailand",
-    "Night": "Night",
+    "Night": "Tour",
     "review": "4.9",
     "reviewCount": "(160 Reviews)"
   },
   {
     "id": "2",
-    "title": "The Leela hotel",
-    "img": "assets/images/TheLeelaHotel.jpg",
-    "price": "\$28/",
-    "address": "Chao Anou Road, 112 Vat Chan Village, Chanthabouly District",
-    "Night": "Night",
+    "title": "Lisbon Tuk Tuk",
+    "img": "",
+    "price": "28€/",
+    "address": "",
+    "Night": "Tour",
     "review": "4.8",
     "reviewCount": "(150 Reviews)"
   },
   {
     "id": "3",
-    "title": "Mandarin Oriental",
-    "img": "assets/images/NationalHotel.jpg",
-    "price": "\$30/",
-    "address": "1091/336 New Petchburi Road, 10400 Bangkok, Thailand",
-    "Night": "Night",
+    "title": "Cascais Tour",
+    "img": "",
+    "price": "30€/",
+    "address": "",
+    "Night": "Tour",
     "review": "4.7",
     "reviewCount": "(140 Reviews)"
-  },
-  {
-    "id": "4",
-    "title": "Anantara Siam hotel",
-    "img": "assets/images/dubaiHotel.jpg",
-    "price": "\$32/",
-    "address": "87 Wireless Road, Phatumwan, 10330, Bangkok",
-    "Night": "Night",
-    "review": "4.6",
-    "reviewCount": "(130 Reviews)"
-  },
-  {
-    "id": "5",
-    "title": "Boutique Hotel",
-    "img": "assets/images/AnticipatedHotel.jpg",
-    "price": "\$34/",
-    "address": "Sheikh Mohammed Bin Rashed Boulevard, Downtown Dubai",
-    "Night": "Night",
-    "review": "4.5",
-    "reviewCount": "(120 Reviews)"
-  },
-  {
-    "id": "6",
-    "title": "Sterling Hotel",
-    "img": "assets/images/IntercontinentalHotel.jpg",
-    "price": "\$36/",
-    "address": "103 River Street, Ballina, Ballina, Australia",
-    "Night": "Night",
-    "review": "4.4",
-    "reviewCount": "(110 Reviews)"
-  },
-  {
-    "id": "7",
-    "title": "Royal Fort Hotel",
-    "img": "assets/images/StateHotel.jpg",
-    "price": "\$38/",
-    "address": "449 Sainte-Hélène St Montréal, Quebec, H2Y 2K9 Canada",
-    "Night": "Night",
-    "review": "4.3",
-    "reviewCount": "(100 Reviews)"
-  },
-  {
-    "id": "8",
-    "title": "Singapore Hotel",
-    "img": "assets/images/vishakhapatnamHotel.jpg",
-    "price": "\$40/",
-    "address": "1, Voznesensky Avenue",
-    "Night": "Night",
-    "review": "4.2",
-    "reviewCount": "(90 Reviews)"
-  },
-  {
-    "id": "9",
-    "title": "Hyatt Hotel",
-    "img": "assets/images/hotel.jpg",
-    "price": "\$42/",
-    "address":
-        "Bandra Kurla Complex Vicinity, Mumbai, Maharashtra, India, 400 055",
-    "Night": "Night",
-    "review": "4.1",
-    "reviewCount": "(80 Reviews)"
-  },
-  {
-    "id": "10",
-    "title": "Luxury Hotel",
-    "img": "assets/images/SagamoreResort.jpg",
-    "price": "\$44/",
-    "address": "14, Moyka river embankment.",
-    "Night": "Night",
-    "review": "3.8",
-    "reviewCount": "(70 Reviews)"
-  },
+  }
 ];
 
 List hotelList3 = [
@@ -414,13 +343,13 @@ List hotelList5 = [
   {
     "title": "Kim Hayo Send You a Message",
     "subtitle":
-        "Hi mariana, are you looking for Tuk Tuk in Purwokerto? You can check our hotel",
+        "Hi mariana, are you looking for Tuk Tuk in Lisbon?",
     "massagetime": "1:m Ago"
   },
   {
     "title": "John  Send You a Message",
     "subtitle":
-        "The service is on point, and I really like the facilities. Good job!",
+        "The service is on point, and I really like the tour. Good job!",
     "massagetime": "2:m Ago"
   },
   {
@@ -428,46 +357,5 @@ List hotelList5 = [
     "subtitle":
         "The hotels give me amazing view, I really like it!. All people must try this Tuk Tuk.",
     "massagetime": "3:m Ago"
-  },
-  {
-    "title": "Maverick Send You a Message",
-    "subtitle":
-        "Comfortable room and amazing beach view in every room, make me happy!",
-    "massagetime": "4:m Ago"
-  },
-  {
-    "title": "Harrison Send You a Message",
-    "subtitle":
-        "Hello Marine, Yes the room is available,so you can make an order.",
-    "massagetime": "5:m Ago"
-  },
-  {
-    "title": "Lawrence Send You a Message",
-    "subtitle": "You will have more fun in  Tuk Tuk than any other hotel",
-    "massagetime": "6:m Ago"
-  },
-  {
-    "title": "Quentin Send You a Message",
-    "subtitle":
-        "The hotels give me amazing view, I really like it!. All people must try this Tuk Tuk.",
-    "massagetime": "7:m Ago"
-  },
-  {
-    "title": "Albert Send You a Message",
-    "subtitle":
-        "Comfortable room and amazing beach view in every room, make me happy!",
-    "massagetime": "8:m Ago"
-  },
-  {
-    "title": "Emanuel Send You a Message",
-    "subtitle":
-        "Hi mariana, are you looking for Tuk Tuk in Purwokerto? You can check our hotel",
-    "massagetime": "9:m Ago"
-  },
-  {
-    "title": "Jamison Send You a Message",
-    "subtitle":
-        "The service is on point, and I really like the facilities. Good job!",
-    "massagetime": "10:m Ago"
   },
 ];

@@ -146,7 +146,7 @@ class _hoteldetailpageState extends State<hoteldetailpage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Diamond Heart Hotel",
+                      "Eco Tuk Tours",
                       style: TextStyle(
                           fontSize: 18,
                           color: notifire.getwhiteblackcolor,
@@ -167,7 +167,7 @@ class _hoteldetailpageState extends State<hoteldetailpage> {
                               color: notifire.getdarkbluecolor,
                             ),
                             Text(
-                              "Purwokerto, Karang Lewas",
+                              "Parque Eduardo VII, Lisboa",
                               style: TextStyle(
                                   color: notifire.getgreycolor,
                                   fontSize: 14,
@@ -202,14 +202,14 @@ class _hoteldetailpageState extends State<hoteldetailpage> {
                     Row(
                       children: [
                         Text(
-                          "\$46 ",
+                          "46€ ",
                           style: TextStyle(
                               fontSize: 16,
                               color: notifire.getdarkbluecolor,
                               fontFamily: "Gilroy Bold"),
                         ),
                         Text(
-                          "Per Night",
+                          "Per Tour",
                           style: TextStyle(
                               fontFamily: "Gilroy Medium",
                               fontSize: 14,
@@ -220,7 +220,7 @@ class _hoteldetailpageState extends State<hoteldetailpage> {
                     SizedBox(
                         height: MediaQuery.of(context).size.height * 0.015),
                     ReadMoreText(
-                      "Diamond Heart Tuk Tuk is high rated hotels in Middle Java Purwokerto with 120+ reviews and have high attitude service.",
+                      "Eco Tuk Tuk is high rated with 120+ reviews and have high attitude service.",
                       trimLines: 2,
                       trimMode: TrimMode.Line,
                       style: TextStyle(
@@ -254,12 +254,12 @@ class _hoteldetailpageState extends State<hoteldetailpage> {
                         Column(
                           children: [
                             Image.asset(
-                              "assets/images/shower.png",
+                              "assets/images/user.png",
                               height: 30,
                               color: notifire.getwhiteblackcolor,
                             ),
                             Text(
-                              "shower",
+                              "2 travelers",
                               style: TextStyle(
                                   fontSize: 15,
                                   color: notifire.getgreycolor,
@@ -270,28 +270,12 @@ class _hoteldetailpageState extends State<hoteldetailpage> {
                         Column(
                           children: [
                             Image.asset(
-                              "assets/images/breakfast.png",
+                              "assets/images/timer.png",
                               height: 30,
                               color: notifire.getwhiteblackcolor,
                             ),
                             Text(
-                              "Breakfast",
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  color: notifire.getgreycolor,
-                                  fontFamily: "Gilroy Medium"),
-                            )
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Image.asset(
-                              "assets/images/timer.svg.png",
-                              height: 30,
-                              color: notifire.getwhiteblackcolor,
-                            ),
-                            Text(
-                              "Gym",
+                              "2H",
                               style: TextStyle(
                                   fontSize: 15,
                                   color: notifire.getgreycolor,
