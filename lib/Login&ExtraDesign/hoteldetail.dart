@@ -128,7 +128,7 @@ class _hoteldetailpageState extends State<hoteldetailpage> {
           expandedHeight: 250,
           flexibleSpace: FlexibleSpaceBar(
             background: Image.asset(
-              "assets/images/SagamoreResort.jpg",
+              "assets/images/eco-tuk-tours.jpg",
               height: 300,
               width: double.infinity,
               fit: BoxFit.fill,
@@ -330,8 +330,7 @@ class _hoteldetailpageState extends State<hoteldetailpage> {
                                     width: MediaQuery.of(context).size.width *
                                         0.01),
                                 Text(
-                                  "Haight "
-                                      "Streetm Purwokerto, Karang Lewas",
+                                  "Parque Eduardo VII, Lisboa",
                                   style: TextStyle(
                                       color: notifire.getgreycolor,
                                       fontFamily: "Gilroy Medium"),

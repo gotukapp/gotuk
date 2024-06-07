@@ -233,7 +233,7 @@ class _SearchState extends State<Search> {
                                                     .width *
                                                 0.80,
                                             child: Text(
-                                                "Dominic Hotel, Luxury Royale Hotel, Tuk Tuk Santika",
+                                                "Tuk Tuk Lisbon",
                                                 style: TextStyle(
                                                     fontSize: 15,
                                                     fontFamily: "Gilroy Medium",

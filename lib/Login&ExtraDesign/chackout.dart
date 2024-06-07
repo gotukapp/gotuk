@@ -18,7 +18,6 @@ class chackout extends StatefulWidget {
 }
 
 class _chackoutState extends State<chackout> {
-  int _counter = 0;
   int _counter1 = 0;
   int _counter2 = 0;
 
@@ -72,14 +71,14 @@ class _chackoutState extends State<chackout> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child:
-                            Image.asset("assets/images/Confidiantehotel.png"),
+                            Image.asset("assets/images/eco-tuk-tours.jpg"),
                       ),
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Diamond Heart Hotel",
+                          "Eco Tuk Tour",
                           style: TextStyle(
                               fontSize: 15,
                               fontFamily: "Gilroy Bold",
@@ -89,7 +88,7 @@ class _chackoutState extends State<chackout> {
                         SizedBox(
                             height: MediaQuery.of(context).size.height * 0.006),
                         Text(
-                          "Purwokerto, Karang Lewas",
+                          "Parque Eduardo VII, Lisboa",
                           style: TextStyle(
                               fontSize: 13,
                               color: notifire.getgreycolor,
@@ -102,7 +101,7 @@ class _chackoutState extends State<chackout> {
                             Row(
                               children: [
                                 Text(
-                                  "\$46 /",
+                                  "46€ /",
                                   style: TextStyle(
                                       fontSize: 16,
                                       color: notifire.getdarkbluecolor,
@@ -110,7 +109,7 @@ class _chackoutState extends State<chackout> {
                                 ),
                                 const SizedBox(width: 3),
                                 Text(
-                                  "Night",
+                                  "Tour",
                                   style: TextStyle(
                                       fontSize: 16,
                                       color: notifire.getgreycolor,
@@ -157,7 +156,7 @@ class _chackoutState extends State<chackout> {
               ),
               const SizedBox(height: 15),
               selectdetail(
-                heding: "Dates",
+                heding: "Date",
                 image: "assets/images/calendar.png",
                 text: "Select Dates",
                 icon: Icons.keyboard_arrow_down,
@@ -169,18 +168,18 @@ class _chackoutState extends State<chackout> {
               ),
               const SizedBox(height: 10),
               selectdetail(
-                  heding: "Guests",
-                  image: "assets/images/guest.png",
-                  text: "Select Guest",
-                  icon: Icons.keyboard_arrow_down,
-                  onclick: guestbottomsheet),
+                  heding: "Time",
+                  image: "assets/images/timer.png",
+                  text: "Select Time",
+                  icon: Icons.keyboard_arrow_right,
+                  onclick: timerbottomsheet),
               const SizedBox(height: 10),
               selectdetail(
-                  heding: "Promo",
-                  image: "assets/images/promo.png",
-                  text: "Promo Used",
-                  icon: Icons.keyboard_arrow_right,
-                  onclick: promomodelbottomsheet),
+                  heding: "Travelers",
+                  image: "assets/images/guest.png",
+                  text: "Select Travelers",
+                  icon: Icons.keyboard_arrow_down,
+                  onclick: guestbottomsheet),
               SizedBox(height: MediaQuery.of(context).size.height * 0.04),
               Divider(
                 color: notifire.getgreycolor,
@@ -200,14 +199,14 @@ class _chackoutState extends State<chackout> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "\$46 x 3 Nights",
+                        "46€",
                         style: TextStyle(
                             fontSize: 14,
                             fontFamily: "Gilroy Medium",
                             color: notifire.getgreycolor),
                       ),
                       Text(
-                        "\$138",
+                        "46€",
                         style: TextStyle(
                             fontSize: 14,
                             color: notifire.getgreycolor,
@@ -219,12 +218,12 @@ class _chackoutState extends State<chackout> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Cleaning Fee",
+                      Text("Booking Fee",
                           style: TextStyle(
                               fontSize: 14,
                               fontFamily: "Gilroy Medium",
                               color: notifire.getgreycolor)),
-                      Text("\$4",
+                      Text("4€",
                           style: TextStyle(
                               fontSize: 14,
                               fontFamily: "Gilroy Medium",
@@ -235,11 +234,11 @@ class _chackoutState extends State<chackout> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Total (USD)",
+                      Text("Total (EUR)",
                           style: TextStyle(
                               fontFamily: "Gilroy Bold",
                               color: notifire.getwhiteblackcolor)),
-                      Text("\$142",
+                      Text("50€",
                           style: TextStyle(
                               fontFamily: "Gilroy Bold",
                               color: notifire.getwhiteblackcolor)),
@@ -344,7 +343,7 @@ class _chackoutState extends State<chackout> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "Room and Guests",
+                          "Travelers",
                           style: TextStyle(
                               fontFamily: "Gilroy Bold",
                               fontSize: 18,
@@ -360,22 +359,6 @@ class _chackoutState extends State<chackout> {
                             ))
                       ],
                     ),
-                    SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.025),
-                    Room(
-                        text: "Room",
-                        titletext: "Minimum contains 4 people",
-                        onclick1: () {
-                          setState(() {
-                            _counter--;
-                          });
-                        },
-                        middeltext: "$_counter",
-                        onclick2: () {
-                          setState(() {
-                            _counter++;
-                          });
-                        }),
                     SizedBox(
                         height: MediaQuery.of(context).size.height * 0.025),
                     Room(
@@ -480,7 +463,7 @@ class _chackoutState extends State<chackout> {
     );
   }
 
-  promomodelbottomsheet() {
+  timerbottomsheet() {
     return showModalBottomSheet(
         backgroundColor: notifire.getbgcolor,
         context: context,
@@ -500,7 +483,7 @@ class _chackoutState extends State<chackout> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "My Cupon",
+                              "Timer Slots",
                               style: TextStyle(
                                   fontSize: 18,
                                   fontFamily: "Gilroy Bold",
@@ -541,41 +524,23 @@ class _chackoutState extends State<chackout> {
                                       borderRadius: BorderRadius.circular(15),
                                       color: notifire.getdarkmodecolor,
                                     ),
-                                    height: 80,
+                                    height: 60,
                                     child: ListTile(
                                       leading: Image.asset(
-                                          "assets/images/promo.png",
-                                          height: 35),
+                                          "assets/images/timer.png",
+                                          height: 35,
+                                          color: notifire.getdarkbluecolor),
                                       title: Text(
-                                        '50% Cashback',
+                                        '09:00 - 11:00',
                                         style: TextStyle(
                                             fontSize: 16,
                                             fontFamily: "Gilroy Bold",
                                             color: notifire.getwhiteblackcolor),
                                       ),
-                                      subtitle: Row(
-                                        children: [
-                                          Text(
-                                            "Expired in 2 days",
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                color: notifire.getgreycolor,
-                                                fontFamily: "Gilroy Medium"),
-                                          ),
-                                          const SizedBox(width: 4),
-                                          Text("See Detail",
-                                              style: TextStyle(
-                                                  fontSize: 15,
-                                                  color:
-                                                      notifire.getdarkbluecolor,
-                                                  fontFamily: "Gilroy Medium")),
-                                        ],
-                                      ),
                                       trailing: Icon(
                                         Icons.check_outlined,
                                         color: notifire.getdarkbluecolor,
-                                      ),
-                                      isThreeLine: true,
+                                      )
                                     ),
                                   ),
                                 ),
@@ -603,7 +568,7 @@ class _chackoutState extends State<chackout> {
                         width: MediaQuery.of(context).size.width * 0.93,
                         child: Center(
                             child: Text(
-                          "Use Cupon",
+                          "Save",
                           style: TextStyle(
                               fontSize: 16,
                               color: WhiteColor,

@@ -35,7 +35,7 @@ class _ShowMassageState extends State<ShowMassage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Massage",
+                  "Messages",
                   style: TextStyle(
                       fontSize: 18,
                       color: notifire.getwhiteblackcolor,
