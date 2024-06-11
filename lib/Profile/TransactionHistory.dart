@@ -107,14 +107,14 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text("Hyatt Washington Hotel",
+                                      Text("Eco Tuk Tour",
                                           style: TextStyle(
                                               fontSize: 16,
                                               color:
                                                   notifire.getwhiteblackcolor,
                                               fontFamily: "Gilroy Bold")),
                                       const SizedBox(height: 6),
-                                      Text("4 Guests, 2 Room",
+                                      Text("4 Travelers, 2H",
                                           style: TextStyle(
                                               fontSize: 15,
                                               color: notifire.getgreycolor,
@@ -126,7 +126,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                               const SizedBox(height: 8),
                               cupon(
                                 text1: "Total Price",
-                                text2: "\$274",
+                                text2: "47€",
                                 buttontext: "Check In",
                                 onClick: () {
                                   // Navigator.of(context).push(MaterialPageRoute(
@@ -153,7 +153,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   padding: EdgeInsets.zero,
-                  itemCount: 5,
+                  itemCount: 3,
                   itemBuilder: (BuildContext context, int index) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 6),
@@ -205,14 +205,14 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text("Hyatt Washington Hotel",
+                                      Text("Eco Tuk Tour",
                                           style: TextStyle(
                                               fontSize: 16,
                                               color:
                                                   notifire.getwhiteblackcolor,
                                               fontFamily: "Gilroy Bold")),
                                       const SizedBox(height: 6),
-                                      Text("4 Guests, 2 Room",
+                                      Text("4 Travelers, 2h",
                                           style: TextStyle(
                                               fontSize: 15,
                                               color: notifire.getgreycolor)),
@@ -223,7 +223,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                               const SizedBox(height: 8),
                               cupon(
                                 text1: "Total Price",
-                                text2: "\$274",
+                                text2: "47€",
                                 buttontext: "Ratings",
                                 onClick: () {
                                   // Navigator.of(context).push(MaterialPageRoute(

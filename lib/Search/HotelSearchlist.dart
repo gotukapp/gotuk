@@ -119,7 +119,7 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                 )),
             const SizedBox(height: 15),
             Text(
-              "Popular Hotels",
+              "Popular Tours",
               style: TextStyle(
                   fontSize: 16,
                   color: notifire.getwhiteblackcolor,
@@ -254,7 +254,7 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                                         Row(
                                           children: [
                                             Text(
-                                              "Per Night",
+                                              "Per Tour",
                                               style: TextStyle(
                                                   fontSize: 16,
                                                   color: notifire.getgreycolor,
@@ -350,7 +350,7 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.03),
                       Text(
-                        "Guests",
+                        "Travelers",
                         style: TextStyle(
                             fontSize: 16,
                             color: notifire.getwhiteblackcolor,
@@ -363,7 +363,7 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                             color: notifire.getdarkmodecolor),
                         child: TextField(
                           decoration: InputDecoration(
-                            hintText: "Guest detail",
+                            hintText: "Travelers detail",
                             hintStyle: TextStyle(
                               color: notifire.getgreycolor,
                               fontFamily: "Gilroy Medium",
@@ -515,7 +515,7 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                               ),
                               const SizedBox(height: 6),
                               Text(
-                                "Book without waiting for the host to respond",
+                                "Book without waiting for the driver to respond",
                                 style: TextStyle(
                                     fontSize: 13,
                                     color: greyColor,
@@ -568,7 +568,7 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                         },
                       ),
                       Facilitiesinsidehotel(
-                        text: "Swimming Pool",
+                        text: "English",
                         ChackValue: isChecked1,
                         OnChange: (value1) {
                           setState(() {
@@ -577,20 +577,11 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                         },
                       ),
                       Facilitiesinsidehotel(
-                        text: "Tv",
+                        text: "French",
                         ChackValue: isChecked2,
                         OnChange: (value2) {
                           setState(() {
                             isChecked2 = value2!;
-                          });
-                        },
-                      ),
-                      Facilitiesinsidehotel(
-                        text: "Laundry",
-                        ChackValue: isChecked3,
-                        OnChange: (value3) {
-                          setState(() {
-                            isChecked3 = value3!;
                           });
                         },
                       ),

@@ -85,13 +85,13 @@ class CalanderState extends State<Calander> {
                           const SizedBox(height: 8),
                           Row(
                             children: [
-                              Text("\$46",
+                              Text("46€",
                                   style: TextStyle(
                                       fontSize: 18,
                                       color: Darkblue,
                                       fontFamily: "Gilroy Bold")),
                               const SizedBox(width: 4),
-                              Text("Per Night",
+                              Text("Per Tour",
                                   style: TextStyle(
                                       fontSize: 14,
                                       color: greyColor,
@@ -150,7 +150,7 @@ class CalanderState extends State<Calander> {
                             blackoutDateTextStyle: TextStyle(color: Darkblue)),
                         backgroundColor: notifire.getbgcolor,
                         onSelectionChanged: _onSelectionChanged,
-                        selectionMode: DateRangePickerSelectionMode.range,
+                        selectionMode: DateRangePickerSelectionMode.single,
                         initialSelectedRange: PickerDateRange(
                             DateTime.now().subtract(const Duration(days: 4)),
                             DateTime.now().add(const Duration(days: 3))),
