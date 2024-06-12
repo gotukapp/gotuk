@@ -141,7 +141,7 @@ class _ChatingState extends State<Chating> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Hyatt Washington Hotel",
+                                "Eco Tuk Tour",
                                 style: TextStyle(
                                     fontSize: 15,
                                     fontFamily: "Gilroy Bold",
@@ -166,14 +166,14 @@ class _ChatingState extends State<Chating> {
                                   Row(
                                     children: [
                                       Text(
-                                        "\$38 /",
+                                        "47€ /",
                                         style: TextStyle(
                                             fontSize: 16,
                                             color: notifire.getdarkbluecolor,
                                             fontFamily: "Gilroy Bold"),
                                       ),
                                       Text(
-                                        " Night",
+                                        " Tour",
                                         style: TextStyle(
                                             fontSize: 16,
                                             color: notifire.getgreycolor,
@@ -222,12 +222,12 @@ class _ChatingState extends State<Chating> {
                     ),
                     Massagelist(
                         SenderText:
-                            "Hi, is there any room left? I’ll make noorder if room is available",
+                            "Hi, i'm already here",
                         timetext2: "8:14 Am",
                         timetext: "8:12 Am",
                         timetext3: "8:16 Am",
                         ReciveText:
-                            "Hello Marine, Yes the room is available,so you can make an order.",
+                            "Hello Marine, wait a moment, I'm almost there.",
                         ReciveText2: "Thank You! 😁",
                         SenderText2: "Thanks for your information"),
                     // SizedBox(
