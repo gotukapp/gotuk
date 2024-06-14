@@ -63,7 +63,7 @@ class _creatscreenState extends State<creatscreen> {
                           color: notifire.getgreycolor,
                           fontFamily: "Gilroy Medium")),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-                  Text("Full Name",
+                  Text("Name",
                       style: TextStyle(
                           fontSize: 16,
                           fontFamily: "Gilroy Medium",
@@ -72,7 +72,7 @@ class _creatscreenState extends State<creatscreen> {
                   textfield(
                       feildcolor: notifire.getdarkmodecolor,
                       hintcolor: notifire.getgreycolor,
-                      text: 'Enter your username',
+                      text: 'Enter your name',
                       prefix: Image.asset(
                         "assets/images/profile.png",
                         height: 25,
@@ -80,8 +80,25 @@ class _creatscreenState extends State<creatscreen> {
                       ),
                       suffix: null),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+                  Text("Email",
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontFamily: "Gilroy Medium",
+                          color: notifire.getwhiteblackcolor)),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                  textfield(
+                      feildcolor: notifire.getdarkmodecolor,
+                      hintcolor: notifire.getgreycolor,
+                      text: 'Enter your email',
+                      prefix: Image.asset(
+                        "assets/images/email.png",
+                        height: 25,
+                        color: notifire.getgreycolor,
+                      ),
+                      suffix: null),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.015),
                   Text(
-                    "Phone Nmuber",
+                    "Phone Number",
                     style: TextStyle(
                         fontFamily: "Gilroy Medium",
                         fontSize: 16,
@@ -124,7 +141,7 @@ class _creatscreenState extends State<creatscreen> {
                 ],
               ),
               SizedBox(
-                height: MediaQuery.of(context).size.height / 5.5,
+                height: MediaQuery.of(context).size.height / 8,
               ),
               Column(
                 children: [
