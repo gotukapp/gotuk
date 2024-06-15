@@ -18,11 +18,12 @@ class chackout extends StatefulWidget {
 }
 
 class _chackoutState extends State<chackout> {
-  int _counter1 = 0;
-  int _counter2 = 0;
-
   bool isChecked = false;
   bool isChecked1 = false;
+  bool isCheckedPT = false;
+  bool isCheckedEN = false;
+  bool isCheckedFR = false;
+  bool isCheckedES = false;
   @override
   void initState() {
     getdarkmodepreviousstate();
@@ -175,9 +176,9 @@ class _chackoutState extends State<chackout> {
                   onclick: timerbottomsheet),
               const SizedBox(height: 10),
               selectdetail(
-                  heding: "Travelers",
+                  heding: "Guide Features",
                   image: "assets/images/guest.png",
-                  text: "Select Travelers",
+                  text: "Select Guide Features",
                   icon: Icons.keyboard_arrow_down,
                   onclick: guestbottomsheet),
               SizedBox(height: MediaQuery.of(context).size.height * 0.04),
@@ -343,7 +344,7 @@ class _chackoutState extends State<chackout> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "Travelers",
+                          "Guide Features",
                           style: TextStyle(
                               fontFamily: "Gilroy Bold",
                               fontSize: 18,
@@ -361,38 +362,74 @@ class _chackoutState extends State<chackout> {
                     ),
                     SizedBox(
                         height: MediaQuery.of(context).size.height * 0.025),
-                    Room(
-                        text: "Adults",
-                        titletext: "Age 15+",
-                        onclick1: () {
-                          setState(() {
-                            _counter1--;
-                          });
-                        },
-                        middeltext: "$_counter1",
-                        onclick2: () {
-                          setState(() {
-                            _counter1++;
-                          });
-                        }),
+                    SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.01),
+                    Text(
+                      "Preferred language",
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: notifire.getwhiteblackcolor,
+                          fontFamily: "Gilroy Bold"),
+                    ),
+                    const SizedBox(height: 6),
+                    language(
+                      text: "Portuguese",
+                      ChackValue: isCheckedPT,
+                      OnChange: (value) {
+                        setState(() {
+                          isCheckedPT = value!;
+                        });
+                      },
+                    ),
+                    language(
+                      text: "English",
+                      ChackValue: isCheckedEN,
+                      OnChange: (value1) {
+                        setState(() {
+                          isCheckedEN = value1!;
+                        });
+                      },
+                    ),
+                    language(
+                      text: "French",
+                      ChackValue: isCheckedFR,
+                      OnChange: (value2) {
+                        setState(() {
+                          isCheckedFR = value2!;
+                        });
+                      },
+                    ),
+                    language(
+                      text: "Spanish",
+                      ChackValue: isCheckedES,
+                      OnChange: (value2) {
+                        setState(() {
+                          isCheckedES = value2!;
+                        });
+                      },
+                    ),
                     SizedBox(
                         height: MediaQuery.of(context).size.height * 0.025),
-                    Room(
-                        text: "Childern",
-                        titletext: "Age 2 - 12",
-                        onclick1: () {
-                          setState(() {
-                            _counter2--;
-                          });
-                        },
-                        middeltext: "$_counter2",
-                        onclick2: () {
-                          setState(() {
-                            _counter2++;
-                          });
-                        }),
+                    Text(
+                      "Minimum Rating",
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: notifire.getwhiteblackcolor,
+                          fontFamily: "Gilroy Bold"),
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Ratings(RetingText: "5"),
+                        Ratings(RetingText: "4"),
+                        Ratings(RetingText: "3"),
+                        Ratings(RetingText: "2"),
+                        Ratings(RetingText: "1"),
+                      ],
+                    ),
                     SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.085,
+                      height: MediaQuery.of(context).size.height * 0.05,
                     ),
                     AppButton(
                         buttontext: "Save",
@@ -512,12 +549,6 @@ class _chackoutState extends State<chackout> {
                               children: [
                                 const SizedBox(height: 8),
                                 InkWell(
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const MyCupon()));
-                                  },
                                   child: Container(
                                     padding: const EdgeInsets.only(top: 8),
                                     decoration: BoxDecoration(
@@ -903,5 +934,60 @@ class _chackoutState extends State<chackout> {
     } else {
       notifire.setIsDark = previusstate;
     }
+  }
+
+  Ratings({String? RetingText}) {
+    return Container(
+      height: 35,
+      width: 55,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: notifire.getdarkmodecolor),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Image.asset("assets/images/star.png", height: 15),
+            Text(
+              RetingText!,
+              style: TextStyle(
+                fontSize: 14,
+                color: notifire.getwhiteblackcolor,
+                fontWeight: FontWeight.bold,
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  language(
+      {Function(bool?)? OnChange, bool? ChackValue, String? text}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          text!,
+          style: TextStyle(
+              fontSize: 15, color: greyColor, fontFamily: "Gilroy Medium"),
+        ),
+        const SizedBox(width: 25),
+        SizedBox(
+          height: 35,
+          width: 35,
+          child: Theme(
+            data: ThemeData(unselectedWidgetColor: notifire.getwhiteblackcolor),
+            child: Checkbox(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                    side: BorderSide(color: notifire.getwhiteblackcolor)),
+                value: ChackValue,
+                onChanged: OnChange),
+          ),
+        ),
+      ],
+    );
   }
 }
