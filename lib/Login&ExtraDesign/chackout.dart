@@ -9,6 +9,7 @@ import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/cupertino.dart';
 
 class chackout extends StatefulWidget {
   const chackout({super.key});
@@ -24,6 +25,7 @@ class _chackoutState extends State<chackout> {
   bool isCheckedEN = false;
   bool isCheckedFR = false;
   bool isCheckedES = false;
+  bool switchValue = false;
   @override
   void initState() {
     getdarkmodepreviousstate();
@@ -407,6 +409,54 @@ class _chackoutState extends State<chackout> {
                           isCheckedES = value2!;
                         });
                       },
+                    ),
+                    SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.025),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Vehicle Type",
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: notifire.getwhiteblackcolor,
+                                  fontFamily: "Gilroy Bold"),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              "Only Electric vehicles",
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  color: greyColor,
+                                  fontFamily: "Gilroy Medium"),
+                            ),
+                          ],
+                        ),
+                        Container(
+                          height: 42.0,
+                          width: 60.0,
+                          child: FittedBox(
+                            fit: BoxFit.fill,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: CupertinoSwitch(
+                                value: switchValue,
+                                thumbColor: notifire.getdarkwhitecolor,
+                                trackColor: notifire.getbuttoncolor,
+                                activeColor: notifire.getdarkbluecolor,
+                                onChanged: (value) {
+                                  setState(() {
+                                    switchValue = value;
+                                  });
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(
                         height: MediaQuery.of(context).size.height * 0.025),
