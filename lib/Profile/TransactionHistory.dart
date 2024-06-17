@@ -127,7 +127,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                               cupon(
                                 text1: "Total Price",
                                 text2: "47€",
-                                buttontext: "Check In",
+                                buttontext: "Ready",
                                 onClick: () {
                                   // Navigator.of(context).push(MaterialPageRoute(
                                   //     builder: (context) => Favourite()));
