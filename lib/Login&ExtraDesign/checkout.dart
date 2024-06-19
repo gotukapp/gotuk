@@ -11,16 +11,16 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/cupertino.dart';
 
-class chackout extends StatefulWidget {
+class checkout extends StatefulWidget {
   final dynamic tour;
 
-  const chackout(this.tour, {super.key});
+  const checkout(this.tour, {super.key});
 
   @override
-  State<chackout> createState() => _chackoutState();
+  State<checkout> createState() => _checkoutState();
 }
 
-class _chackoutState extends State<chackout> {
+class _checkoutState extends State<checkout> {
   bool isChecked = false;
   bool isChecked1 = false;
   bool isCheckedPT = false;

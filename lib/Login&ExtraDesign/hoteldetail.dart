@@ -1,6 +1,6 @@
 // ignore_for_file: prefer_final_fields, camel_case_types, sized_box_for_whitespace, avoid_print, avoid_unnecessary_containers
 
-import 'package:dm/Login&ExtraDesign/chackout.dart';
+import 'package:dm/Login&ExtraDesign/checkout.dart';
 import 'package:dm/Login&ExtraDesign/review.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/customwidget%20.dart';
@@ -60,7 +60,7 @@ class _hoteldetailpageState extends State<hoteldetailpage> {
                 onTap: () {
                   Navigator.of(context)
                       .push(MaterialPageRoute(
-                          builder: (context) => chackout(tour)))
+                          builder: (context) => checkout(tour)))
                       .then((value) => print('ok Navigat'));
                 },
                 child: Container(
@@ -206,7 +206,7 @@ class _hoteldetailpageState extends State<hoteldetailpage> {
                     Row(
                       children: [
                         Text(
-                          "3 Tukees - ",
+                          "up to 3 Tukees - ",
                           style: TextStyle(
                               fontSize: 16,
                               color: notifire.getwhiteblackcolor,
@@ -231,7 +231,7 @@ class _hoteldetailpageState extends State<hoteldetailpage> {
                     Row(
                       children: [
                         Text(
-                          "4-6 Tukees - ",
+                          "from 4 to 6 Tukees - ",
                           style: TextStyle(
                               fontSize: 16,
                               color: notifire.getwhiteblackcolor,
