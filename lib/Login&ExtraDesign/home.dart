@@ -187,7 +187,7 @@ class _homeState extends State<home> {
                                 onTap: () {
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (context) =>
-                                          const hoteldetailpage()));
+                                          hoteldetailpage(hotelList[index]["id"])));
                                 },
                                 child: Container(
                                   margin:
@@ -236,7 +236,9 @@ class _homeState extends State<home> {
                                                     child: Center(
                                                       child: Text(
                                                         hotelList[index]
-                                                                ["price"]
+                                                                ["priceLow"]
+                                                            .toString() + " - " + hotelList[index]
+                                                        ["priceHigh"]
                                                             .toString(),
                                                         style: TextStyle(
                                                             fontSize: 12,
@@ -347,7 +349,7 @@ class _homeState extends State<home> {
                             onTap: () {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) =>
-                                      const hoteldetailpage()));
+                                      const hoteldetailpage(1)));
                             },
                             child: Container(
                               width: double.infinity,

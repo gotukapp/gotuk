@@ -12,7 +12,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/cupertino.dart';
 
 class chackout extends StatefulWidget {
-  const chackout({super.key});
+  final dynamic tour;
+
+  const chackout(this.tour, {super.key});
 
   @override
   State<chackout> createState() => _chackoutState();
@@ -81,7 +83,7 @@ class _chackoutState extends State<chackout> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Eco Tuk Tour",
+                          widget.tour["title"],
                           style: TextStyle(
                               fontSize: 15,
                               fontFamily: "Gilroy Bold",
@@ -91,7 +93,7 @@ class _chackoutState extends State<chackout> {
                         SizedBox(
                             height: MediaQuery.of(context).size.height * 0.006),
                         Text(
-                          "Parque Eduardo VII, Lisboa",
+                          widget.tour["address"],
                           style: TextStyle(
                               fontSize: 13,
                               color: notifire.getgreycolor,
@@ -100,6 +102,7 @@ class _chackoutState extends State<chackout> {
                         SizedBox(
                             height: MediaQuery.of(context).size.height * 0.01),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Row(
                               children: [

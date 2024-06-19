@@ -153,61 +153,64 @@ AccountSetting(
 
 List hotelList = [
   {
-    "id": "1",
-    "title": "Eco Tuk Tours",
+    "id": 1,
+    "title": "Lisboa Old City",
+    "duration": "1h30 - 2h",
     "img": "assets/images/eco-tuk-tours.jpg",
     "price": "26€",
+    "priceLow": 115,
+    "priceHigh": 148,
+    "address": "Sé de Lisboa"
+  },
+  {
+    "id": 2,
+    "title": "Lisboa New City",
+    "duration": "1h30",
+    "img": "",
+    "price": "32€",
+    "priceLow": 110,
+    "priceHigh": 135,
+    "address": "Terreiro do Paço (Praça do Comércio)"
+  },
+  {
+    "id": 3,
+    "title": "Discoveries in Belém",
+    "duration": "1h30 - 2h30",
+    "img": "",
+    "price": "34€",
+    "priceLow": 140,
+    "priceHigh": 180,
+    "address": "Mosteiro dos Jerónimos"
+  },
+  {
+    "id": 4,
+    "title": "Cristo Rei",
+    "duration": "1h30 - 2h30",
+    "img": "",
+    "price": "36€",
+    "priceLow": 95,
+    "priceHigh": 135,
+    "address": "Lisboa"
+  },
+  {
+    "id": 5,
+    "title": "Three sight hills",
+    "duration": "1h30 - 2h",
+    "img": "",
+    "price": "38€",
+    "priceLow": 105,
+    "priceHigh": 152,
     "address": "Parque Eduardo VII, Lisboa"
   },
   {
-    "id": "4",
-    "title": "Anantara Siam Tuk Tuk",
-    "img": "",
-    "price": "32€",
-    "address": "87 Wireless Road, Phatumwan, 10330, Bangkok"
-  },
-  {
-    "id": "5",
-    "title": "Boutique Tuk Tuk",
-    "img": "",
-    "price": "34€",
-    "address": "Sheikh Mohammed Bin Rashed Boulevard, Downtown Dubai"
-  },
-  {
-    "id": "6",
-    "title": "Sterling Tuk Tuk",
-    "img": "",
-    "price": "36€",
-    "address": "103 River Street, Ballina, Ballina, Australia"
-  },
-  {
-    "id": "7",
-    "title": "Royal Fort Tuk Tuk",
-    "img": "",
-    "price": "38€",
-    "address": "449 Sainte-Hélène St Montréal, Quebec, H2Y 2K9 Canada"
-  },
-  {
-    "id": "8",
-    "title": "Singapore Tuk Tuk",
+    "id": 6,
+    "title": "Instant Book",
     "img": "",
     "price": "40€",
+    "priceLow": 115,
+    "priceHigh": 148,
     "address": "1, Voznesensky Avenue"
-  },
-  {
-    "id": "9",
-    "title": "Hyatt Tuk Tuk",
-    "img": "",
-    "price": "42€",
-    "address": "Bandra Kurla Complex Vicinity, Mumbai, Maharashtra, India, 400 055"
-  },
-  {
-    "id": "10",
-    "title": "Luxury Tuk Tuk",
-    "img": "",
-    "price": "44€",
-    "address": "14, Moyka river embankment."
-  },
+  }
 ];
 
 List hotelList2 = [

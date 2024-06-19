@@ -103,7 +103,7 @@ class CalanderState extends State<Calander> {
                       InkWell(
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const chackout()));
+                              builder: (context) => const chackout(1)));
                         },
                         child: Container(
                           height: 70,

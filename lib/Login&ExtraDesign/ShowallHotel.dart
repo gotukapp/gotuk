@@ -46,7 +46,7 @@ class _ShowallHotelState extends State<ShowallHotel> {
             return InkWell(
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const hoteldetailpage()));
+                    builder: (context) => const hoteldetailpage(1)));
               },
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),

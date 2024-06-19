@@ -11,8 +11,9 @@ import 'package:readmore/readmore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class hoteldetailpage extends StatefulWidget {
-  const hoteldetailpage({super.key});
+  final int tourId;
 
+  const hoteldetailpage(this.tourId, {super.key});
   @override
   State<hoteldetailpage> createState() => _hoteldetailpageState();
 }
@@ -21,6 +22,8 @@ class _hoteldetailpageState extends State<hoteldetailpage> {
   bool _pinned = true;
   bool _snap = false;
   bool _floating = false;
+  late dynamic tour;
+
   @override
   void initState() {
     getdarkmodepreviousstate();
@@ -30,6 +33,7 @@ class _hoteldetailpageState extends State<hoteldetailpage> {
   late ColorNotifire notifire;
   @override
   Widget build(BuildContext context) {
+    tour = hotelList.firstWhere((tour) => tour["id"] == widget.tourId);
     notifire = Provider.of<ColorNotifire>(context, listen: true);
     return Scaffold(
       bottomNavigationBar: Container(
@@ -56,7 +60,7 @@ class _hoteldetailpageState extends State<hoteldetailpage> {
                 onTap: () {
                   Navigator.of(context)
                       .push(MaterialPageRoute(
-                          builder: (context) => const chackout()))
+                          builder: (context) => chackout(tour)))
                       .then((value) => print('ok Navigat'));
                 },
                 child: Container(
@@ -146,7 +150,7 @@ class _hoteldetailpageState extends State<hoteldetailpage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Eco Tuk Tours",
+                      tour["title"],
                       style: TextStyle(
                           fontSize: 18,
                           color: notifire.getwhiteblackcolor,
@@ -167,7 +171,7 @@ class _hoteldetailpageState extends State<hoteldetailpage> {
                               color: notifire.getdarkbluecolor,
                             ),
                             Text(
-                              "Parque Eduardo VII, Lisboa",
+                              tour["address"],
                               style: TextStyle(
                                   color: notifire.getgreycolor,
                                   fontSize: 14,
@@ -202,19 +206,71 @@ class _hoteldetailpageState extends State<hoteldetailpage> {
                     Row(
                       children: [
                         Text(
-                          "46€ ",
+                          "3 Tukees - ",
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: notifire.getwhiteblackcolor,
+                              fontFamily: "Gilroy Bold"),
+                        ),
+                        Text(
+                          tour["priceLow"].toString() + "€",
                           style: TextStyle(
                               fontSize: 16,
                               color: notifire.getdarkbluecolor,
                               fontFamily: "Gilroy Bold"),
                         ),
                         Text(
-                          "Per Tour",
+                          " (Price per Tukee " + (tour["priceLow"]/3).toStringAsFixed(1) + "€)",
                           style: TextStyle(
                               fontFamily: "Gilroy Medium",
                               fontSize: 14,
-                              color: notifire.getwhiteblackcolor),
+                              color: notifire.getgreycolor),
                         ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          "4-6 Tukees - ",
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: notifire.getwhiteblackcolor,
+                              fontFamily: "Gilroy Bold"),
+                        ),
+                        Text(
+                          tour["priceHigh"].toString() + "€",
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: notifire.getdarkbluecolor,
+                              fontFamily: "Gilroy Bold"),
+                        ),
+                        Text(
+                          " (Price per Tukee " + (tour["priceHigh"]/6).toStringAsFixed(1) + "€)",
+                          style: TextStyle(
+                              fontFamily: "Gilroy Medium",
+                              fontSize: 14,
+                              color: notifire.getgreycolor),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.03),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          "assets/images/timer.png",
+                          height: 20,
+                          color: notifire.getwhiteblackcolor,
+                        ),
+                        SizedBox(width: 20),
+                        Text(
+                          tour["duration"],
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: notifire.getdarkbluecolor,
+                              fontFamily: "Gilroy Bold"),
+                        )
                       ],
                     ),
                     SizedBox(
@@ -235,58 +291,6 @@ class _hoteldetailpageState extends State<hoteldetailpage> {
                           color: notifire.getdarkbluecolor),
                     ),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          children: [
-                            Image.asset("assets/images/wifi.png",
-                                height: 30, color: notifire.getwhiteblackcolor),
-                            Text(
-                              "Wifi",
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  color: notifire.getgreycolor,
-                                  fontFamily: "Gilroy Medium"),
-                            )
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Image.asset(
-                              "assets/images/user.png",
-                              height: 30,
-                              color: notifire.getwhiteblackcolor,
-                            ),
-                            Text(
-                              "2 travelers",
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  color: notifire.getgreycolor,
-                                  fontFamily: "Gilroy Medium"),
-                            )
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Image.asset(
-                              "assets/images/timer.png",
-                              height: 30,
-                              color: notifire.getwhiteblackcolor,
-                            ),
-                            Text(
-                              "2H",
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  color: notifire.getgreycolor,
-                                  fontFamily: "Gilroy Medium"),
-                            )
-                          ],
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.025),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -330,7 +334,7 @@ class _hoteldetailpageState extends State<hoteldetailpage> {
                                     width: MediaQuery.of(context).size.width *
                                         0.01),
                                 Text(
-                                  "Parque Eduardo VII, Lisboa",
+                                  tour["address"],
                                   style: TextStyle(
                                       color: notifire.getgreycolor,
                                       fontFamily: "Gilroy Medium"),
