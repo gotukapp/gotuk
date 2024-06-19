@@ -56,7 +56,7 @@ class CalanderState extends State<Calander> {
             appBar: PreferredSize(
                 preferredSize: const Size.fromHeight(60),
                 child: CustomAppbar(
-                    centertext: "Calander",
+                    centertext: "Calendar",
                     ActionIcon: Icons.more_vert,
                     bgcolor: notifire.getbgcolor,
                     actioniconcolor: notifire.getwhiteblackcolor,

@@ -12,9 +12,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/cupertino.dart';
 
 class checkout extends StatefulWidget {
-  final dynamic tour;
+  final int tourId;
 
-  const checkout(this.tour, {super.key});
+  const checkout(this.tourId, {super.key});
 
   @override
   State<checkout> createState() => _checkoutState();
@@ -28,6 +28,7 @@ class _checkoutState extends State<checkout> {
   bool isCheckedFR = false;
   bool isCheckedES = false;
   bool switchValue = false;
+  late dynamic tour;
   @override
   void initState() {
     getdarkmodepreviousstate();
@@ -37,6 +38,7 @@ class _checkoutState extends State<checkout> {
   late ColorNotifire notifire;
   @override
   Widget build(BuildContext context) {
+    tour = hotelList.firstWhere((tour) => tour["id"] == widget.tourId);
     notifire = Provider.of<ColorNotifire>(context, listen: true);
     return Scaffold(
       backgroundColor: notifire.getbgcolor,
@@ -83,7 +85,7 @@ class _checkoutState extends State<checkout> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.tour["title"],
+                          tour["title"],
                           style: TextStyle(
                               fontSize: 15,
                               fontFamily: "Gilroy Bold",
@@ -93,7 +95,7 @@ class _checkoutState extends State<checkout> {
                         SizedBox(
                             height: MediaQuery.of(context).size.height * 0.006),
                         Text(
-                          widget.tour["address"],
+                          tour["address"],
                           style: TextStyle(
                               fontSize: 13,
                               color: notifire.getgreycolor,
@@ -104,25 +106,6 @@ class _checkoutState extends State<checkout> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Row(
-                              children: [
-                                Text(
-                                  "46€ /",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      color: notifire.getdarkbluecolor,
-                                      fontFamily: "Gilroy Bold"),
-                                ),
-                                const SizedBox(width: 3),
-                                Text(
-                                  "Tour",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      color: notifire.getgreycolor,
-                                      fontFamily: "Gilroy Medium"),
-                                ),
-                              ],
-                            ),
                             Row(
                               children: [
                                 const SizedBox(width: 12,),
@@ -159,6 +142,64 @@ class _checkoutState extends State<checkout> {
                     ),
                   ],
                 ),
+              ),
+              const SizedBox(height: 15),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  InkWell(
+                    child: Container(
+                      height: 50,
+                      width: 180,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                          color: Darkblue),
+                      child: Center(
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 5),
+                            Text("Up to 3 persons",
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color: WhiteColor,
+                                    fontFamily: "Gilroy Bold")),
+                            Text(tour["priceLow"].toString() + "€",
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color: WhiteColor,
+                                    fontFamily: "Gilroy Bold"))
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    child: Container(
+                      height: 50,
+                      width: 180,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                          color: greyColor),
+                      child: Center(
+                        child: Column(
+                            children: [
+                              const SizedBox(height: 5),
+                              Text("From 4 to 6 persons",
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color: WhiteColor,
+                                    fontFamily: "Gilroy Bold")),
+                              Text(tour["priceHigh"].toString() + "€",
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color: WhiteColor,
+                                    fontFamily: "Gilroy Bold"))
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 15),
               selectdetail(

@@ -60,7 +60,7 @@ class _hoteldetailpageState extends State<hoteldetailpage> {
                 onTap: () {
                   Navigator.of(context)
                       .push(MaterialPageRoute(
-                          builder: (context) => checkout(tour)))
+                          builder: (context) => checkout(tour["id"])))
                       .then((value) => print('ok Navigat'));
                 },
                 child: Container(

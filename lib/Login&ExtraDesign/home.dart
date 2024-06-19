@@ -237,9 +237,8 @@ class _homeState extends State<home> {
                                                       child: Text(
                                                         hotelList[index]
                                                                 ["priceLow"]
-                                                            .toString() + " - " + hotelList[index]
-                                                        ["priceHigh"]
-                                                            .toString(),
+                                                            .toString() + "€ - " + hotelList[index]
+                                                        ["priceHigh"].toString() + "€",
                                                         style: TextStyle(
                                                             fontSize: 12,
                                                             color: WhiteColor,
