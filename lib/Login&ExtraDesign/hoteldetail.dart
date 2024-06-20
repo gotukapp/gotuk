@@ -201,60 +201,77 @@ class _hoteldetailpageState extends State<hoteldetailpage> {
                       ],
                     ),
                     SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.015,
+                      height: MediaQuery.of(context).size.height * 0.03,
                     ),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(
-                          "up to 3 Tukees - ",
-                          style: TextStyle(
-                              fontSize: 16,
-                              color: notifire.getwhiteblackcolor,
-                              fontFamily: "Gilroy Bold"),
+                        Image.asset(
+                          "assets/images/user.png",
+                          height: 20,
+                          color: notifire.getwhiteblackcolor,
                         ),
-                        Text(
-                          tour["priceLow"].toString() + "€",
-                          style: TextStyle(
-                              fontSize: 16,
-                              color: notifire.getdarkbluecolor,
-                              fontFamily: "Gilroy Bold"),
-                        ),
-                        Text(
-                          " (Price per Tukee " + (tour["priceLow"]/3).toStringAsFixed(1) + "€)",
-                          style: TextStyle(
-                              fontFamily: "Gilroy Medium",
-                              fontSize: 14,
-                              color: notifire.getgreycolor),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          "from 4 to 6 Tukees - ",
-                          style: TextStyle(
-                              fontSize: 16,
-                              color: notifire.getwhiteblackcolor,
-                              fontFamily: "Gilroy Bold"),
-                        ),
-                        Text(
-                          tour["priceHigh"].toString() + "€",
-                          style: TextStyle(
-                              fontSize: 16,
-                              color: notifire.getdarkbluecolor,
-                              fontFamily: "Gilroy Bold"),
-                        ),
-                        Text(
-                          " (Price per Tukee " + (tour["priceHigh"]/6).toStringAsFixed(1) + "€)",
-                          style: TextStyle(
-                              fontFamily: "Gilroy Medium",
-                              fontSize: 14,
-                              color: notifire.getgreycolor),
-                        ),
+                        SizedBox(width: 20),
+                        Column(
+                          children: [
+                            Row(
+                                children: [
+                                  Text(
+                                    "1/3",
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: notifire.getwhiteblackcolor,
+                                        fontFamily: "Gilroy Bold"),
+                                  ),
+                                  SizedBox(width: 10),
+                                  Text(
+                                    tour["priceLow"].toString() + "€",
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: notifire.getdarkbluecolor,
+                                        fontFamily: "Gilroy Bold"),
+                                  ),
+                                  Text(
+                                    " (Price per person " + (tour["priceLow"]/3).toStringAsFixed(1) + "€)",
+                                    style: TextStyle(
+                                        fontFamily: "Gilroy Medium",
+                                        fontSize: 14,
+                                        color: notifire.getgreycolor),
+                                  )
+                                ]
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  "4/6",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: notifire.getwhiteblackcolor,
+                                      fontFamily: "Gilroy Bold"),
+                                ),
+                                SizedBox(width: 10),
+                                Text(
+                                  tour["priceHigh"].toString() + "€",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: notifire.getdarkbluecolor,
+                                      fontFamily: "Gilroy Bold"),
+                                ),
+                                Text(
+                                  " (Price per person " + (tour["priceHigh"]/6).toStringAsFixed(1) + "€)",
+                                  style: TextStyle(
+                                      fontFamily: "Gilroy Medium",
+                                      fontSize: 14,
+                                      color: notifire.getgreycolor),
+                                ),
+                              ],
+                            )
+                          ],
+                        )
                       ],
                     ),
                     SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.03),
+                        height: MediaQuery.of(context).size.height * 0.015),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -272,23 +289,6 @@ class _hoteldetailpageState extends State<hoteldetailpage> {
                               fontFamily: "Gilroy Bold"),
                         )
                       ],
-                    ),
-                    SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.015),
-                    ReadMoreText(
-                      "Eco Tuk Tuk is high rated with 120+ reviews and have high attitude service.",
-                      trimLines: 2,
-                      trimMode: TrimMode.Line,
-                      style: TextStyle(
-                          color: notifire.getgreycolor,
-                          fontFamily: "Gilroy Medium"),
-                      trimCollapsedText: 'Show more',
-                      trimExpandedText: 'Show less',
-                      lessStyle: TextStyle(color: notifire.getdarkbluecolor),
-                      moreStyle: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: notifire.getdarkbluecolor),
                     ),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                     Row(

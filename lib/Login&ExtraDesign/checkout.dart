@@ -150,7 +150,7 @@ class _checkoutState extends State<checkout> {
                   InkWell(
                     child: Container(
                       height: 50,
-                      width: 180,
+                      width: 125,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(50),
                           color: Darkblue),
@@ -158,7 +158,7 @@ class _checkoutState extends State<checkout> {
                         child: Column(
                           children: [
                             const SizedBox(height: 5),
-                            Text("Up to 3 persons",
+                            Text("1/3 persons",
                                 style: TextStyle(
                                     fontSize: 14,
                                     color: WhiteColor,
@@ -176,7 +176,7 @@ class _checkoutState extends State<checkout> {
                   InkWell(
                     child: Container(
                       height: 50,
-                      width: 180,
+                      width: 125,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(50),
                           color: greyColor),
@@ -184,7 +184,7 @@ class _checkoutState extends State<checkout> {
                         child: Column(
                             children: [
                               const SizedBox(height: 5),
-                              Text("From 4 to 6 persons",
+                              Text("4/6 persons",
                                 style: TextStyle(
                                     fontSize: 14,
                                     color: WhiteColor,
