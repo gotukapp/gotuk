@@ -2,7 +2,6 @@
 
 import 'package:dm/Login&ExtraDesign/calendar.dart';
 import 'package:dm/Login&ExtraDesign/homepage.dart';
-import 'package:dm/Profile/MyCupon.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
@@ -428,7 +427,7 @@ class _checkoutState extends State<checkout> {
                         image: "assets/images/Langauge.png",
                         text: "Select Language",
                         icon: Icons.keyboard_arrow_right,
-                        onclick: timerbottomsheet),
+                        onclick: languagesbottomsheet),
                     SizedBox(
                         height: MediaQuery.of(context).size.height * 0.025),
                     Row(
@@ -636,8 +635,7 @@ class _checkoutState extends State<checkout> {
                     top: MediaQuery.of(context).size.height / 2.33,
                     child: InkWell(
                       onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const MyCupon()));
+                        Navigator.of(context).pop();
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -661,6 +659,102 @@ class _checkoutState extends State<checkout> {
               ),
             );
           });
+        });
+  }
+
+  languagesbottomsheet() {
+    return showModalBottomSheet(
+        backgroundColor: notifire.getbgcolor,
+        context: context,
+        shape:
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+        builder: (context) {
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                  child: Stack(
+                    children: [
+                      SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Preferred Languages",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontFamily: "Gilroy Bold",
+                                      color: notifire.getwhiteblackcolor),
+                                ),
+                                InkWell(
+                                    onTap: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Icon(
+                                      Icons.close,
+                                      color: notifire.getwhiteblackcolor,
+                                    ))
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                            ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              padding: EdgeInsets.zero,
+                              itemCount: languages.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const SizedBox(height: 8),
+                                    language(
+                                      text: languages[index],
+                                      CheckValue: false,
+                                      OnChange: (value2) {
+                                        setState(() {
+                                          isCheckedFR = value2!;
+                                        });
+                                      },
+                                    )
+                                  ],
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      Positioned(
+                        // left: 100,
+                        top: MediaQuery.of(context).size.height / 2.33,
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              color: Darkblue,
+                            ),
+                            height: 60,
+                            width: MediaQuery.of(context).size.width * 0.93,
+                            child: Center(
+                                child: Text(
+                                  "Save",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: WhiteColor,
+                                      fontWeight: FontWeight.bold),
+                                )),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              });
         });
   }
 
@@ -987,7 +1081,7 @@ class _checkoutState extends State<checkout> {
 
 
   language(
-      {Function(bool?)? OnChange, bool? ChackValue, String? text}) {
+      {Function(bool?)? OnChange, bool? CheckValue, String? text}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -1006,7 +1100,7 @@ class _checkoutState extends State<checkout> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
                     side: BorderSide(color: notifire.getwhiteblackcolor)),
-                value: ChackValue,
+                value: CheckValue,
                 onChanged: OnChange),
           ),
         ),

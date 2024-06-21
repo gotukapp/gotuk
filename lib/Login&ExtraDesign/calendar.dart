@@ -1,6 +1,5 @@
 // ignore_for_file: file_names, use_key_in_widget_constructors, unused_field
 
-import 'package:dm/Login&ExtraDesign/checkout.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
@@ -75,8 +74,7 @@ class calendarState extends State<calendar> {
                     children: [
                       InkWell(
                         onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const checkout(1)));
+                          Navigator.of(context).pop();
                         },
                         child: Container(
                           height: 70,

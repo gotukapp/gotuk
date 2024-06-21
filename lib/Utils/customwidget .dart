@@ -362,3 +362,13 @@ List hotelList5 = [
     "massagetime": "3:m Ago"
   },
 ];
+
+List languages = [
+  'English',
+  'French',
+  'German',
+  'Japanese',
+  'Portuguese',
+  'Spanish',
+  'Italian'
+];

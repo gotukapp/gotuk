@@ -315,7 +315,7 @@ class _homeState extends State<home> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Nearby Tuk Tuk",
+                            "Nearby Tour",
                             style: TextStyle(
                                 fontFamily: "Gilroy Bold",
                                 color: notifire.getwhiteblackcolor),
