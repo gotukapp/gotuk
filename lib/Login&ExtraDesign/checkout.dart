@@ -28,11 +28,22 @@ class _checkoutState extends State<checkout> {
   bool isCheckedFR = false;
   bool isCheckedES = false;
   bool switchValue = false;
+  bool smallPriceSelected = true;
+  Color smallPriceColor = Darkblue;
+  Color highPriceColor = greyColor;
   late dynamic tour;
   @override
   void initState() {
     getdarkmodepreviousstate();
     super.initState();
+  }
+
+  void changeButtonColor() {
+    setState(() {
+      smallPriceSelected = !smallPriceSelected;
+      smallPriceColor = smallPriceSelected ? Darkblue : greyColor;
+      highPriceColor = smallPriceSelected ? greyColor : Darkblue;
+    });
   }
 
   late ColorNotifire notifire;
@@ -148,12 +159,13 @@ class _checkoutState extends State<checkout> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   InkWell(
+                    onTap: () { changeButtonColor(); },
                     child: Container(
                       height: 50,
                       width: 125,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(50),
-                          color: Darkblue),
+                          color: smallPriceColor),
                       child: Center(
                         child: Column(
                           children: [
@@ -174,12 +186,13 @@ class _checkoutState extends State<checkout> {
                     ),
                   ),
                   InkWell(
+                    onTap: () { changeButtonColor();  },
                     child: Container(
                       height: 50,
                       width: 125,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(50),
-                          color: greyColor),
+                          color: highPriceColor),
                       child: Center(
                         child: Column(
                             children: [
@@ -246,14 +259,14 @@ class _checkoutState extends State<checkout> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "46€",
+                        "Tour (Payment made to the guide)",
                         style: TextStyle(
                             fontSize: 14,
                             fontFamily: "Gilroy Medium",
                             color: notifire.getgreycolor),
                       ),
                       Text(
-                        "46€",
+                          (smallPriceSelected ? tour["priceLow"].toString() : tour["priceHigh"].toString())+"€",
                         style: TextStyle(
                             fontSize: 14,
                             color: notifire.getgreycolor,
@@ -285,7 +298,7 @@ class _checkoutState extends State<checkout> {
                           style: TextStyle(
                               fontFamily: "Gilroy Bold",
                               color: notifire.getwhiteblackcolor)),
-                      Text("50€",
+                      Text((smallPriceSelected ? (tour["priceLow"]+4).toString() : (tour["priceHigh"]+4).toString())+"€",
                           style: TextStyle(
                               fontFamily: "Gilroy Bold",
                               color: notifire.getwhiteblackcolor)),
@@ -379,7 +392,7 @@ class _checkoutState extends State<checkout> {
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
             return Container(
-              height: MediaQuery.of(context).size.height * 0.60,
+              height: MediaQuery.of(context).size.height * 0.45,
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
@@ -410,50 +423,12 @@ class _checkoutState extends State<checkout> {
                         height: MediaQuery.of(context).size.height * 0.025),
                     SizedBox(
                         height: MediaQuery.of(context).size.height * 0.01),
-                    Text(
-                      "Preferred language",
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: notifire.getwhiteblackcolor,
-                          fontFamily: "Gilroy Bold"),
-                    ),
-                    const SizedBox(height: 6),
-                    language(
-                      text: "Portuguese",
-                      ChackValue: isCheckedPT,
-                      OnChange: (value) {
-                        setState(() {
-                          isCheckedPT = value!;
-                        });
-                      },
-                    ),
-                    language(
-                      text: "English",
-                      ChackValue: isCheckedEN,
-                      OnChange: (value1) {
-                        setState(() {
-                          isCheckedEN = value1!;
-                        });
-                      },
-                    ),
-                    language(
-                      text: "French",
-                      ChackValue: isCheckedFR,
-                      OnChange: (value2) {
-                        setState(() {
-                          isCheckedFR = value2!;
-                        });
-                      },
-                    ),
-                    language(
-                      text: "Spanish",
-                      ChackValue: isCheckedES,
-                      OnChange: (value2) {
-                        setState(() {
-                          isCheckedES = value2!;
-                        });
-                      },
-                    ),
+                    selectdetail(
+                        heding: "Preferred language",
+                        image: "assets/images/Langauge.png",
+                        text: "Select Language",
+                        icon: Icons.keyboard_arrow_right,
+                        onclick: timerbottomsheet),
                     SizedBox(
                         height: MediaQuery.of(context).size.height * 0.025),
                     Row(
@@ -500,26 +475,6 @@ class _checkoutState extends State<checkout> {
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                    SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.025),
-                    Text(
-                      "Minimum Rating",
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: notifire.getwhiteblackcolor,
-                          fontFamily: "Gilroy Bold"),
-                    ),
-                    const SizedBox(height: 6),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Ratings(RetingText: "5"),
-                        Ratings(RetingText: "4"),
-                        Ratings(RetingText: "3"),
-                        Ratings(RetingText: "2"),
-                        Ratings(RetingText: "1"),
                       ],
                     ),
                     SizedBox(
@@ -1030,32 +985,6 @@ class _checkoutState extends State<checkout> {
     }
   }
 
-  Ratings({String? RetingText}) {
-    return Container(
-      height: 35,
-      width: 55,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: notifire.getdarkmodecolor),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Image.asset("assets/images/star.png", height: 15),
-            Text(
-              RetingText!,
-              style: TextStyle(
-                fontSize: 14,
-                color: notifire.getwhiteblackcolor,
-                fontWeight: FontWeight.bold,
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
 
   language(
       {Function(bool?)? OnChange, bool? ChackValue, String? text}) {
