@@ -73,33 +73,6 @@ class calendarState extends State<calendar> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 6),
-                          Text("Total Price",
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: greyColor,
-                                  fontFamily: "Gilroy Medium")),
-                          const SizedBox(height: 8),
-                          Row(
-                            children: [
-                              Text("46€",
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      color: Darkblue,
-                                      fontFamily: "Gilroy Bold")),
-                              const SizedBox(width: 4),
-                              Text("Per Tour",
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color: greyColor,
-                                      fontFamily: "Gilroy Medium")),
-                            ],
-                          )
-                        ],
-                      ),
                       InkWell(
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
@@ -107,7 +80,7 @@ class calendarState extends State<calendar> {
                         },
                         child: Container(
                           height: 70,
-                          width: MediaQuery.of(context).size.width / 2,
+                          width: MediaQuery.of(context).size.width * 0.95,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(50),
                             color: Darkblue,
