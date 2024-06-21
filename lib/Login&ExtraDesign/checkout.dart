@@ -231,7 +231,7 @@ class _checkoutState extends State<checkout> {
                   heding: "Time",
                   image: "assets/images/timer.png",
                   text: "Select Time",
-                  icon: Icons.keyboard_arrow_right,
+                  icon: Icons.keyboard_arrow_down,
                   onclick: timerbottomsheet),
               const SizedBox(height: 10),
               selectdetail(

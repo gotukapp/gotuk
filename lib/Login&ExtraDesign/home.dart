@@ -9,7 +9,7 @@ import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'hoteldetail.dart';
+import 'tourdetail.dart';
 import 'notification.dart';
 
 class home extends StatefulWidget {
@@ -187,7 +187,7 @@ class _homeState extends State<home> {
                                 onTap: () {
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (context) =>
-                                          hoteldetailpage(hotelList[index]["id"])));
+                                          tourdetailpage(hotelList[index]["id"])));
                                 },
                                 child: Container(
                                   margin:
@@ -348,7 +348,7 @@ class _homeState extends State<home> {
                             onTap: () {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) =>
-                                      const hoteldetailpage(1)));
+                                      const tourdetailpage(1)));
                             },
                             child: Container(
                               width: double.infinity,

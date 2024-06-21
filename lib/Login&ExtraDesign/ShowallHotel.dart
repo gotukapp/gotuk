@@ -1,6 +1,6 @@
 // ignore_for_file: file_names
 
-import 'package:dm/Login&ExtraDesign/hoteldetail.dart';
+import 'package:dm/Login&ExtraDesign/tourdetail.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
@@ -46,7 +46,7 @@ class _ShowallHotelState extends State<ShowallHotel> {
             return InkWell(
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const hoteldetailpage(1)));
+                    builder: (context) => const tourdetailpage(1)));
               },
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),

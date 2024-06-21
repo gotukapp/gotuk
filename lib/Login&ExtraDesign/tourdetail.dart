@@ -7,18 +7,17 @@ import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:readmore/readmore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class hoteldetailpage extends StatefulWidget {
+class tourdetailpage extends StatefulWidget {
   final int tourId;
 
-  const hoteldetailpage(this.tourId, {super.key});
+  const tourdetailpage(this.tourId, {super.key});
   @override
-  State<hoteldetailpage> createState() => _hoteldetailpageState();
+  State<tourdetailpage> createState() => _tourdetailpageState();
 }
 
-class _hoteldetailpageState extends State<hoteldetailpage> {
+class _tourdetailpageState extends State<tourdetailpage> {
   bool _pinned = true;
   bool _snap = false;
   bool _floating = false;
