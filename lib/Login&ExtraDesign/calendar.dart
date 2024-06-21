@@ -11,12 +11,12 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
-class Calander extends StatefulWidget {
+class calendar extends StatefulWidget {
   @override
-  CalanderState createState() => CalanderState();
+  calendarState createState() => calendarState();
 }
 
-class CalanderState extends State<Calander> {
+class calendarState extends State<calendar> {
   String _selectedDate = '';
   String _dateCount = '';
   String _range = '';

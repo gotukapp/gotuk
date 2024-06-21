@@ -1,6 +1,6 @@
 // ignore_for_file: non_constant_identifier_names, sized_box_for_whitespace, camel_case_types
 
-import 'package:dm/Login&ExtraDesign/Calander.dart';
+import 'package:dm/Login&ExtraDesign/calendar.dart';
 import 'package:dm/Login&ExtraDesign/homepage.dart';
 import 'package:dm/Profile/MyCupon.dart';
 import 'package:dm/Utils/Colors.dart';
@@ -222,7 +222,7 @@ class _checkoutState extends State<checkout> {
                 icon: Icons.keyboard_arrow_down,
                 onclick: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => Calander(),
+                    builder: (context) => calendar(),
                   ));
                 },
               ),
