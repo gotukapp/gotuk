@@ -22,12 +22,10 @@ class checkout extends StatefulWidget {
 class _checkoutState extends State<checkout> {
   bool isChecked = false;
   bool isChecked1 = false;
-  bool isCheckedPT = false;
-  bool isCheckedEN = false;
-  bool isCheckedFR = false;
-  bool isCheckedES = false;
   bool switchValue = false;
   bool smallPriceSelected = true;
+  String timeSelected = "";
+  List checkedLanguages = List<Object>.generate(languages.length, (i) => { "lang": languages[i], "value": false });
   Color smallPriceColor = Darkblue;
   Color highPriceColor = greyColor;
   late dynamic tour;
@@ -562,6 +560,7 @@ class _checkoutState extends State<checkout> {
               child: Stack(
                 children: [
                   SingleChildScrollView(
+                    padding: const EdgeInsets.only(top: 0, bottom: 80),
                     child: Column(
                       children: [
                         Row(
@@ -589,7 +588,7 @@ class _checkoutState extends State<checkout> {
                           physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           padding: EdgeInsets.zero,
-                          itemCount: 10,
+                          itemCount: timeSlots.length,
                           itemBuilder: (BuildContext context, int index) {
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -597,6 +596,7 @@ class _checkoutState extends State<checkout> {
                               children: [
                                 const SizedBox(height: 8),
                                 InkWell(
+                                  onTap: () => setState(() => timeSelected = timeSlots[index]),
                                   child: Container(
                                     padding: const EdgeInsets.only(top: 8),
                                     decoration: BoxDecoration(
@@ -606,20 +606,20 @@ class _checkoutState extends State<checkout> {
                                     height: 60,
                                     child: ListTile(
                                       leading: Image.asset(
-                                          "assets/images/timer.png",
-                                          height: 35,
-                                          color: notifire.getdarkbluecolor),
+                                        "assets/images/timer.png",
+                                        height: 35,
+                                        color: notifire.getdarkbluecolor),
                                       title: Text(
-                                        '09:00 - 11:00',
+                                        timeSlots[index],
                                         style: TextStyle(
                                             fontSize: 16,
                                             fontFamily: "Gilroy Bold",
                                             color: notifire.getwhiteblackcolor),
                                       ),
-                                      trailing: Icon(
+                                      trailing: timeSlots[index] == timeSelected ? Icon(
                                         Icons.check_outlined,
                                         color: notifire.getdarkbluecolor,
-                                      )
+                                      ) : null
                                     ),
                                   ),
                                 ),
@@ -676,6 +676,7 @@ class _checkoutState extends State<checkout> {
                   child: Stack(
                     children: [
                       SingleChildScrollView(
+                        padding: const EdgeInsets.only(top: 0, bottom: 80),
                         child: Column(
                           children: [
                             Row(
@@ -703,7 +704,7 @@ class _checkoutState extends State<checkout> {
                               physics: const NeverScrollableScrollPhysics(),
                               shrinkWrap: true,
                               padding: EdgeInsets.zero,
-                              itemCount: languages.length,
+                              itemCount: checkedLanguages.length,
                               itemBuilder: (BuildContext context, int index) {
                                 return Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -711,11 +712,11 @@ class _checkoutState extends State<checkout> {
                                   children: [
                                     const SizedBox(height: 8),
                                     language(
-                                      text: languages[index],
-                                      CheckValue: false,
-                                      OnChange: (value2) {
+                                      text: checkedLanguages[index]["lang"],
+                                      CheckValue: checkedLanguages[index]["value"],
+                                      OnChange: (value) {
                                         setState(() {
-                                          isCheckedFR = value2!;
+                                          checkedLanguages[index]["value"] = value!;
                                         });
                                       },
                                     )

@@ -364,11 +364,20 @@ List hotelList5 = [
 ];
 
 List languages = [
-  'English',
-  'French',
-  'German',
-  'Japanese',
-  'Portuguese',
-  'Spanish',
-  'Italian'
+  "English",
+  "French",
+  "German",
+  "Japanese",
+  "Portuguese",
+  "Spanish",
+  "Italian"
+];
+
+List timeSlots = [
+  "09:00 - 11:00",
+  "11:00 - 13:00",
+  "13:00 - 15:00",
+  "15:00 - 17:00",
+  "17:00 - 19:00",
+  "19:00 - 21:00"
 ];
