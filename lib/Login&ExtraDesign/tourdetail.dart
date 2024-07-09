@@ -42,34 +42,44 @@ class _tourdetailpageState extends State<tourdetailpage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                height: 70,
-                child: CircleAvatar(
-                  radius: 30,
-                  // ignore: sort_child_properties_last
-                  child: Image.asset(
-                    "assets/images/Chat.png",
-                    height: 35,
-                    color: notifire.getwhitebluecolor,
+              InkWell(
+                onTap: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(
+                      builder: (context) => checkout(tourId: tour["id"])))
+                      .then((value) => print('ok Navigat'));
+                },
+                child: Container(
+                  height: 60,
+                  width: MediaQuery.of(context).size.width * 0.4,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50), color: Darkblue),
+                  child: Center(
+                    child: Text(
+                      "Book Tour",
+                      style: TextStyle(
+                          color: WhiteColor,
+                          fontSize: 18,
+                          fontFamily: "Gilroy Bold"),
+                    ),
                   ),
-                  backgroundColor: notifire.getbgcolor,
                 ),
               ),
               InkWell(
                 onTap: () {
                   Navigator.of(context)
                       .push(MaterialPageRoute(
-                          builder: (context) => checkout(tour["id"])))
+                          builder: (context) => checkout(tourId: tour["id"])))
                       .then((value) => print('ok Navigat'));
                 },
                 child: Container(
                   height: 60,
-                  width: MediaQuery.of(context).size.width / 1.4,
+                  width: MediaQuery.of(context).size.width * 0.4,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(50), color: Darkblue),
                   child: Center(
                     child: Text(
-                      "Book Now",
+                      "Go Now",
                       style: TextStyle(
                           color: WhiteColor,
                           fontSize: 18,
@@ -216,7 +226,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                             Row(
                                 children: [
                                   Text(
-                                    "1/3",
+                                    "1-3",
                                     style: TextStyle(
                                         fontSize: 16,
                                         color: notifire.getwhiteblackcolor,
@@ -242,7 +252,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                             Row(
                               children: [
                                 Text(
-                                  "4/6",
+                                  "4-6",
                                   style: TextStyle(
                                       fontSize: 16,
                                       color: notifire.getwhiteblackcolor,

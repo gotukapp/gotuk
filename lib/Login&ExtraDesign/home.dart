@@ -2,13 +2,13 @@
 
 import 'package:dm/Login&ExtraDesign/NearbyallHotel.dart';
 import 'package:dm/Login&ExtraDesign/ShowallHotel.dart';
-import 'package:dm/Login&ExtraDesign/homepage.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'checkout.dart';
 import 'tourdetail.dart';
 import 'notification.dart';
 
@@ -103,7 +103,7 @@ class _homeState extends State<home> {
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.012),
                       Text(
-                        "Let’s find best Tuk Tuk",
+                        "Let’s find best Tour",
                         style: TextStyle(
                             fontSize: 20,
                             color: notifire.getwhiteblackcolor,
@@ -111,43 +111,34 @@ class _homeState extends State<home> {
                       ),
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.03),
-                      Container(
-                          height: 50,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50),
-                              color: notifire.getdarkmodecolor),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 6),
-                            child: TextField(
-                              onTap: () {
-                                setState(() {
-                                  selectedIndex = 1;
-                                });
-
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => const homepage()));
-                              },
-                              readOnly: true,
-                              decoration: InputDecoration(
-                                hintText: 'Search a tour',
-                                hintStyle: TextStyle(
-                                    color: notifire.getgreycolor,
-                                    fontFamily: "Gilroy Medium"),
-                                prefixIcon: Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 8),
-                                  child: Image.asset("assets/images/search.png",
-                                      height: 25, color: notifire.getgreycolor),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              Navigator.of(context)
+                                  .push(MaterialPageRoute(
+                                  builder: (context) => const checkout(tourId: -1)))
+                                  .then((value) => print('ok Navigat'));
+                            },
+                            child: Container(
+                              height: 60,
+                              width: MediaQuery.of(context).size.width / 1.4,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50), color: Darkblue),
+                              child: Center(
+                                child: Text(
+                                  "Go Now",
+                                  style: TextStyle(
+                                      color: WhiteColor,
+                                      fontSize: 18,
+                                      fontFamily: "Gilroy Bold"),
                                 ),
-                                suffixIcon: Icon(
-                                  Icons.filter_list,
-                                  color: notifire.getgreycolor,
-                                ),
-                                border: InputBorder.none,
                               ),
                             ),
-                          )),
+                          )
+                        ],
+                      ),
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.025),
                       Row(

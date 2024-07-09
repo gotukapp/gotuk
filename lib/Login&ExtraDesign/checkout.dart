@@ -6,6 +6,7 @@ import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:flutter/material.dart';
+import 'package:numberpicker/numberpicker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,7 +14,7 @@ import 'package:flutter/cupertino.dart';
 class checkout extends StatefulWidget {
   final int tourId;
 
-  const checkout(this.tourId, {super.key});
+  const checkout({super.key,required this.tourId});
 
   @override
   State<checkout> createState() => _checkoutState();
@@ -22,12 +23,21 @@ class checkout extends StatefulWidget {
 class _checkoutState extends State<checkout> {
   bool isChecked = false;
   bool isChecked1 = false;
-  bool switchValue = false;
+  bool vehicleTypeSwitchValue = false;
   bool smallPriceSelected = true;
-  String timeSelected = "";
-  List checkedLanguages = List<Object>.generate(languages.length, (i) => { "lang": languages[i], "value": false });
+
+  bool guideFeaturesSaved = false;
+  List checkedLanguages = List<Object>.generate(languages.length, (i) => { ...languages[i], "value": false });
+
   Color smallPriceColor = Darkblue;
   Color highPriceColor = greyColor;
+
+  String selectedDate = "";
+
+  int hourSliderValue = DateTime.now().hour < 9 ? 9 : (DateTime.now().hour > 21 ? 21 : DateTime.now().hour);
+  int minutesSliderValue = 0;
+  bool timeSaved = false;
+
   late dynamic tour;
   @override
   void initState() {
@@ -167,7 +177,7 @@ class _checkoutState extends State<checkout> {
                         child: Column(
                           children: [
                             const SizedBox(height: 5),
-                            Text("1/3 persons",
+                            Text("1-3 persons",
                                 style: TextStyle(
                                     fontSize: 14,
                                     color: WhiteColor,
@@ -194,7 +204,7 @@ class _checkoutState extends State<checkout> {
                         child: Column(
                             children: [
                               const SizedBox(height: 5),
-                              Text("4/6 persons",
+                              Text("4-6 persons",
                                 style: TextStyle(
                                     fontSize: 14,
                                     color: WhiteColor,
@@ -215,28 +225,32 @@ class _checkoutState extends State<checkout> {
               selectdetail(
                 heding: "Date",
                 image: "assets/images/calendar.png",
-                text: "Select Dates",
+                text: selectedDate.isNotEmpty ? selectedDate : "Select Dates",
                 icon: Icons.keyboard_arrow_down,
                 onclick: () {
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => calendar(),
-                  ));
+                  )).then((value) {
+                    setState(() {
+                      selectedDate = value; // you receive here
+                    });
+                  });
                 },
               ),
               const SizedBox(height: 10),
               selectdetail(
                   heding: "Time",
                   image: "assets/images/timer.png",
-                  text: "Select Time",
+                  text: timeSaved ? "$hourSliderValue:${minutesSliderValue == 0 ? "00" : minutesSliderValue.toString()}" : "Select Time",
                   icon: Icons.keyboard_arrow_down,
-                  onclick: timerbottomsheet),
+                  onclick: timerBottomSheet),
               const SizedBox(height: 10),
               selectdetail(
                   heding: "Guide Features",
                   image: "assets/images/guest.png",
-                  text: "Select Guide Features",
+                  text: guideFeaturesSaved ? ( "(" + getAllSelectedLanguages() + ") - " + (vehicleTypeSwitchValue ? "EV" : "ALL" )) : "Select Guide Features",
                   icon: Icons.keyboard_arrow_down,
-                  onclick: guestbottomsheet),
+                  onclick: guideBottomSheet),
               SizedBox(height: MediaQuery.of(context).size.height * 0.04),
               Divider(
                 color: notifire.getgreycolor,
@@ -378,7 +392,7 @@ class _checkoutState extends State<checkout> {
     );
   }
 
-  guestbottomsheet() {
+  guideBottomSheet() {
     return showModalBottomSheet(
         backgroundColor: notifire.getbgcolor,
         isScrollControlled: true,
@@ -423,7 +437,7 @@ class _checkoutState extends State<checkout> {
                     selectdetail(
                         heding: "Preferred language",
                         image: "assets/images/Langauge.png",
-                        text: "Select Language",
+                        text: guideFeaturesSaved ? getAllSelectedLanguages() : "Select Language",
                         icon: Icons.keyboard_arrow_right,
                         onclick: languagesbottomsheet),
                     SizedBox(
@@ -443,7 +457,7 @@ class _checkoutState extends State<checkout> {
                             ),
                             const SizedBox(height: 6),
                             Text(
-                              "Only Electric vehicles",
+                              "Only Electric vehicles (EV)",
                               style: TextStyle(
                                   fontSize: 13,
                                   color: greyColor,
@@ -459,13 +473,13 @@ class _checkoutState extends State<checkout> {
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: CupertinoSwitch(
-                                value: switchValue,
+                                value: vehicleTypeSwitchValue,
                                 thumbColor: notifire.getdarkwhitecolor,
                                 trackColor: notifire.getbuttoncolor,
                                 activeColor: notifire.getdarkbluecolor,
                                 onChanged: (value) {
                                   setState(() {
-                                    switchValue = value;
+                                    vehicleTypeSwitchValue = value;
                                   });
                                 },
                               ),
@@ -478,188 +492,101 @@ class _checkoutState extends State<checkout> {
                       height: MediaQuery.of(context).size.height * 0.05,
                     ),
                     AppButton(
-                        buttontext: "Save",
+                        buttontext: "Continue",
                         onclick: () {
-                          Navigator.pop(context);
+                          Navigator.pop(context, true);
                         })
                   ],
                 ),
               ),
             );
           });
-        });
+        }).then((value) => setState(() => guideFeaturesSaved = value));
   }
 
-  Room({text, titletext, onclick1, onclick2, middeltext}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(text,
-                style: TextStyle(
-                    fontSize: 16,
-                    color: notifire.getwhiteblackcolor,
-                    fontFamily: "Gilroy Bold")),
-            Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: Row(
-                children: [
-                  InkWell(
-                    onTap: onclick1,
-                    child: CircleAvatar(
-                      backgroundColor: notifire.getblackgreycolor,
-                      radius: 12,
-                      child: Icon(Icons.remove,
-                          color: notifire.getdarkwhitecolor, size: 20),
-                    ),
-                  ),
-                  const SizedBox(width: 5),
-                  Text(
-                    middeltext,
-                    style: TextStyle(color: notifire.getwhiteblackcolor),
-                  ),
-                  const SizedBox(width: 5),
-                  InkWell(
-                    onTap: onclick2,
-                    child: CircleAvatar(
-                      backgroundColor: notifire.getdarkbluecolor,
-                      radius: 12,
-                      child: Icon(Icons.add,
-                          color: notifire.getdarkwhitecolor, size: 20),
-                    ),
-                  ),
-                ],
-              ),
-            )
-          ],
-        ),
-        Text(
-          titletext,
-          style: TextStyle(
-              fontSize: 14,
-              color: notifire.getgreycolor,
-              fontFamily: "Gilroy Medium"),
-        ),
-      ],
-    );
-  }
-
-  timerbottomsheet() {
-    return showModalBottomSheet(
+  timerBottomSheet() {
+    showModalBottomSheet(
         backgroundColor: notifire.getbgcolor,
         context: context,
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         builder: (context) {
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-              child: Stack(
-                children: [
-                  SingleChildScrollView(
-                    padding: const EdgeInsets.only(top: 0, bottom: 80),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            return Container(
+                height: MediaQuery.of(context).size.height * 0.45,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                  child: Stack(
+                    children: [
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
-                              "Timer Slots",
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  fontFamily: "Gilroy Bold",
-                                  color: notifire.getwhiteblackcolor),
-                            ),
-                            InkWell(
-                                onTap: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Icon(
-                                  Icons.close,
-                                  color: notifire.getwhiteblackcolor,
-                                ))
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          padding: EdgeInsets.zero,
-                          itemCount: timeSlots.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
+                            Column(
                               children: [
-                                const SizedBox(height: 8),
-                                InkWell(
-                                  onTap: () => setState(() => timeSelected = timeSlots[index]),
-                                  child: Container(
-                                    padding: const EdgeInsets.only(top: 8),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15),
-                                      color: notifire.getdarkmodecolor,
-                                    ),
-                                    height: 60,
-                                    child: ListTile(
-                                      leading: Image.asset(
-                                        "assets/images/timer.png",
-                                        height: 35,
-                                        color: notifire.getdarkbluecolor),
-                                      title: Text(
-                                        timeSlots[index],
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontFamily: "Gilroy Bold",
-                                            color: notifire.getwhiteblackcolor),
-                                      ),
-                                      trailing: timeSlots[index] == timeSelected ? Icon(
-                                        Icons.check_outlined,
-                                        color: notifire.getdarkbluecolor,
-                                      ) : null
-                                    ),
-                                  ),
+                                Text(
+                                  "Hours",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: BlackColor,
+                                      fontWeight: FontWeight.bold),
                                 ),
-                              ],
-                            );
+                                NumberPicker(
+                                  value: hourSliderValue,
+                                  minValue: 8,
+                                  maxValue: 21,
+                                  onChanged: (value) => setState(() => hourSliderValue = value),
+                                )
+                              ]
+                            ),
+                            Column(
+                            children: [
+                              Text(
+                                "Minutes",
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    color: BlackColor,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              NumberPicker(
+                                value: minutesSliderValue,
+                                minValue: 0,
+                                maxValue: 45,
+                                step: 15,
+                                onChanged: (value) => setState(() => minutesSliderValue = value),
+                              )
+                            ])
+                          ]),
+                      Positioned(
+                        // left: 100,
+                        top: MediaQuery.of(context).size.height / 3,
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.pop(context, true);
                           },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              color: Darkblue,
+                            ),
+                            height: 60,
+                            width: MediaQuery.of(context).size.width * 0.93,
+                            child: Center(
+                                child: Text(
+                              "Continue",
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: WhiteColor,
+                                  fontWeight: FontWeight.bold),
+                            )),
+                          ),
                         ),
-                      ],
-                    ),
-                  ),
-                  Positioned(
-                    // left: 100,
-                    top: MediaQuery.of(context).size.height / 2.33,
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          color: Darkblue,
-                        ),
-                        height: 60,
-                        width: MediaQuery.of(context).size.width * 0.93,
-                        child: Center(
-                            child: Text(
-                          "Save",
-                          style: TextStyle(
-                              fontSize: 16,
-                              color: WhiteColor,
-                              fontWeight: FontWeight.bold),
-                        )),
                       ),
-                    ),
+                    ],
                   ),
-                ],
-              ),
+                )
             );
           });
-        });
+        }).then((value) => setState(() { timeSaved = value; }));
   }
 
   languagesbottomsheet() {
@@ -691,7 +618,7 @@ class _checkoutState extends State<checkout> {
                                 ),
                                 InkWell(
                                     onTap: () {
-                                      Navigator.of(context).pop();
+                                      Navigator.pop(context, true);
                                     },
                                     child: Icon(
                                       Icons.close,
@@ -712,7 +639,7 @@ class _checkoutState extends State<checkout> {
                                   children: [
                                     const SizedBox(height: 8),
                                     language(
-                                      text: checkedLanguages[index]["lang"],
+                                      text: checkedLanguages[index]["name"],
                                       CheckValue: checkedLanguages[index]["value"],
                                       OnChange: (value) {
                                         setState(() {
@@ -732,7 +659,7 @@ class _checkoutState extends State<checkout> {
                         top: MediaQuery.of(context).size.height / 2.33,
                         child: InkWell(
                           onTap: () {
-                            Navigator.of(context).pop();
+                            Navigator.pop(context, true);
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -743,7 +670,7 @@ class _checkoutState extends State<checkout> {
                             width: MediaQuery.of(context).size.width * 0.93,
                             child: Center(
                                 child: Text(
-                                  "Save",
+                                  "Continue",
                                   style: TextStyle(
                                       fontSize: 16,
                                       color: WhiteColor,
@@ -756,7 +683,7 @@ class _checkoutState extends State<checkout> {
                   ),
                 );
               });
-        });
+        }).then((value) => setState(() { guideFeaturesSaved = value; }));
   }
 
   paymentmodelbottomsheet() {
@@ -1107,5 +1034,15 @@ class _checkoutState extends State<checkout> {
         ),
       ],
     );
+  }
+
+  getAllSelectedLanguages() {
+    String selectedLanguages = "";
+    for (var element in checkedLanguages) {
+      if(element["value"]) {
+        selectedLanguages =  element["code"] + (selectedLanguages.isNotEmpty ? " " : "") + selectedLanguages;
+      };
+    }
+    return selectedLanguages;
   }
 }

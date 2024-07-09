@@ -217,7 +217,7 @@ List hotelList2 = [
   {
     "id": "1",
     "title": "Grand Park City Tuk Tuk",
-    "img": "assets/images/SwissHotel.jpg",
+    "img": "assets/images/eco-tuk-tours.jpg",
     "price": "26€/",
     "address": "155 Rajadamri Road, Bangkok 10330 Thailand",
     "Night": "Tour",
@@ -364,20 +364,33 @@ List hotelList5 = [
 ];
 
 List languages = [
-  "English",
-  "French",
-  "German",
-  "Japanese",
-  "Portuguese",
-  "Spanish",
-  "Italian"
+  {
+    "code": "EN",
+    "name": "English"
+  },
+  {
+    "code": "FR",
+    "name": "French"
+  },
+  {
+    "code": "DE",
+    "name": "German"
+  },
+  {
+    "code": "EN",
+    "name": "Japanese"
+  },
+  {
+    "code": "PT",
+    "name": "Portuguese"
+  },
+  {
+    "code": "ES",
+    "name": "Spanish"
+  },
+  {
+    "code": "IT",
+    "name": "Italian"
+  }
 ];
 
-List timeSlots = [
-  "09:00 - 11:00",
-  "11:00 - 13:00",
-  "13:00 - 15:00",
-  "15:00 - 17:00",
-  "17:00 - 19:00",
-  "19:00 - 21:00"
-];

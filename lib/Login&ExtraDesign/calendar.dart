@@ -29,7 +29,7 @@ class calendarState extends State<calendar> {
             // ignore: lines_longer_than_80_chars
             ' ${DateFormat('dd/MM/yyyy').format(args.value.endDate ?? args.value.startDate)}';
       } else if (args.value is DateTime) {
-        _selectedDate = args.value.toString();
+        _selectedDate = DateFormat('dd/MM/yyyy').format(args.value);
       } else if (args.value is List<DateTime>) {
         _dateCount = args.value.length.toString();
       } else {
@@ -74,7 +74,7 @@ class calendarState extends State<calendar> {
                     children: [
                       InkWell(
                         onTap: () {
-                          Navigator.of(context).pop();
+                          Navigator.pop(context, _selectedDate);
                         },
                         child: Container(
                           height: 70,
