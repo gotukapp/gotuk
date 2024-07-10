@@ -6,15 +6,18 @@ import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class checkout extends StatefulWidget {
   final int tourId;
+  final bool goNow;
 
-  const checkout({super.key,required this.tourId});
+  const checkout({super.key,required this.tourId,required this.goNow});
 
   @override
   State<checkout> createState() => _checkoutState();
@@ -39,6 +42,9 @@ class _checkoutState extends State<checkout> {
   bool timeSaved = false;
 
   late dynamic tour;
+  List tours = [];
+  int carrosselDefaultPage = 0;
+
   @override
   void initState() {
     getdarkmodepreviousstate();
@@ -57,6 +63,10 @@ class _checkoutState extends State<checkout> {
   @override
   Widget build(BuildContext context) {
     tour = hotelList.firstWhere((tour) => tour["id"] == widget.tourId);
+    if(widget.goNow){
+      tours.addAll(hotelList);
+      carrosselDefaultPage = hotelList.indexOf(tour);
+    }
     notifire = Provider.of<ColorNotifire>(context, listen: true);
     return Scaffold(
       backgroundColor: notifire.getbgcolor,
@@ -75,92 +85,27 @@ class _checkoutState extends State<checkout> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: double.infinity,
-                margin: const EdgeInsets.symmetric(vertical: 6),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  color: notifire.getdarkmodecolor,
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 12),
-                      height: 75,
-                      width: 75,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        color: notifire.getdarkmodecolor,
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child:
-                            Image.asset("assets/images/eco-tuk-tours.jpg"),
-                      ),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          tour["title"],
-                          style: TextStyle(
-                              fontSize: 15,
-                              fontFamily: "Gilroy Bold",
-                              color: notifire.getwhiteblackcolor),
-                        ),
-                        // const SizedBox(height: 6),
-                        SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.006),
-                        Text(
-                          tour["address"],
-                          style: TextStyle(
-                              fontSize: 13,
-                              color: notifire.getgreycolor,
-                              fontFamily: "Gilroy Medium"),
-                        ),
-                        SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.01),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                const SizedBox(width: 12,),
-                                Image.asset(
-                                  "assets/images/star.png",
-                                  height: 20,
-                                ),
-                                const SizedBox(width: 2),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 4),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        "4.6",
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            color: notifire.getdarkbluecolor,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        "(142 Reviews)",
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            color: notifire.getgreycolor),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+              if (widget.goNow)
+                CarouselSlider(
+                options: CarouselOptions(
+                    height: 110.0,
+                    initialPage: carrosselDefaultPage,
+                    viewportFraction: 0.9,
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        tour = hotelList.elementAt(index);
+                      });
+                    }),
+                items: tours.map((t) {
+                  return Builder(
+                    builder: (BuildContext context) {
+                      return tourInfo(t);
+                    },
+                  );
+                }).toList(),
+              )
+              else
+                tourInfo(tour),
               const SizedBox(height: 15),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -221,34 +166,53 @@ class _checkoutState extends State<checkout> {
                   ),
                 ],
               ),
-              const SizedBox(height: 15),
-              selectdetail(
-                heding: "Date",
-                image: "assets/images/calendar.png",
-                text: selectedDate.isNotEmpty ? selectedDate : "Select Dates",
-                icon: Icons.keyboard_arrow_down,
-                onclick: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => calendar(),
-                  )).then((value) {
-                    setState(() {
-                      selectedDate = value; // you receive here
-                    });
-                  });
-                },
-              ),
-              const SizedBox(height: 10),
-              selectdetail(
-                  heding: "Time",
-                  image: "assets/images/timer.png",
-                  text: timeSaved ? "$hourSliderValue:${minutesSliderValue == 0 ? "00" : minutesSliderValue.toString()}" : "Select Time",
+              if (!widget.goNow)
+                ...[const SizedBox(height: 15),
+                selectdetail(
+                  heding: "Date",
+                  image: "assets/images/calendar.png",
+                  text: selectedDate.isNotEmpty ? selectedDate : "Select Dates",
                   icon: Icons.keyboard_arrow_down,
-                  onclick: timerBottomSheet),
+                  onclick: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => calendar(),
+                    )).then((value) {
+                      setState(() {
+                        selectedDate = value; // you receive here
+                      });
+                    });
+                  },
+                ),
+                const SizedBox(height: 10),
+                selectdetail(
+                    heding: "Time",
+                    image: "assets/images/timer.png",
+                    text: timeSaved
+                        ? "$hourSliderValue:${minutesSliderValue == 0
+                        ? "00"
+                        : minutesSliderValue.toString()}"
+                        : "Select Time",
+                    icon: Icons.keyboard_arrow_down,
+                    onclick: timerBottomSheet)],
+              if (widget.goNow)
+                ...[const SizedBox(height: 10),
+                  Text("Go Now",
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: notifire.getwhiteblackcolor,
+                          fontFamily: "Gilroy Bold")),
+                  const SizedBox(height: 8),
+                  Text(" ....  Explicação de como funciona ....",
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: notifire.getwhiteblackcolor,
+                          fontFamily: "Gilroy Bold")),
+                ],
               const SizedBox(height: 10),
               selectdetail(
                   heding: "Guide Features",
                   image: "assets/images/guest.png",
-                  text: guideFeaturesSaved ? ( "(" + getAllSelectedLanguages() + ") - " + (vehicleTypeSwitchValue ? "EV" : "ALL" )) : "Select Guide Features",
+                  text: guideFeaturesSaved ? getAllSelectedLanguages() : "Select Guide Features",
                   icon: Icons.keyboard_arrow_down,
                   onclick: guideBottomSheet),
               SizedBox(height: MediaQuery.of(context).size.height * 0.04),
@@ -338,6 +302,97 @@ class _checkoutState extends State<checkout> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget tourInfo(t) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 6),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        color: notifire.getdarkmodecolor,
+      ),
+      child: Row(
+        children: [
+          Container(
+            margin: const EdgeInsets.symmetric(
+                horizontal: 12, vertical: 12),
+            height: 75,
+            width: 75,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              color: notifire.getdarkmodecolor,
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child:
+              Image.asset("assets/images/eco-tuk-tours.jpg"),
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.012),
+              Text(
+                t["title"],
+                style: TextStyle(
+                    fontSize: 15,
+                    fontFamily: "Gilroy Bold",
+                    color: notifire.getwhiteblackcolor),
+              ),
+              // const SizedBox(height: 6),
+              SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.006),
+              Text(
+                t["address"],
+                style: TextStyle(
+                    fontSize: 13,
+                    color: notifire.getgreycolor,
+                    fontFamily: "Gilroy Medium"),
+              ),
+              SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.01),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      const SizedBox(width: 12,),
+                      Image.asset(
+                        "assets/images/star.png",
+                        height: 20,
+                      ),
+                      const SizedBox(width: 2),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Row(
+                          children: [
+                            Text(
+                              "4.6",
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: notifire.getdarkbluecolor,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              "(142 Reviews)",
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: notifire.getgreycolor),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              )
+            ],
+          ),
+        ],
       ),
     );
   }

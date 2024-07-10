@@ -118,8 +118,7 @@ class _homeState extends State<home> {
                             onTap: () {
                               Navigator.of(context)
                                   .push(MaterialPageRoute(
-                                  builder: (context) => const checkout(tourId: -1)))
-                                  .then((value) => print('ok Navigat'));
+                                  builder: (context) => const checkout(tourId: 1, goNow: true)));
                             },
                             child: Container(
                               height: 60,

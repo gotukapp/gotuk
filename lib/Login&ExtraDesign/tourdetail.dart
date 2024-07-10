@@ -46,7 +46,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                 onTap: () {
                   Navigator.of(context)
                       .push(MaterialPageRoute(
-                      builder: (context) => checkout(tourId: tour["id"])))
+                      builder: (context) => checkout(tourId: tour["id"], goNow: false)))
                       .then((value) => print('ok Navigat'));
                 },
                 child: Container(
@@ -69,7 +69,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                 onTap: () {
                   Navigator.of(context)
                       .push(MaterialPageRoute(
-                          builder: (context) => checkout(tourId: tour["id"])))
+                          builder: (context) => checkout(tourId: tour["id"], goNow: true)))
                       .then((value) => print('ok Navigat'));
                 },
                 child: Container(
