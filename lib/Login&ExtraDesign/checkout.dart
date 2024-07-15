@@ -13,6 +13,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
+import '../Utils/tour.dart';
+
 class checkout extends StatefulWidget {
   final int tourId;
   final bool goNow;
@@ -41,7 +43,7 @@ class _checkoutState extends State<checkout> {
   int minutesSliderValue = 0;
   bool timeSaved = false;
 
-  late dynamic tour;
+  late Tour tour;
   List tours = [];
   int carrosselDefaultPage = 0;
 
@@ -62,10 +64,12 @@ class _checkoutState extends State<checkout> {
   late ColorNotifire notifire;
   @override
   Widget build(BuildContext context) {
-    tour = hotelList.firstWhere((tour) => tour["id"] == widget.tourId);
+    setState(() {
+      tour = tourList.firstWhere((tour) => tour.id == widget.tourId);
+    });
     if(widget.goNow){
-      tours.addAll(hotelList);
-      carrosselDefaultPage = hotelList.indexOf(tour);
+      tours.addAll(tourList);
+      carrosselDefaultPage = tourList.indexOf(tour);
     }
     notifire = Provider.of<ColorNotifire>(context, listen: true);
     return Scaffold(
@@ -93,7 +97,7 @@ class _checkoutState extends State<checkout> {
                     viewportFraction: 0.9,
                     onPageChanged: (index, reason) {
                       setState(() {
-                        tour = hotelList.elementAt(index);
+                        tour = tourList[index%5];
                       });
                     }),
                 items: tours.map((t) {
@@ -127,7 +131,7 @@ class _checkoutState extends State<checkout> {
                                     fontSize: 14,
                                     color: WhiteColor,
                                     fontFamily: "Gilroy Bold")),
-                            Text(tour["priceLow"].toString() + "€",
+                            Text("${tour.priceLow}€",
                                 style: TextStyle(
                                     fontSize: 14,
                                     color: WhiteColor,
@@ -154,7 +158,7 @@ class _checkoutState extends State<checkout> {
                                     fontSize: 14,
                                     color: WhiteColor,
                                     fontFamily: "Gilroy Bold")),
-                              Text(tour["priceHigh"].toString() + "€",
+                              Text("${tour.priceHigh}€",
                                 style: TextStyle(
                                     fontSize: 14,
                                     color: WhiteColor,
@@ -241,7 +245,7 @@ class _checkoutState extends State<checkout> {
                             color: notifire.getgreycolor),
                       ),
                       Text(
-                          (smallPriceSelected ? tour["priceLow"].toString() : tour["priceHigh"].toString())+"€",
+                          "${smallPriceSelected ? tour.priceLow.toString() : tour.priceHigh.toString()}€",
                         style: TextStyle(
                             fontSize: 14,
                             color: notifire.getgreycolor,
@@ -273,7 +277,7 @@ class _checkoutState extends State<checkout> {
                           style: TextStyle(
                               fontFamily: "Gilroy Bold",
                               color: notifire.getwhiteblackcolor)),
-                      Text((smallPriceSelected ? (tour["priceLow"]+4).toString() : (tour["priceHigh"]+4).toString())+"€",
+                      Text("${smallPriceSelected ? (tour.priceLow+4).toString() : (tour.priceHigh+4).toString()}€",
                           style: TextStyle(
                               fontFamily: "Gilroy Bold",
                               color: notifire.getwhiteblackcolor)),
@@ -337,7 +341,7 @@ class _checkoutState extends State<checkout> {
               SizedBox(
                   height: MediaQuery.of(context).size.height * 0.012),
               Text(
-                t["title"],
+                t.title,
                 style: TextStyle(
                     fontSize: 15,
                     fontFamily: "Gilroy Bold",
@@ -347,7 +351,7 @@ class _checkoutState extends State<checkout> {
               SizedBox(
                   height: MediaQuery.of(context).size.height * 0.006),
               Text(
-                t["address"],
+                t.address,
                 style: TextStyle(
                     fontSize: 13,
                     color: notifire.getgreycolor,

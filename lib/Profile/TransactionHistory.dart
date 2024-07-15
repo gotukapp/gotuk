@@ -5,8 +5,11 @@ import 'package:dm/Profile/Favourite.dart';
 import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../Utils/booking.dart';
 
 class TransactionHistory extends StatefulWidget {
   const TransactionHistory({super.key});
@@ -45,6 +48,103 @@ class _TransactionHistoryState extends State<TransactionHistory> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Text("Pending Bookings",
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: notifire.getwhiteblackcolor,
+                      fontFamily: "Gilroy Bold")),
+              const SizedBox(height: 10),
+              SizedBox(
+                child: ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  padding: EdgeInsets.zero,
+                  itemCount: pendingBookings.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 6),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: notifire.getdarkmodecolor),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(DateFormat('E, d MMM yyyy HH:mm').format(pendingBookings[index].date),
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          color: notifire.getgreycolor)),
+                                  Container(
+                                    height: 40,
+                                    width: 70,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(50),
+                                        color: Colors.amber[50]),
+                                    child: const Center(
+                                      child: Text(
+                                        "Waiting",
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            color: Color(0xffFF0000),
+                                            fontFamily: "Gilroy Bold"),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Image.asset(
+                                    pendingBookings[index].tour.img,
+                                    height: 75,
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: [
+                                      Text(pendingBookings[index].tour.title,
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color:
+                                              notifire.getwhiteblackcolor,
+                                              fontFamily: "Gilroy Bold")),
+                                      const SizedBox(height: 6),
+                                      Text("${pendingBookings[index].persons} Persons",
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: notifire.getgreycolor,
+                                              fontFamily: "Gilroy Medium")),
+                                    ],
+                                  )
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+                              cupon(
+                                text1: "Total Price",
+                                text2: "${pendingBookings[index].price}€",
+                                buttonText: "Cancel",
+                                onClick: () {
+                                  // Navigator.of(context).push(MaterialPageRoute(
+                                  //     builder: (context) => Favourite()));
+                                },
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 10),
               Text("My Bookings",
                   style: TextStyle(
                       fontSize: 16,
@@ -56,7 +156,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   padding: EdgeInsets.zero,
-                  itemCount: 1,
+                  itemCount: waitingBookings.length,
                   itemBuilder: (BuildContext context, int index) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 6),
@@ -74,7 +174,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text("28 Mar 2022, Thu",
+                                  Text(DateFormat('E, d MMM yyyy HH:mm').format(pendingBookings[index].date),
                                       style: TextStyle(
                                           fontSize: 15,
                                           color: notifire.getgreycolor)),
@@ -86,7 +186,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                                         color: Colors.amber[50]),
                                     child: const Center(
                                       child: Text(
-                                        "Waiting",
+                                        "Booked",
                                         style: TextStyle(
                                             fontSize: 14,
                                             color: Color(0xffFFBA55),
@@ -99,7 +199,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                               Row(
                                 children: [
                                   Image.asset(
-                                    "assets/images/Confidiantehotel.png",
+                                    pendingBookings[index].tour.img,
                                     height: 75,
                                   ),
                                   const SizedBox(width: 10),
@@ -107,14 +207,14 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text("Eco Tuk Tour",
+                                      Text(pendingBookings[index].tour.title,
                                           style: TextStyle(
                                               fontSize: 16,
                                               color:
                                                   notifire.getwhiteblackcolor,
                                               fontFamily: "Gilroy Bold")),
                                       const SizedBox(height: 6),
-                                      Text("4 Travelers, 2H",
+                                      Text("${waitingBookings[index].persons} Persons",
                                           style: TextStyle(
                                               fontSize: 15,
                                               color: notifire.getgreycolor,
@@ -126,8 +226,8 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                               const SizedBox(height: 8),
                               cupon(
                                 text1: "Total Price",
-                                text2: "47€",
-                                buttontext: "Ready",
+                                text2: "${pendingBookings[index].price}€",
+                                buttonText: "Ready",
                                 onClick: () {
                                   // Navigator.of(context).push(MaterialPageRoute(
                                   //     builder: (context) => Favourite()));
@@ -153,7 +253,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   padding: EdgeInsets.zero,
-                  itemCount: 3,
+                  itemCount: pastBookings.length,
                   itemBuilder: (BuildContext context, int index) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 6),
@@ -171,7 +271,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text("28 Mar 2022, Thu",
+                                  Text(DateFormat('E, d MMM yyyy HH:mm').format(pastBookings[index].date),
                                       style: TextStyle(
                                           fontSize: 15,
                                           color: notifire.getgreycolor,
@@ -197,7 +297,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                               Row(
                                 children: [
                                   Image.asset(
-                                    "assets/images/Rimuru.png",
+                                    pastBookings[index].tour.img,
                                     height: 75,
                                   ),
                                   const SizedBox(width: 10),
@@ -205,14 +305,14 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text("Eco Tuk Tour",
+                                      Text(pastBookings[index].tour.title,
                                           style: TextStyle(
                                               fontSize: 16,
                                               color:
                                                   notifire.getwhiteblackcolor,
                                               fontFamily: "Gilroy Bold")),
                                       const SizedBox(height: 6),
-                                      Text("4 Travelers, 2h",
+                                      Text("${pastBookings[index].persons} Persons",
                                           style: TextStyle(
                                               fontSize: 15,
                                               color: notifire.getgreycolor)),
@@ -223,8 +323,8 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                               const SizedBox(height: 8),
                               cupon(
                                 text1: "Total Price",
-                                text2: "47€",
-                                buttontext: "Ratings",
+                                text2: "${pastBookings[index].price}€",
+                                buttonText: "Ratings",
                                 onClick: () {
                                   // Navigator.of(context).push(MaterialPageRoute(
                                   //     builder: (context) => Favourite()));

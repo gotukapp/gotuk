@@ -84,7 +84,7 @@ AppButton({onclick, buttontext}) {
   );
 }
 
-cupon({text1, text2, buttontext, Function()? onClick}) {
+cupon({text1, text2, buttonText, Function()? onClick}) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
@@ -100,22 +100,23 @@ cupon({text1, text2, buttontext, Function()? onClick}) {
                   fontSize: 16, color: Darkblue, fontFamily: "Gilroy Bold")),
         ],
       ),
-      InkWell(
-        onTap: onClick,
-        child: Container(
-          height: 40,
-          width: 90,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(50), color: Darkblue),
-          child: Center(
-            child: Text(
-              buttontext,
-              style: TextStyle(
-                  fontSize: 15, color: WhiteColor, fontFamily: "Gilroy Bold"),
+      if (buttonText.isNotEmpty)
+        ...[InkWell(
+          onTap: onClick,
+          child: Container(
+            height: 40,
+            width: 90,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(50), color: Darkblue),
+            child: Center(
+              child: Text(
+                buttonText,
+                style: TextStyle(
+                    fontSize: 15, color: WhiteColor, fontFamily: "Gilroy Bold"),
+              ),
             ),
           ),
-        ),
-      ),
+        )],
     ],
   );
 }

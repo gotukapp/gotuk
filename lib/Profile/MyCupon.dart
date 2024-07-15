@@ -99,7 +99,7 @@ class _MyCuponState extends State<MyCupon> {
                                 child: cupon(
                                     text1: "Voucher Code",
                                     text2: "48WF093XF",
-                                    buttontext: "Use",
+                                    buttonText: "Use",
                                     onClick: () {
                                       // Navigator.of(context).push(
                                       //     MaterialPageRoute(builder: (context) => Favourite()));

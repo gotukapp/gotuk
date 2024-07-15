@@ -50,6 +50,7 @@ dependencies:
   provider: ^6.0.3
   numberpicker: ^2.1.2
   carousel_slider: ^4.2.1
+  intl: ^0.19.0
   # percent_indicator: ^4.2.2
   #  google_maps_flutter: ^2.1.9
   #  geolocator: ^9.0.1
