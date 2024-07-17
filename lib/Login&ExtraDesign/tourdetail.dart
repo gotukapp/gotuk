@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../Utils/tour.dart';
+
 class tourdetailpage extends StatefulWidget {
   final int tourId;
 
@@ -21,7 +23,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
   bool _pinned = true;
   bool _snap = false;
   bool _floating = false;
-  late dynamic tour;
+  Tour? tour;
 
   @override
   void initState() {
@@ -32,7 +34,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
   late ColorNotifire notifire;
   @override
   Widget build(BuildContext context) {
-    tour = hotelList.firstWhere((tour) => tour["id"] == widget.tourId);
+    tour = tourList.firstWhere((tour) => tour.id == widget.tourId);
     notifire = Provider.of<ColorNotifire>(context, listen: true);
     return Scaffold(
       bottomNavigationBar: Container(
@@ -46,7 +48,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                 onTap: () {
                   Navigator.of(context)
                       .push(MaterialPageRoute(
-                      builder: (context) => checkout(tourId: tour["id"], goNow: false)))
+                      builder: (context) => checkout(tourId: tour!.id, goNow: false)))
                       .then((value) => print('ok Navigat'));
                 },
                 child: Container(
@@ -69,7 +71,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                 onTap: () {
                   Navigator.of(context)
                       .push(MaterialPageRoute(
-                          builder: (context) => checkout(tourId: tour["id"], goNow: true)))
+                          builder: (context) => checkout(tourId: tour!.id, goNow: true)))
                       .then((value) => print('ok Navigat'));
                 },
                 child: Container(
@@ -141,7 +143,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
           expandedHeight: 250,
           flexibleSpace: FlexibleSpaceBar(
             background: Image.asset(
-              "assets/images/eco-tuk-tours.jpg",
+              tour!.img,
               height: 300,
               width: double.infinity,
               fit: BoxFit.fill,
@@ -159,7 +161,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      tour["title"],
+                      tour!.title,
                       style: TextStyle(
                           fontSize: 18,
                           color: notifire.getwhiteblackcolor,
@@ -180,7 +182,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                               color: notifire.getdarkbluecolor,
                             ),
                             Text(
-                              tour["address"],
+                              tour!.address,
                               style: TextStyle(
                                   color: notifire.getgreycolor,
                                   fontSize: 14,
@@ -234,14 +236,14 @@ class _tourdetailpageState extends State<tourdetailpage> {
                                   ),
                                   SizedBox(width: 10),
                                   Text(
-                                    tour["priceLow"].toString() + "€",
+                                    "${tour!.priceLow}€",
                                     style: TextStyle(
                                         fontSize: 16,
                                         color: notifire.getdarkbluecolor,
                                         fontFamily: "Gilroy Bold"),
                                   ),
                                   Text(
-                                    " (Price per person " + (tour["priceLow"]/3).toStringAsFixed(1) + "€)",
+                                    " (Price per person ${(tour!.priceLow/3).toStringAsFixed(1)}€)",
                                     style: TextStyle(
                                         fontFamily: "Gilroy Medium",
                                         fontSize: 14,
@@ -260,14 +262,14 @@ class _tourdetailpageState extends State<tourdetailpage> {
                                 ),
                                 SizedBox(width: 10),
                                 Text(
-                                  tour["priceHigh"].toString() + "€",
+                                  "${tour!.priceHigh}€",
                                   style: TextStyle(
                                       fontSize: 16,
                                       color: notifire.getdarkbluecolor,
                                       fontFamily: "Gilroy Bold"),
                                 ),
                                 Text(
-                                  " (Price per person " + (tour["priceHigh"]/6).toStringAsFixed(1) + "€)",
+                                  " (Price per person ${(tour!.priceHigh/6).toStringAsFixed(1)}€)",
                                   style: TextStyle(
                                       fontFamily: "Gilroy Medium",
                                       fontSize: 14,
@@ -291,7 +293,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                         ),
                         SizedBox(width: 20),
                         Text(
-                          tour["duration"],
+                          tour!.duration,
                           style: TextStyle(
                               fontSize: 18,
                               color: notifire.getdarkbluecolor,
@@ -343,7 +345,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                                     width: MediaQuery.of(context).size.width *
                                         0.01),
                                 Text(
-                                  tour["address"],
+                                  tour!.address,
                                   style: TextStyle(
                                       color: notifire.getgreycolor,
                                       fontFamily: "Gilroy Medium"),

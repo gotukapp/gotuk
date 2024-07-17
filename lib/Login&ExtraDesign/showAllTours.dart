@@ -4,6 +4,7 @@ import 'package:dm/Login&ExtraDesign/tourdetail.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
+import 'package:dm/Utils/tour.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -41,12 +42,12 @@ class _ShowallHotelState extends State<ShowallHotel> {
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
         child: SizedBox(
             child: ListView.builder(
-          itemCount: hotelList.length,
+          itemCount: tourList.length,
           itemBuilder: (BuildContext context, int index) {
             return InkWell(
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const tourdetailpage(1)));
+                    builder: (context) => tourdetailpage(tourList[index].id)));
               },
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
@@ -69,7 +70,7 @@ class _ShowallHotelState extends State<ShowallHotel> {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(15),
                               child: Image.asset(
-                                hotelList[index]["img"].toString(),
+                                tourList[index].img,
                                 height: 120,
                                 fit: BoxFit.cover,
                               ),
@@ -87,7 +88,7 @@ class _ShowallHotelState extends State<ShowallHotel> {
                                       color: lightBlack),
                                   child: Center(
                                     child: Text(
-                                      hotelList[index]["price"].toString(),
+                                      "${tourList[index].priceLow}€ - ${tourList[index].priceHigh}€",
                                       style: TextStyle(
                                           fontSize: 12,
                                           color: notifire.getdarkwhitecolor,
@@ -101,7 +102,7 @@ class _ShowallHotelState extends State<ShowallHotel> {
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.02),
                       Text(
-                        hotelList[index]["title"].toString(),
+                        tourList[index].title,
                         style: TextStyle(
                             fontSize: 15,
                             fontFamily: "Gilroy Bold",
@@ -110,7 +111,7 @@ class _ShowallHotelState extends State<ShowallHotel> {
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.01),
                       Text(
-                        hotelList[index]["address"].toString(),
+                        tourList[index].address,
                         style: TextStyle(
                             fontSize: 12,
                             color: notifire.getgreycolor,
@@ -125,21 +126,6 @@ class _ShowallHotelState extends State<ShowallHotel> {
                       //             .size
                       //             .height *
                       //         0.01),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          hotelsystem(
-                              image: "assets/images/Bed.png",
-                              text: "2 pax",
-                              radi: 4),
-                          SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.02),
-                          hotelsystem(
-                              image: "assets/images/wifi.png",
-                              text: "Wifi",
-                              radi: 4)
-                        ],
-                      )
                     ],
                   ),
                 ),

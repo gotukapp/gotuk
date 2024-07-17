@@ -1,10 +1,11 @@
 // ignore_for_file: camel_case_types
 
 import 'package:dm/Login&ExtraDesign/NearbyallHotel.dart';
-import 'package:dm/Login&ExtraDesign/ShowallHotel.dart';
+import 'package:dm/Login&ExtraDesign/showAllTours.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
+import 'package:dm/Utils/tour.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -171,13 +172,13 @@ class _homeState extends State<home> {
                           height: height/3.1,
                           child: ListView.builder(
                             scrollDirection: Axis.horizontal,
-                            itemCount: hotelList.length,
+                            itemCount: tourList.length,
                             itemBuilder: (BuildContext context, int index) {
                               return InkWell(
                                 onTap: () {
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (context) =>
-                                          tourdetailpage(hotelList[index]["id"])));
+                                          tourdetailpage(tourList[index].id)));
                                 },
                                 child: Container(
                                   margin:
@@ -203,7 +204,7 @@ class _homeState extends State<home> {
                                                 borderRadius:
                                                     BorderRadius.circular(15),
                                                 child: Image.asset(
-                                                  hotelList[index]["img"]
+                                                  tourList[index].img
                                                       .toString(),
                                                   height: 120,
                                                   fit: BoxFit.fill,
@@ -225,10 +226,7 @@ class _homeState extends State<home> {
                                                         color: lightBlack),
                                                     child: Center(
                                                       child: Text(
-                                                        hotelList[index]
-                                                                ["priceLow"]
-                                                            .toString() + "€ - " + hotelList[index]
-                                                        ["priceHigh"].toString() + "€",
+                                                        "${tourList[index].priceLow}€ - ${tourList[index].priceHigh}€",
                                                         style: TextStyle(
                                                             fontSize: 12,
                                                             color: WhiteColor,
@@ -246,7 +244,7 @@ class _homeState extends State<home> {
                                                     .height *
                                                 0.02),
                                         Text(
-                                          hotelList[index]["title"].toString(),
+                                          tourList[index].title,
                                           style: TextStyle(
                                               fontSize: 15,
                                               fontFamily: "Gilroy Bold",
@@ -259,8 +257,7 @@ class _homeState extends State<home> {
                                                     .height *
                                                 0.01),
                                         Text(
-                                          hotelList[index]["address"]
-                                              .toString(),
+                                          tourList[index].address,
                                           style: TextStyle(
                                               fontSize: 12,
                                               color: notifire.getgreycolor,

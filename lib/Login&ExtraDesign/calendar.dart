@@ -16,7 +16,7 @@ class calendar extends StatefulWidget {
 }
 
 class calendarState extends State<calendar> {
-  String _selectedDate = '';
+  DateTime? _selectedDate;
   String _dateCount = '';
   String _range = '';
   String _rangeCount = '';
@@ -29,7 +29,7 @@ class calendarState extends State<calendar> {
             // ignore: lines_longer_than_80_chars
             ' ${DateFormat('dd/MM/yyyy').format(args.value.endDate ?? args.value.startDate)}';
       } else if (args.value is DateTime) {
-        _selectedDate = DateFormat('dd/MM/yyyy').format(args.value);
+        _selectedDate = args.value;
       } else if (args.value is List<DateTime>) {
         _dateCount = args.value.length.toString();
       } else {

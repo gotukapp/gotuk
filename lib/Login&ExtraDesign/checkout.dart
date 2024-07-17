@@ -3,10 +3,12 @@
 import 'package:dm/Login&ExtraDesign/calendar.dart';
 import 'package:dm/Login&ExtraDesign/homepage.dart';
 import 'package:dm/Utils/Colors.dart';
+import 'package:dm/Utils/booking.dart';
 import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -37,13 +39,14 @@ class _checkoutState extends State<checkout> {
   Color smallPriceColor = Darkblue;
   Color highPriceColor = greyColor;
 
-  String selectedDate = "";
-
+  DateTime? selectedDate;
   int hourSliderValue = DateTime.now().hour < 9 ? 9 : (DateTime.now().hour > 21 ? 21 : DateTime.now().hour);
   int minutesSliderValue = 0;
+
+
   bool timeSaved = false;
 
-  late Tour tour;
+  Tour? tour;
   List tours = [];
   int carrosselDefaultPage = 0;
 
@@ -131,7 +134,7 @@ class _checkoutState extends State<checkout> {
                                     fontSize: 14,
                                     color: WhiteColor,
                                     fontFamily: "Gilroy Bold")),
-                            Text("${tour.priceLow}€",
+                            Text("${tour?.priceLow}€",
                                 style: TextStyle(
                                     fontSize: 14,
                                     color: WhiteColor,
@@ -158,7 +161,7 @@ class _checkoutState extends State<checkout> {
                                     fontSize: 14,
                                     color: WhiteColor,
                                     fontFamily: "Gilroy Bold")),
-                              Text("${tour.priceHigh}€",
+                              Text("${tour?.priceHigh}€",
                                 style: TextStyle(
                                     fontSize: 14,
                                     color: WhiteColor,
@@ -175,7 +178,7 @@ class _checkoutState extends State<checkout> {
                 selectdetail(
                   heding: "Date",
                   image: "assets/images/calendar.png",
-                  text: selectedDate.isNotEmpty ? selectedDate : "Select Dates",
+                  text: selectedDate != null ? DateFormat('dd/MM/yyyy').format(selectedDate!) : "Select Dates",
                   icon: Icons.keyboard_arrow_down,
                   onclick: () {
                     Navigator.of(context).push(MaterialPageRoute(
@@ -245,7 +248,7 @@ class _checkoutState extends State<checkout> {
                             color: notifire.getgreycolor),
                       ),
                       Text(
-                          "${smallPriceSelected ? tour.priceLow.toString() : tour.priceHigh.toString()}€",
+                          "${smallPriceSelected ? tour?.priceLow.toString() : tour?.priceHigh.toString()}€",
                         style: TextStyle(
                             fontSize: 14,
                             color: notifire.getgreycolor,
@@ -277,7 +280,7 @@ class _checkoutState extends State<checkout> {
                           style: TextStyle(
                               fontFamily: "Gilroy Bold",
                               color: notifire.getwhiteblackcolor)),
-                      Text("${smallPriceSelected ? (tour.priceLow+4).toString() : (tour.priceHigh+4).toString()}€",
+                      Text("${smallPriceSelected ? (tour!.priceLow + 4).toString() : (tour!.priceHigh + 4).toString()}€",
                           style: TextStyle(
                               fontFamily: "Gilroy Bold",
                               color: notifire.getwhiteblackcolor)),
@@ -332,7 +335,7 @@ class _checkoutState extends State<checkout> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child:
-              Image.asset("assets/images/eco-tuk-tours.jpg"),
+              Image.asset(tour!.img),
             ),
           ),
           Column(
@@ -993,6 +996,8 @@ class _checkoutState extends State<checkout> {
                       InkWell(
                         onTap: () {
                           selectedIndex = 0;
+                          Booking newBooking = new Booking(tour!, selectedDate!.copyWith(hour: hourSliderValue, minute: minutesSliderValue), smallPriceSelected ? 3 : 6, 0);
+                          bookings.add(newBooking);
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => const homepage()));
                         },

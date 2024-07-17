@@ -1,9 +1,9 @@
 List tourList = [
-  Tour(1, "Lisboa Old City", "1h30 - 2h", "assets/images/eco-tuk-tours.jpg", 115, 148, "Sé de Lisboa"),
-  Tour(2, "Lisboa New City", "1h30", "", 110, 135,"Terreiro do Paço (Praça do Comércio)"),
-  Tour(3, "Discoveries in Belém", "1h30 - 2h30", "", 140, 180, "Mosteiro dos Jerónimos"),
-  Tour(4, "Cristo Rei", "1h30 - 2h30", "", 95, 135, "Lisboa"),
-  Tour(5, "Three sight hills", "1h30 - 2h", "", 105, 152, "Parque Eduardo VII, Lisboa")
+  Tour(1, "Lisboa Old City", "1h30 - 2h", "assets/images/selisboa.jpg", 115, 148, "Sé de Lisboa"),
+  Tour(2, "Lisboa New City", "1h30", "assets/images/comercio.jpg", 110, 135,"Terreiro do Paço (Praça do Comércio)"),
+  Tour(3, "Discoveries in Belém", "1h30 - 2h30", "assets/images/lisboa.jpg", 140, 180, "Mosteiro dos Jerónimos"),
+  Tour(4, "Cristo Rei", "1h30 - 2h30", "assets/images/cristorei.jpg", 95, 135, "Lisboa"),
+  Tour(5, "Three sight hills", "1h30 - 2h", "assets/images/colinas.jpg", 105, 152, "Parque Eduardo VII, Lisboa")
 ];
 
 class Tour {
