@@ -46,12 +46,8 @@ textfield({String? text, prefix, suffix, Color? hintcolor, feildcolor}) {
       child: TextField(
         decoration: InputDecoration(
           hintText: text,
-          labelStyle: const TextStyle(color: Colors.white),
-          hintStyle: TextStyle(color: hintcolor, fontFamily: "Gilroy Medium"),
-          prefixIcon: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-            child: prefix,
-          ),
+          labelStyle: const TextStyle(fontSize: 16, color: Colors.white),
+          hintStyle: TextStyle(fontSize: 16, color: hintcolor, fontFamily: "Gilroy Medium"),
           suffixIcon: Padding(
             padding: const EdgeInsets.all(6),
             child: suffix,
@@ -60,7 +56,7 @@ textfield({String? text, prefix, suffix, Color? hintcolor, feildcolor}) {
               borderRadius: BorderRadius.all(Radius.circular(15))),
           enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: greyColor,
+                color: feildcolor,
               ),
               borderRadius: BorderRadius.circular(15)),
         ),

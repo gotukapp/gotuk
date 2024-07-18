@@ -72,14 +72,9 @@ class _creatscreenState extends State<creatscreen> {
                                 color: WhiteColor)),
                         SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                         textfield(
-                            feildcolor: notifire.getdarkmodecolor,
-                            hintcolor: notifire.getgreycolor,
+                            feildcolor: notifire.getfieldcolor,
+                            hintcolor: notifire.gettextfieldcolor,
                             text: 'Enter your name',
-                            prefix: Image.asset(
-                              "assets/images/profile.png",
-                              height: 25,
-                              color: notifire.getgreycolor,
-                            ),
                             suffix: null),
                         SizedBox(height: MediaQuery.of(context).size.height * 0.015),
                         Text("Email",
@@ -89,8 +84,8 @@ class _creatscreenState extends State<creatscreen> {
                                 color: WhiteColor)),
                         SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                         textfield(
-                            feildcolor: notifire.getdarkmodecolor,
-                            hintcolor: notifire.getgreycolor,
+                            feildcolor: notifire.getfieldcolor,
+                            hintcolor: notifire.gettextfieldcolor,
                             text: 'Enter your email',
                             prefix: Image.asset(
                               "assets/images/email.png",
@@ -108,8 +103,8 @@ class _creatscreenState extends State<creatscreen> {
                         ),
                         SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                         textfield(
-                            feildcolor: notifire.getdarkmodecolor,
-                            hintcolor: notifire.getgreycolor,
+                            feildcolor: notifire.getfieldcolor,
+                            hintcolor: notifire.gettextfieldcolor,
                             text: 'Enter your number',
                             prefix: Image.asset(
                               "assets/images/call.png",
@@ -125,8 +120,8 @@ class _creatscreenState extends State<creatscreen> {
                                 color: WhiteColor)),
                         SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                         textfield(
-                            feildcolor: notifire.getdarkmodecolor,
-                            hintcolor: notifire.getgreycolor,
+                            feildcolor: notifire.getfieldcolor,
+                            hintcolor: notifire.gettextfieldcolor,
                             text: 'Enter your password',
                             prefix: Image.asset(
                               "assets/images/password.png",
@@ -144,8 +139,8 @@ class _creatscreenState extends State<creatscreen> {
                           height: MediaQuery.of(context).size.height * 0.03,
                         ),
                         AppButton(
-                          bgColor: WhiteColor,
-                          textColor: BlackColor,
+                          bgColor: notifire.getblackwhitecolor,
+                          textColor: notifire.getwhiteblackcolor,
                           onclick: () {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => const verifyaccount()));
@@ -170,9 +165,9 @@ class _creatscreenState extends State<creatscreen> {
                       style: TextStyle(
                           fontSize: 15,
                           fontFamily: "Gilroy Medium",
-                          color: notifire.getwhiteblackcolor)),
+                          color: notifire.getlogobgcolor)),
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.005,
+                    height: MediaQuery.of(context).size.height * 0.01,
                   ),
                   AppButton(
                     onclick: () {

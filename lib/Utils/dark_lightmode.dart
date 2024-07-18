@@ -14,13 +14,15 @@ class ColorNotifire with ChangeNotifier {
   get getdarkmodecolor => isDark ? boxcolor : WhiteColor; //containar color
   get getlightblackcolor => isDark ? boxcolor : lightBlack;
 
-  get getwhiteblackcolor =>
-      isDark ? WhiteColor : BlackColor; //text defultsystemicon imageicon color
+  get getwhiteblackcolor => isDark ? WhiteColor : BlackColor; //text defultsystemicon imageicon color
 
   get getdarkgreycolor => isDark ? darkGreyColor : darkGreyColor;
   get getgreycolor => isDark ? greyColor : greyColor;
   get getwhitebluecolor => isDark ? WhiteColor : Darkblue;
   get getblackgreycolor => isDark ? lightBlack2 : greyColor;
+
+  get gettextfieldcolor => isDark ? fieldColor : textFieldColor;
+  get getfieldcolor => isDark ? textFieldColor : fieldColor;
 
   get getcardcolor => isDark ? darkmode : WhiteColor;
   get getgreywhite => isDark ? WhiteColor : greyColor;

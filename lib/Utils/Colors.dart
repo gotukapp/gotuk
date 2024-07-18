@@ -23,6 +23,8 @@ Color RedColor2 = const Color(0xffFF4747);
 
 Color LogoColor = const Color(0xffE51D45);
 
+Color textFieldColor = const Color(0xff795259);
+Color fieldColor = const Color(0xffD2C8CA);
 
 Color lightgrey = const Color(0xffDDDDDD);
 Color lightgrey2 = const Color(0xffDDDDDD);
