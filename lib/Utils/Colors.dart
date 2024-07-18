@@ -8,17 +8,21 @@ Color BlackColor = const Color(0xff000000);
 Color bgcolor = const Color(0xFFEEEEEE);
 Color BlackColor2 = const Color(0xff000000);
 
+Color darkGreyColor = const Color(0xff707080);
 Color greyColor = const Color(0xffA7AEC1);
 Color greyColor2 = const Color(0xffA7AEC1);
 
-Color Darkblue = const Color(0xff3D5BF6);
-Color Darkblue2 = const Color(0xff3D5BF6);
+Color Darkblue = const Color(0xff4885F5);
+Color Darkblue2 = const Color(0xff4885F5);
 
 Color yelloColor = const Color(0xffFFBB0D);
 Color yelloColor2 = const Color(0xffFFBB0D);
 
 Color RedColor = const Color(0xffFF4747);
 Color RedColor2 = const Color(0xffFF4747);
+
+Color LogoColor = const Color(0xffE51D45);
+
 
 Color lightgrey = const Color(0xffDDDDDD);
 Color lightgrey2 = const Color(0xffDDDDDD);

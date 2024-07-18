@@ -67,19 +67,19 @@ textfield({String? text, prefix, suffix, Color? hintcolor, feildcolor}) {
       ));
 }
 
-AppButton({onclick, buttontext}) {
+AppButton({onclick, buttontext, Color? bgColor, Color? textColor}) {
   return InkWell(
     onTap: onclick,
     child: Container(
-        height: 50,
+        height: 45,
         width: double.infinity,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(50), color: Darkblue),
+            borderRadius: BorderRadius.circular(50), color: bgColor ?? Darkblue),
         child: Center(
             child: Text(buttontext,
                 style: TextStyle(
                     fontSize: 16,
-                    color: WhiteColor,
+                    color: textColor ?? WhiteColor,
                     fontFamily: "Gilroy Bold")))),
   );
 }

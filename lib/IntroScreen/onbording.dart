@@ -71,16 +71,14 @@ class _BoardingScreenState extends State<BoardingPage> {
   void initState() {
     getdarkmodepreviousstate();
     super.initState();
-
     _currentPage = 0;
-
     slides = [
-      Slide("assets/images/onboarding1.jpg", "Tuk Tuk booking with GoTuk ",
-          "Best trips at best prices"),
-      Slide("assets/images/onboarding2.jpg", " Best trip experience",
-          "Get the best deals on tuk tuk trips - every day!"),
-      Slide("assets/images/onboarding3.jpg", "Just Signup on GoTuk",
-          "Largest & Most Trusted Tuk Tuk App"),
+      Slide("assets/images/onboarding1.jpg", "Tuk Tuk booking with GoTuk",
+          "The best tours at the best prices"),
+      Slide("assets/images/onboarding2.jpg", " Best tour experience",
+          "Get the best deals on tuk tuk tours - Everyday!"),
+      Slide("assets/images/onboarding3.jpg", "Signup on GoTuk",
+          "Largest & most trusted Tuk Tuk App"),
     ];
     _pageController = PageController(initialPage: _currentPage);
     super.initState();
@@ -108,9 +106,12 @@ class _BoardingScreenState extends State<BoardingPage> {
                   0.04), //upar thi jagiya mukeli che
           // ignore: sized_box_for_whitespace
           Container(
-            height: MediaQuery.of(context).size.height / 1.9, //imagee size
-            width: MediaQuery.of(context).size.width,
-            child: Image.asset(slide.image),
+            height: MediaQuery.of(context).size.height / 2.2, //imagee size
+            width: double.infinity,
+            child: FittedBox(
+            child:Image.asset(slide.image),
+            fit: BoxFit.fill,
+            ),
           ),
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.05,
@@ -133,8 +134,8 @@ class _BoardingScreenState extends State<BoardingPage> {
               slide.subtext,
               textAlign: TextAlign.center,
               style: TextStyle(
-                  fontSize: 15,
-                  color: notifire.getgreycolor,
+                  fontSize: 20,
+                  color: notifire.getdarkgreycolor,
                   fontFamily: "Gilroy Medium"), //subtext
             ),
           ),
@@ -208,13 +209,13 @@ class _BoardingScreenState extends State<BoardingPage> {
                           },
                           child: Container(
                               decoration: BoxDecoration(
-                                  color: Darkblue,
+                                  color: LogoColor,
                                   borderRadius: BorderRadius.circular(50)),
                               height: 50,
                               width: double.infinity,
                               child: Center(
                                 child: Text(
-                                  "Get Started",
+                                  "GET STARTED",
                                   style: TextStyle(
                                       fontSize: 16,
                                       color: WhiteColor,
@@ -232,13 +233,13 @@ class _BoardingScreenState extends State<BoardingPage> {
                           },
                           child: Container(
                               decoration: BoxDecoration(
-                                  color: Darkblue,
+                                  color: LogoColor,
                                   borderRadius: BorderRadius.circular(50)),
                               height: 50,
                               width: double.infinity,
                               child: Center(
                                 child: Text(
-                                  "Continue",
+                                  "CONTINUE",
                                   style: TextStyle(
                                       fontSize: 16,
                                       color: WhiteColor,
@@ -256,9 +257,9 @@ class _BoardingScreenState extends State<BoardingPage> {
                           builder: (context) => const loginpage()));
                     },
                     child: Text(
-                      "Skip",
+                      "SKIP",
                       style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 16,
                           color: Darkblue,
                           fontFamily: "Gilroy Bold"),
                     )),
@@ -309,8 +310,8 @@ class _loginpageState extends State<loginpage> {
             Center(
               child: Image.asset(
                 "assets/images/applogo.png",
-                height: 180,
-                width: 230,
+                height: 170,
+                width: 220,
               ),
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.05),
@@ -323,41 +324,48 @@ class _loginpageState extends State<loginpage> {
             ),
             const SizedBox(height: 10),
             Text(
-                "If you are new here please create your account before booking the Tuk Tuk.",
+                "If you are new here, please create your account before booking a tour.",
                 style: TextStyle(
-                    fontSize: 14,
-                    color: notifire.getgreycolor,
+                    fontSize: 20,
+                    color: notifire.getdarkgreycolor,
                     fontFamily: "Gilroy Medium"),
                 textAlign: TextAlign.center),
-            SizedBox(height: MediaQuery.of(context).size.height / 4.5),
-            OutlinedButton(
+            SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+            FilledButton(
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => const creatscreen()));
               },
               // ignore: sort_child_properties_last
               child: Text(
-                'Create Account',
+                'CREATE ACCOUNT',
                 style: TextStyle(
                     color: WhiteColor, fontSize: 16, fontFamily: "Gilroy Bold"),
               ),
-              style: OutlinedButton.styleFrom(
-                  backgroundColor: Darkblue,
-                  fixedSize: const Size(400, 50),
+              style: FilledButton.styleFrom(
+                  backgroundColor: LogoColor,
+                  fixedSize: const Size(400, 45),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(50))),
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-            InkWell(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const loginscreen()));
-                },
-                child: Text(
-                  "Login",
-                  style: TextStyle(
-                      fontSize: 18, color: Darkblue, fontFamily: "Gilroy Bold"),
-                ))
+            FilledButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const loginscreen()));
+              },
+              // ignore: sort_child_properties_last
+              child: Text(
+                'LOGIN',
+                style: TextStyle(
+                    color: WhiteColor, fontSize: 16, fontFamily: "Gilroy Bold"),
+              ),
+              style: FilledButton.styleFrom(
+                  backgroundColor: Darkblue,
+                  fixedSize: const Size(400, 45),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50))),
+            )
           ],
         ),
       ),
