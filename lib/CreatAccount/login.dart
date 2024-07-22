@@ -46,7 +46,7 @@ class _loginscreenState extends State<loginscreen> {
             Container(
               color: notifire.getlogobgcolor,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 12),
                 child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Column(

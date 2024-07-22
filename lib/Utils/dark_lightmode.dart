@@ -16,6 +16,8 @@ class ColorNotifire with ChangeNotifier {
 
   get getwhiteblackcolor => isDark ? WhiteColor : BlackColor; //text defultsystemicon imageicon color
 
+  get getwhitelogocolor => isDark ? WhiteColor : LogoColor;
+
   get getdarkgreycolor => isDark ? darkGreyColor : darkGreyColor;
   get getgreycolor => isDark ? greyColor : greyColor;
   get getwhitebluecolor => isDark ? WhiteColor : Darkblue;

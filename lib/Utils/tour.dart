@@ -1,10 +1,13 @@
-List tourList = [
-  Tour(1, "Lisboa Old City", "1h30 - 2h", "assets/images/selisboa.jpg", 115, 148, "Sé de Lisboa"),
-  Tour(2, "Lisboa New City", "1h30", "assets/images/comercio.jpg", 110, 135,"Terreiro do Paço (Praça do Comércio)"),
-  Tour(3, "Discoveries in Belém", "1h30 - 2h30", "assets/images/lisboa.jpg", 140, 180, "Mosteiro dos Jerónimos"),
-  Tour(4, "Cristo Rei", "1h30 - 2h30", "assets/images/cristorei.jpg", 95, 135, "Lisboa"),
-  Tour(5, "Three sight hills", "1h30 - 2h", "assets/images/colinas.jpg", 105, 152, "Parque Eduardo VII, Lisboa")
-];
+Tour tour1 = Tour(1, "Lisboa Old City", "1h30 - 2h", "assets/images/selisboa.jpg", 115, 148, "Sé de Lisboa", "assets/images/old.png", 4.5);
+Tour tour2 = Tour(2, "Lisboa New City", "1h30", "assets/images/comercio.jpg", 110, 135,"Terreiro do Paço (Praça do Comércio)", "assets/images/new_city.png", 4.9);
+Tour tour3 = Tour(3, "Discoveries in Belém", "1h30 - 2h30", "assets/images/lisboa.jpg", 140, 180, "Mosteiro dos Jerónimos", "assets/images/belem.png", 4.6);
+Tour tour4 = Tour(4, "Cristo Rei", "1h30 - 2h30", "assets/images/cristorei.jpg", 95, 135, "Lisboa", "assets/images/cristo_rei.png", 4.6);
+Tour tour5 = Tour(5, "Three sight hills", "1h30 - 2h", "assets/images/colinas.jpg", 105, 152, "Parque Eduardo VII, Lisboa", "", 4.7);
+
+List tourList = [tour1, tour2, tour3, tour4, tour5];
+
+List nearbyTours = [tour1, tour2, tour3];
+
 
 class Tour {
   final int id;
@@ -14,8 +17,12 @@ class Tour {
   final int priceLow;
   final int priceHigh;
   final String address;
+  final String icon;
+  final double review;
 
-  Tour(this.id, this.title, this.duration, this.img, this.priceLow, this.priceHigh, this.address);
+
+  Tour(this.id, this.title, this.duration, this.img, this.priceLow,
+      this.priceHigh, this.address, this.icon, this.review);
 
   Tour.fromJson(Map<String, dynamic> json)
       : id = json['id'] as int,
@@ -24,7 +31,9 @@ class Tour {
         img = json['img'] as String,
         priceLow = json['priceLow'] as int,
         priceHigh = json['priceHigh'] as int,
-        address = json['address'] as String;
+        address = json['address'] as String,
+        icon = json['icon'] as String,
+        review = json['review'] as double;
 
   Map<String, dynamic> toJson() =>
       {
@@ -35,6 +44,7 @@ class Tour {
         'priceLow': priceLow,
         'priceHigh': priceHigh,
         'address': address,
+        'icon': icon,
+        'review': review
       };
 }
-

@@ -36,41 +36,37 @@ class _homeState extends State<home> {
     notifire = Provider.of<ColorNotifire>(context, listen: true);
     return SafeArea(
       child: Scaffold(
-        backgroundColor: notifire.getbgcolor,
+        backgroundColor: notifire.getblackwhitecolor,
         body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    height: 50,
-                    width: 190,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                        color: notifire.getdarkmodecolor),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Image.asset(
-                          "assets/images/location.png",
-                          height: 24,
-                          color: Darkblue,
-                        ),
-                        Text(
-                          "Lisboa, Portugal",
-                          style: TextStyle(
-                              color: notifire.getwhiteblackcolor,
-                              fontFamily: "Gilroy Medium"),
-                        ),
-                        Icon(
-                          Icons.keyboard_arrow_down,
-                          color: Darkblue,
-                        ),
-                      ],
-                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.01),
+                      Text(
+                        "Hello, Joaquim! 👋",
+                        style: TextStyle(
+                            color: notifire.getwhiteblackcolor,
+                            fontSize: 16,
+                            fontFamily: "Gilroy Medium"),
+                      ),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.0001),
+                      Text(
+                        "Let’s find you a tour",
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: LogoColor,
+                            fontFamily: "Gilroy Bold"),
+                      ),
+                    ],
                   ),
                   InkWell(
                       onTap: () {
@@ -92,40 +88,47 @@ class _homeState extends State<home> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.01),
-                      Text(
-                        "Hello, Joaquim! 👋",
-                        style: TextStyle(
-                            color: notifire.getgreycolor,
-                            fontSize: 15,
-                            fontFamily: "Gilroy Medium"),
-                      ),
-                      SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.012),
-                      Text(
-                        "Let’s find best Tour",
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: notifire.getwhiteblackcolor,
-                            fontFamily: "Gilroy Bold"),
+                      Container(
+                        height: 40,
+                        width: 190,
+                        decoration: BoxDecoration(
+                            border: Border.all(color: LogoColor),
+                            borderRadius: BorderRadius.circular(50),
+                            color: WhiteColor),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Image.asset(
+                              "assets/images/location.png",
+                              height: 24,
+                              color: LogoColor,
+                            ),
+                            Text(
+                              "Lisboa, PT",
+                              style: TextStyle(
+                                  color: notifire.getwhiteblackcolor,
+                                  fontFamily: "Gilroy Medium"),
+                            ),
+                            Icon(
+                              Icons.keyboard_arrow_down,
+                              color: LogoColor,
+                            ),
+                          ],
+                        ),
                       ),
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.03),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          InkWell(
+                      InkWell(
                             onTap: () {
                               Navigator.of(context)
                                   .push(MaterialPageRoute(
                                   builder: (context) => const checkout(tourId: 1, goNow: true)));
                             },
                             child: Container(
-                              height: 60,
-                              width: MediaQuery.of(context).size.width / 1.4,
+                              height: 50,
+                              width: double.infinity,
                               decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(50), color: Darkblue),
+                                  borderRadius: BorderRadius.circular(50), color: LogoColor),
                               child: Center(
                                 child: Text(
                                   "Go Now",
@@ -136,9 +139,7 @@ class _homeState extends State<home> {
                                 ),
                               ),
                             ),
-                          )
-                        ],
-                      ),
+                          ),
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.025),
                       Row(
@@ -182,11 +183,11 @@ class _homeState extends State<home> {
                                 },
                                 child: Container(
                                   margin:
-                                      const EdgeInsets.symmetric(horizontal: 4),
-                                  width: 280,
+                                      const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                                  width: 240,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(12),
-                                      color: notifire.getdarkmodecolor),
+                                      color: notifire.getbgcolor),
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 10, vertical: 10),
@@ -196,46 +197,30 @@ class _homeState extends State<home> {
                                       children: [
                                         Stack(
                                           children: [
-                                            // ignore: sized_box_for_whitespace
-                                            Container(
-                                              height: 118,
-                                              width: double.infinity,
-                                              child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(15),
-                                                child: Image.asset(
-                                                  tourList[index].img
-                                                      .toString(),
-                                                  height: 120,
-                                                  fit: BoxFit.fill,
+                                            Align(
+                                              alignment: Alignment.center,
+                                              child :
+                                                CircleAvatar(
+                                                  radius: 50.0,
+                                                  child: ClipOval(
+                                                      child: Image.asset(
+                                                        tourList[index].icon
+                                                            .toString(),
+                                                        fit: BoxFit.cover,
+                                                      )),
                                                 ),
-                                              ),
                                             ),
                                             Align(
                                               alignment: Alignment.topRight,
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Container(
-                                                    height: 30,
-                                                    width: 70,
-                                                    decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(50),
-                                                        color: lightBlack),
-                                                    child: Center(
-                                                      child: Text(
-                                                        "${tourList[index].priceLow}€ - ${tourList[index].priceHigh}€",
-                                                        style: TextStyle(
-                                                            fontSize: 12,
-                                                            color: WhiteColor,
-                                                            fontFamily:
-                                                                "Gilroy Bold"),
-                                                      ),
-                                                    )),
-                                              ),
-                                            )
+                                              child: Text(
+                                                  "${tourList[index].priceLow}€ - ${tourList[index].priceHigh}€",
+                                                  style: TextStyle(
+                                                      fontSize: 12,
+                                                      color: Darkblue,
+                                                      fontFamily:
+                                                      "Gilroy Bold"),
+                                                  ),
+                                               ),
                                           ],
                                         ),
                                         SizedBox(
@@ -244,9 +229,9 @@ class _homeState extends State<home> {
                                                     .height *
                                                 0.02),
                                         Text(
-                                          tourList[index].title,
+                                          tourList[index].title.toUpperCase(),
                                           style: TextStyle(
-                                              fontSize: 15,
+                                              fontSize: 14,
                                               fontFamily: "Gilroy Bold",
                                               color:
                                                   notifire.getwhiteblackcolor),
@@ -255,12 +240,12 @@ class _homeState extends State<home> {
                                             height: MediaQuery.of(context)
                                                     .size
                                                     .height *
-                                                0.01),
+                                                0.0005),
                                         Text(
                                           tourList[index].address,
                                           style: TextStyle(
                                               fontSize: 12,
-                                              color: notifire.getgreycolor,
+                                              color: notifire.getwhiteblackcolor,
                                               fontFamily: "Gilroy Medium",
                                               overflow: TextOverflow.ellipsis),
                                         ),
@@ -268,25 +253,16 @@ class _homeState extends State<home> {
                                             height: MediaQuery.of(context)
                                                     .size
                                                     .height *
-                                                0.001),
-                                        Divider(color: greyColor),
-                                        // SizedBox(
-                                        //     height: MediaQuery.of(context)
-                                        //             .size
-                                        //             .height *
-                                        //         0.01),
+                                                0.03),
                                         Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            hotelsystem(
-                                                image: "assets/images/user.png",
-                                                text: "2 travelers",
-                                                radi: 0),
-                                            hotelsystem(
+                                            tourDuration(
                                                 image: "assets/images/timer.png",
-                                                text: "2 hours",
+                                                text: tourList[index].duration,
                                                 radi: 0),
+                                            tourReview(review: tourList[index].review)
                                           ],
                                         )
                                       ],
@@ -329,20 +305,19 @@ class _homeState extends State<home> {
                         shrinkWrap: true,
                         padding: EdgeInsets.zero,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: hotelList2.length,
+                        itemCount: nearbyTours.length,
                         itemBuilder: (BuildContext context, int index) {
                           return InkWell(
                             onTap: () {
                               Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) =>
-                                      const tourdetailpage(1)));
+                                  builder: (context) => tourdetailpage(nearbyTours[index].id)));
                             },
                             child: Container(
                               width: double.infinity,
                               margin: const EdgeInsets.symmetric(vertical: 6),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(15),
-                                color: notifire.getdarkmodecolor,
+                                color: notifire.getbgcolor,
                               ),
                               child: Row(
                                 children: [
@@ -354,7 +329,7 @@ class _homeState extends State<home> {
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(12),
                                       child: Image.asset(
-                                        hotelList2[index]["img"].toString(),
+                                        nearbyTours[index].icon,
                                         fit: BoxFit.fill,
                                       ),
                                     ),
@@ -364,7 +339,7 @@ class _homeState extends State<home> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        hotelList2[index]["title"].toString(),
+                                        nearbyTours[index].title.toUpperCase(),
                                         style: TextStyle(
                                             fontSize: 15,
                                             color: notifire.getwhiteblackcolor,
@@ -372,98 +347,30 @@ class _homeState extends State<home> {
                                       ),
                                       // const SizedBox(height: 6),
                                       SizedBox(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.006),
-                                      SizedBox(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.65,
-                                        child: Text(
-                                          hotelList2[index]["address"]
-                                              .toString(),
+                                          height: MediaQuery.of(context) .size .height *
+                                              0.001),
+                                      Text(
+                                          nearbyTours[index].address,
                                           style: TextStyle(
                                               fontSize: 13,
                                               color: notifire.getgreycolor,
                                               fontFamily: "Gilroy Medium",
                                               overflow: TextOverflow.ellipsis),
-                                        ),
                                       ),
                                       SizedBox(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.01),
-                                      Row(
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Text(
-                                                hotelList2[index]["price"]
-                                                    .toString(),
-                                                style: TextStyle(
-                                                    fontSize: 16,
-                                                    color: notifire
-                                                        .getdarkbluecolor,
-                                                    fontFamily: "Gilroy Bold"),
-                                              ),
-                                              Text(
-                                                hotelList2[index]["Night"]
-                                                    .toString(),
-                                                style: TextStyle(
-                                                    fontSize: 16,
-                                                    color:
-                                                        notifire.getgreycolor,
-                                                    fontFamily:
-                                                        "Gilroy Medium"),
-                                              ),
-                                            ],
-                                          ),
-                                          Row(
-                                            children: [
-                                              const SizedBox(width: 12),
-                                              Image.asset(
-                                                "assets/images/star.png",
-                                                height: 20,
-                                              ),
-                                              const SizedBox(width: 2),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    top: 4),
-                                                child: Row(
-                                                  children: [
-                                                    Text(
-                                                      hotelList2[index]
-                                                              ["review"]
-                                                          .toString(),
-                                                      style: TextStyle(
-                                                          fontSize: 16,
-                                                          color: notifire
-                                                              .getdarkbluecolor,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    ),
-                                                    Text(
-                                                      hotelList2[index]
-                                                              ["reviewCount"]
-                                                          .toString(),
-                                                      style: TextStyle(
-                                                          fontSize: 14,
-                                                          color: notifire
-                                                              .getgreycolor,
-                                                          fontFamily:
-                                                              "Gilroy Medium"),
-                                                    ),
-                                                  ],
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ],
-                                      )
+                                          height: MediaQuery.of(context) .size .height *
+                                              0.001),
+                                      Text(
+                                        "${nearbyTours[index].priceLow}€ - ${nearbyTours[index].priceHigh}€",
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            color: LogoColor,
+                                            fontFamily: "Gilroy Bold"),
+                                      ),
                                     ],
                                   ),
+                                  Expanded(child: SizedBox()),
+                                  tourReview(review: nearbyTours[index].review)
                                 ],
                               ),
                             ),
@@ -481,25 +388,49 @@ class _homeState extends State<home> {
     );
   }
 
-  hotelsystem({String? image, text, double? radi}) {
+  tourDuration({String? image, text, double? radi}) {
     return Row(
       // mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Image.asset(
           image!,
           height: 25,
-          color: notifire.getdarkbluecolor,
+          color: LogoColor,
         ),
         const SizedBox(width: 5),
         Text(
           text,
           style: TextStyle(
-              color: notifire.getgreycolor, fontFamily: "Gilroy Medium"),
+              color: notifire.getwhiteblackcolor, fontFamily: "Gilroy Medium"),
+        )
+      ],
+    );
+  }
+
+  tourReview({double? review})   {
+    return Row(
+      children: [
+        Image.asset(
+          "assets/images/star.png",
+          height: 20,
         ),
-        const SizedBox(width: 11),
-        CircleAvatar(
-          radius: radi,
-          backgroundColor: notifire.getgreycolor,
+        const SizedBox(width: 2),
+        Padding(
+          padding: const EdgeInsets.only(
+              top: 4, right: 20),
+          child: Row(
+            children: [
+              Text(
+                review.toString(),
+                style: TextStyle(
+                    fontSize: 16,
+                    color: notifire
+                        .getdarkbluecolor,
+                    fontWeight:
+                    FontWeight.bold),
+              )
+            ],
+          ),
         )
       ],
     );

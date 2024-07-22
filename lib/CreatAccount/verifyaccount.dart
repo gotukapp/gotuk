@@ -42,18 +42,18 @@ class _verifyaccountState extends State<verifyaccount> {
   Widget build(BuildContext context) {
     notifire = Provider.of<ColorNotifire>(context, listen: true);
     return Scaffold(
-        backgroundColor: notifire.getbgcolor,
+        backgroundColor: notifire.getlogobgcolor,
         appBar: PreferredSize(
             preferredSize: const Size.fromHeight(75),
             child: CustomAppbar(
                 centertext: "",
                 ActionIcon: null,
-                bgcolor: notifire.getbgcolor,
+                bgcolor: notifire.getlogobgcolor,
                 actioniconcolor: notifire.getwhiteblackcolor,
                 leadingiconcolor: notifire.getwhiteblackcolor)),
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(
@@ -61,24 +61,24 @@ class _verifyaccountState extends State<verifyaccount> {
                 style: TextStyle(
                     fontSize: 24,
                     fontFamily: "Gilroy Bold",
-                    color: notifire.getwhiteblackcolor),
+                    color: WhiteColor),
               ),
               const SizedBox(
                 height: 10,
               ),
               Text("We’ve send verification code to",
                   style: TextStyle(
-                      fontSize: 14,
-                      color: notifire.getgreycolor,
+                      fontSize: 16,
+                      color: WhiteColor,
                       fontFamily: "Gilroy Medium")),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.025,
               ),
-              Text("Verify Your code",
+              Text("Verify your code",
                   style: TextStyle(
                       fontSize: 17,
                       fontFamily: "Gilroy Medium",
-                      color: notifire.getwhiteblackcolor)),
+                      color: WhiteColor)),
               SizedBox(height: MediaQuery.of(context).size.height * 0.01),
               textfield(
                 feildcolor: notifire.getdarkmodecolor,
@@ -100,25 +100,27 @@ class _verifyaccountState extends State<verifyaccount> {
                 ),
               ),
               SizedBox(
-                height: MediaQuery.of(context).size.height / 2.15,
+                height: MediaQuery.of(context).size.height *0.05,
               ),
               AppButton(
-                buttontext: "Verify Account",
+                bgColor: notifire.getblackwhitecolor,
+                textColor: notifire.getwhitelogocolor,
+                buttontext: "VERIFY ACCOUNT",
                 onclick: bottomsheet,
               ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.025),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.3),
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Text("Didn’t receive the code? ",
                     style: TextStyle(
                         fontSize: 15,
                         fontFamily: "Gilroy Medium",
-                        color: notifire.getwhiteblackcolor)),
+                        color: WhiteColor)),
                 InkWell(
                   onTap: () {},
                   child: Text("Resend",
                       style: TextStyle(
                           fontSize: 16,
-                          color: Darkblue,
+                          color: greyColor,
                           fontFamily: "Gilroy Medium")),
                 )
               ])
@@ -180,11 +182,11 @@ class _verifyaccountState extends State<verifyaccount> {
                           SizedBox(
                             width: MediaQuery.of(context).size.width * 0.90,
                             child: Text(
-                              "Congratulations! your account already created. Enjoy the features",
+                              "Congratulations! Book your next tour.",
                               style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: 16,
                                   fontFamily: "Gilroy Medium",
-                                  color: notifire.getgreycolor),
+                                  color: notifire.getdarkgreycolor),
                               textAlign: TextAlign.center,
                             ),
                           ),
