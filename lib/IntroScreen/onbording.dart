@@ -4,12 +4,13 @@ import 'dart:async';
 import 'package:dm/CreatAccount/login.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 // ignore: unused_import
 import 'package:dm/IntroScreen/onbording.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../CreatAccount/creatscreen.dart';
+import '../CreatAccount/createScreen.dart';
 
 class onbording extends StatefulWidget {
   const onbording({super.key});
@@ -48,11 +49,11 @@ class _onbordingState extends State<onbording> {
 
   getdarkmodepreviousstate() async {
     final prefs = await SharedPreferences.getInstance();
-    bool? previusstate = prefs.getBool("setIsDark");
-    if (previusstate == null) {
+    bool? previousState = prefs.getBool("setIsDark");
+    if (previousState == null) {
       notifire.setIsDark = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifire.setIsDark = previousState;
     }
   }
 }
@@ -293,10 +294,13 @@ class loginpage extends StatefulWidget {
 class _loginpageState extends State<loginpage> {
   void initState() {
     getdarkmodepreviousstate();
+    getAppModeState();
     super.initState();
   }
 
   late ColorNotifire notifire;
+  late bool isDriver;
+
   @override
   Widget build(BuildContext context) {
     notifire = Provider.of<ColorNotifire>(context, listen: true);
@@ -306,6 +310,50 @@ class _loginpageState extends State<loginpage> {
         padding: const EdgeInsets.symmetric(horizontal: 12),
         child: Column(
           children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Row(
+                  children: [
+                    SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.065),
+                    Text("Driver mode",
+                        style: TextStyle(
+                            fontSize: 15,
+                            color: notifire.getwhiteblackcolor,
+                            fontFamily: "Gilroy Bold")),
+                  ],
+                ),
+                // ignore: sized_box_for_whitespace
+                Container(
+                  height: 43.0,
+                  width: 60.0,
+                  child: FittedBox(
+                    fit: BoxFit.fill,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CupertinoSwitch(
+                        thumbColor: notifire.getdarkwhitecolor,
+                        trackColor: notifire.getbuttoncolor,
+                        activeColor: notifire.getdarkbluecolor,
+                        value: isDriver,
+                        onChanged: (value) async {
+                          setState(() {
+                            isDriver = value;
+                          });
+                          final prefs =
+                          await SharedPreferences.getInstance();
+                          setState(() {
+                            isDriver = value;
+                            prefs.setBool("setIsDriver", value);
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
             SizedBox(height: MediaQuery.of(context).size.height / 6.5),
             Center(
               child: Image.asset(
@@ -334,11 +382,11 @@ class _loginpageState extends State<loginpage> {
             FilledButton(
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const creatscreen()));
+                    builder: (context) => const createScreen()));
               },
               // ignore: sort_child_properties_last
               child: Text(
-                'CREATE ACCOUNT',
+                isDriver ? 'CREATE DRIVER ACCOUNT' : 'CREATE ACCOUNT',
                 style: TextStyle(
                     color: WhiteColor, fontSize: 16, fontFamily: "Gilroy Bold"),
               ),
@@ -356,7 +404,7 @@ class _loginpageState extends State<loginpage> {
               },
               // ignore: sort_child_properties_last
               child: Text(
-                'LOGIN',
+                isDriver ? 'LOGIN AS A DRIVER' :  'LOGIN',
                 style: TextStyle(
                     color: WhiteColor, fontSize: 16, fontFamily: "Gilroy Bold"),
               ),
@@ -380,6 +428,12 @@ class _loginpageState extends State<loginpage> {
     } else {
       notifire.setIsDark = previusstate;
     }
+  }
+
+  getAppModeState() async {
+    final prefs = await SharedPreferences.getInstance();
+    bool? previousState = prefs.getBool("setIsDriver");
+    isDriver = previousState ?? false;
   }
 }
 

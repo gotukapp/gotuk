@@ -1,6 +1,6 @@
 // ignore_for_file: camel_case_types
 
-import 'package:dm/CreatAccount/creatscreen.dart';
+import 'package:dm/CreatAccount/createScreen.dart';
 import 'package:dm/Login&ExtraDesign/homepage.dart';
 import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/CreatAccount/forgotpassword.dart';
@@ -211,7 +211,7 @@ class _loginscreenState extends State<loginscreen> {
                     buttontext: "REGISTER",
                     onclick: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const creatscreen()));
+                          builder: (context) => const createScreen()));
                     }),
               ],
             )

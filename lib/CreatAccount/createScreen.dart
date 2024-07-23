@@ -9,22 +9,25 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class creatscreen extends StatefulWidget {
-  const creatscreen({super.key});
+class createScreen extends StatefulWidget {
+  const createScreen({super.key});
 
   @override
-  State<creatscreen> createState() => _creatscreenState();
+  State<createScreen> createState() => _createScreenState();
 }
 
-class _creatscreenState extends State<creatscreen> {
+class _createScreenState extends State<createScreen> {
   bool isvisibal = false;
   @override
   void initState() {
     getdarkmodepreviousstate();
+    getAppModeState();
     super.initState();
   }
 
   late ColorNotifire notifire;
+  late bool isDriver;
+
   @override
   Widget build(BuildContext context) {
     notifire = Provider.of<ColorNotifire>(context, listen: true);
@@ -50,7 +53,7 @@ class _creatscreenState extends State<creatscreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Welcome to GoTuk",
+                          isDriver ? "GoTuk Driver" : "Welcome to GoTuk",
                           style: TextStyle(
                               fontSize: 22,
                               fontFamily: "Gilroy Bold",
@@ -193,5 +196,11 @@ class _creatscreenState extends State<creatscreen> {
     } else {
       notifire.setIsDark = previusstate;
     }
+  }
+
+  getAppModeState() async {
+    final prefs = await SharedPreferences.getInstance();
+    bool? previousState = prefs.getBool("setIsDriver");
+    isDriver = previousState ?? false;
   }
 }
