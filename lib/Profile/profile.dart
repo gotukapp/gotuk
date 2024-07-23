@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../Utils/Colors.dart';
 import '../Utils/customwidget .dart';
 
 class profile extends StatefulWidget {
@@ -32,9 +33,9 @@ class _profileState extends State<profile> {
     notifire = Provider.of<ColorNotifire>(context, listen: true);
     return SafeArea(
       child: Scaffold(
-          backgroundColor: notifire.getbgcolor,
+          backgroundColor: notifire.getblackwhitecolor,
           body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,7 +47,7 @@ class _profileState extends State<profile> {
                         "Profile",
                         style: TextStyle(
                             fontSize: 18,
-                            color: notifire.getwhiteblackcolor,
+                            color: Darkblue,
                             fontFamily: "Gilroy Bold"),
                       ),
                       InkWell(
@@ -63,30 +64,29 @@ class _profileState extends State<profile> {
                               ))),
                     ],
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.05),
                   Center(
                     child: Column(
                       children: [
                         CircleAvatar(
-                          radius: 70,
+                          radius: 60,
                           backgroundColor: notifire.getwhiteblackcolor,
                           backgroundImage:
                               const AssetImage("assets/images/person.jpg"),
                         ),
                         const SizedBox(height: 20),
                         Text(
-                          "John kennedy",
+                          "Joaquim Kennedy",
                           style: TextStyle(
-                              fontSize: 16,
-                              color: notifire.getwhiteblackcolor,
+                              fontSize: 18,
+                              color: LogoColor,
                               fontFamily: "Gilroy Bold"),
                         ),
                         const SizedBox(height: 10),
                         Text(
-                          "Purwokerto, Indonesia",
+                          "Porto, Portugal",
                           style: TextStyle(
                               fontSize: 16,
-                              color: notifire.getgreycolor,
+                              color: notifire.getwhiteblackcolor,
                               fontFamily: "Gilroy Medium"),
                         ),
                       ],
@@ -96,15 +96,15 @@ class _profileState extends State<profile> {
                   Container(
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
-                        color: notifire.getdarkmodecolor),
+                        color: notifire.getbgcolor),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 10, vertical: 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Transaction(text1: "26", text2: "Transaction"),
-                          Transaction(text1: "12", text2: "Review"),
+                          Transaction(text1: "26", text2: "Transactions"),
+                          Transaction(text1: "12", text2: "Reviews"),
                           Transaction(text1: "4", text2: "Bookings"),
                         ],
                       ),
@@ -115,62 +115,64 @@ class _profileState extends State<profile> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Option",
+                        "Options",
                         style: TextStyle(
                             fontSize: 18,
-                            color: notifire.getwhiteblackcolor,
+                            color: Darkblue,
                             fontFamily: "Gilroy Bold"),
                       ),
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.02),
-                      AccountSetting(
-                          image: "assets/images/heart.png",
-                          text: "My Favourite",
-                          icon: Icons.keyboard_arrow_right,
-                          onclick: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const Favourite()));
-                          },
-                          boxcolor: notifire.getdarkmodecolor,
-                          iconcolor: notifire.getwhiteblackcolor,
-                          ImageColor: notifire.getwhiteblackcolor,
-                          TextColor: notifire.getwhiteblackcolor),
-                      AccountSetting(
-                          image: "assets/images/clock.png",
-                          text: "Transaction",
-                          icon: Icons.keyboard_arrow_right,
-                          onclick: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) =>
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          ProfileSetting(
+                              image: "assets/images/heart.png",
+                              text: "Favorites",
+                              icon: Icons.keyboard_arrow_right,
+                              onclick: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => const Favourite()));
+                              },
+                              boxcolor: notifire.getdarkmodecolor,
+                              iconcolor: notifire.getwhiteblackcolor,
+                              ImageColor: notifire.getwhiteblackcolor,
+                              TextColor: notifire.getwhiteblackcolor),
+                          ProfileSetting(
+                              image: "assets/images/clock.png",
+                              text: "Transactions",
+                              icon: Icons.keyboard_arrow_right,
+                              onclick: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) =>
                                     const TransactionHistory()));
-                          },
-                          boxcolor: notifire.getdarkmodecolor,
-                          iconcolor: notifire.getwhiteblackcolor,
-                          ImageColor: notifire.getwhiteblackcolor,
-                          TextColor: notifire.getwhiteblackcolor),
-                      AccountSetting(
-                          image: "assets/images/discount.png",
-                          text: "My Cupon",
-                          icon: Icons.keyboard_arrow_right,
-                          onclick: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const MyCupon()));
-                          },
-                          boxcolor: notifire.getdarkmodecolor,
-                          iconcolor: notifire.getwhiteblackcolor,
-                          ImageColor: notifire.getwhiteblackcolor,
-                          TextColor: notifire.getwhiteblackcolor),
-                      AccountSetting(
-                          image: "assets/images/logout.png",
-                          text: "Log Out",
-                          icon: null,
+                              },
+                              boxcolor: notifire.getdarkmodecolor,
+                              iconcolor: notifire.getwhiteblackcolor,
+                              ImageColor: notifire.getwhiteblackcolor,
+                              TextColor: notifire.getwhiteblackcolor),
+                          ProfileSetting(
+                              image: "assets/images/discount.png",
+                              text: "Promotions",
+                              icon: Icons.keyboard_arrow_right,
+                              onclick: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => const MyCupon()));
+                              },
+                              boxcolor: notifire.getdarkmodecolor,
+                              iconcolor: notifire.getwhiteblackcolor,
+                              ImageColor: notifire.getwhiteblackcolor,
+                              TextColor: notifire.getwhiteblackcolor)
+                        ],
+                      ),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.1),
+                      AppButton(
+                          buttontext: "LOGOUT",
                           onclick: () {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => const loginscreen()));
-                          },
-                          boxcolor: notifire.getdarkmodecolor,
-                          ImageColor: notifire.getredcolor,
-                          TextColor: notifire.getredcolor),
+                          }),
                     ],
                   )
                 ],
@@ -186,16 +188,16 @@ class _profileState extends State<profile> {
         Text(
           text1,
           style: TextStyle(
-              fontSize: 16,
-              color: notifire.getdarkbluecolor,
+              fontSize: 18,
+              color: LogoColor,
               fontFamily: "Gilroy Bold"),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 1),
         Text(
           text2,
           style: TextStyle(
-              fontSize: 15,
-              color: notifire.getgreycolor,
+              fontSize: 14,
+              color: notifire.getwhiteblackcolor,
               fontFamily: "Gilroy Medium"),
         ),
       ],

@@ -148,6 +148,41 @@ AccountSetting(
   );
 }
 
+ProfileSetting(
+    {IconData? icon,
+      String? text,
+      image,
+      Color? TextColor,
+      boxcolor,
+      ImageColor,
+      iconcolor,
+      Function()? onclick}) {
+  return Column(
+    children: [
+        InkWell(
+        onTap: onclick,
+        child: Container(
+            height: 90,
+            width:90,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15), color: bgcolor),
+            child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Image.asset(
+                  image,
+                  height: 20,
+                  color: LogoColor,
+                )
+            )
+        ),
+      ),
+      Text(text!,
+          style: TextStyle(
+              fontSize: 14, color: BlackColor, fontFamily: "Gilroy Bold"))
+    ],
+  );
+}
+
 List hotelList = [
   {
     "id": 1,
