@@ -9,14 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ShowallHotel extends StatefulWidget {
-  const ShowallHotel({super.key});
+class showAllTours extends StatefulWidget {
+  const showAllTours({super.key});
 
   @override
-  State<ShowallHotel> createState() => _ShowallHotelState();
+  State<showAllTours> createState() => _showAllToursState();
 }
 
-class _ShowallHotelState extends State<ShowallHotel> {
+class _showAllToursState extends State<showAllTours> {
   @override
   void initState() {
     getdarkmodepreviousstate();

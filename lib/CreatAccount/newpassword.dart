@@ -27,13 +27,13 @@ class _newpasswordState extends State<newpassword> {
   Widget build(BuildContext context) {
     notifire = Provider.of<ColorNotifire>(context, listen: true);
     return Scaffold(
-      backgroundColor: notifire.getbgcolor,
+      backgroundColor: notifire.getlogobgcolor,
       appBar: PreferredSize(
           preferredSize: const Size.fromHeight(75),
           child: CustomAppbar(
               centertext: "",
               ActionIcon: null,
-              bgcolor: notifire.getbgcolor,
+              bgcolor: notifire.getlogobgcolor,
               actioniconcolor: notifire.getwhiteblackcolor,
               leadingiconcolor: notifire.getwhiteblackcolor)),
       body: SingleChildScrollView(
@@ -47,21 +47,21 @@ class _newpasswordState extends State<newpassword> {
                 style: TextStyle(
                     fontSize: 24,
                     fontFamily: "Gilroy Bold",
-                    color: notifire.getwhiteblackcolor),
+                    color: WhiteColor),
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.016),
               Text("Enter the phone number, we’ll send the code",
-                  style: TextStyle(fontSize: 14, color: notifire.getgreycolor)),
+                  style: TextStyle(fontSize: 14, color: WhiteColor)),
               SizedBox(height: MediaQuery.of(context).size.height * 0.05),
               Text("Password",
                   style: TextStyle(
                       fontSize: 16,
                       fontFamily: "Gilroy Medium",
-                      color: notifire.getwhiteblackcolor)),
+                      color: WhiteColor)),
               SizedBox(height: MediaQuery.of(context).size.height * 0.01),
               textfield(
-                feildcolor: notifire.getdarkmodecolor,
-                hintcolor: notifire.getgreycolor,
+                feildcolor: notifire.getfieldcolor,
+                hintcolor: notifire.gettextfieldcolor,
                 text: 'New Password',
                 prefix: Image.asset(
                   "assets/images/password.png",
@@ -75,11 +75,11 @@ class _newpasswordState extends State<newpassword> {
                   style: TextStyle(
                       fontSize: 16,
                       fontFamily: "Gilroy Medium",
-                      color: notifire.getwhiteblackcolor)),
+                      color: WhiteColor)),
               SizedBox(height: MediaQuery.of(context).size.height * 0.01),
               textfield(
-                feildcolor: notifire.getdarkmodecolor,
-                hintcolor: notifire.getgreycolor,
+                feildcolor: notifire.getfieldcolor,
+                hintcolor: notifire.gettextfieldcolor,
                 text: 'Confirm Password',
                 prefix: Image.asset(
                   "assets/images/password.png",
@@ -88,8 +88,10 @@ class _newpasswordState extends State<newpassword> {
                 suffix:
                     Icon(Icons.visibility_off, color: notifire.getgreycolor),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height / 3),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
               AppButton(
+                bgColor: notifire.getlogowhitecolor,
+                textColor: notifire.getwhiteblackcolor,
                 buttontext: "Reset Password",
                 onclick: bottomsheet,
               ),

@@ -14,8 +14,8 @@ class Tour {
   final String title;
   final String duration;
   final String img;
-  final int priceLow;
-  final int priceHigh;
+  final double priceLow;
+  final double priceHigh;
   final String address;
   final String icon;
   final double review;
@@ -29,8 +29,8 @@ class Tour {
         title = json['title'] as String,
         duration = json['duration'] as String,
         img = json['img'] as String,
-        priceLow = json['priceLow'] as int,
-        priceHigh = json['priceHigh'] as int,
+        priceLow = json['priceLow'] as double,
+        priceHigh = json['priceHigh'] as double,
         address = json['address'] as String,
         icon = json['icon'] as String,
         review = json['review'] as double;
@@ -47,4 +47,16 @@ class Tour {
         'icon': icon,
         'review': review
       };
+
+  double getTourPrice(bool smallPriceSelected) {
+    return getTotalPrice(smallPriceSelected) - getFeePrice(smallPriceSelected);
+  }
+
+  double getFeePrice(bool smallPriceSelected) {
+    return double.parse((getTotalPrice(smallPriceSelected) * 0.15).toStringAsFixed(0));
+  }
+
+  double getTotalPrice(bool smallPriceSelected) {
+    return smallPriceSelected ? priceLow : priceHigh;
+  }
 }

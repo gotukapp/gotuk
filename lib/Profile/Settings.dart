@@ -125,8 +125,6 @@ class _SettingsState extends State<Settings> {
                     children: [
                       Row(
                         children: [
-                          SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.05),
                           Image.asset(
                             "assets/images/moon.png",
                             height: 30,

@@ -3,7 +3,6 @@
 import 'package:dm/Login&ExtraDesign/NearbyallHotel.dart';
 import 'package:dm/Login&ExtraDesign/showAllTours.dart';
 import 'package:dm/Utils/Colors.dart';
-import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:dm/Utils/tour.dart';
 import 'package:flutter/material.dart';
@@ -106,7 +105,7 @@ class _homeState extends State<home> {
                             Text(
                               "Lisboa, PT",
                               style: TextStyle(
-                                  color: notifire.getwhiteblackcolor,
+                                  color: BlackColor,
                                   fontFamily: "Gilroy Medium"),
                             ),
                             Icon(
@@ -154,7 +153,7 @@ class _homeState extends State<home> {
                           InkWell(
                             onTap: () {
                               Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const ShowallHotel(),
+                                builder: (context) => const showAllTours(),
                               ));
                             },
                             child: Text(
@@ -187,7 +186,7 @@ class _homeState extends State<home> {
                                   width: 240,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(12),
-                                      color: notifire.getbgcolor),
+                                      color: notifire.getdarklightgreycolor),
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 10, vertical: 10),
@@ -317,7 +316,7 @@ class _homeState extends State<home> {
                               margin: const EdgeInsets.symmetric(vertical: 6),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(15),
-                                color: notifire.getbgcolor,
+                                color: notifire.getdarklightgreycolor,
                               ),
                               child: Row(
                                 children: [

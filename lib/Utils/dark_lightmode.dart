@@ -13,14 +13,16 @@ class ColorNotifire with ChangeNotifier {
   get getlogobgcolor => isDark ? darkmode : LogoColor; //background color
   get getdarkmodecolor => isDark ? boxcolor : WhiteColor; //containar color
   get getlightblackcolor => isDark ? boxcolor : lightBlack;
+  get getdarklightgreycolor => isDark ? darkGrey : lightGrey;
 
   get getwhiteblackcolor => isDark ? WhiteColor : BlackColor; //text defultsystemicon imageicon color
 
   get getwhitelogocolor => isDark ? WhiteColor : LogoColor;
 
-  get getdarkgreycolor => isDark ? darkGreyColor : darkGreyColor;
+  get getdarkgreycolor => isDark ? darkGrey : darkGrey;
   get getgreycolor => isDark ? greyColor : greyColor;
   get getwhitebluecolor => isDark ? WhiteColor : Darkblue;
+  get getlogowhitecolor => isDark ? LogoColor : WhiteColor;
   get getblackgreycolor => isDark ? lightBlack2 : greyColor;
 
   get gettextfieldcolor => isDark ? fieldColor : textFieldColor;
@@ -32,7 +34,6 @@ class ColorNotifire with ChangeNotifier {
   get getprocolor => isDark ? yelloColor : yelloColor2;
   get getblackwhitecolor => isDark ? BlackColor : WhiteColor;
   get getlightblack => isDark ? lightBlack2 : lightBlack2;
-  get getbuttonscolor => isDark ? lightgrey : lightgrey2;
   get getbuttoncolor => isDark ? greyColor : onoffColor;
   get getdarkbluecolor => isDark ? Darkblue : Darkblue;
   get getdarkscolor => isDark ? BlackColor : bgcolor;

@@ -17,7 +17,7 @@ class Booking {
 
   Booking(this.tour, this.date, this.persons, this.status);
 
-  int get price {
+  double get price {
     if (persons < 4) {
       return tour.priceLow;
     }

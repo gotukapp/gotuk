@@ -142,7 +142,7 @@ class _createScreenState extends State<createScreen> {
                           height: MediaQuery.of(context).size.height * 0.03,
                         ),
                         AppButton(
-                          bgColor: notifire.getblackwhitecolor,
+                          bgColor: notifire.getlogowhitecolor,
                           textColor: notifire.getwhiteblackcolor,
                           onclick: () {
                             Navigator.of(context).push(MaterialPageRoute(
@@ -168,7 +168,7 @@ class _createScreenState extends State<createScreen> {
                       style: TextStyle(
                           fontSize: 15,
                           fontFamily: "Gilroy Medium",
-                          color: notifire.getlogobgcolor)),
+                          color: LogoColor)),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.01,
                   ),

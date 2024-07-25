@@ -248,7 +248,7 @@ class _checkoutState extends State<checkout> {
                             color: notifire.getgreycolor),
                       ),
                       Text(
-                          "${smallPriceSelected ? tour?.priceLow.toString() : tour?.priceHigh.toString()}€",
+                          "${tour?.getTourPrice(smallPriceSelected)}€",
                         style: TextStyle(
                             fontSize: 14,
                             color: notifire.getgreycolor,
@@ -265,7 +265,7 @@ class _checkoutState extends State<checkout> {
                               fontSize: 14,
                               fontFamily: "Gilroy Medium",
                               color: notifire.getgreycolor)),
-                      Text("4€",
+                      Text("${tour?.getFeePrice(smallPriceSelected)}€",
                           style: TextStyle(
                               fontSize: 14,
                               fontFamily: "Gilroy Medium",
@@ -280,7 +280,7 @@ class _checkoutState extends State<checkout> {
                           style: TextStyle(
                               fontFamily: "Gilroy Bold",
                               color: notifire.getwhiteblackcolor)),
-                      Text("${smallPriceSelected ? (tour!.priceLow + 4).toString() : (tour!.priceHigh + 4).toString()}€",
+                      Text("${tour?.getTotalPrice(smallPriceSelected)}€",
                           style: TextStyle(
                               fontFamily: "Gilroy Bold",
                               color: notifire.getwhiteblackcolor)),

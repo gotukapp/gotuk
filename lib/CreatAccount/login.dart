@@ -118,7 +118,7 @@ class _loginscreenState extends State<loginscreen> {
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.05),
                   AppButton(
-                      bgColor: notifire.getblackwhitecolor,
+                      bgColor: notifire.getlogowhitecolor,
                       textColor: notifire.getwhiteblackcolor,
                       buttontext: "LOGIN",
                       onclick: () {
@@ -205,7 +205,7 @@ class _loginscreenState extends State<loginscreen> {
                   style: TextStyle(
                       fontSize: 15,
                       fontFamily: "Gilroy Medium",
-                      color: notifire.getlogobgcolor)),
+                      color: LogoColor)),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                 AppButton(
                     buttontext: "REGISTER",

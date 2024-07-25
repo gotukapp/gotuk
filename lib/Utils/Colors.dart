@@ -8,9 +8,9 @@ Color BlackColor = const Color(0xff000000);
 Color bgcolor = const Color(0xFFEEEEEE);
 Color BlackColor2 = const Color(0xff000000);
 
-Color darkGreyColor = const Color(0xff707080);
+Color darkGrey = const Color(0xff5f5f5f);
 Color greyColor = const Color(0xffA7AEC1);
-Color greyColor2 = const Color(0xffA7AEC1);
+Color lightGrey = const Color(0xFFEEEEEE);
 
 Color Darkblue = const Color(0xff4885F5);
 Color Darkblue2 = const Color(0xff4885F5);
@@ -25,9 +25,6 @@ Color LogoColor = const Color(0xffE51D45);
 
 Color textFieldColor = const Color(0xff795259);
 Color fieldColor = const Color(0xffD2C8CA);
-
-Color lightgrey = const Color(0xffDDDDDD);
-Color lightgrey2 = const Color(0xffDDDDDD);
 
 Color lightBlack = const Color(0xff73000000);
 Color lightBlack2 = const Color(0XFF636777);

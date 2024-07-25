@@ -96,7 +96,7 @@ class _profileState extends State<profile> {
                   Container(
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
-                        color: notifire.getbgcolor),
+                        color: notifire.getdarklightgreycolor),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 10, vertical: 10),
@@ -134,7 +134,7 @@ class _profileState extends State<profile> {
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => const Favourite()));
                               },
-                              boxcolor: notifire.getdarkmodecolor,
+                              boxcolor: notifire.getdarklightgreycolor,
                               iconcolor: notifire.getwhiteblackcolor,
                               ImageColor: notifire.getwhiteblackcolor,
                               TextColor: notifire.getwhiteblackcolor),
@@ -147,7 +147,7 @@ class _profileState extends State<profile> {
                                     builder: (context) =>
                                     const TransactionHistory()));
                               },
-                              boxcolor: notifire.getdarkmodecolor,
+                              boxcolor: notifire.getdarklightgreycolor,
                               iconcolor: notifire.getwhiteblackcolor,
                               ImageColor: notifire.getwhiteblackcolor,
                               TextColor: notifire.getwhiteblackcolor),
