@@ -24,11 +24,14 @@ class calendarState extends State<calendar> {
   /// The method for [DateRangePickerSelectionChanged] callback, which will be
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
     setState(() {
+      DateTime? now = DateTime.now(); //lets say Jul 25 10:35:90
+      var currentDate = DateTime(now.year, now.month,  now.day - 1);
+
       if (args.value is PickerDateRange) {
         _range = '${DateFormat('dd/MM/yyyy').format(args.value.startDate)} -'
             // ignore: lines_longer_than_80_chars
             ' ${DateFormat('dd/MM/yyyy').format(args.value.endDate ?? args.value.startDate)}';
-      } else if (args.value is DateTime) {
+      } else if (args.value is DateTime && args.value.compareTo(currentDate) > 0) {
         _selectedDate = args.value;
       } else if (args.value is List<DateTime>) {
         _dateCount = args.value.length.toString();
