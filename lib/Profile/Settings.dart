@@ -120,55 +120,38 @@ class _SettingsState extends State<Settings> {
                     borderRadius: BorderRadius.circular(15),
                     color: notifire.getdarkmodecolor,
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          Image.asset(
-                            "assets/images/moon.png",
-                            height: 30,
-                            color: notifire.getwhiteblackcolor,
-                          ),
-                          SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.065),
-                          Text("Dark Mode",
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  color: notifire.getwhiteblackcolor,
-                                  fontFamily: "Gilroy Bold")),
-                        ],
+                  child:
+                    ListTile(
+                      leading: Image.asset(
+                        "assets/images/moon.png",
+                        height: 30,
+                        color: notifire.getwhiteblackcolor,
                       ),
-                      // ignore: sized_box_for_whitespace
-                      Container(
-                        height: 43.0,
-                        width: 60.0,
-                        child: FittedBox(
-                          fit: BoxFit.fill,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: CupertinoSwitch(
-                              thumbColor: notifire.getdarkwhitecolor,
-                              trackColor: notifire.getbuttoncolor,
-                              activeColor: notifire.getdarkbluecolor,
-                              value: switchValue,
-                              onChanged: (value) async {
-                                setState(() {
-                                  switchValue = value;
-                                });
-                                final prefs =
-                                    await SharedPreferences.getInstance();
-                                setState(() {
-                                  notifire.setIsDark = value;
-                                  prefs.setBool("setIsDark", value);
-                                });
-                              },
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  )),
+                      title: Text("Dark Mode",
+                          style: TextStyle(
+                              fontSize: 15,
+                              color: notifire.getwhiteblackcolor,
+                              fontFamily: "Gilroy Bold")),
+                      trailing: CupertinoSwitch(
+                        thumbColor: notifire.getdarkwhitecolor,
+                        trackColor: notifire.getbuttoncolor,
+                        activeColor: notifire.getdarkbluecolor,
+                        value: switchValue,
+                        onChanged: (value) async {
+                          setState(() {
+                            switchValue = value;
+                          });
+                          final prefs =
+                          await SharedPreferences.getInstance();
+                          setState(() {
+                            notifire.setIsDark = value;
+                            prefs.setBool("setIsDark", value);
+                          });
+                        },
+                      )
+                    )
+              ),
+
               AccountSetting(
                   image: "assets/images/lock.png",
                   text: "Privacy Settings",
@@ -205,8 +188,10 @@ class _SettingsState extends State<Settings> {
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
       notifire.setIsDark = false;
+      switchValue = false;
     } else {
       notifire.setIsDark = previusstate;
+      switchValue = true;
     }
   }
 }
