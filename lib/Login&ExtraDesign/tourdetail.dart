@@ -8,6 +8,7 @@ import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:maplibre_gl/maplibre_gl.dart';
 
 import '../Utils/tour.dart';
 
@@ -31,11 +32,61 @@ class _tourdetailpageState extends State<tourdetailpage> {
     super.initState();
   }
 
+  static const CameraPosition _kInitialPosition = CameraPosition(
+    target: LatLng(38.7071, -9.13549),
+    zoom: 7.0,
+  );
+  MapLibreMapController? mapController;
+
+  void _onMapChanged() {
+    setState(() {
+    });
+  }
+
+  @override
+  void dispose() {
+    mapController?.removeListener(_onMapChanged);
+    super.dispose();
+  }
+
+  void onMapCreated(MapLibreMapController controller) {
+    mapController = controller;
+    mapController!.addListener(_onMapChanged);
+  }
+
   late ColorNotifire notifire;
   @override
   Widget build(BuildContext context) {
     tour = tourList.firstWhere((tour) => tour.id == widget.tourId);
     notifire = Provider.of<ColorNotifire>(context, listen: true);
+
+    final maplibreMap = MapLibreMap(
+      onMapCreated: onMapCreated,
+      initialCameraPosition: _kInitialPosition,
+      onMapClick: (point, latLng) async {
+        debugPrint(
+            "Map click: ${point.x},${point.y}   ${latLng.latitude}/${latLng.longitude}");
+      },
+      onUserLocationUpdated: (location) {
+        debugPrint(
+            "new location: ${location.position}, alt.: ${location.altitude}, bearing: ${location.bearing}, speed: ${location.speed}, horiz. accuracy: ${location.horizontalAccuracy}, vert. accuracy: ${location.verticalAccuracy}");
+      },
+    );
+
+    debugPrint(
+        "mapController  ${mapController}");
+
+    mapController?.addLine(
+      LineOptions(
+        draggable: false,
+        lineColor: "#ff0000",
+        lineWidth: 7.0,
+        lineOpacity: 1,
+        geometry: tour!.coords.map((c) => LatLng(c["lat"], c["lng"])).toList()
+      ),
+    );
+
+
     return Scaffold(
       bottomNavigationBar: Container(
         color: notifire.getdarkmodecolor,
@@ -95,7 +146,8 @@ class _tourdetailpageState extends State<tourdetailpage> {
         ),
       ),
       backgroundColor: notifire.getbgcolor,
-      body: CustomScrollView(slivers: <Widget>[
+      body:
+      CustomScrollView(slivers: <Widget>[
         SliverAppBar(
           elevation: 0,
           backgroundColor: notifire.getbgcolor,
@@ -302,24 +354,9 @@ class _tourdetailpageState extends State<tourdetailpage> {
                       ],
                     ),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Location",
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontFamily: "Gilroy Bold",
-                              color: notifire.getwhiteblackcolor),
-                        ),
-                        Text(
-                          "View Detail",
-                          style: TextStyle(
-                              fontSize: 15,
-                              color: notifire.getdarkbluecolor,
-                              fontFamily: "Gilroy Medium"),
-                        ),
-                      ],
+                    Container(
+                        height: 300.0,
+                        child: maplibreMap
                     ),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                     Card(
@@ -333,25 +370,6 @@ class _tourdetailpageState extends State<tourdetailpage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Image.asset("assets/images/googlemap.png"),
-                            SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.01),
-                            Row(
-                              children: [
-                                Image.asset("assets/images/Maplocation.png",
-                                    height: 20),
-                                SizedBox(
-                                    width: MediaQuery.of(context).size.width *
-                                        0.01),
-                                Text(
-                                  tour!.address,
-                                  style: TextStyle(
-                                      color: notifire.getgreycolor,
-                                      fontFamily: "Gilroy Medium"),
-                                )
-                              ],
-                            ),
                             const SizedBox(height: 6),
                             Padding(
                               padding: const EdgeInsets.only(left: 4),

@@ -299,7 +299,7 @@ class _loginpageState extends State<loginpage> {
   }
 
   late ColorNotifire notifire;
-  late bool isDriver;
+  late bool isDriver = false;
 
   @override
   Widget build(BuildContext context) {
