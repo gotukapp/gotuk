@@ -25,5 +25,7 @@ jobs:
         with:
           channel: stable
           flutter-version-file: pubspec.yaml # path to pubspec.yaml
-      - run: flutter build ipa
+      - run: |
+          flutter build ipa
+          bundle exec fastlane beta
 
