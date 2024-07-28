@@ -19,4 +19,8 @@ jobs:
         with:
           channel: stable
           flutter-version-file: pubspec.yaml # path to pubspec.yaml
-      - run: fastlane beta
+      - run: |
+          gem install bundler
+          bundle install
+          fastlane beta
+        working-directory: ios
