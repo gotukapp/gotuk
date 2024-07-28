@@ -2,6 +2,10 @@ PODS:
   - Flutter (1.0.0)
   - flutter_sms (1.1.0):
     - Flutter
+  - MapLibre (6.5.0)
+  - maplibre_gl (0.0.1):
+    - Flutter
+    - MapLibre (= 6.5.0)
   - share (0.0.1):
     - Flutter
   - shared_preferences_foundation (0.0.1):
@@ -13,15 +17,22 @@ PODS:
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_sms (from `.symlinks/plugins/flutter_sms/ios`)
+  - maplibre_gl (from `.symlinks/plugins/maplibre_gl/ios`)
   - share (from `.symlinks/plugins/share/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
+
+SPEC REPOS:
+  trunk:
+    - MapLibre
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
   flutter_sms:
     :path: ".symlinks/plugins/flutter_sms/ios"
+  maplibre_gl:
+    :path: ".symlinks/plugins/maplibre_gl/ios"
   share:
     :path: ".symlinks/plugins/share/ios"
   shared_preferences_foundation:
@@ -32,6 +43,8 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_sms: 91ce41530f55c85d6524d82307a5d555844c086a
+  MapLibre: 0ebfa9329d313cec8bf0a5ba5a336a1dc903785e
+  maplibre_gl: 943a491fffb3337c1b9de57fd377206d18c16e34
   share: 0b2c3e82132f5888bccca3351c504d0003b3b410
   shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
   url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
