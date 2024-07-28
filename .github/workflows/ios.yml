@@ -34,4 +34,5 @@ jobs:
       - name: fastlane
         if: always()
         run: bundle exec fastlane beta
+        working-directory: ios
 
