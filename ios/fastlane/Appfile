@@ -1,0 +1,8 @@
+app_identifier("com.gotuk.gotuk") # The bundle identifier of your app
+apple_id("admin@fleetmap.io") # Your Apple Developer Portal username
+
+itc_team_id("122303819") # App Store Connect Team ID
+team_id("57X9MD32BX") # Developer Portal Team ID
+
+# For more information about the Appfile, see:
+#     https://docs.fastlane.tools/advanced/#appfile
