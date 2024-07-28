@@ -30,7 +30,7 @@ jobs:
         with:
           channel: stable
           flutter-version-file: pubspec.yaml # path to pubspec.yaml
-      - run: flutter build ipa
+      - run: flutter build ios
       - name: fastlane
         if: always()
         run: bundle exec fastlane beta
