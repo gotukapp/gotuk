@@ -1,18 +1,3 @@
-# This file contains the fastlane.tools configuration
-# You can find the documentation at https://docs.fastlane.tools
-#
-# For a list of all available actions, check out
-#
-#     https://docs.fastlane.tools/actions
-#
-# For a list of all available plugins, check out
-#
-#     https://docs.fastlane.tools/plugins/available-plugins
-#
-
-# Uncomment the line if you want fastlane to automatically update itself
-# update_fastlane
-
 default_platform(:ios)
 
 platform :ios do
@@ -21,27 +6,26 @@ platform :ios do
     increment_build_number(xcodeproj: "Runner.xcodeproj")
     build_app(workspace: "Runner.xcworkspace", scheme: "Runner")
     upload_to_app_store
+    update_project_team(path: "Runner.xcodeproj", teamid: "57X9MD32BX")
+        increment_build_number(xcodeproj: "Runner.xcodeproj")
+        build_app(workspace: "Runner.xcworkspace", scheme: "Runner")
+        build_app
+        api_key = app_store_connect_api_key
+        upload_to_testflight(api_key: api_key)
   end
 end
-
-
 
 platform :ios do
   ENV['ITMSTRANSPORTER_FORCE_ITMS_PACKAGE_UPLOAD'] = 'false'
 
   desc "Push a new beta build to TestFlight"
-  lane :beta do
+  lane :matchlane do
     setup_ci if ENV['CI']
     match(type: 'appstore')
     update_code_signing_settings(
       code_sign_identity: "iPhone Distribution",
       profile_name: "match AppStore com.gotuk.gotuk"
     )
-    update_project_team(path: "App.xcodeproj", teamid: "57X9MD32BX")
-    increment_version_number_in_plist(version_number: ENV["PACKAGE_VERSION"])
-    build_app
-    api_key = app_store_connect_api_key
-    upload_to_testflight(api_key: api_key)
   end
 end
 
