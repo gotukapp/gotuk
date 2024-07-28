@@ -32,11 +32,10 @@ platform :ios do
   desc "Push a new beta build to TestFlight"
   lane :beta do
     setup_ci if ENV['CI']
-    match(type: 'appstore')
+    match(type: 'appstore', readonly: false)
     update_code_signing_settings(
       code_sign_identity: "iPhone Distribution",
-      profile_name: "match AppStore com.fleetmap.gotuk",
-      readonly: false
+      profile_name: "match AppStore com.fleetmap.gotuk"
     )
     update_project_team(path: "App.xcodeproj", teamid: "57X9MD32BX")
     increment_version_number_in_plist(version_number: ENV["PACKAGE_VERSION"])
