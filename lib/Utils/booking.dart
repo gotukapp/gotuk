@@ -1,11 +1,19 @@
 import 'package:dm/Utils/tour.dart';
 
 List bookings = [
-  Booking(tourList[0], DateTime(2024,7,20,13,0,0), 4, 0),
-  Booking(tourList[1], DateTime(2024,7,19,10,30,0), 4, 1),
-  Booking(tourList[3], DateTime(2024,4,9,18,30,0), 4, 2),
+  Booking(tourList[0], DateTime(2024,7,20,13,0,0), 6, 0),
+  Booking(tourList[1], DateTime(2024,7,19,10,30,0), 6, 1),
+  Booking(tourList[3], DateTime(2024,4,9,18,30,0), 6, 2),
   Booking(tourList[2], DateTime(2024,5,16,11,30,0), 6, 2),
-  Booking(tourList[0], DateTime(2024,5,28,14,0,0), 2, 2)
+  Booking(tourList[0], DateTime(2024,5,28,14,0,0), 3, 2)
+];
+
+Booking currentBook = Booking(tourList[0], DateTime(2024,7,29,10,0,0), 6, 1);
+
+List driverBookings = [
+  Booking(tourList[0], DateTime(2024,7,29,13,0,0), 6, 1),
+  Booking(tourList[1], DateTime(2024,7,29,15,30,0), 6, 1),
+  Booking(tourList[3], DateTime(2024,7,29,18,30,0), 6, 1)
 ];
 
 class Booking {
@@ -19,10 +27,10 @@ class Booking {
 
   double get price {
     if (persons < 4) {
-      return tour.priceLow;
+      return tour.getTourPrice(true);
     }
 
-    return tour.priceHigh;
+    return tour.getTourPrice(false);
   }
 
   static List get pendingBookings {

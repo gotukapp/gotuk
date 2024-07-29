@@ -1,7 +1,7 @@
 // ignore_for_file: camel_case_types
 
-import 'package:dm/Massage/Cheting.dart';
-import 'package:dm/Massage/ShowMassage.dart';
+import 'package:dm/Message/Cheting.dart';
+import 'package:dm/Message/ShowMassage.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
@@ -9,14 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class massage extends StatefulWidget {
-  const massage({super.key});
+class message extends StatefulWidget {
+  const message({super.key});
 
   @override
-  State<massage> createState() => _massageState();
+  State<message> createState() => _messageState();
 }
 
-class _massageState extends State<massage> {
+class _messageState extends State<message> {
   @override
   void initState() {
     getdarkmodepreviousstate();

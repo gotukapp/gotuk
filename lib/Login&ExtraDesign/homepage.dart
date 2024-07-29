@@ -9,7 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'home.dart';
-import '../Massage/massage.dart';
+import '../Driver/dashboard.dart';
+import '../Message/message.dart';
 
 int selectedIndex = 0;
 
@@ -23,16 +24,25 @@ class homepage extends StatefulWidget {
 class _homepageState extends State<homepage> {
   late int _lastTimeBackButtonWasTapped;
   static const exitTimeInMillis = 2000;
+  late bool isDriver = false;
 
   final _pageOption = [
     const home(),
     Search(),
-    const massage(),
+    const message(),
+    const profile(),
+  ];
+
+  final _driverPageOption = [
+    const dashboard(),
+    Search(),
+    const message(),
     const profile(),
   ];
   @override
   void initState() {
     getdarkmodepreviousstate();
+    getAppModeState();
     super.initState();
   }
 
@@ -86,7 +96,7 @@ class _homepageState extends State<homepage> {
           selectedIndex = index;
         },
       ),
-      body: _pageOption[selectedIndex],
+      body: isDriver ? _driverPageOption[selectedIndex] : _pageOption[selectedIndex],
     );
   }
 
@@ -98,5 +108,11 @@ class _homepageState extends State<homepage> {
     } else {
       notifire.setIsDark = previusstate;
     }
+  }
+
+  getAppModeState() async {
+    final prefs = await SharedPreferences.getInstance();
+    bool? previousState = prefs.getBool("setIsDriver");
+    isDriver = previousState ?? false;
   }
 }

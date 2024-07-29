@@ -20,9 +20,12 @@ class loginscreen extends StatefulWidget {
 
 class _loginscreenState extends State<loginscreen> {
   late ColorNotifire notifire;
+  late bool isDriver = false;
+
   @override
   void initState() {
     getdarkmodepreviousstate();
+    getAppModeState();
     super.initState();
   }
 
@@ -53,7 +56,7 @@ class _loginscreenState extends State<loginscreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Welcome to GoTuk",
+                        "Welcome to GoTuk${isDriver ? " Driver" : ""}",
                         style: TextStyle(
                           fontSize: 24,
                           fontFamily: "Gilroy Bold",
@@ -229,5 +232,11 @@ class _loginscreenState extends State<loginscreen> {
     } else {
       notifire.setIsDark = previusstate;
     }
+  }
+
+  getAppModeState() async {
+    final prefs = await SharedPreferences.getInstance();
+    bool? previousState = prefs.getBool("setIsDriver");
+    isDriver = previousState ?? false;
   }
 }

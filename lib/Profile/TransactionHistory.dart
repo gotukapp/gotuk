@@ -2,6 +2,7 @@
 
 // ignore: unused_import
 import 'package:dm/Profile/Favourite.dart';
+import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:flutter/material.dart';
@@ -149,7 +150,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
               Text("My Bookings",
                   style: TextStyle(
                       fontSize: 16,
-                      color: notifire.getwhiteblackcolor,
+                      color: LogoColor,
                       fontFamily: "Gilroy Bold")),
               const SizedBox(height: 10),
               SizedBox(

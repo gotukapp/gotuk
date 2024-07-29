@@ -310,6 +310,7 @@ class _loginpageState extends State<loginpage> {
         padding: const EdgeInsets.symmetric(horizontal: 12),
         child: Column(
           children: [
+            SizedBox(height: MediaQuery.of(context).size.height * 0.05),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
