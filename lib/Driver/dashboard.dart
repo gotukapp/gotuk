@@ -137,8 +137,8 @@ class _dashboardState extends State<dashboard> {
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Transaction(text1: "3", text2: "Today"),
-                                        Transaction(text1: "6", text2: "This Week"),
-                                        Transaction(text1: "10", text2: "This Month"),
+                                        Transaction(text1: "6", text2: "Last 7 days"),
+                                        Transaction(text1: "10", text2: "Last 30 days"),
                                       ],
                                     ),
                                   ]

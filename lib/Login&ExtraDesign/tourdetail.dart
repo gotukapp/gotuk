@@ -34,7 +34,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
 
   static const CameraPosition _kInitialPosition = CameraPosition(
     target: LatLng(38.7071, -9.13549),
-    zoom: 7.0,
+    zoom: 8.0,
   );
   MapLibreMapController? mapController;
 
@@ -89,7 +89,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
 
     return Scaffold(
       bottomNavigationBar: Container(
-        color: notifire.getdarkmodecolor,
+        color: notifire.getblackwhitecolor,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           child: Row(
@@ -106,7 +106,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                   height: 60,
                   width: MediaQuery.of(context).size.width * 0.4,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50), color: Darkblue),
+                      borderRadius: BorderRadius.circular(50), color: LogoColor),
                   child: Center(
                     child: Text(
                       "Book Tour",
@@ -129,7 +129,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                   height: 60,
                   width: MediaQuery.of(context).size.width * 0.4,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50), color: Darkblue),
+                      borderRadius: BorderRadius.circular(50), color: LogoColor),
                   child: Center(
                     child: Text(
                       "Go Now",
@@ -145,12 +145,12 @@ class _tourdetailpageState extends State<tourdetailpage> {
           ),
         ),
       ),
-      backgroundColor: notifire.getbgcolor,
+      backgroundColor: notifire.getblackwhitecolor,
       body:
       CustomScrollView(slivers: <Widget>[
         SliverAppBar(
           elevation: 0,
-          backgroundColor: notifire.getbgcolor,
+          backgroundColor: notifire.getblackwhitecolor,
           leading: Padding(
             padding: const EdgeInsets.only(top: 8, left: 12),
             child: CircleAvatar(
@@ -213,7 +213,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      tour!.title,
+                      tour!.title.toUpperCase(),
                       style: TextStyle(
                           fontSize: 18,
                           color: notifire.getwhiteblackcolor,
@@ -229,14 +229,14 @@ class _tourdetailpageState extends State<tourdetailpage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Image.asset(
-                              "assets/images/Maplocation.png",
+                              "assets/images/location.png",
                               height: 20,
-                              color: notifire.getdarkbluecolor,
+                              color: LogoColor,
                             ),
                             Text(
                               tour!.address,
                               style: TextStyle(
-                                  color: notifire.getgreycolor,
+                                  color: notifire.getwhiteblackcolor,
                                   fontSize: 14,
                                   fontFamily: "Gilroy Medium"),
                             )
@@ -256,7 +256,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                               "(84 Reviews)",
                               style: TextStyle(
                                   fontSize: 14,
-                                  color: notifire.getgreycolor,
+                                  color: notifire.getwhiteblackcolor,
                                   fontFamily: "Gilroy Medium"),
                             ),
                           ],
@@ -272,7 +272,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                         Image.asset(
                           "assets/images/user.png",
                           height: 20,
-                          color: notifire.getwhiteblackcolor,
+                          color: LogoColor,
                         ),
                         SizedBox(width: 20),
                         Column(
@@ -299,7 +299,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                                     style: TextStyle(
                                         fontFamily: "Gilroy Medium",
                                         fontSize: 14,
-                                        color: notifire.getgreycolor),
+                                        color: notifire.getwhiteblackcolor),
                                   )
                                 ]
                             ),
@@ -325,7 +325,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                                   style: TextStyle(
                                       fontFamily: "Gilroy Medium",
                                       fontSize: 14,
-                                      color: notifire.getgreycolor),
+                                      color: notifire.getwhiteblackcolor),
                                 ),
                               ],
                             )
@@ -341,14 +341,14 @@ class _tourdetailpageState extends State<tourdetailpage> {
                         Image.asset(
                           "assets/images/timer.png",
                           height: 20,
-                          color: notifire.getwhiteblackcolor,
+                          color: LogoColor,
                         ),
                         SizedBox(width: 20),
                         Text(
                           tour!.duration,
                           style: TextStyle(
                               fontSize: 18,
-                              color: notifire.getdarkbluecolor,
+                              color: notifire.getwhiteblackcolor,
                               fontFamily: "Gilroy Bold"),
                         )
                       ],

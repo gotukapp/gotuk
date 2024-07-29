@@ -30,13 +30,14 @@ class checkout extends StatefulWidget {
 class _checkoutState extends State<checkout> {
   bool isChecked = false;
   bool isChecked1 = false;
+  bool withTaxNumber = false;
   bool vehicleTypeSwitchValue = false;
   bool smallPriceSelected = true;
 
   bool guideFeaturesSaved = false;
   List checkedLanguages = List<Object>.generate(languages.length, (i) => { ...languages[i], "value": false });
 
-  Color smallPriceColor = Darkblue;
+  Color smallPriceColor = LogoColor;
   Color highPriceColor = greyColor;
 
   DateTime? selectedDate;
@@ -59,8 +60,8 @@ class _checkoutState extends State<checkout> {
   void changeButtonColor() {
     setState(() {
       smallPriceSelected = !smallPriceSelected;
-      smallPriceColor = smallPriceSelected ? Darkblue : greyColor;
-      highPriceColor = smallPriceSelected ? greyColor : Darkblue;
+      smallPriceColor = smallPriceSelected ? LogoColor : greyColor;
+      highPriceColor = smallPriceSelected ? greyColor : LogoColor;
     });
   }
 
@@ -222,7 +223,47 @@ class _checkoutState extends State<checkout> {
                   text: guideFeaturesSaved ? getAllSelectedLanguages() : "Select Guide Features",
                   icon: Icons.keyboard_arrow_down,
                   onclick: guideBottomSheet),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.only(left: 6),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Invoice with tax number",
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontFamily: "Gilroy Bold",
+                          color: notifire.getwhiteblackcolor),
+                    ),
+                    Theme(
+                      data: ThemeData(
+                          unselectedWidgetColor:
+                          notifire.getdarkwhitecolor),
+                      child: Checkbox(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5)),
+                        value: withTaxNumber,
+                        onChanged: (value) {
+                          setState(() {
+                            withTaxNumber = value!;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (withTaxNumber)
+                ...[
+                  textfield(
+                      feildcolor: notifire.getfieldcolor,
+                      hintcolor: notifire.gettextfieldcolor,
+                      text: 'Tax number',
+                      prefix: Image.asset("assets/images/call.png",
+                          height: 20, color: notifire.getgreycolor),
+                      suffix: null),
+                ],
               Divider(
                 color: notifire.getgreycolor,
                 thickness: 1,
@@ -234,7 +275,7 @@ class _checkoutState extends State<checkout> {
                   Text("Payment Details",
                       style: TextStyle(
                           fontSize: 16,
-                          color: notifire.getwhiteblackcolor,
+                          color: LogoColor,
                           fontFamily: "Gilroy Bold")),
                   const SizedBox(height: 15),
                   Row(
@@ -245,13 +286,13 @@ class _checkoutState extends State<checkout> {
                         style: TextStyle(
                             fontSize: 14,
                             fontFamily: "Gilroy Medium",
-                            color: notifire.getgreycolor),
+                            color: notifire.getwhiteblackcolor),
                       ),
                       Text(
                           "${tour?.getTourPrice(smallPriceSelected)}€",
                         style: TextStyle(
                             fontSize: 14,
-                            color: notifire.getgreycolor,
+                            color: notifire.getwhiteblackcolor,
                             fontFamily: "Gilroy Medium"),
                       ),
                     ],
@@ -264,12 +305,12 @@ class _checkoutState extends State<checkout> {
                           style: TextStyle(
                               fontSize: 14,
                               fontFamily: "Gilroy Medium",
-                              color: notifire.getgreycolor)),
+                              color: notifire.getwhiteblackcolor)),
                       Text("${tour?.getFeePrice(smallPriceSelected)}€",
                           style: TextStyle(
                               fontSize: 14,
                               fontFamily: "Gilroy Medium",
-                              color: notifire.getgreycolor)),
+                              color: notifire.getwhiteblackcolor)),
                     ],
                   ),
                   const SizedBox(height: 15),
@@ -278,15 +319,17 @@ class _checkoutState extends State<checkout> {
                     children: [
                       Text("Total (EUR)",
                           style: TextStyle(
+                              fontSize: 16,
                               fontFamily: "Gilroy Bold",
                               color: notifire.getwhiteblackcolor)),
                       Text("${tour?.getTotalPrice(smallPriceSelected)}€",
                           style: TextStyle(
+                              fontSize: 16,
                               fontFamily: "Gilroy Bold",
                               color: notifire.getwhiteblackcolor)),
                     ],
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 25),
                   InkWell(
                     onTap: paymentmodelbottomsheet,
                     child: Container(
@@ -294,7 +337,7 @@ class _checkoutState extends State<checkout> {
                       width: double.infinity,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(50),
-                          color: Darkblue),
+                          color: LogoColor),
                       child: Center(
                         child: Text("Select Payment",
                             style: TextStyle(
@@ -432,7 +475,7 @@ class _checkoutState extends State<checkout> {
                       Image.asset(
                         image,
                         height: 25,
-                        color: notifire.getdarkbluecolor,
+                        color: LogoColor,
                       ),
                       const SizedBox(width: 15),
                       Text(
