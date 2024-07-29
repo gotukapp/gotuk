@@ -61,6 +61,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
     notifire = Provider.of<ColorNotifire>(context, listen: true);
 
     final maplibreMap = MapLibreMap(
+      styleString: 'https://api.maptiler.com/maps/basic-v2/style.json?key=c9mafO6rAK56K3BOW5w1',
       onMapCreated: onMapCreated,
       initialCameraPosition: _kInitialPosition,
       onMapClick: (point, latLng) async {
@@ -73,9 +74,6 @@ class _tourdetailpageState extends State<tourdetailpage> {
       },
     );
 
-    debugPrint(
-        "mapController  ${mapController}");
-
     mapController?.addLine(
       LineOptions(
         draggable: false,
@@ -85,6 +83,21 @@ class _tourdetailpageState extends State<tourdetailpage> {
         geometry: tour!.coords.map((c) => LatLng(c["lat"], c["lng"])).toList()
       ),
     );
+
+    final List<LatLng> lineCoordinates = tour!.coords
+        .map((c) => LatLng(c["lat"], c["lng"]))
+        .toList();
+
+    // Calculate bounds and move the camera
+    if (lineCoordinates.isNotEmpty) {
+      LatLngBounds bounds = LatLngBounds(
+        southwest: lineCoordinates.reduce((a, b) =>
+            LatLng(a.latitude < b.latitude ? a.latitude : b.latitude, a.longitude < b.longitude ? a.longitude : b.longitude)),
+        northeast: lineCoordinates.reduce((a, b) =>
+            LatLng(a.latitude > b.latitude ? a.latitude : b.latitude, a.longitude > b.longitude ? a.longitude : b.longitude)),
+      );
+      mapController!.moveCamera(CameraUpdate.newLatLngBounds(bounds));
+    }
 
 
     return Scaffold(
