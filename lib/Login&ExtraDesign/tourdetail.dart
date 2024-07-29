@@ -84,6 +84,21 @@ class _tourdetailpageState extends State<tourdetailpage> {
       ),
     );
 
+    final List<LatLng> lineCoordinates = tour!.coords
+        .map((c) => LatLng(c["lat"], c["lng"]))
+        .toList();
+
+    // Calculate bounds and move the camera
+    if (lineCoordinates.isNotEmpty) {
+      LatLngBounds bounds = LatLngBounds(
+        southwest: lineCoordinates.reduce((a, b) =>
+            LatLng(a.latitude < b.latitude ? a.latitude : b.latitude, a.longitude < b.longitude ? a.longitude : b.longitude)),
+        northeast: lineCoordinates.reduce((a, b) =>
+            LatLng(a.latitude > b.latitude ? a.latitude : b.latitude, a.longitude > b.longitude ? a.longitude : b.longitude)),
+      );
+      mapController!.moveCamera(CameraUpdate.newLatLngBounds(bounds));
+    }
+
 
     return Scaffold(
       bottomNavigationBar: Container(
