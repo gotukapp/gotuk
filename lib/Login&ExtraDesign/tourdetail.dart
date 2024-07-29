@@ -61,6 +61,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
     notifire = Provider.of<ColorNotifire>(context, listen: true);
 
     final maplibreMap = MapLibreMap(
+      styleString: 'https://api.maptiler.com/maps/basic-v2/style.json?key=c9mafO6rAK56K3BOW5w1',
       onMapCreated: onMapCreated,
       initialCameraPosition: _kInitialPosition,
       onMapClick: (point, latLng) async {
@@ -72,9 +73,6 @@ class _tourdetailpageState extends State<tourdetailpage> {
             "new location: ${location.position}, alt.: ${location.altitude}, bearing: ${location.bearing}, speed: ${location.speed}, horiz. accuracy: ${location.horizontalAccuracy}, vert. accuracy: ${location.verticalAccuracy}");
       },
     );
-
-    debugPrint(
-        "mapController  ${mapController}");
 
     mapController?.addLine(
       LineOptions(
