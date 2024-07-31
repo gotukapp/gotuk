@@ -337,7 +337,7 @@ class _checkoutState extends State<checkout> {
                       width: double.infinity,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(50),
-                          color: LogoColor),
+                          color:Darkblue),
                       child: Center(
                         child: Text("Select Payment",
                             style: TextStyle(
@@ -378,7 +378,7 @@ class _checkoutState extends State<checkout> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child:
-              Image.asset(tour!.img),
+              Image.asset(tour!.icon),
             ),
           ),
           Column(

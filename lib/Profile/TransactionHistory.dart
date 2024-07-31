@@ -53,9 +53,9 @@ class _TransactionHistoryState extends State<TransactionHistory> {
               Text("Pending Bookings",
                   style: TextStyle(
                       fontSize: 16,
-                      color: notifire.getwhiteblackcolor,
+                      color: LogoColor,
                       fontFamily: "Gilroy Bold")),
-              const SizedBox(height: 10),
+              const SizedBox(height: 1),
               SizedBox(
                 child: ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
@@ -146,13 +146,13 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                   },
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 15),
               Text("My Bookings",
                   style: TextStyle(
                       fontSize: 16,
                       color: LogoColor,
                       fontFamily: "Gilroy Bold")),
-              const SizedBox(height: 10),
+              const SizedBox(height: 1),
               SizedBox(
                 child: ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
@@ -243,13 +243,13 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                   },
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 15),
               Text("Past Transaction",
                   style: TextStyle(
                       fontSize: 16,
-                      color: notifire.getwhiteblackcolor,
+                      color: LogoColor,
                       fontWeight: FontWeight.bold)),
-              const SizedBox(height: 10),
+              const SizedBox(height: 1),
               SizedBox(
                 child: ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),

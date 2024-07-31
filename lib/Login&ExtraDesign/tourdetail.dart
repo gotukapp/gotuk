@@ -53,7 +53,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
     mapController = controller;
     mapController!.addListener(_onMapChanged);
 
-    final List<LatLng> lineCoordinates = tour!.coords
+    List<LatLng> lineCoordinates = tour!.coords
         .map((c) => LatLng(c["lat"], c["lng"]))
         .toList();
 
@@ -107,7 +107,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
       bottomNavigationBar: Container(
         color: notifire.getblackwhitecolor,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
