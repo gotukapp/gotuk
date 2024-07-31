@@ -638,7 +638,7 @@ class _checkoutState extends State<checkout> {
                                 NumberPicker(
                                   value: hourSliderValue,
                                   minValue: 8,
-                                  maxValue: 21,
+                                  maxValue: 20,
                                   onChanged: (value) => setState(() => hourSliderValue = value),
                                 )
                               ]
@@ -655,8 +655,8 @@ class _checkoutState extends State<checkout> {
                               NumberPicker(
                                 value: minutesSliderValue,
                                 minValue: 0,
-                                maxValue: 45,
-                                step: 15,
+                                maxValue: 30,
+                                step: 30,
                                 onChanged: (value) => setState(() => minutesSliderValue = value),
                               )
                             ])

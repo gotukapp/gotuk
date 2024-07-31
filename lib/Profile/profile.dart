@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../Driver/timetable.dart';
 import '../Utils/Colors.dart';
 import '../Utils/customwidget .dart';
 
@@ -24,10 +25,13 @@ class _profileState extends State<profile> {
   @override
   void initState() {
     getdarkmodepreviousstate();
+    getAppModeState();
     super.initState();
   }
 
   late ColorNotifire notifire;
+  late bool isDriver = false;
+
   @override
   Widget build(BuildContext context) {
     notifire = Provider.of<ColorNotifire>(context, listen: true);
@@ -140,12 +144,12 @@ class _profileState extends State<profile> {
                               TextColor: notifire.getwhiteblackcolor),
                           ProfileSetting(
                               image: "assets/images/clock.png",
-                              text: "Transactions",
+                              text: isDriver ? "Calendar" : "Transactions",
                               icon: Icons.keyboard_arrow_right,
                               onclick: () {
                                 Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) =>
-                                    const TransactionHistory()));
+                                    builder: (context) => isDriver ? const timetable()
+                                    : const TransactionHistory()));
                               },
                               boxcolor: notifire.getdarklightgreycolor,
                               iconcolor: notifire.getwhiteblackcolor,
@@ -212,5 +216,11 @@ class _profileState extends State<profile> {
     } else {
       notifire.setIsDark = previusstate;
     }
+  }
+
+  getAppModeState() async {
+    final prefs = await SharedPreferences.getInstance();
+    bool? previousState = prefs.getBool("setIsDriver");
+    isDriver = previousState ?? false;
   }
 }
