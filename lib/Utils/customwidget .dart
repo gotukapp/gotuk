@@ -426,3 +426,14 @@ List languages = [
   }
 ];
 
+List appLanguages = [
+  {
+    "code": "EN",
+    "name": "english"
+  },
+  {
+    "code": "PT",
+    "name": "portuguese"
+  }
+];
+

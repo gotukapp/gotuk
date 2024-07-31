@@ -2,8 +2,10 @@
 
 import 'package:dm/IntroScreen/onbording.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'Utils/LocaleModel.dart';
 import 'Utils/dark_lightmode.dart';
 
 void main() {
@@ -20,9 +22,25 @@ void main() {
 class BoardingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: onbording(),
+    return ChangeNotifierProvider(
+        create: (context) => LocaleModel(),
+        child: Consumer<LocaleModel>(
+        builder: (context, localeModel, child) => MaterialApp(
+          debugShowCheckedModeBanner: false,
+          home: const onbording(),
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate
+          ],
+          locale: localeModel.locale,
+          supportedLocales: const [
+            Locale('en'),
+            Locale('pt')
+          ],
+        )
+      )
     );
   }
 }
