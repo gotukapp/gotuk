@@ -1,14 +1,24 @@
 // ignore_for_file: use_key_in_widget_constructors
 
 import 'package:dm/IntroScreen/onbording.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'Utils/LocaleModel.dart';
 import 'Utils/dark_lightmode.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+  await FirebaseAuth.instance.signOut();
   runApp(
     MultiProvider(
       providers: [
@@ -25,21 +35,21 @@ class BoardingScreen extends StatelessWidget {
     return ChangeNotifierProvider(
         create: (context) => LocaleModel(),
         child: Consumer<LocaleModel>(
-        builder: (context, localeModel, child) => MaterialApp(
-          debugShowCheckedModeBanner: false,
-          home: const onbording(),
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate
-          ],
-          locale: localeModel.locale,
-          supportedLocales: const [
-            Locale('en'),
-            Locale('pt')
-          ],
-        )
+          builder: (context, localeModel, child) => MaterialApp(
+            debugShowCheckedModeBanner: false,
+            home: const onbording(),
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate
+            ],
+            locale: localeModel.locale,
+            supportedLocales: const [
+              Locale('en'),
+              Locale('pt')
+            ],
+          )
       )
     );
   }

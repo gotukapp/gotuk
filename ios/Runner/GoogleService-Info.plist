@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>788543987645-4sqort95uev34tngl5ui7kc2o03kv2of.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.788543987645-4sqort95uev34tngl5ui7kc2o03kv2of</string>
+	<key>API_KEY</key>
+	<string>AIzaSyA0Dq8K07jGMpGPnBgLxorNrdq82klfL4A</string>
+	<key>GCM_SENDER_ID</key>
+	<string>788543987645</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.gotuk.gotuk</string>
+	<key>PROJECT_ID</key>
+	<string>app-gotuk</string>
+	<key>STORAGE_BUCKET</key>
+	<string>app-gotuk.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:788543987645:ios:241b04e5dc80a3b563bcd4</string>
+</dict>
+</plist>

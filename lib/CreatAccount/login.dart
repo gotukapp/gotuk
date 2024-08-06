@@ -5,7 +5,9 @@ import 'package:dm/Login&ExtraDesign/homepage.dart';
 import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/CreatAccount/forgotpassword.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -31,6 +33,7 @@ class _loginscreenState extends State<loginscreen> {
 
   @override
   Widget build(BuildContext context) {
+    ValueNotifier userCredential = ValueNotifier('');
     notifire = Provider.of<ColorNotifire>(context, listen: true);
     return Scaffold(
       backgroundColor: notifire.getbgcolor,
@@ -155,7 +158,11 @@ class _loginscreenState extends State<loginscreen> {
                           height: 50,
                           width: MediaQuery.of(context).size.width / 2.3,
                           child: InkWell(
-                            onTap: () {},
+                            onTap: () async {
+                              userCredential.value = await signInWithGoogle();
+                              if (userCredential.value != null)
+                                print(userCredential.value.user!.email);
+                            },
                             child: ClipRRect(
                               borderRadius:
                               const BorderRadius.all(Radius.circular(50)),
@@ -222,6 +229,25 @@ class _loginscreenState extends State<loginscreen> {
           ])
       ),
     );
+  }
+
+  Future<dynamic> signInWithGoogle() async {
+    try {
+      print(GoogleSignIn().currentUser);
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      print(googleUser);
+      final GoogleSignInAuthentication? googleAuth =
+      await googleUser?.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+
+      return await FirebaseAuth.instance.signInWithCredential(credential);
+    } on Exception catch (e) {
+      print('exception->$e');
+    }
   }
 
   getdarkmodepreviousstate() async {
