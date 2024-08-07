@@ -25,6 +25,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
   bool _snap = false;
   bool _floating = false;
   Tour? tour;
+  PageController _pageController = PageController();
 
   @override
   void initState() {
@@ -70,6 +71,15 @@ class _tourdetailpageState extends State<tourdetailpage> {
 
   }
 
+  List<Widget> _buildSlides(List<String> slides) {
+    return slides.map(_buildSlide).toList();
+  }
+
+  void _handlingOnPageChanged(int page) {
+    setState(() => _currentPage = page);
+  }
+
+  int _currentPage = 0;
   late ColorNotifire notifire;
   @override
   Widget build(BuildContext context) {
@@ -99,9 +109,6 @@ class _tourdetailpageState extends State<tourdetailpage> {
         geometry: tour!.coords.map((c) => LatLng(c["lat"], c["lng"])).toList()
       ),
     );
-
-
-
 
     return Scaffold(
       bottomNavigationBar: Container(
@@ -210,17 +217,17 @@ class _tourdetailpageState extends State<tourdetailpage> {
           floating: _floating,
           expandedHeight: 250,
           flexibleSpace: FlexibleSpaceBar(
-            background: Image.asset(
-              tour!.img,
-              height: 300,
-              width: double.infinity,
-              fit: BoxFit.fill,
-            ),
+            background: PageView(
+              controller: _pageController,
+              onPageChanged: _handlingOnPageChanged,
+              physics: const BouncingScrollPhysics(),
+              children: _buildSlides(tour!.images))
           ),
         ),
         SliverToBoxAdapter(
             child: Column(
           children: [
+            _buildDots(slides: tour!.images, index: _currentPage),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
               child: Stack(children: [
@@ -544,6 +551,48 @@ class _tourdetailpageState extends State<tourdetailpage> {
           ],
         )),
       ]),
+    );
+  }
+
+  Widget _buildSlide(String image) {
+    return Column(
+        children: <Widget>[
+          Container(
+            height: MediaQuery.of(context).size.height / 3,
+            width: double.infinity,
+            child: FittedBox(
+              child:Image.asset(image),
+              fit: BoxFit.fill,
+            ),
+          )
+        ],
+      );
+  }
+
+  Widget _buildDots({
+    List<String>? slides,
+    int? index,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        for(int i=0;i<slides!.length;i++)
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              // borderRadius: const BorderRadius.all(
+              //   Radius.circular(50),
+              // ),
+              // color: Color(0xFF000000),
+              color: _currentPage == i ? Darkblue : greyColor,
+            ),
+            margin: const EdgeInsets.only(right: 8),
+            curve: Curves.easeIn,
+            width: _currentPage == i ? 12 : 8,
+            height: _currentPage == i ? 12 : 8,
+          )
+      ],
     );
   }
 

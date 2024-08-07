@@ -1,8 +1,17 @@
-Tour tour1 = Tour(1, "Lisboa Old City", "1h30 - 2h", "assets/images/selisboa.jpg", 115, 148, "Sé de Lisboa", "assets/images/old.png", 4.5, coords);
-Tour tour2 = Tour(2, "Lisboa New City", "1h30", "assets/images/comercio.jpg", 110, 135,"Terreiro do Paço (Praça do Comércio)", "assets/images/new_city.png", 4.9, coords);
-Tour tour3 = Tour(3, "Discoveries in Belém", "1h30 - 2h30", "assets/images/lisboa.jpg", 140, 180, "Mosteiro dos Jerónimos", "assets/images/belem.png", 4.6, coords);
-Tour tour4 = Tour(4, "Cristo Rei", "1h30 - 2h30", "assets/images/cristorei.jpg", 95, 135, "Lisboa", "assets/images/cristo_rei.png", 4.6, coords);
-Tour tour5 = Tour(5, "Three sight hills", "1h30 - 2h", "assets/images/colinas.jpg", 105, 152, "Parque Eduardo VII, Lisboa", "", 4.7, coords);
+Tour tour1 = Tour(1,
+    "Lisboa Old City",
+    "1h30 - 2h",
+    "assets/images/selisboa.jpg",
+    ["assets/images/selisboa.jpg","assets/images/selisboa.jpg"],
+    115, 148,
+    "Sé de Lisboa",
+    "assets/images/old.png",
+    4.5,
+    coords);
+Tour tour2 = Tour(2, "Lisboa New City", "1h30", "assets/images/comercio.jpg", ["assets/images/comercio.jpg"], 110, 135,"Terreiro do Paço (Praça do Comércio)", "assets/images/new_city.png", 4.9, coords);
+Tour tour3 = Tour(3, "Discoveries in Belém", "1h30 - 2h30", "assets/images/lisboa.jpg", ["assets/images/lisboa.jpg"], 140, 180, "Mosteiro dos Jerónimos", "assets/images/belem.png", 4.6, coords);
+Tour tour4 = Tour(4, "Cristo Rei", "1h30 - 2h30", "assets/images/cristorei.jpg", ["assets/images/cristorei.jpg"], 95, 135, "Lisboa", "assets/images/cristo_rei.png", 4.6, coords);
+Tour tour5 = Tour(5, "Three sight hills", "1h30 - 2h", "assets/images/colinas.jpg", ["assets/images/colinas.jpg"], 105, 152, "Parque Eduardo VII, Lisboa", "", 4.7, coords);
 
 List tourList = [tour1, tour2, tour3, tour4, tour5];
 
@@ -75,6 +84,7 @@ class Tour {
   final String title;
   final String duration;
   final String img;
+  final List<String> images;
   final double priceLow;
   final double priceHigh;
   final String address;
@@ -83,7 +93,7 @@ class Tour {
   final List coords;
 
 
-  Tour(this.id, this.title, this.duration, this.img, this.priceLow,
+  Tour(this.id, this.title, this.duration, this.img, this.images, this.priceLow,
       this.priceHigh, this.address, this.icon, this.review, this.coords);
 
   Tour.fromJson(Map<String, dynamic> json)
@@ -91,6 +101,7 @@ class Tour {
         title = json['title'] as String,
         duration = json['duration'] as String,
         img = json['img'] as String,
+        images = json['images'] as List<String>,
         priceLow = json['priceLow'] as double,
         priceHigh = json['priceHigh'] as double,
         address = json['address'] as String,
@@ -104,6 +115,7 @@ class Tour {
         'title': title,
         'duration': duration,
         'img': img,
+        'images': images,
         'priceLow': priceLow,
         'priceHigh': priceHigh,
         'address': address,
