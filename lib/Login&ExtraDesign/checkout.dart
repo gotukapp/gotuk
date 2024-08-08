@@ -1,5 +1,6 @@
 // ignore_for_file: non_constant_identifier_names, sized_box_for_whitespace, camel_case_types
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dm/Login&ExtraDesign/calendar.dart';
 import 'package:dm/Login&ExtraDesign/homepage.dart';
 import 'package:dm/Utils/Colors.dart';
@@ -48,7 +49,7 @@ class _checkoutState extends State<checkout> {
   bool timeSaved = false;
 
   Tour? tour;
-  List tours = [];
+  List<Tour> tours = [];
   int carrosselDefaultPage = 0;
 
   @override
@@ -65,6 +66,16 @@ class _checkoutState extends State<checkout> {
     });
   }
 
+  List<Widget> _buildSlides(List<Tour> slides) {
+    return slides.map(_buildSlide).toList();
+  }
+
+  void _handlingOnPageChanged(int page) {
+    setState(() => _currentPage = page);
+  }
+
+  int _currentPage = 0;
+
   late ColorNotifire notifire;
   @override
   Widget build(BuildContext context) {
@@ -73,7 +84,7 @@ class _checkoutState extends State<checkout> {
     });
     if(widget.goNow){
       tours.addAll(tourList);
-      carrosselDefaultPage = tourList.indexOf(tour);
+      carrosselDefaultPage = tourList.indexOf(tour!);
     }
     notifire = Provider.of<ColorNotifire>(context, listen: true);
     return Scaffold(
@@ -368,17 +379,15 @@ class _checkoutState extends State<checkout> {
         children: [
           Container(
             margin: const EdgeInsets.symmetric(
-                horizontal: 12, vertical: 12),
-            height: 75,
-            width: 75,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              color: notifire.getdarkmodecolor,
-            ),
+                horizontal: 10, vertical: 10),
+            height: 80,
+            width: 80,
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child:
-              Image.asset(tour!.icon),
+              borderRadius: BorderRadius.circular(12),
+              child: Image.asset(
+                tour!.icon,
+                fit: BoxFit.fill,
+              ),
             ),
           ),
           Column(
@@ -387,9 +396,9 @@ class _checkoutState extends State<checkout> {
               SizedBox(
                   height: MediaQuery.of(context).size.height * 0.012),
               Text(
-                t.title,
+                t.title.toUpperCase(),
                 style: TextStyle(
-                    fontSize: 15,
+                    fontSize: 16,
                     fontFamily: "Gilroy Bold",
                     color: notifire.getwhiteblackcolor),
               ),
@@ -399,40 +408,34 @@ class _checkoutState extends State<checkout> {
               Text(
                 t.address,
                 style: TextStyle(
-                    fontSize: 13,
-                    color: notifire.getgreycolor,
+                    fontSize: 14,
+                    color: notifire.getwhiteblackcolor,
                     fontFamily: "Gilroy Medium"),
               ),
               SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.01),
+                  height: MediaQuery.of(context).size.height * 0.001),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Row(
                     children: [
-                      const SizedBox(width: 12,),
+                      const SizedBox(width: 150),
                       Image.asset(
                         "assets/images/star.png",
                         height: 20,
                       ),
                       const SizedBox(width: 2),
                       Padding(
-                        padding: const EdgeInsets.only(top: 4),
+                        padding: const EdgeInsets.only(top: 1),
                         child: Row(
                           children: [
                             Text(
-                              "4.6",
+                              tour!.review.toString(),
                               style: TextStyle(
                                   fontSize: 16,
                                   color: notifire.getdarkbluecolor,
                                   fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              "(142 Reviews)",
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: notifire.getgreycolor),
-                            ),
+                            )
                           ],
                         ),
                       )
@@ -1041,6 +1044,13 @@ class _checkoutState extends State<checkout> {
                           selectedIndex = 0;
                           Booking newBooking = new Booking(tour!, selectedDate!.copyWith(hour: hourSliderValue, minute: minutesSliderValue), smallPriceSelected ? 3 : 6, 0);
                           bookings.add(newBooking);
+
+                          FirebaseFirestore.instance
+                              .collection('bookings')
+                              .add(<String, dynamic>{
+                            'tour': 2
+                          });
+
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => const homepage()));
                         },
@@ -1068,6 +1078,44 @@ class _checkoutState extends State<checkout> {
             );
           });
         });
+  }
+
+  Widget _buildSlide(Tour tour) {
+    return Column(
+      children: <Widget>[
+        Container(
+          height: 110,
+          child: tourInfo(tour),
+        )
+      ],
+    );
+  }
+
+  Widget _buildDots({
+    List<String>? slides,
+    int? index,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        for(int i=0;i<slides!.length;i++)
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              // borderRadius: const BorderRadius.all(
+              //   Radius.circular(50),
+              // ),
+              // color: Color(0xFF000000),
+              color: _currentPage == i ? Darkblue : greyColor,
+            ),
+            margin: const EdgeInsets.only(right: 8),
+            curve: Curves.easeIn,
+            width: _currentPage == i ? 12 : 8,
+            height: _currentPage == i ? 12 : 8,
+          )
+      ],
+    );
   }
 
   // PaymentCard(

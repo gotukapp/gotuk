@@ -1,19 +1,40 @@
 Tour tour1 = Tour(1,
     "Lisboa Old City",
     "1h30 - 2h",
-    "assets/images/selisboa.jpg",
-    ["assets/images/selisboa.jpg","assets/images/selisboa.jpg"],
+    "assets/images/tour1_img1.jpg",
+    ["assets/images/tour1_img1.jpg","assets/images/tour1_img2.jpg","assets/images/tour1_img3.jpg","assets/images/tour1_img4.jpg"],
     115, 148,
     "Sé de Lisboa",
-    "assets/images/old.png",
+    "assets/images/tour1_img1.jpg",
     4.5,
     coords);
-Tour tour2 = Tour(2, "Lisboa New City", "1h30", "assets/images/comercio.jpg", ["assets/images/comercio.jpg"], 110, 135,"Terreiro do Paço (Praça do Comércio)", "assets/images/new_city.png", 4.9, coords);
-Tour tour3 = Tour(3, "Discoveries in Belém", "1h30 - 2h30", "assets/images/lisboa.jpg", ["assets/images/lisboa.jpg"], 140, 180, "Mosteiro dos Jerónimos", "assets/images/belem.png", 4.6, coords);
-Tour tour4 = Tour(4, "Cristo Rei", "1h30 - 2h30", "assets/images/cristorei.jpg", ["assets/images/cristorei.jpg"], 95, 135, "Lisboa", "assets/images/cristo_rei.png", 4.6, coords);
-Tour tour5 = Tour(5, "Three sight hills", "1h30 - 2h", "assets/images/colinas.jpg", ["assets/images/colinas.jpg"], 105, 152, "Parque Eduardo VII, Lisboa", "", 4.7, coords);
+Tour tour2 = Tour(2, "Lisboa New City", "1h30",
+    "assets/images/tour2_img1.jpg",
+    ["assets/images/tour2_img1.jpg","assets/images/tour2_img2.jpg","assets/images/tour2_img3.jpg","assets/images/tour2_img4.jpg"],
+    110, 135,
+    "Terreiro do Paço (Praça do Comércio)",
+    "assets/images/tour2_img1.jpg", 4.9, coords);
+Tour tour3 = Tour(3, "Discoveries in Belém", "1h30 - 2h30",
+    "assets/images/tour3_img1.jpg",
+    ["assets/images/tour3_img1.jpg","assets/images/tour3_img2.jpg","assets/images/tour3_img3.jpg","assets/images/tour3_img4.jpg"],
+    140, 180,
+    "Mosteiro dos Jerónimos",
+    "assets/images/tour3_img1.jpg", 4.6, coords);
+Tour tour4 = Tour(4, "Cristo Rei",
+    "1h30 - 2h30",
+    "assets/images/tour4_img1.jpg",
+    ["assets/images/tour4_img1.jpg"],
+    95, 135,
+    "Lisboa", "assets/images/tour4_img1.jpg", 4.6, coords);
+Tour tour5 = Tour(5,
+    "Three sight hills",
+    "1h30 - 2h",
+    "assets/images/tour5_img1.jpg",
+    ["assets/images/tour5_img1.jpg", "assets/images/tour5_img2.jpg","assets/images/tour5_img3.jpg"],
+    105, 152,
+    "Parque Eduardo VII, Lisboa", "assets/images/tour5_img1.jpg", 4.7, coords);
 
-List tourList = [tour1, tour2, tour3, tour4, tour5];
+List<Tour> tourList = [tour1, tour2, tour3, tour4, tour5];
 
 List nearbyTours = [tour1, tour2, tour3];
 

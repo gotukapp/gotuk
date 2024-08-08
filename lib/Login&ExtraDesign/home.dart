@@ -1,10 +1,12 @@
 // ignore_for_file: camel_case_types
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dm/Login&ExtraDesign/NearbyallHotel.dart';
 import 'package:dm/Login&ExtraDesign/showAllTours.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:dm/Utils/tour.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,6 +27,10 @@ class _homeState extends State<home> {
   @override
   void initState() {
     getdarkmodepreviousstate();
+    Firebase.initializeApp().whenComplete(() {
+      print("completed");
+      setState(() {});
+    });
     super.initState();
   }
 
@@ -32,92 +38,107 @@ class _homeState extends State<home> {
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
+
+    final Stream<QuerySnapshot> usersStream =
+    FirebaseFirestore.instance.collection('bookings').snapshots();
+
     notifire = Provider.of<ColorNotifire>(context, listen: true);
     return SafeArea(
       child: Scaffold(
         backgroundColor: notifire.getblackwhitecolor,
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        body: StreamBuilder<QuerySnapshot>(
+          stream: usersStream,
+          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.hasError) {
+              return const Text('Something went wrong');
+            }
+
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Text("Loading");
+            }
+
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.01),
-                      Text(
-                        "Hello, Joaquim! 👋",
-                        style: TextStyle(
-                            color: notifire.getwhiteblackcolor,
-                            fontSize: 16,
-                            fontFamily: "Gilroy Medium"),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.01),
+                          Text(
+                            "Hello, Joaquim! 👋",
+                            style: TextStyle(
+                                color: notifire.getwhiteblackcolor,
+                                fontSize: 16,
+                                fontFamily: "Gilroy Medium"),
+                          ),
+                          SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.0001),
+                          Text(
+                            "Let’s find you a tour",
+                            style: TextStyle(
+                                fontSize: 16,
+                                color: LogoColor,
+                                fontFamily: "Gilroy Bold"),
+                          ),
+                        ],
                       ),
-                      SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.0001),
-                      Text(
-                        "Let’s find you a tour",
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: LogoColor,
-                            fontFamily: "Gilroy Bold"),
-                      ),
+                      InkWell(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => const notification()));
+                          },
+                          child: CircleAvatar(
+                              backgroundColor: notifire.getdarkmodecolor,
+                              child: Image.asset(
+                                "assets/images/notification.png",
+                                height: 25,
+                                color: notifire.getwhiteblackcolor,
+                              )))
                     ],
                   ),
-                  InkWell(
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const notification()));
-                      },
-                      child: CircleAvatar(
-                          backgroundColor: notifire.getdarkmodecolor,
-                          child: Image.asset(
-                            "assets/images/notification.png",
-                            height: 25,
-                            color: notifire.getwhiteblackcolor,
-                          )))
-                ],
-              ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.015),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        height: 40,
-                        width: 190,
-                        decoration: BoxDecoration(
-                            border: Border.all(color: LogoColor),
-                            borderRadius: BorderRadius.circular(50),
-                            color: WhiteColor),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Image.asset(
-                              "assets/images/location.png",
-                              height: 24,
-                              color: LogoColor,
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            height: 40,
+                            width: 190,
+                            decoration: BoxDecoration(
+                                border: Border.all(color: LogoColor),
+                                borderRadius: BorderRadius.circular(50),
+                                color: WhiteColor),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Image.asset(
+                                  "assets/images/location.png",
+                                  height: 24,
+                                  color: LogoColor,
+                                ),
+                                Text(
+                                  "Lisboa, PT",
+                                  style: TextStyle(
+                                      color: BlackColor,
+                                      fontFamily: "Gilroy Medium"),
+                                ),
+                                Icon(
+                                  Icons.keyboard_arrow_down,
+                                  color: LogoColor,
+                                ),
+                              ],
                             ),
-                            Text(
-                              "Lisboa, PT",
-                              style: TextStyle(
-                                  color: BlackColor,
-                                  fontFamily: "Gilroy Medium"),
-                            ),
-                            Icon(
-                              Icons.keyboard_arrow_down,
-                              color: LogoColor,
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.03),
-                      InkWell(
+                          ),
+                          SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.03),
+                          InkWell(
                             onTap: () {
                               Navigator.of(context)
                                   .push(MaterialPageRoute(
@@ -139,251 +160,264 @@ class _homeState extends State<home> {
                               ),
                             ),
                           ),
-                      SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.025),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Recommended",
-                            style: TextStyle(
-                                fontFamily: "Gilroy Bold",
-                                color: notifire.getwhiteblackcolor),
+                          SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.025),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Recommended",
+                                style: TextStyle(
+                                    fontFamily: "Gilroy Bold",
+                                    color: notifire.getwhiteblackcolor),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => const showAllTours(),
+                                  ));
+                                },
+                                child: Text(
+                                  "See All",
+                                  style: TextStyle(
+                                      color: notifire.getdarkbluecolor,
+                                      fontFamily: "Gilroy Medium"),
+                                ),
+                              ),
+                            ],
                           ),
-                          InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const showAllTours(),
-                              ));
-                            },
-                            child: Text(
-                              "See All",
-                              style: TextStyle(
-                                  color: notifire.getdarkbluecolor,
-                                  fontFamily: "Gilroy Medium"),
-                            ),
+                          SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.018),
+                          // const SizedBox(height: 10),
+                          SizedBox(
+                              height: height/3.1,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: tourList.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return InkWell(
+                                    onTap: () {
+                                      Navigator.of(context).push(MaterialPageRoute(
+                                          builder: (context) =>
+                                              tourdetailpage(tourList[index].id)));
+                                    },
+                                    child: Container(
+                                      margin:
+                                      const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                                      width: 240,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(12),
+                                          color: notifire.getdarklightgreycolor),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10, vertical: 10),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                          children: [
+                                            Stack(
+                                              children: [
+                                                Align(
+                                                  alignment: Alignment.center,
+                                                  child :
+                                                  Container(
+                                                    margin: const EdgeInsets.only(
+                                                        top: 20),
+                                                    height: 100,
+                                                    width: 100,
+                                                    child: ClipRRect(
+                                                      borderRadius: BorderRadius.circular(12),
+                                                      child: Image.asset(
+                                                        tourList[index].icon,
+                                                        fit: BoxFit.fill,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Align(
+                                                  alignment: Alignment.topRight,
+                                                  child: Text(
+                                                    "${tourList[index].priceLow}€ - ${tourList[index].priceHigh}€",
+                                                    style: TextStyle(
+                                                        fontSize: 12,
+                                                        color: Darkblue,
+                                                        fontFamily:
+                                                        "Gilroy Bold"),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(
+                                                height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                    0.02),
+                                            Text(
+                                              tourList[index].title.toUpperCase(),
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontFamily: "Gilroy Bold",
+                                                  color:
+                                                  notifire.getwhiteblackcolor),
+                                            ),
+                                            SizedBox(
+                                                height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                    0.0005),
+                                            Text(
+                                              tourList[index].address,
+                                              style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: notifire.getwhiteblackcolor,
+                                                  fontFamily: "Gilroy Medium",
+                                                  overflow: TextOverflow.ellipsis),
+                                            ),
+                                            SizedBox(
+                                                height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                    0.03),
+                                            Row(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                tourDuration(
+                                                    image: "assets/images/timer.png",
+                                                    text: tourList[index].duration,
+                                                    radi: 0),
+                                                tourReview(review: tourList[index].review)
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              )),
+                          SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.02),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Nearby Tour",
+                                style: TextStyle(
+                                    fontFamily: "Gilroy Bold",
+                                    color: notifire.getwhiteblackcolor),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                      const NearbyallHotel()));
+                                },
+                                child: Text(
+                                  "See All",
+                                  style: TextStyle(
+                                    color: notifire.getdarkbluecolor,
+                                    fontFamily: "Gilroy Medium",
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                      SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.018),
-                      // const SizedBox(height: 10),
-                      SizedBox(
-                          height: height/3.1,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: tourList.length,
+                          SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.01),
+                          ListView.builder(
+                            shrinkWrap: true,
+                            padding: EdgeInsets.zero,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: nearbyTours.length,
                             itemBuilder: (BuildContext context, int index) {
                               return InkWell(
                                 onTap: () {
                                   Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) =>
-                                          tourdetailpage(tourList[index].id)));
+                                      builder: (context) => tourdetailpage(nearbyTours[index].id)));
                                 },
                                 child: Container(
-                                  margin:
-                                      const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-                                  width: 240,
+                                  width: double.infinity,
+                                  margin: const EdgeInsets.symmetric(vertical: 6),
                                   decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12),
-                                      color: notifire.getdarklightgreycolor),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10, vertical: 10),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Stack(
-                                          children: [
-                                            Align(
-                                              alignment: Alignment.center,
-                                              child :
-                                                CircleAvatar(
-                                                  radius: 50.0,
-                                                  child: ClipOval(
-                                                      child: Image.asset(
-                                                        tourList[index].icon
-                                                            .toString(),
-                                                        fit: BoxFit.cover,
-                                                      )),
-                                                ),
-                                            ),
-                                            Align(
-                                              alignment: Alignment.topRight,
-                                              child: Text(
-                                                  "${tourList[index].priceLow}€ - ${tourList[index].priceHigh}€",
-                                                  style: TextStyle(
-                                                      fontSize: 12,
-                                                      color: Darkblue,
-                                                      fontFamily:
-                                                      "Gilroy Bold"),
-                                                  ),
-                                               ),
-                                          ],
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: notifire.getdarklightgreycolor,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        margin: const EdgeInsets.symmetric(
+                                            horizontal: 12, vertical: 12),
+                                        height: 75,
+                                        width: 75,
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(12),
+                                          child: Image.asset(
+                                            nearbyTours[index].icon,
+                                            fit: BoxFit.fill,
+                                          ),
                                         ),
-                                        SizedBox(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.02),
-                                        Text(
-                                          tourList[index].title.toUpperCase(),
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              fontFamily: "Gilroy Bold",
-                                              color:
-                                                  notifire.getwhiteblackcolor),
-                                        ),
-                                        SizedBox(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.0005),
-                                        Text(
-                                          tourList[index].address,
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              color: notifire.getwhiteblackcolor,
-                                              fontFamily: "Gilroy Medium",
-                                              overflow: TextOverflow.ellipsis),
-                                        ),
-                                        SizedBox(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.03),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            tourDuration(
-                                                image: "assets/images/timer.png",
-                                                text: tourList[index].duration,
-                                                radi: 0),
-                                            tourReview(review: tourList[index].review)
-                                          ],
-                                        )
-                                      ],
-                                    ),
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            nearbyTours[index].title.toUpperCase(),
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                color: notifire.getwhiteblackcolor,
+                                                fontFamily: "Gilroy Bold"),
+                                          ),
+                                          // const SizedBox(height: 6),
+                                          SizedBox(
+                                              height: MediaQuery.of(context) .size .height *
+                                                  0.001),
+                                          Text(
+                                            nearbyTours[index].address,
+                                            style: TextStyle(
+                                                fontSize: 13,
+                                                color: notifire.getgreycolor,
+                                                fontFamily: "Gilroy Medium",
+                                                overflow: TextOverflow.ellipsis),
+                                          ),
+                                          SizedBox(
+                                              height: MediaQuery.of(context) .size .height *
+                                                  0.001),
+                                          Text(
+                                            "${nearbyTours[index].priceLow}€ - ${nearbyTours[index].priceHigh}€",
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                color: LogoColor,
+                                                fontFamily: "Gilroy Bold"),
+                                          ),
+                                        ],
+                                      ),
+                                      Expanded(child: SizedBox()),
+                                      tourReview(review: nearbyTours[index].review)
+                                    ],
                                   ),
                                 ),
                               );
                             },
-                          )),
-                      SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.02),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Nearby Tour",
-                            style: TextStyle(
-                                fontFamily: "Gilroy Bold",
-                                color: notifire.getwhiteblackcolor),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) =>
-                                      const NearbyallHotel()));
-                            },
-                            child: Text(
-                              "See All",
-                              style: TextStyle(
-                                color: notifire.getdarkbluecolor,
-                                fontFamily: "Gilroy Medium",
-                              ),
-                            ),
-                          ),
+                          )
                         ],
                       ),
-                      SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.01),
-                      ListView.builder(
-                        shrinkWrap: true,
-                        padding: EdgeInsets.zero,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: nearbyTours.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => tourdetailpage(nearbyTours[index].id)));
-                            },
-                            child: Container(
-                              width: double.infinity,
-                              margin: const EdgeInsets.symmetric(vertical: 6),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                color: notifire.getdarklightgreycolor,
-                              ),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 12, vertical: 12),
-                                    height: 75,
-                                    width: 75,
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(12),
-                                      child: Image.asset(
-                                        nearbyTours[index].icon,
-                                        fit: BoxFit.fill,
-                                      ),
-                                    ),
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        nearbyTours[index].title.toUpperCase(),
-                                        style: TextStyle(
-                                            fontSize: 15,
-                                            color: notifire.getwhiteblackcolor,
-                                            fontFamily: "Gilroy Bold"),
-                                      ),
-                                      // const SizedBox(height: 6),
-                                      SizedBox(
-                                          height: MediaQuery.of(context) .size .height *
-                                              0.001),
-                                      Text(
-                                          nearbyTours[index].address,
-                                          style: TextStyle(
-                                              fontSize: 13,
-                                              color: notifire.getgreycolor,
-                                              fontFamily: "Gilroy Medium",
-                                              overflow: TextOverflow.ellipsis),
-                                      ),
-                                      SizedBox(
-                                          height: MediaQuery.of(context) .size .height *
-                                              0.001),
-                                      Text(
-                                        "${nearbyTours[index].priceLow}€ - ${nearbyTours[index].priceHigh}€",
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            color: LogoColor,
-                                            fontFamily: "Gilroy Bold"),
-                                      ),
-                                    ],
-                                  ),
-                                  Expanded(child: SizedBox()),
-                                  tourReview(review: nearbyTours[index].review)
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      )
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
-          ),
-        ),
-      ),
+            );
+          },
+        )
+    ));
+  }
+
+  void getData() async {
+    final docRef = FirebaseFirestore.instance.collection("cities").doc("SF");
+    docRef.snapshots().listen(
+          (event) => print("current data: ${event.data()}"),
+      onError: (error) => print("Listen failed: $error"),
     );
   }
 
