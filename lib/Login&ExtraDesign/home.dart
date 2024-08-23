@@ -195,104 +195,104 @@ class _homeState extends State<home> {
                                 scrollDirection: Axis.horizontal,
                                 itemCount: tourList.length,
                                 itemBuilder: (BuildContext context, int index) {
-                                  return InkWell(
-                                    onTap: () {
-                                      Navigator.of(context).push(MaterialPageRoute(
-                                          builder: (context) =>
-                                              tourdetailpage(tourList[index].id)));
-                                    },
-                                    child: Container(
-                                      margin:
-                                      const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-                                      width: 240,
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(12),
-                                          color: notifire.getdarklightgreycolor),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10, vertical: 10),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          children: [
-                                            Stack(
-                                              children: [
-                                                Align(
-                                                  alignment: Alignment.center,
-                                                  child :
-                                                  Container(
-                                                    margin: const EdgeInsets.only(
-                                                        top: 20),
-                                                    height: 100,
-                                                    width: 100,
-                                                    child: ClipRRect(
-                                                      borderRadius: BorderRadius.circular(12),
-                                                      child: Image.asset(
-                                                        tourList[index].icon,
-                                                        fit: BoxFit.fill,
+                                  return Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                                      child: InkWell(
+                                        onTap: () {
+                                          Navigator.of(context).push(MaterialPageRoute(
+                                              builder: (context) =>
+                                                  tourdetailpage(tourList[index].id)));
+                                        },
+                                        child: Stack(
+                                            children: [
+                                              Positioned(
+                                                width: 240,
+                                                height: 150,
+                                                child: ClipRRect(
+                                                  borderRadius: BorderRadius.circular(12),
+                                                  child: Image.asset(
+                                                    tourList[index].icon,
+                                                    fit: BoxFit.fill,
+                                                  ),
+                                                ),
+                                              ),
+                                              Positioned(
+                                                top: 5,
+                                                left: 185,
+                                                child: tourReview(review: tourList[0].review),
+                                              ),
+                                              Container(
+                                                  height: 240,
+                                                  alignment: const Alignment(-1, -1),
+                                                  child: Column(
+                                                    children: [
+                                                      const SizedBox(height: 130),
+                                                      Container(
+                                                        width: 240,
+                                                        height: 90,
+                                                        decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(12),
+                                                            color: notifire.getdarklightgreycolor),
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.symmetric(
+                                                              horizontal: 10, vertical: 10),
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                            CrossAxisAlignment.start,
+                                                            children: [
+                                                              Text(
+                                                                tourList[index].title.toUpperCase(),
+                                                                style: TextStyle(
+                                                                    fontSize: 14,
+                                                                    fontFamily: "Gilroy Bold",
+                                                                    color:
+                                                                    notifire.getwhiteblackcolor),
+                                                              ),
+                                                              SizedBox(
+                                                                  height: MediaQuery.of(context)
+                                                                      .size
+                                                                      .height *
+                                                                      0.0005),
+                                                              Text(
+                                                                tourList[0].address,
+                                                                style: TextStyle(
+                                                                    fontSize: 12,
+                                                                    color: notifire.getwhiteblackcolor,
+                                                                    fontFamily: "Gilroy Medium",
+                                                                    overflow: TextOverflow.ellipsis),
+                                                              ),
+                                                              SizedBox(
+                                                                  height: MediaQuery.of(context)
+                                                                      .size
+                                                                      .height *
+                                                                      0.01),
+                                                              Row(
+                                                                mainAxisAlignment:
+                                                                MainAxisAlignment.spaceBetween,
+                                                                children: [
+                                                                  Text(
+                                                                      "${tourList[index].priceLow}€ - ${tourList[index].priceHigh}€",
+                                                                      style: TextStyle(
+                                                                          color: Darkblue,
+                                                                          fontFamily:
+                                                                          "Gilroy Bold")
+                                                                  ),
+                                                                  tourDuration(
+                                                                      image: "assets/images/timer.png",
+                                                                      text: tourList[index].duration,
+                                                                      radi: 0)
+                                                                ],
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                Align(
-                                                  alignment: Alignment.topRight,
-                                                  child: Text(
-                                                    "${tourList[index].priceLow}€ - ${tourList[index].priceHigh}€",
-                                                    style: TextStyle(
-                                                        fontSize: 12,
-                                                        color: Darkblue,
-                                                        fontFamily:
-                                                        "Gilroy Bold"),
-                                                  ),
-                                                ),
-                                              ],
+                                                    ],
+                                                  )
+                                              )
+                                              ]
                                             ),
-                                            SizedBox(
-                                                height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                    0.02),
-                                            Text(
-                                              tourList[index].title.toUpperCase(),
-                                              style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontFamily: "Gilroy Bold",
-                                                  color:
-                                                  notifire.getwhiteblackcolor),
-                                            ),
-                                            SizedBox(
-                                                height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                    0.0005),
-                                            Text(
-                                              tourList[index].address,
-                                              style: TextStyle(
-                                                  fontSize: 12,
-                                                  color: notifire.getwhiteblackcolor,
-                                                  fontFamily: "Gilroy Medium",
-                                                  overflow: TextOverflow.ellipsis),
-                                            ),
-                                            SizedBox(
-                                                height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                    0.03),
-                                            Row(
-                                              mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                tourDuration(
-                                                    image: "assets/images/timer.png",
-                                                    text: tourList[index].duration,
-                                                    radi: 0),
-                                                tourReview(review: tourList[index].review)
-                                              ],
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ),
+                                      )
                                   );
                                 },
                               )),
@@ -427,7 +427,7 @@ class _homeState extends State<home> {
       children: [
         Image.asset(
           image!,
-          height: 25,
+          height: 20,
           color: LogoColor,
         ),
         const SizedBox(width: 5),
@@ -457,8 +457,7 @@ class _homeState extends State<home> {
                 review.toString(),
                 style: TextStyle(
                     fontSize: 16,
-                    color: notifire
-                        .getdarkbluecolor,
+                    color: BlackColor,
                     fontWeight:
                     FontWeight.bold),
               )
