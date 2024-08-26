@@ -198,14 +198,19 @@ class _tourdetailpageState extends State<tourdetailpage> {
                     ),
                   ),
                   const SizedBox(width: 20),
-                  CircleAvatar(
-                    radius: 22,
-                    backgroundColor: notifire.getlightblackcolor,
-                    child: Image.asset(
-                      "assets/images/heart.png",
-                      color: notifire.getdarkwhitecolor,
-                      height: 25,
-                    ),
+                  InkWell(
+                    onTap: () {
+                      tour!.favorite = tour!.favorite == true ? false : true;
+                    },
+                    child: CircleAvatar(
+                        radius: 22,
+                        backgroundColor: tour!.favorite == true ? Colors.red : notifire.getlightblackcolor,
+                        child: Image.asset(
+                          "assets/images/heart.png",
+                          color: notifire.getdarkwhitecolor,
+                          height: 25,
+                        ),
+                      ),
                   ),
                   const SizedBox(width: 20),
                 ],

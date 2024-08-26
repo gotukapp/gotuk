@@ -3,7 +3,11 @@
 import 'dart:ui';
 
 import 'package:dm/Utils/Colors.dart';
+import 'package:dm/Utils/tour.dart';
 import 'package:flutter/material.dart';
+
+import '../Login&ExtraDesign/tourdetail.dart';
+import 'dark_lightmode.dart';
 
 CustomAppbar(
     {centertext,
@@ -179,6 +183,114 @@ ProfileSetting(
       Text(text!,
           style: TextStyle(
               fontSize: 14, color: BlackColor, fontFamily: "Gilroy Bold"))
+    ],
+  );
+}
+
+tourListInfo(BuildContext context, ColorNotifire notifire, Tour tour) {
+  return InkWell(
+    onTap: () {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => tourdetailpage(tour.id)));
+    },
+    child: Container(
+      width: double.infinity,
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        color: notifire.getdarklightgreycolor,
+      ),
+      child: Row(
+        children: [
+          Container(
+            margin: const EdgeInsets.symmetric(
+                horizontal: 12, vertical: 12),
+            height: 75,
+            width: 75,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.asset(
+                tour.icon,
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                tour.title.toUpperCase(),
+                style: TextStyle(
+                    fontSize: 15,
+                    color: notifire.getwhiteblackcolor,
+                    fontFamily: "Gilroy Bold"),
+              ),
+              // const SizedBox(height: 6),
+              SizedBox(
+                  height: MediaQuery.of(context) .size .height *
+                      0.001),
+              Text(
+                tour.address,
+                style: TextStyle(
+                    fontSize: 13,
+                    color: notifire.getgreycolor,
+                    fontFamily: "Gilroy Medium",
+                    overflow: TextOverflow.ellipsis),
+              ),
+              SizedBox(
+                  height: MediaQuery.of(context) .size .height *
+                      0.001),
+              Row(
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width *
+                        0.3,
+                    child: Text(
+                      "${tour.priceLow}€ - ${tour.priceHigh}€",
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: Darkblue,
+                          fontFamily: "Gilroy Bold"),
+                    ),
+                  ),
+                  SizedBox(
+                      width: MediaQuery.of(context).size.width *
+                          0.15),
+                  tourReview(review: tour.review)
+                ],
+              )
+            ],
+          )
+        ],
+      ),
+    ),
+  );
+}
+
+tourReview({double? review})   {
+  return Row(
+    children: [
+      Image.asset(
+        "assets/images/star.png",
+        height: 20,
+      ),
+      const SizedBox(width: 2),
+      Padding(
+        padding: const EdgeInsets.only(
+            top: 4, right: 20),
+        child: Row(
+          children: [
+            Text(
+              review.toString(),
+              style: TextStyle(
+                  fontSize: 16,
+                  color: BlackColor,
+                  fontWeight:
+                  FontWeight.bold),
+            )
+          ],
+        ),
+      )
     ],
   );
 }

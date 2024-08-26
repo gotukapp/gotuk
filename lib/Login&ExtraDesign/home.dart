@@ -1,7 +1,7 @@
 // ignore_for_file: camel_case_types
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dm/Login&ExtraDesign/NearbyallHotel.dart';
+import 'package:dm/Login&ExtraDesign/nearbyAllTours.dart';
 import 'package:dm/Login&ExtraDesign/showAllTours.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
@@ -10,6 +10,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../Utils/customwidget .dart';
 import 'checkout.dart';
 import 'tourdetail.dart';
 import 'notification.dart';
@@ -37,8 +38,6 @@ class _homeState extends State<home> {
   late ColorNotifire notifire;
   @override
   Widget build(BuildContext context) {
-    var height = MediaQuery.of(context).size.height;
-
     final Stream<QuerySnapshot> usersStream =
     FirebaseFirestore.instance.collection('bookings').snapshots();
 
@@ -190,7 +189,7 @@ class _homeState extends State<home> {
                               height: MediaQuery.of(context).size.height * 0.018),
                           // const SizedBox(height: 10),
                           SizedBox(
-                              height: height/3.1,
+                              height: 240,
                               child: ListView.builder(
                                 scrollDirection: Axis.horizontal,
                                 itemCount: tourList.length,
@@ -311,7 +310,7 @@ class _homeState extends State<home> {
                                 onTap: () {
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (context) =>
-                                      const NearbyallHotel()));
+                                      const nearbyAllTours()));
                                 },
                                 child: Text(
                                   "See All",
@@ -331,74 +330,7 @@ class _homeState extends State<home> {
                             physics: const NeverScrollableScrollPhysics(),
                             itemCount: nearbyTours.length,
                             itemBuilder: (BuildContext context, int index) {
-                              return InkWell(
-                                onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => tourdetailpage(nearbyTours[index].id)));
-                                },
-                                child: Container(
-                                  width: double.infinity,
-                                  margin: const EdgeInsets.symmetric(vertical: 6),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15),
-                                    color: notifire.getdarklightgreycolor,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        margin: const EdgeInsets.symmetric(
-                                            horizontal: 12, vertical: 12),
-                                        height: 75,
-                                        width: 75,
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(12),
-                                          child: Image.asset(
-                                            nearbyTours[index].icon,
-                                            fit: BoxFit.fill,
-                                          ),
-                                        ),
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            nearbyTours[index].title.toUpperCase(),
-                                            style: TextStyle(
-                                                fontSize: 15,
-                                                color: notifire.getwhiteblackcolor,
-                                                fontFamily: "Gilroy Bold"),
-                                          ),
-                                          // const SizedBox(height: 6),
-                                          SizedBox(
-                                              height: MediaQuery.of(context) .size .height *
-                                                  0.001),
-                                          Text(
-                                            nearbyTours[index].address,
-                                            style: TextStyle(
-                                                fontSize: 13,
-                                                color: notifire.getgreycolor,
-                                                fontFamily: "Gilroy Medium",
-                                                overflow: TextOverflow.ellipsis),
-                                          ),
-                                          SizedBox(
-                                              height: MediaQuery.of(context) .size .height *
-                                                  0.001),
-                                          Text(
-                                            "${nearbyTours[index].priceLow}€ - ${nearbyTours[index].priceHigh}€",
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                color: LogoColor,
-                                                fontFamily: "Gilroy Bold"),
-                                          ),
-                                        ],
-                                      ),
-                                      Expanded(child: SizedBox()),
-                                      tourReview(review: nearbyTours[index].review)
-                                    ],
-                                  ),
-                                ),
-                              );
+                              return tourListInfo(context, notifire, nearbyTours[index]);
                             },
                           )
                         ],
@@ -435,34 +367,6 @@ class _homeState extends State<home> {
           text,
           style: TextStyle(
               color: notifire.getwhiteblackcolor, fontFamily: "Gilroy Medium"),
-        )
-      ],
-    );
-  }
-
-  tourReview({double? review})   {
-    return Row(
-      children: [
-        Image.asset(
-          "assets/images/star.png",
-          height: 20,
-        ),
-        const SizedBox(width: 2),
-        Padding(
-          padding: const EdgeInsets.only(
-              top: 4, right: 20),
-          child: Row(
-            children: [
-              Text(
-                review.toString(),
-                style: TextStyle(
-                    fontSize: 16,
-                    color: BlackColor,
-                    fontWeight:
-                    FontWeight.bold),
-              )
-            ],
-          ),
         )
       ],
     );

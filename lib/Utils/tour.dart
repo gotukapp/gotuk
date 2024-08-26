@@ -36,7 +36,7 @@ Tour tour5 = Tour(5,
 
 List<Tour> tourList = [tour1, tour2, tour3, tour4, tour5];
 
-List nearbyTours = [tour1, tour2, tour3];
+List<Tour> nearbyTours = [tour1, tour2, tour3];
 
 List coords = [
   { "lat": 38.709819267469186, "lng": -9.1334956851527 },
@@ -112,6 +112,7 @@ class Tour {
   final String icon;
   final double review;
   final List coords;
+  bool? favorite;
 
 
   Tour(this.id, this.title, this.duration, this.img, this.images, this.priceLow,

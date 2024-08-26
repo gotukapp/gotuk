@@ -113,6 +113,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Container(
+        height: 150,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
             color: notifire.getdarklightgreycolor),
@@ -131,8 +132,8 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                           padding: const EdgeInsets.symmetric(
                               vertical: 5),
                           child: Container(
-                            height: 130,
-                            width: 150,
+                            height: 110,
+                            width: 130,
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(12),
                               child: Image.asset(
@@ -143,7 +144,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                           )
                         ),
                         Positioned(
-                          left: 40,
+                          left: 30,
                           width: 70,
                           height: 25,
                           child: Container(
@@ -170,24 +171,25 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      const SizedBox(height: 15),
                       Row(
                         children: [
                           Text(DateFormat('E, d MMM yyyy - HH:mm').format(booking.date),
                               style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: 12,
                                   color: notifire.getwhiteblackcolor)),
                         ],
                       ),
                       const SizedBox(height: 10),
                       Text(booking.tour.title.toUpperCase(),
                           style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 14,
                               color:
                               notifire.getwhiteblackcolor,
                               fontFamily: "Gilroy Bold")),
                       Text("${booking.persons} Persons",
                           style: TextStyle(
-                              fontSize: 14,
+                              fontSize: 12,
                               color: notifire.getwhiteblackcolor,
                               fontFamily: "Gilroy Medium")),
                       const SizedBox(height: 10),
@@ -200,13 +202,13 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                           children: [
                               Text("Total Price",
                                   style: TextStyle(
-                                      fontSize: 14, color: notifire.getwhiteblackcolor, fontFamily: "Gilroy Medium")),
+                                      fontSize: 12, color: notifire.getwhiteblackcolor, fontFamily: "Gilroy Medium")),
                               Text("${booking.price}€",
                                   style: TextStyle(
-                                      fontSize: 16, color: Darkblue, fontFamily: "Gilroy Bold")),
+                                      fontSize: 14, color: Darkblue, fontFamily: "Gilroy Bold")),
                             ],
                           ),
-                          SizedBox(width: MediaQuery.of(context).size.width * 0.25),
+                          SizedBox(width: MediaQuery.of(context).size.width * 0.15),
                           InkWell(
                             onTap: () {
                               // Navigator.of(context).push(MaterialPageRoute(
@@ -214,14 +216,14 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                             },
                             child: Container(
                               height: 25,
-                              width: 80,
+                              width: 70,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(50), color: LogoColor),
                               child: Center(
                                 child: Text(
                                   action,
                                   style: TextStyle(
-                                      fontSize: 12, color: WhiteColor, fontFamily: "Gilroy Bold"),
+                                      fontSize: 10, color: WhiteColor, fontFamily: "Gilroy Bold"),
                                 ),
                               ),
                             ),
