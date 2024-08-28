@@ -49,25 +49,25 @@ class _TransactionHistoryState extends State<TransactionHistory> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Pending Bookings",
+              Text("Pending Bookings (${Booking.pendingBookings.length})",
                   style: TextStyle(
                       fontSize: 16,
                       color: LogoColor,
                       fontFamily: "Gilroy Bold")),
               const SizedBox(height: 1),
               SizedBox(
+                height: Booking.pendingBookings.isEmpty ? 0 : 200,
                 child: ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   padding: EdgeInsets.zero,
                   itemCount: Booking.pendingBookings.length,
                   itemBuilder: (BuildContext context, int index) {
                     return getBookingLayout(Booking.pendingBookings[index], "WAITING", "CANCEL");
                   },
-                ),
+                )
               ),
               const SizedBox(height: 15),
-              Text("My Bookings",
+              Text("My Bookings (${Booking.waitingBookings.length})",
                   style: TextStyle(
                       fontSize: 16,
                       color: LogoColor,
@@ -85,7 +85,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                 ),
               ),
               const SizedBox(height: 15),
-              Text("Past Bookings",
+              Text("Past Bookings (${Booking.finishBookings.length})",
                   style: TextStyle(
                       fontSize: 16,
                       color: LogoColor,
