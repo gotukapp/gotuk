@@ -74,7 +74,7 @@ class _notificationState extends State<notification> {
               child: ListView.builder(
                 shrinkWrap: true,
                 padding: EdgeInsets.zero,
-                itemCount: 10,
+                itemCount: notificationList.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Column(
                     children: [
@@ -85,7 +85,7 @@ class _notificationState extends State<notification> {
                           CircleAvatar(
                             backgroundColor: WhiteColor,
                             backgroundImage:
-                                AssetImage(hotelList4[index]["img"].toString()),
+                                AssetImage(notificationList[index]["img"].toString()),
                             radius: 25,
                           ),
                           const SizedBox(width: 8),
@@ -103,7 +103,7 @@ class _notificationState extends State<notification> {
                                       width: MediaQuery.of(context).size.width *
                                           0.61,
                                       child: Text(
-                                        hotelList5[index]["title"].toString(),
+                                        notificationList[index]["title"].toString(),
                                         style: TextStyle(
                                           fontSize: 15,
                                           fontFamily: "Gilroy Bold",
@@ -116,7 +116,7 @@ class _notificationState extends State<notification> {
                                   //     width: MediaQuery.of(context).size.width *
                                   //         0.1),
                                   Text(
-                                      hotelList5[index]["massagetime"]
+                                      notificationList[index]["massagetime"]
                                           .toString(),
                                       style: TextStyle(
                                           fontSize: 15,
@@ -131,7 +131,7 @@ class _notificationState extends State<notification> {
                                 height: 40,
                                 width: MediaQuery.of(context).size.width * 0.70,
                                 child: Text(
-                                  hotelList5[index]["subtitle"].toString(),
+                                  notificationList[index]["subtitle"].toString(),
                                   style: TextStyle(
                                       fontSize: 14,
                                       color: greyColor,

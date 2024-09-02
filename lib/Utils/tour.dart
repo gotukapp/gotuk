@@ -1,3 +1,5 @@
+import 'package:dm/Utils/review.dart';
+
 Tour tour1 = Tour(1,
     "Lisboa Old City",
     "1h30 - 2h",
@@ -7,32 +9,32 @@ Tour tour1 = Tour(1,
     "Sé de Lisboa",
     "assets/images/tour1_img1.jpg",
     4.5,
-    coords);
+    coords, allReviews);
 Tour tour2 = Tour(2, "Lisboa New City", "1h30",
     "assets/images/tour2_img1.jpg",
     ["assets/images/tour2_img1.jpg","assets/images/tour2_img2.jpg","assets/images/tour2_img3.jpg","assets/images/tour2_img4.jpg"],
     110, 135,
     "Terreiro do Paço (Praça do Comércio)",
-    "assets/images/tour2_img1.jpg", 4.9, coords);
+    "assets/images/tour2_img1.jpg", 4.9, coords, allReviews);
 Tour tour3 = Tour(3, "Discoveries in Belém", "1h30 - 2h30",
     "assets/images/tour3_img1.jpg",
     ["assets/images/tour3_img1.jpg","assets/images/tour3_img2.jpg","assets/images/tour3_img3.jpg","assets/images/tour3_img4.jpg"],
     140, 180,
     "Mosteiro dos Jerónimos",
-    "assets/images/tour3_img1.jpg", 4.6, coords);
+    "assets/images/tour3_img1.jpg", 4.6, coords, allReviews);
 Tour tour4 = Tour(4, "Cristo Rei",
     "1h30 - 2h30",
     "assets/images/tour4_img1.jpg",
     ["assets/images/tour4_img1.jpg"],
     95, 135,
-    "Lisboa", "assets/images/tour4_img1.jpg", 4.6, coords);
+    "Lisboa", "assets/images/tour4_img1.jpg", 4.6, coords, allReviews);
 Tour tour5 = Tour(5,
     "Three sight hills",
     "1h30 - 2h",
     "assets/images/tour5_img1.jpg",
     ["assets/images/tour5_img1.jpg", "assets/images/tour5_img2.jpg","assets/images/tour5_img3.jpg"],
     105, 152,
-    "Parque Eduardo VII, Lisboa", "assets/images/tour5_img1.jpg", 4.7, coords);
+    "Parque Eduardo VII, Lisboa", "assets/images/tour5_img1.jpg", 4.7, coords, allReviews);
 
 List<Tour> tourList = [tour1, tour2, tour3, tour4, tour5];
 
@@ -99,6 +101,12 @@ List coords = [
   { "lat": 38.716831654325944, "lng": -9.135511918955046 }
 ];
 
+List<Review> allReviews = [
+  Review("John kennedy","assets/images/person.jpg","Tuk Tuk is the best tour in the city",4.8),
+  Review("Alexander","assets/images/person1.jpeg","Thank you for booking our tour",4.6),
+  Review("Emanuel","assets/images/person2.jpg","50% discount on first booking",4.5),
+  Review("Jamison","assets/images/person12.jpg","You will have more fun in this tour than any other",4.4)
+];
 
 class Tour {
   final int id;
@@ -112,11 +120,12 @@ class Tour {
   final String icon;
   final double review;
   final List coords;
+  final List<Review> reviews;
   bool? favorite;
 
 
   Tour(this.id, this.title, this.duration, this.img, this.images, this.priceLow,
-      this.priceHigh, this.address, this.icon, this.review, this.coords);
+      this.priceHigh, this.address, this.icon, this.review, this.coords, this.reviews);
 
   Tour.fromJson(Map<String, dynamic> json)
       : id = json['id'] as int,
@@ -129,7 +138,8 @@ class Tour {
         address = json['address'] as String,
         icon = json['icon'] as String,
         review = json['review'] as double,
-        coords = json['coords'] as List;
+        coords = json['coords'] as List,
+        reviews = json['reviews'] as List<Review>;
 
   Map<String, dynamic> toJson() =>
       {
@@ -143,7 +153,8 @@ class Tour {
         'address': address,
         'icon': icon,
         'review': review,
-        'coords': coords
+        'coords': coords,
+        'reviews': reviews
       };
 
   double getTourPrice(bool smallPriceSelected) {

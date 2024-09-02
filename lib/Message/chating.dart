@@ -8,6 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../Utils/customwidget .dart';
+import '../Utils/tour.dart';
+
 class Chating extends StatefulWidget {
   const Chating({super.key});
 
@@ -27,7 +30,7 @@ class _ChatingState extends State<Chating> {
   Widget build(BuildContext context) {
     notifire = Provider.of<ColorNotifire>(context, listen: true);
     return Scaffold(
-      backgroundColor: notifire.getbgcolor,
+      backgroundColor: notifire.getblackwhitecolor,
       body: Column(
         children: [
           SizedBox(height: MediaQuery.of(context).size.height * 0.05),
@@ -113,113 +116,7 @@ class _ChatingState extends State<Chating> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      width: double.infinity,
-                      margin: const EdgeInsets.symmetric(vertical: 6),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        color: notifire.getdarkmodecolor,
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 12),
-                            height: 75,
-                            width: 75,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: WhiteColor,
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Image.asset(
-                                  "assets/images/Confidiantehotel.png"),
-                            ),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Eco Tuk Tour",
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    fontFamily: "Gilroy Bold",
-                                    color: notifire.getwhiteblackcolor),
-                              ),
-                              // const SizedBox(height: 6),
-                              SizedBox(
-                                  height: MediaQuery.of(context).size.height *
-                                      0.006),
-                              Text(
-                                "Purwokerto, Gleaming",
-                                style: TextStyle(
-                                    fontSize: 13,
-                                    color: notifire.getgreycolor,
-                                    fontFamily: "Gilroy Medium"),
-                              ),
-                              SizedBox(
-                                  height: MediaQuery.of(context).size.height *
-                                      0.01),
-                              Row(
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        "47€ /",
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            color: notifire.getdarkbluecolor,
-                                            fontFamily: "Gilroy Bold"),
-                                      ),
-                                      Text(
-                                        " Tour",
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            color: notifire.getgreycolor,
-                                            fontFamily: "Gilroy Medium"),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      const SizedBox(width: 12),
-                                      Image.asset(
-                                        "assets/images/star.png",
-                                        height: 20,
-                                      ),
-                                      const SizedBox(width: 2),
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 4),
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              "4.2",
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  color:
-                                                      notifire.getdarkbluecolor,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Text(
-                                              "(84 Reviews)",
-                                              style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: notifire.getgreycolor,
-                                                  fontFamily: "Gilroy Medium"),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
+                    tourListInfo(context, notifire, tourList[0]),
                     Massagelist(
                         SenderText:
                             "Hi, i'm already here",
@@ -408,7 +305,7 @@ class _ChatingState extends State<Chating> {
                         topLeft: Radius.circular(10),
                         bottomLeft: Radius.circular(10),
                         bottomRight: Radius.circular(10)),
-                    color: notifire.getdarkmodecolor),
+                    color: lightGrey),
                 width: MediaQuery.of(context).size.width * 0.70,
                 child: Padding(
                   padding:
@@ -439,7 +336,7 @@ class _ChatingState extends State<Chating> {
                         topLeft: Radius.circular(10),
                         bottomLeft: Radius.circular(10),
                         bottomRight: Radius.circular(10)),
-                    color: notifire.getdarkmodecolor),
+                    color: lightGrey),
                 width: MediaQuery.of(context).size.width * 0.70,
                 child: Padding(
                   padding:

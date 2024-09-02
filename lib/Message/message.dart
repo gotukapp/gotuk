@@ -1,6 +1,6 @@
 // ignore_for_file: camel_case_types
 
-import 'package:dm/Message/Cheting.dart';
+import 'package:dm/Message/chating.dart';
 import 'package:dm/Message/ShowMassage.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/customwidget%20.dart';
@@ -8,6 +8,8 @@ import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../Utils/tour.dart';
 
 class message extends StatefulWidget {
   const message({super.key});
@@ -99,7 +101,7 @@ class _messageState extends State<message> {
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         padding: EdgeInsets.zero,
-                        itemCount: 10,
+                        itemCount: allReviews.length,
                         itemBuilder: (BuildContext context, int index) {
                           return Padding(
                               padding: const EdgeInsets.symmetric(vertical: 0),
@@ -115,12 +117,12 @@ class _messageState extends State<message> {
                                       radius: 25,
                                       backgroundColor: WhiteColor,
                                       backgroundImage: AssetImage(
-                                          hotelList4[index]["img"].toString()),
+                                          allReviews[index].img),
                                     ),
                                     contentPadding: const EdgeInsets.only(
                                         left: 0, right: 0),
                                     title: Text(
-                                      hotelList4[index]["title"].toString(),
+                                      allReviews[index].name,
                                       style: TextStyle(
                                           fontSize: 15,
                                           color: notifire.getwhiteblackcolor,
@@ -128,7 +130,7 @@ class _messageState extends State<message> {
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                     subtitle: Text(
-                                      hotelList4[index]["massage"].toString(),
+                                      allReviews[index].message,
                                       style: TextStyle(
                                           color: notifire.getgreycolor,
                                           fontFamily: "Gilroy Medium"),

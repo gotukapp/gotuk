@@ -3,7 +3,6 @@
 import 'package:dm/Login&ExtraDesign/checkout.dart';
 import 'package:dm/Login&ExtraDesign/review.dart';
 import 'package:dm/Utils/Colors.dart';
-import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -281,7 +280,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                                   fontFamily: "Gilroy Bold"),
                             ),
                             Text(
-                              "(84 Reviews)",
+                              "(${tour!.reviews.length} Reviews)",
                               style: TextStyle(
                                   fontSize: 14,
                                   color: notifire.getwhiteblackcolor,
@@ -426,7 +425,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                         InkWell(
                           onTap: () {
                             Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const review(),
+                              builder: (context) => review(tour!),
                             ));
                           },
                           child: Text(
@@ -446,7 +445,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         padding: EdgeInsets.zero,
-                        itemCount: 10,
+                        itemCount: tour!.reviews.length,
                         itemBuilder: (BuildContext context, int index) {
                           return Column(
                             children: [
@@ -457,7 +456,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                                   CircleAvatar(
                                     backgroundColor: WhiteColor,
                                     backgroundImage: AssetImage(
-                                        hotelList4[index]["img"].toString()),
+                                        tour!.reviews[index].img),
                                     radius: 25,
                                   ),
                                   const SizedBox(width: 8),
@@ -480,8 +479,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                                                       .width *
                                                   0.54,
                                               child: Text(
-                                                hotelList4[index]["title"]
-                                                    .toString(),
+                                                tour!.reviews[index].name,
                                                 style: TextStyle(
                                                     fontSize: 15,
                                                     color: notifire
@@ -501,14 +499,12 @@ class _tourdetailpageState extends State<tourdetailpage> {
                                               onTap: () {
                                                 Navigator.of(context)
                                                     .push(MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            const review()))
+                                                        builder: (context) => review(tour!)))
                                                     .then((value) =>
                                                         print('ok Navigat'));
                                               },
                                               child: Text(
-                                                  hotelList4[index]["review"]
-                                                      .toString(),
+                                                  tour!.reviews[index].score.toString(),
                                                   style: TextStyle(
                                                       fontSize: 15,
                                                       fontFamily: "Gilroy Bold",
@@ -527,8 +523,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                                             MediaQuery.of(context).size.width *
                                                 0.70,
                                         child: Text(
-                                          hotelList4[index]["massage"]
-                                              .toString(),
+                                          tour!.reviews[index].message.toString(),
                                           style: TextStyle(
                                               fontSize: 14,
                                               color: notifire.getgreycolor,

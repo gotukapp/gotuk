@@ -7,8 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../Utils/tour.dart';
+
 class review extends StatefulWidget {
-  const review({super.key});
+  final Tour tour;
+
+  const review(this.tour, {super.key});
 
   @override
   State<review> createState() => _reviewState();
@@ -22,6 +26,7 @@ class _reviewState extends State<review> {
   }
 
   late ColorNotifire notifire;
+
   @override
   Widget build(BuildContext context) {
     notifire = Provider.of<ColorNotifire>(context, listen: true);
@@ -31,119 +36,19 @@ class _reviewState extends State<review> {
           child: CustomAppbar(
               centertext: "Reviews",
               ActionIcon: Icons.more_vert,
-              bgcolor: bgcolor)),
-      backgroundColor: bgcolor,
+              bgcolor: notifire.getblackwhitecolor)),
+      backgroundColor: notifire.getblackwhitecolor,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
           child: Column(
             children: [
-              Container(
-                width: double.infinity,
-                margin: const EdgeInsets.symmetric(vertical: 6),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  color: WhiteColor,
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 12),
-                      height: 75,
-                      width: 75,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        color: WhiteColor,
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child:
-                            Image.asset("assets/images/Confidiantehotel.png"),
-                      ),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          "Diamond Heart Hotel",
-                          style: TextStyle(
-                              fontSize: 15, fontFamily: "Gilroy Bold"),
-                        ),
-                        // const SizedBox(height: 6),
-                        SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.006),
-                        Text(
-                          "Purwokerto, Karang Lewas",
-                          style: TextStyle(
-                              fontSize: 13,
-                              color: greyColor,
-                              fontFamily: "Gilroy Medium"),
-                        ),
-                        SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.01),
-                        Row(
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  "\$46 /",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      color: Darkblue,
-                                      fontFamily: "Gilroy Bold"),
-                                ),
-                                const SizedBox(width: 3),
-                                Text(
-                                  "Night",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      color: greyColor,
-                                      fontFamily: "Gilroy Medium"),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                const SizedBox(width: 12),
-                                Image.asset(
-                                  "assets/images/star.png",
-                                  height: 20,
-                                ),
-                                const SizedBox(width: 2),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 4),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        "4.6",
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            color: Darkblue,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        "(142 Reviews)",
-                                        style: TextStyle(
-                                            fontSize: 14, color: greyColor),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+              tourListInfo(context, notifire, widget.tour),
               ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 padding: EdgeInsets.zero,
-                itemCount: 10,
+                itemCount: widget.tour.reviews.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Column(
                     children: [
@@ -154,7 +59,7 @@ class _reviewState extends State<review> {
                           CircleAvatar(
                             backgroundColor: WhiteColor,
                             backgroundImage:
-                                AssetImage(hotelList4[index]["img"].toString()),
+                                AssetImage(widget.tour.reviews[index].img),
                             radius: 25,
                           ),
                           const SizedBox(width: 8),
@@ -172,7 +77,7 @@ class _reviewState extends State<review> {
                                       width: MediaQuery.of(context).size.width *
                                           0.55,
                                       child: Text(
-                                        hotelList4[index]["title"].toString(),
+                                        widget.tour.reviews[index].name,
                                         style: const TextStyle(
                                             fontSize: 15,
                                             fontFamily: "Gilroy Bold"),
@@ -184,20 +89,11 @@ class _reviewState extends State<review> {
                                           0.10),
                                   Image.asset("assets/images/star.png",
                                       height: 20),
-                                  InkWell(
-                                      onTap: () {
-                                        print('ok Navigat');
-                                        Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const review()));
-                                      },
-                                      child: Text(
-                                          hotelList4[index]["review"]
-                                              .toString(),
-                                          style: const TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold)))
+                                  Text(
+                                      widget.tour.reviews[index].score.toString(),
+                                      style: const TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold))
                                 ],
                               ),
                               SizedBox(
@@ -207,7 +103,7 @@ class _reviewState extends State<review> {
                                 height: 40,
                                 width: MediaQuery.of(context).size.width * 0.70,
                                 child: Text(
-                                  hotelList4[index]["massage"].toString(),
+                                  widget.tour.reviews[index].message,
                                   style:
                                       TextStyle(fontSize: 14, color: greyColor),
                                   maxLines: 2,

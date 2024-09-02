@@ -28,14 +28,12 @@ class _homepageState extends State<homepage> {
 
   final _pageOption = [
     const home(),
-    Search(),
     const message(),
     const profile(),
   ];
 
   final _driverPageOption = [
     const dashboard(),
-    Search(),
     const message(),
     const profile(),
   ];
@@ -75,18 +73,13 @@ class _homepageState extends State<homepage> {
                   height: MediaQuery.of(context).size.height / 35),
               label: 'Home'),
           BottomNavigationBarItem(
-              icon: Image.asset("assets/images/search.png",
-                  color: selectedIndex == 1 ? Darkblue : greyColor,
-                  height: MediaQuery.of(context).size.height / 35),
-              label: 'Search'),
-          BottomNavigationBarItem(
               icon: Image.asset("assets/images/message.png",
-                  color: selectedIndex == 2 ? Darkblue : greyColor,
+                  color: selectedIndex == 1 ? Darkblue : greyColor,
                   height: MediaQuery.of(context).size.height / 35),
               label: 'Message'),
           BottomNavigationBarItem(
             icon: Image.asset("assets/images/profile.png",
-                color: selectedIndex == 3 ? Darkblue : greyColor,
+                color: selectedIndex == 2 ? Darkblue : greyColor,
                 height: MediaQuery.of(context).size.height / 35),
             label: 'Profile',
           ),

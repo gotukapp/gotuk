@@ -211,7 +211,7 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                                               fontFamily: "Gilroy Bold"),
                                         ),
                                         Text(
-                                          hotelList3[index]["price"].toString(),
+                                          hotelList2[index]["price"].toString(),
                                           style: TextStyle(
                                               fontSize: 16,
                                               color: notifire.getdarkbluecolor,

@@ -390,121 +390,28 @@ List hotelList2 = [
   }
 ];
 
-List hotelList3 = [
-  {"price": "44€"},
-  {"price": "42€"},
-  {"price": "40€"},
-  {"price": "38€"},
-  {"price": "40€"},
-  {"price": "34€"},
-  {"price": "32€"},
-  {"price": "30€"},
-  {"price": "46€"},
-  {"price": "44€"},
-];
-
-List hotelList4 = [
+List notificationList = [
   {
-    "id": "1",
-    "title": "John kennedy",
-    "img": "assets/images/person.jpg",
-    "price": "26€/Tour",
-    "massage": "Tuk Tuk is the best tour in the city",
-    "review": "4.8",
-  },
-  {
-    "id": "2",
-    "title": "Alexander",
-    "img": "assets/images/person1.jpeg",
-    "price": "28€/Tour",
-    "massage": "Thank you for booking our tour",
-    "review": "4.6",
-  },
-  {
-    "id": "3",
-    "title": "Emanuel",
-    "img": "assets/images/person2.jpg",
-    "price": "30€/Tour",
-    "massage": "50% discount on first booking",
-    "review": "4.5",
-  },
-  {
-    "id": "4",
-    "title": "Jamison",
-    "img": "assets/images/person12.jpg",
-    "price": "32€/Tour",
-    "massage": "You will have more fun in this tour than any other",
-    "review": "4.4",
-  },
-  {
-    "id": "5",
-    "title": "Quentin",
-    "img": "assets/images/person5.jpg",
-    "price": "34€/Tour",
-    "massage": "Excelent Tuk Tuk tour",
-    "review": "4.3",
-  },
-  {
-    "id": "6",
-    "title": "Albert",
-    "img": "assets/images/person6.jpg",
-    "price": "36€/Tour",
-    "massage": "Excelent Tuk Tuk tour",
-    "review": "4.6",
-  },
-  {
-    "id": "7",
-    "title": "Lawrence",
-    "img": "assets/images/person7.jpg",
-    "price": "38€/Tour",
-    "massage": "Excelent Tuk Tuk tour",
-    "review": "4.7",
-  },
-  {
-    "id": "8",
-    "title": "Alessandro",
-    "img": "assets/images/person8.jpg",
-    "price": "40€/Tour",
-    "massage": "Amazing Tuk Tuk tour",
-    "review": "4.1",
-  },
-  {
-    "id": "9",
-    "title": "Harrison",
     "img": "assets/images/person9.jpg",
-    "price": "42€/Tour",
-    "massage": "Money back if you don't enjoy our tour",
-    "review": "4.0",
-  },
-  {
-    "id": "10",
-    "title": "Maverick",
-    "img": "assets/images/person13.jpg",
-    "price": "44€/Tour",
-    "massage": "50% discount on first booking",
-    "review": "3.9",
-  },
-];
-
-List hotelList5 = [
-  {
     "title": "Kim Hayo Send You a Message",
     "subtitle":
-        "Hi mariana, are you looking for Tuk Tuk in Lisbon?",
+    "Hi mariana, are you looking for Tuk Tuk in Lisbon?",
     "massagetime": "1:m Ago"
   },
   {
+    "img": "assets/images/person8.jpg",
     "title": "John  Send You a Message",
     "subtitle":
-        "The service is on point, and I really like the tour. Good job!",
+    "The service is on point, and I really like the tour. Good job!",
     "massagetime": "2:m Ago"
   },
   {
+    "img": "assets/images/person6.jpg",
     "title": "Alexander Send You a Message",
     "subtitle":
-        "The hotels give me amazing view, I really like it!. All people must try this Tuk Tuk.",
+    "The hotels give me amazing view, I really like it!. All people must try this Tuk Tuk.",
     "massagetime": "3:m Ago"
-  },
+  }
 ];
 
 List languages = [
