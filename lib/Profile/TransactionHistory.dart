@@ -120,9 +120,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
         child: Padding(
           padding: const EdgeInsets.symmetric(
               horizontal: 10, vertical: 5),
-          child: Expanded(
-            child:
-              Row(
+          child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -234,7 +232,6 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                   )
                 ]
               )
-          ),
         ),
       ),
     );
