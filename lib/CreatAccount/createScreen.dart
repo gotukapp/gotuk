@@ -5,6 +5,7 @@ import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/CreatAccount/login.dart';
 import 'package:dm/CreatAccount/verifyaccount.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -144,9 +145,18 @@ class _createScreenState extends State<createScreen> {
                         AppButton(
                           bgColor: notifire.getlogowhitecolor,
                           textColor: notifire.getwhiteblackcolor,
-                          onclick: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const verifyaccount()));
+                          onclick: () async {
+                            try {
+                              bool loginOk = await createUser(
+                                  "jppenas@gmail.com", "teste");
+                              print(loginOk);
+                              if (loginOk) {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => const verifyaccount()));
+                              }
+                            } on Exception catch (e) {
+                              print(e);
+                            }
                           },
                           buttontext: "AGREE & CONTINUE",
                         ),
@@ -186,6 +196,26 @@ class _createScreenState extends State<createScreen> {
           ),
       ),
     );
+  }
+
+  Future<bool> createUser(String emailAddress, String password) async {
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailAddress,
+        password: password,
+      );
+      return true;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        print('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        print('The account already exists for that email.');
+      }
+    } on Exception catch (e) {
+      print('exception->$e');
+    }
+
+    return true;
   }
 
   getdarkmodepreviousstate() async {

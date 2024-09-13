@@ -231,14 +231,32 @@ class _loginscreenState extends State<loginscreen> {
     );
   }
 
+  Future<bool> signInWithPhoneAndPassword(String emailAddress, String password) async {
+    try {
+      final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailAddress,
+        password: password,
+      );
+      print(credential);
+      return true;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        print('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        print('The account already exists for that email.');
+      }
+    } on Exception catch (e) {
+      print('exception->$e');
+    }
+
+    return true;
+  }
+
   Future<dynamic> signInWithGoogle() async {
     try {
-      print(GoogleSignIn().currentUser);
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      print(googleUser);
       final GoogleSignInAuthentication? googleAuth =
       await googleUser?.authentication;
-
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth?.accessToken,
         idToken: googleAuth?.idToken,

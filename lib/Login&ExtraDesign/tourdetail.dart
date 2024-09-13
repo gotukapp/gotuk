@@ -7,9 +7,9 @@ import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:maplibre_gl/maplibre_gl.dart';
 
 import '../Utils/tour.dart';
+import 'full_map.dart';
 
 class tourdetailpage extends StatefulWidget {
   final int tourId;
@@ -32,44 +32,6 @@ class _tourdetailpageState extends State<tourdetailpage> {
     super.initState();
   }
 
-  static const CameraPosition _kInitialPosition = CameraPosition(
-    target: LatLng(38.7071, -9.13549),
-    zoom: 8.0,
-  );
-  MapLibreMapController? mapController;
-
-  void _onMapChanged() {
-    setState(() {
-    });
-  }
-
-  @override
-  void dispose() {
-    mapController?.removeListener(_onMapChanged);
-    super.dispose();
-  }
-
-  void onMapCreated(MapLibreMapController controller) {
-    mapController = controller;
-    mapController!.addListener(_onMapChanged);
-
-    List<LatLng> lineCoordinates = tour!.coords
-        .map((c) => LatLng(c["lat"], c["lng"]))
-        .toList();
-
-    // Calculate bounds and move the camera
-    if (lineCoordinates.isNotEmpty) {
-      LatLngBounds bounds = LatLngBounds(
-        southwest: lineCoordinates.reduce((a, b) =>
-            LatLng(a.latitude < b.latitude ? a.latitude : b.latitude, a.longitude < b.longitude ? a.longitude : b.longitude)),
-        northeast: lineCoordinates.reduce((a, b) =>
-            LatLng(a.latitude > b.latitude ? a.latitude : b.latitude, a.longitude > b.longitude ? a.longitude : b.longitude)),
-      );
-      mapController!.moveCamera(CameraUpdate.newLatLngBounds(bounds));
-    }
-
-  }
-
   List<Widget> _buildSlides(List<String> slides) {
     return slides.map(_buildSlide).toList();
   }
@@ -84,31 +46,6 @@ class _tourdetailpageState extends State<tourdetailpage> {
   Widget build(BuildContext context) {
     tour = tourList.firstWhere((tour) => tour.id == widget.tourId);
     notifire = Provider.of<ColorNotifire>(context, listen: true);
-
-    final maplibreMap = MapLibreMap(
-      styleString: 'https://api.maptiler.com/maps/basic-v2/style.json?key=c9mafO6rAK56K3BOW5w1',
-      onMapCreated: onMapCreated,
-      initialCameraPosition: _kInitialPosition,
-      onMapClick: (point, latLng) async {
-        debugPrint(
-            "Map click: ${point.x},${point.y}   ${latLng.latitude}/${latLng.longitude}");
-      },
-      onUserLocationUpdated: (location) {
-        debugPrint(
-            "new location: ${location.position}, alt.: ${location.altitude}, bearing: ${location.bearing}, speed: ${location.speed}, horiz. accuracy: ${location.horizontalAccuracy}, vert. accuracy: ${location.verticalAccuracy}");
-      },
-    );
-
-    mapController?.addLine(
-      LineOptions(
-        draggable: false,
-        lineColor: "#ff0000",
-        lineWidth: 7.0,
-        lineOpacity: 1,
-        geometry: tour!.coords.map((c) => LatLng(c["lat"], c["lng"])).toList()
-      ),
-    );
-
     return Scaffold(
       bottomNavigationBar: Container(
         color: notifire.getblackwhitecolor,
@@ -380,36 +317,30 @@ class _tourdetailpageState extends State<tourdetailpage> {
                         )
                       ],
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-                    Container(
-                        height: 300.0,
-                        child: maplibreMap
-                    ),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-                    Card(
-                      color: notifire.getdarkmodecolor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 8),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 6),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 4),
-                              child: Text(
-                                "View Details",
-                                style: TextStyle(
-                                    color: notifire.getdarkbluecolor,
-                                    fontFamily: "Gilroy Medium"),
-                              ),
-                            )
-                          ],
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          "assets/images/map-location.png",
+                          height: 20,
+                          color: LogoColor,
                         ),
-                      ),
+                        SizedBox(width: 20),
+                        InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => const FullMap(),
+                              ));
+                            },
+                            child: Text(
+                              "View Route Details",
+                              style: TextStyle(
+                                  color: notifire.getdarkbluecolor,
+                                  fontFamily: "Gilroy Medium"),
+                            )
+                        )
+                      ],
                     ),
                     SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                     Row(

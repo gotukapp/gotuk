@@ -9,32 +9,32 @@ Tour tour1 = Tour(1,
     "Sé de Lisboa",
     "assets/images/tour1_img1.jpg",
     4.5,
-    coords, allReviews);
+    coords, starPoints, allReviews);
 Tour tour2 = Tour(2, "Lisboa New City", "1h30",
     "assets/images/tour2_img1.jpg",
     ["assets/images/tour2_img1.jpg","assets/images/tour2_img2.jpg","assets/images/tour2_img3.jpg","assets/images/tour2_img4.jpg"],
     110, 135,
     "Terreiro do Paço (Praça do Comércio)",
-    "assets/images/tour2_img1.jpg", 4.9, coords, allReviews);
+    "assets/images/tour2_img1.jpg", 4.9, coords, starPoints, allReviews);
 Tour tour3 = Tour(3, "Discoveries in Belém", "1h30 - 2h30",
     "assets/images/tour3_img1.jpg",
     ["assets/images/tour3_img1.jpg","assets/images/tour3_img2.jpg","assets/images/tour3_img3.jpg","assets/images/tour3_img4.jpg"],
     140, 180,
     "Mosteiro dos Jerónimos",
-    "assets/images/tour3_img1.jpg", 4.6, coords, allReviews);
+    "assets/images/tour3_img1.jpg", 4.6, coords, starPoints, allReviews);
 Tour tour4 = Tour(4, "Cristo Rei",
     "1h30 - 2h30",
     "assets/images/tour4_img1.jpg",
     ["assets/images/tour4_img1.jpg"],
     95, 135,
-    "Lisboa", "assets/images/tour4_img1.jpg", 4.6, coords, allReviews);
+    "Lisboa", "assets/images/tour4_img1.jpg", 4.6, coords, starPoints, allReviews);
 Tour tour5 = Tour(5,
     "Three sight hills",
     "1h30 - 2h",
     "assets/images/tour5_img1.jpg",
     ["assets/images/tour5_img1.jpg", "assets/images/tour5_img2.jpg","assets/images/tour5_img3.jpg"],
     105, 152,
-    "Parque Eduardo VII, Lisboa", "assets/images/tour5_img1.jpg", 4.7, coords, allReviews);
+    "Parque Eduardo VII, Lisboa", "assets/images/tour5_img1.jpg", 4.7, coords, starPoints, allReviews);
 
 List<Tour> tourList = [tour1, tour2, tour3, tour4, tour5];
 
@@ -101,6 +101,15 @@ List coords = [
   { "lat": 38.716831654325944, "lng": -9.135511918955046 }
 ];
 
+List starPoints = [
+  { "index": 0, "name": "Sé", "img": "assets/images/tour1_img4.jpg" },
+  { "index":8, "name": "Portas do Sol", "img": "assets/images/tour1_img3.jpg" },
+  { "index":26, "name": "Panteão Nacional", "img": "assets/images/tour1_img2.jpg" },
+  { "index":33, "name": "São Vicente", "img": "assets/images/tour1_img1.jpg" },
+  { "index":39, "name": "Miradouro da Senhora do Monte", "img": "assets/images/tour1_img1.jpg" },
+  { "index":57, "name": "Mouraria", "img": "assets/images/tour1_img1.jpg" }
+];
+
 List<Review> allReviews = [
   Review("John kennedy","assets/images/person.jpg","Tuk Tuk is the best tour in the city",4.8),
   Review("Alexander","assets/images/person1.jpeg","Thank you for booking our tour",4.6),
@@ -120,12 +129,13 @@ class Tour {
   final String icon;
   final double review;
   final List coords;
+  final List starPoints;
   final List<Review> reviews;
   bool? favorite;
 
 
   Tour(this.id, this.title, this.duration, this.img, this.images, this.priceLow,
-      this.priceHigh, this.address, this.icon, this.review, this.coords, this.reviews);
+      this.priceHigh, this.address, this.icon, this.review, this.coords, this.starPoints, this.reviews);
 
   Tour.fromJson(Map<String, dynamic> json)
       : id = json['id'] as int,
@@ -139,6 +149,7 @@ class Tour {
         icon = json['icon'] as String,
         review = json['review'] as double,
         coords = json['coords'] as List,
+        starPoints = json['starPoints'] as List,
         reviews = json['reviews'] as List<Review>;
 
   Map<String, dynamic> toJson() =>
@@ -154,6 +165,7 @@ class Tour {
         'icon': icon,
         'review': review,
         'coords': coords,
+        'starPoints': starPoints,
         'reviews': reviews
       };
 
