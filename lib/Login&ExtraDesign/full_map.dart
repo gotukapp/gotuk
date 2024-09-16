@@ -35,7 +35,6 @@ class FullMapState extends State<FullMap> {
   late Timer routeTimer;
   int index = 0;
   late OverlayEntry overlayEntry;
-  List<Symbol> starPointsSymbol = [];
 
   Future<void> addImageFromAsset(String name, String assetName) async {
     final bytes = await rootBundle.load(assetName);
@@ -45,6 +44,20 @@ class FullMapState extends State<FullMap> {
 
   _onMapCreated(MapLibreMapController controller) {
     mapController = controller;
+
+    List<LatLng> lineCoordinates = tour1.coords
+        .map((c) => LatLng(c["lat"], c["lng"]))
+        .toList();
+
+    if (lineCoordinates.isNotEmpty) {
+      LatLngBounds bounds = LatLngBounds(
+        southwest: lineCoordinates.reduce((a, b) =>
+            LatLng(a.latitude < b.latitude ? a.latitude : b.latitude, a.longitude < b.longitude ? a.longitude : b.longitude)),
+        northeast: lineCoordinates.reduce((a, b) =>
+            LatLng(a.latitude > b.latitude ? a.latitude : b.latitude, a.longitude > b.longitude ? a.longitude : b.longitude)),
+      );
+      mapController!.moveCamera(CameraUpdate.newLatLngBounds(bounds));
+    }
   }
 
   _onStyleLoadedCallback() async {
@@ -59,24 +72,48 @@ class FullMapState extends State<FullMap> {
       ),
     );
 
+    late List points = [];
     for (var a in tour1.starPoints) {
-        Symbol symbol = await mapController!.addSymbol(
-          SymbolOptions(
-          geometry: LatLng(tour1.coords[a["index"]]["lat"], tour1.coords[a["index"]]["lng"]),
-          iconImage: 'star-marker',
-          iconSize: 1,
-          fontNames: ['DIN Offc Pro Bold', 'Arial Unicode MS Regular'],
-          textField: a["name"],
-          textSize: 14,
-          textOffset: const Offset(0, 0.8),
-          textAnchor: 'top',
-          textColor: '#000000',
-          textHaloBlur: 1,
-          textHaloColor: '#ffffff',
-          textHaloWidth: 0.8,
-        ), {'point': a});
-        starPointsSymbol.add(symbol);
+        points.add({
+          "type": "Feature",
+          "id": a["index"],
+          "properties": {
+            "name":  a["name"],
+          },
+          "geometry": {
+            "type": "Point",
+            "coordinates": [tour1.coords[a["index"]]["lng"], tour1.coords[a["index"]]["lat"]]
+          }
+        });
     }
+    dynamic _points = {
+      "type": "FeatureCollection",
+      "features": points
+    };
+
+    print(_points);
+
+    await mapController!.addGeoJsonSource("points", _points);
+
+    await mapController!.addSymbolLayer(
+      "points",
+      "symbols",
+      const SymbolLayerProperties(
+        iconImage: "star-marker", //  "{type}-15",
+        iconSize: 0.8,
+        iconAllowOverlap: true,
+        textField: [Expressions.get, "name"],
+        textSize: 13,
+        textAllowOverlap: true,
+        textFont: ['DIN Offc Pro Bold', 'Arial Unicode MS Regular'],
+        textAnchor: 'top',
+        textOffset: [ Expressions.literal, [0, 0.8] ],
+        textColor: '#000000',
+        textHaloBlur: 1,
+        textHaloColor: '#ffffff',
+        textHaloWidth: 0.8
+      ),
+    );
 
     circle = await mapController!.addCircle(
       CircleOptions(
@@ -94,15 +131,6 @@ class FullMapState extends State<FullMap> {
 
       if (startPointsIndex.contains(index)) {
         dynamic starPoint = tour1.starPoints.firstWhere((a) => a["index"] == index);
-        int symbolIndex = tour1.starPoints.indexOf(starPoint);
-
-        for (var options in starPointsSymbol) {
-            SymbolOptions opt = const SymbolOptions(iconSize: 1);
-            mapController?.updateSymbol(options, opt);
-        };
-
-        SymbolOptions newOptions = const SymbolOptions(iconSize: 1.5);
-        mapController?.updateSymbol(starPointsSymbol[symbolIndex], newOptions);
 
         overlayEntry.remove();
         showStarPointImage(starPoint["img"]);
@@ -146,7 +174,7 @@ class FullMapState extends State<FullMap> {
 
   static const CameraPosition _kInitialPosition = CameraPosition(
     target: LatLng(38.7100, -9.1307),
-    zoom: 14.2,
+    zoom: 13,
   );
 
   @override

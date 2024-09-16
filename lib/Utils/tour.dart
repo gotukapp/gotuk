@@ -42,7 +42,16 @@ List<Tour> nearbyTours = [tour1, tour2, tour3];
 
 List coords = [
   { "lat": 38.709819267469186, "lng": -9.1334956851527 },
+  { "lat": 38.709829, "lng": -9.133445 },
+  { "lat": 38.709884, "lng": -9.133400 },
+  { "lat": 38.709932, "lng": -9.133363 },
+  { "lat": 38.709987, "lng": -9.133312 },
   { "lat": 38.71001676449845, "lng": -9.133251628323917 },
+{ "lat": 38.71003841396122, "lng": -9.133152825418737 },
+{ "lat": 38.710063527581276, "lng": -9.132939798124234 },
+{ "lat": 38.71008180973361, "lng": -9.132747826073564 },
+{ "lat": 38.71010163729936, "lng": -9.13253881197139 },
+{ "lat": 38.71011326613459, "lng": -9.132391179107497 },
   { "lat": 38.71012166974997, "lng": -9.132333529328239 },
   { "lat": 38.71047206982465, "lng": -9.131378071353815 },
   { "lat": 38.71082247044223, "lng": -9.130785677203113 },
@@ -103,11 +112,11 @@ List coords = [
 
 List starPoints = [
   { "index": 0, "name": "Sé", "img": "assets/images/tour1_img4.jpg" },
-  { "index":8, "name": "Portas do Sol", "img": "assets/images/tour1_img3.jpg" },
-  { "index":26, "name": "Panteão Nacional", "img": "assets/images/tour1_img2.jpg" },
-  { "index":33, "name": "São Vicente", "img": "assets/images/tour1_img1.jpg" },
-  { "index":39, "name": "Miradouro da Senhora do Monte", "img": "assets/images/tour1_img1.jpg" },
-  { "index":57, "name": "Mouraria", "img": "assets/images/tour1_img1.jpg" }
+  { "index":17, "name": "Portas do Sol", "img": "assets/images/tour1_img3.jpg" },
+  { "index":35, "name": "Panteão Nacional", "img": "assets/images/tour1_img2.jpg" },
+  { "index":42, "name": "São Vicente", "img": "assets/images/tour1_img1.jpg" },
+  { "index":48, "name": "Miradouro da Senhora do Monte", "img": "assets/images/tour1_img1.jpg" },
+  { "index":66, "name": "Mouraria", "img": "assets/images/tour1_img1.jpg" }
 ];
 
 List<Review> allReviews = [
