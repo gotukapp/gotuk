@@ -33,6 +33,8 @@ class FullMapState extends State<FullMap> {
   late ColorNotifire notifire;
   late Circle circle;
   late Timer routeTimer;
+  late Timer showStarPoint;
+  bool showStarPointIsActive = false;
   int index = 0;
   late OverlayEntry overlayEntry;
 
@@ -58,6 +60,18 @@ class FullMapState extends State<FullMap> {
       );
       mapController!.moveCamera(CameraUpdate.newLatLngBounds(bounds));
     }
+  }
+
+
+
+  rotateCamera(position) async {
+    print(position);
+    await mapController?.animateCamera(CameraUpdate.newCameraPosition(
+      CameraPosition( target: LatLng(position["lat"], position["lng"]),
+        zoom: 17,
+        bearing: position["course"].toDouble(),
+        tilt: 60)
+    ));
   }
 
   _onStyleLoadedCallback() async {
@@ -91,8 +105,6 @@ class FullMapState extends State<FullMap> {
       "features": points
     };
 
-    print(_points);
-
     await mapController!.addGeoJsonSource("points", _points);
 
     await mapController!.addSymbolLayer(
@@ -123,10 +135,22 @@ class FullMapState extends State<FullMap> {
     showStarPointImage(tour1.starPoints[0]["img"]);
 
     List<dynamic> startPointsIndex = tour1.starPoints.map((a) => a["index"]).toList();
-    routeTimer = Timer.periodic(const Duration(milliseconds: 500), (t) {
-      index = index + 1;
-      if (index > 57) {
+    routeTimer = Timer.periodic(const Duration(milliseconds: 1000), (t) {
+      if (!showStarPointIsActive) {
+        index = index + 1;
+      }
+
+      if (index == tour1.coords.length) {
         index = 0;
+      }
+
+      if(!showStarPointIsActive) {
+        _updateSelectedCircle(CircleOptions(
+            geometry: LatLng(
+                tour1.coords[index]["lat"], tour1.coords[index]["lng"]),
+            circleColor: BlackColor.toString()));
+
+        rotateCamera(tour1.coords[index]);
       }
 
       if (startPointsIndex.contains(index)) {
@@ -134,11 +158,14 @@ class FullMapState extends State<FullMap> {
 
         overlayEntry.remove();
         showStarPointImage(starPoint["img"]);
-      }
 
-      _updateSelectedCircle(CircleOptions(
-          geometry: LatLng(tour1.coords[index]["lat"], tour1.coords[index]["lng"]),
-          circleColor: BlackColor.toString()));
+        if(!showStarPointIsActive) {
+          showStarPointIsActive = true;
+          showStarPoint = Timer(const Duration(seconds: 5), () {
+            showStarPointIsActive = false;
+          });
+        }
+      }
     });
   }
 
@@ -192,7 +219,7 @@ class FullMapState extends State<FullMap> {
               titlecolor: notifire.getwhiteblackcolor)),
       backgroundColor: notifire.getblackwhitecolor,
       body: MapLibreMap(
-        styleString: 'https://api.maptiler.com/maps/basic-v2/style.json?key=c9mafO6rAK56K3BOW5w1',
+        styleString: 'https://api.maptiler.com/maps/satellite/style.json?key=c9mafO6rAK56K3BOW5w1',
         onMapCreated: _onMapCreated,
         initialCameraPosition: _kInitialPosition,
         onStyleLoadedCallback: _onStyleLoadedCallback,
