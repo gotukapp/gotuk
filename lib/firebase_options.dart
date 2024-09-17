@@ -64,6 +64,7 @@ class DefaultFirebaseOptions {
     projectId: 'app-gotuk',
     storageBucket: 'app-gotuk.appspot.com',
     iosBundleId: 'com.gotuk.gotuk',
+    authDomain: 'app-gotuk.firebaseapp.com'
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
