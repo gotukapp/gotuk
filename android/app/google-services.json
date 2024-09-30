@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "788543987645",
+    "project_id": "app-gotuk",
+    "storage_bucket": "app-gotuk.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:788543987645:android:be8063654c13912163bcd4",
+        "android_client_info": {
+          "package_name": "com.gotuk.dm"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATWP2zO78tPToWZZq-GjZo1OKwf2r9cTk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

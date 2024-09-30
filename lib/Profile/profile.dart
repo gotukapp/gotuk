@@ -174,8 +174,9 @@ class _profileState extends State<profile> {
                       AppButton(
                           buttontext: "LOGOUT",
                           onclick: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const loginscreen()));
+                            Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                                builder: (context) => const loginscreen()),
+                                    (route) => false);
                           }),
                     ],
                   )

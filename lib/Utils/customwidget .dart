@@ -42,16 +42,18 @@ CustomAppbar(
       backgroundColor: bgcolor);
 }
 
-textfield({String? text, prefix, suffix, Color? hintcolor, feildcolor}) {
+textfield({String? text, suffix, Color? hintColor, fieldColor, TextEditingController? controller, bool password = false}) {
   return Container(
       padding: const EdgeInsets.symmetric(vertical: 1),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15), color: feildcolor),
+          borderRadius: BorderRadius.circular(15), color: fieldColor),
       child: TextField(
+        obscureText: password,
+        controller: controller,
         decoration: InputDecoration(
           hintText: text,
           labelStyle: const TextStyle(fontSize: 16, color: Colors.white),
-          hintStyle: TextStyle(fontSize: 16, color: hintcolor, fontFamily: "Gilroy Medium"),
+          hintStyle: TextStyle(fontSize: 16, color: hintColor, fontFamily: "Gilroy Medium"),
           suffixIcon: Padding(
             padding: const EdgeInsets.all(6),
             child: suffix,
@@ -60,7 +62,7 @@ textfield({String? text, prefix, suffix, Color? hintcolor, feildcolor}) {
               borderRadius: BorderRadius.all(Radius.circular(15))),
           enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: feildcolor,
+                color: fieldColor,
               ),
               borderRadius: BorderRadius.circular(15)),
         ),

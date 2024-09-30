@@ -94,11 +94,9 @@ class _MyProfileState extends State<MyProfile> {
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                   textfield(
-                      feildcolor: notifire.getdarkmodecolor,
-                      hintcolor: notifire.getgreycolor,
+                      fieldColor: notifire.getdarkmodecolor,
+                      hintColor: notifire.getgreycolor,
                       text: 'Enter your Name',
-                      prefix: Image.asset("assets/images/profile.png",
-                          height: 25, color: notifire.getgreycolor),
                       suffix: null),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.04),
                   Text(
@@ -110,14 +108,9 @@ class _MyProfileState extends State<MyProfile> {
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                   textfield(
-                      feildcolor: notifire.getdarkmodecolor,
-                      hintcolor: notifire.getgreycolor,
+                      fieldColor: notifire.getdarkmodecolor,
+                      hintColor: notifire.getgreycolor,
                       text: 'Enter your Number',
-                      prefix: Image.asset(
-                        "assets/images/call.png",
-                        color: notifire.getgreycolor,
-                        height: 25,
-                      ),
                       suffix: null),
                 ],
               ),

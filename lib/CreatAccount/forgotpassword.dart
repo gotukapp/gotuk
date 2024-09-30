@@ -61,11 +61,9 @@ class _forgotpasswordState extends State<forgotpassword> {
                   color: WhiteColor)),
           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           textfield(
-            feildcolor: notifire.getfieldcolor,
-            hintcolor: notifire.gettextfieldcolor,
+            fieldColor: notifire.getfieldcolor,
+            hintColor: notifire.gettextfieldcolor,
             text: 'Enter your phone number',
-            prefix: Image.asset("assets/images/call.png",
-                height: 25, color: notifire.getgreycolor),
             suffix: null,
           ),
           SizedBox(

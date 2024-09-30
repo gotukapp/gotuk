@@ -60,13 +60,9 @@ class _newpasswordState extends State<newpassword> {
                       color: WhiteColor)),
               SizedBox(height: MediaQuery.of(context).size.height * 0.01),
               textfield(
-                feildcolor: notifire.getfieldcolor,
-                hintcolor: notifire.gettextfieldcolor,
+                fieldColor: notifire.getfieldcolor,
+                hintColor: notifire.gettextfieldcolor,
                 text: 'New Password',
-                prefix: Image.asset(
-                  "assets/images/password.png",
-                  height: 25,
-                ),
                 suffix:
                     Icon(Icons.visibility_off, color: notifire.getgreycolor),
               ),
@@ -78,13 +74,9 @@ class _newpasswordState extends State<newpassword> {
                       color: WhiteColor)),
               SizedBox(height: MediaQuery.of(context).size.height * 0.01),
               textfield(
-                feildcolor: notifire.getfieldcolor,
-                hintcolor: notifire.gettextfieldcolor,
+                fieldColor: notifire.getfieldcolor,
+                hintColor: notifire.gettextfieldcolor,
                 text: 'Confirm Password',
-                prefix: Image.asset(
-                  "assets/images/password.png",
-                  height: 25,
-                ),
                 suffix:
                     Icon(Icons.visibility_off, color: notifire.getgreycolor),
               ),

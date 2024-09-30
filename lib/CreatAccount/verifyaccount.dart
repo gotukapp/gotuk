@@ -81,14 +81,9 @@ class _verifyaccountState extends State<verifyaccount> {
                       color: WhiteColor)),
               SizedBox(height: MediaQuery.of(context).size.height * 0.01),
               textfield(
-                feildcolor: notifire.getdarkmodecolor,
-                hintcolor: notifire.getgreycolor,
+                fieldColor: notifire.getdarkmodecolor,
+                hintColor: notifire.getgreycolor,
                 text: 'Verification Code',
-                prefix: Image.asset(
-                  "assets/images/verification.png",
-                  height: 25,
-                  color: notifire.getgreycolor,
-                ),
                 suffix: Padding(
                   padding: const EdgeInsets.only(top: 8),
                   child: Text(

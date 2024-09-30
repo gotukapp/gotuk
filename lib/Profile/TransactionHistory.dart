@@ -49,7 +49,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Pending Bookings (${Booking.pendingBookings.length})",
+              Text("Pending Tours (${Booking.pendingBookings.length})",
                   style: TextStyle(
                       fontSize: 16,
                       color: LogoColor,
@@ -67,7 +67,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                 )
               ),
               const SizedBox(height: 15),
-              Text("My Bookings (${Booking.waitingBookings.length})",
+              Text("My Tours (${Booking.waitingBookings.length})",
                   style: TextStyle(
                       fontSize: 16,
                       color: LogoColor,
@@ -85,7 +85,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                 ),
               ),
               const SizedBox(height: 15),
-              Text("Past Bookings (${Booking.finishBookings.length})",
+              Text("Past Tours (${Booking.finishBookings.length})",
                   style: TextStyle(
                       fontSize: 16,
                       color: LogoColor,

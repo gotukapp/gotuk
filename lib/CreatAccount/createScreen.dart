@@ -27,7 +27,12 @@ class _createScreenState extends State<createScreen> {
   }
 
   late ColorNotifire notifire;
-  late bool isDriver;
+  late bool isDriver = false;
+  bool showPassword = false;
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final phoneNumberController = TextEditingController();
+  final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -76,10 +81,11 @@ class _createScreenState extends State<createScreen> {
                                 color: WhiteColor)),
                         SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                         textfield(
-                            feildcolor: notifire.getfieldcolor,
-                            hintcolor: notifire.gettextfieldcolor,
+                            fieldColor: notifire.getfieldcolor,
+                            hintColor: notifire.gettextfieldcolor,
                             text: 'Enter your name',
-                            suffix: null),
+                            suffix: null,
+                            controller: nameController),
                         SizedBox(height: MediaQuery.of(context).size.height * 0.015),
                         Text("Email",
                             style: TextStyle(
@@ -88,14 +94,10 @@ class _createScreenState extends State<createScreen> {
                                 color: WhiteColor)),
                         SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                         textfield(
-                            feildcolor: notifire.getfieldcolor,
-                            hintcolor: notifire.gettextfieldcolor,
+                            fieldColor: notifire.getfieldcolor,
+                            hintColor: notifire.gettextfieldcolor,
                             text: 'Enter your email',
-                            prefix: Image.asset(
-                              "assets/images/email.png",
-                              height: 25,
-                              color: notifire.getgreycolor,
-                            ),
+                            controller: emailController,
                             suffix: null),
                         SizedBox(height: MediaQuery.of(context).size.height * 0.015),
                         Text(
@@ -107,15 +109,11 @@ class _createScreenState extends State<createScreen> {
                         ),
                         SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                         textfield(
-                            feildcolor: notifire.getfieldcolor,
-                            hintcolor: notifire.gettextfieldcolor,
+                            fieldColor: notifire.getfieldcolor,
+                            hintColor: notifire.gettextfieldcolor,
                             text: 'Enter your number',
-                            prefix: Image.asset(
-                              "assets/images/call.png",
-                              height: 25,
-                              color: notifire.getgreycolor,
-                            ),
-                            suffix: null),
+                            suffix: null,
+                            controller: phoneNumberController),
                         SizedBox(height: MediaQuery.of(context).size.height * 0.015),
                         Text("Password",
                             style: TextStyle(
@@ -124,21 +122,20 @@ class _createScreenState extends State<createScreen> {
                                 color: WhiteColor)),
                         SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                         textfield(
-                            feildcolor: notifire.getfieldcolor,
-                            hintcolor: notifire.gettextfieldcolor,
+                            password: !showPassword,
+                            fieldColor: notifire.getfieldcolor,
+                            hintColor: notifire.gettextfieldcolor,
                             text: 'Enter your password',
-                            prefix: Image.asset(
-                              "assets/images/password.png",
-                              height: 25,
-                              color: notifire.getgreycolor,
-                            ),
                             suffix: InkWell(
-                              onTap: () {},
+                              onTap: () {
+                                setState(() { showPassword = !showPassword; });
+                              },
                               child: Icon(
                                 Icons.visibility_off,
                                 color: notifire.getgreycolor,
                               ),
-                            )),
+                            ),
+                            controller: passwordController),
                         SizedBox(
                           height: MediaQuery.of(context).size.height * 0.03,
                         ),
@@ -146,16 +143,10 @@ class _createScreenState extends State<createScreen> {
                           bgColor: notifire.getlogowhitecolor,
                           textColor: notifire.getwhiteblackcolor,
                           onclick: () async {
-                            try {
-                              bool loginOk = await createUser(
-                                  "jppenas@gmail.com", "teste");
-                              print(loginOk);
-                              if (loginOk) {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => const verifyaccount()));
-                              }
-                            } on Exception catch (e) {
-                              print(e);
+                            bool userCreated = await createUser();
+                            if (userCreated) {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => const verifyaccount()));
                             }
                           },
                           buttontext: "AGREE & CONTINUE",
@@ -198,24 +189,34 @@ class _createScreenState extends State<createScreen> {
     );
   }
 
-  Future<bool> createUser(String emailAddress, String password) async {
+  Future<bool> createUser() async {
+    String errorMessage = '';
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: emailAddress,
-        password: password,
+        email: "${phoneNumberController.text}@gotuk.pt",
+        password: passwordController.text,
       );
+      FirebaseAuth.instance.currentUser?.updateDisplayName(nameController.text);
       return true;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
+        errorMessage = 'The password provided is too weak.';
       } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
+        errorMessage = 'The account already exists for that email.';
+      } else if (e.code == 'invalid-email') {
+        errorMessage = 'The email provided is invalid.';
+      } else {
+        errorMessage = 'Unable to create user.';
       }
-    } on Exception catch (e) {
-      print('exception->$e');
+    } on Exception catch () {
+      errorMessage = 'Unable to create user.';
     }
-
-    return true;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(errorMessage),
+      ),
+    );
+    return false;
   }
 
   getdarkmodepreviousstate() async {
@@ -226,6 +227,16 @@ class _createScreenState extends State<createScreen> {
     } else {
       notifire.setIsDark = previusstate;
     }
+  }
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    nameController.dispose();
+    emailController.dispose();
+    phoneNumberController.dispose();
+    passwordController.dispose();
+    super.dispose();
   }
 
   getAppModeState() async {

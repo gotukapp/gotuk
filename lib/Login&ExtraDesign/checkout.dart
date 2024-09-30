@@ -268,11 +268,9 @@ class _checkoutState extends State<checkout> {
               if (withTaxNumber)
                 ...[
                   textfield(
-                      feildcolor: notifire.getfieldcolor,
-                      hintcolor: notifire.gettextfieldcolor,
+                      fieldColor: notifire.getfieldcolor,
+                      hintColor: notifire.gettextfieldcolor,
                       text: 'Tax number',
-                      prefix: Image.asset("assets/images/call.png",
-                          height: 20, color: notifire.getgreycolor),
                       suffix: null),
                 ],
               Divider(

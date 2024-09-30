@@ -7,6 +7,7 @@ import 'package:dm/CreatAccount/forgotpassword.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,6 +24,10 @@ class loginscreen extends StatefulWidget {
 class _loginscreenState extends State<loginscreen> {
   late ColorNotifire notifire;
   late bool isDriver = false;
+  final phoneNumberController = TextEditingController();
+  final passwordController = TextEditingController();
+  bool showPassword = false;
+  final _storage = const FlutterSecureStorage();
 
   @override
   void initState() {
@@ -81,12 +86,11 @@ class _loginscreenState extends State<loginscreen> {
                               color: WhiteColor)),
                       SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                       textfield(
-                          feildcolor: notifire.getfieldcolor,
-                          hintcolor: notifire.gettextfieldcolor,
+                          fieldColor: notifire.getfieldcolor,
+                          hintColor: notifire.gettextfieldcolor,
                           text: 'Enter your number',
-                          prefix: Image.asset("assets/images/call.png",
-                              height: 25, color: notifire.getgreycolor),
-                          suffix: null),
+                          suffix: null,
+                          controller: phoneNumberController),
                       SizedBox(height: MediaQuery.of(context).size.height * 0.015),
                       Text(
                         "Password",
@@ -97,12 +101,20 @@ class _loginscreenState extends State<loginscreen> {
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                       textfield(
-                          feildcolor: notifire.getfieldcolor,
-                          hintcolor: notifire.gettextfieldcolor,
+                          password: !showPassword,
+                          fieldColor: notifire.getfieldcolor,
+                          hintColor: notifire.gettextfieldcolor,
                           text: 'Enter your password',
-                          prefix: Image.asset("assets/images/password.png",
-                              height: 25, color: notifire.getgreycolor),
-                          suffix: null),
+                          suffix: InkWell(
+                            onTap: () {
+                              setState(() { showPassword = !showPassword; });
+                            },
+                            child: Icon(
+                              Icons.visibility_off,
+                              color: notifire.getgreycolor,
+                            ),
+                          ),
+                          controller: passwordController),
                     ],
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
@@ -127,9 +139,13 @@ class _loginscreenState extends State<loginscreen> {
                       bgColor: notifire.getlogowhitecolor,
                       textColor: notifire.getwhiteblackcolor,
                       buttontext: "LOGIN",
-                      onclick: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const homepage()));
+                      onclick: () async {
+                        bool loginOk = await signInWithPhoneAndPassword();
+                        if(loginOk) {
+                          Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                              builder: (context) => const homepage()),
+                                  (route) => false);
+                        }
                       }),
                   const SizedBox(height: 10),
                   Center(
@@ -156,12 +172,15 @@ class _loginscreenState extends State<loginscreen> {
                               color: notifire.getdarkmodecolor),
                           // margin: EdgeInsets.only(top: 12),
                           height: 50,
-                          width: MediaQuery.of(context).size.width / 2.3,
+                          width: MediaQuery.of(context).size.width / 2.5,
                           child: InkWell(
                             onTap: () async {
-                              userCredential.value = await signInWithGoogle();
-                              if (userCredential.value != null)
-                                print(userCredential.value.user!.email);
+                              bool loginOk = await signInWithGoogle();
+                              if(loginOk) {
+                                Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                                    builder: (context) => const homepage()),
+                                        (route) => false);
+                              }
                             },
                             child: ClipRRect(
                               borderRadius:
@@ -190,7 +209,7 @@ class _loginscreenState extends State<loginscreen> {
                           ),
                           // margin: EdgeInsets.only(top: 12),
                           height: 50,
-                          width: MediaQuery.of(context).size.width / 2.3,
+                          width: MediaQuery.of(context).size.width / 2.5,
                           child: InkWell(
                             onTap: () {},
                             child: ClipRRect(
@@ -231,28 +250,37 @@ class _loginscreenState extends State<loginscreen> {
     );
   }
 
-  Future<bool> signInWithPhoneAndPassword(String emailAddress, String password) async {
+  Future<bool> signInWithPhoneAndPassword() async {
+    String errorMessage = '';
     try {
-      final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: emailAddress,
-        password: password,
-      );
-      print(credential);
-      return true;
+      if (phoneNumberController.text.isNotEmpty && phoneNumberController.text.isNotEmpty) {
+        final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: "${phoneNumberController.text}@gotuk.pt",
+          password: passwordController.text,
+        );
+        print(credential);
+        return true;
+      } else {
+        errorMessage = 'You must fill in the username and password.';
+      }
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
+      if (e.code == 'invalid-credential' || e.code == 'invalid-email') {
+        errorMessage = 'Invalid credentials.';
+      } else {
+        errorMessage = 'Unable to login.';
       }
     } on Exception catch (e) {
-      print('exception->$e');
+      errorMessage = 'Unable to login.';
     }
-
-    return true;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(errorMessage),
+      ),
+    );
+    return false;
   }
 
-  Future<dynamic> signInWithGoogle() async {
+  Future<bool> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       final GoogleSignInAuthentication? googleAuth =
@@ -262,10 +290,14 @@ class _loginscreenState extends State<loginscreen> {
         idToken: googleAuth?.idToken,
       );
 
-      return await FirebaseAuth.instance.signInWithCredential(credential);
+      await FirebaseAuth.instance.signInWithCredential(credential);
+
+      return true;
     } on Exception catch (e) {
       print('exception->$e');
     }
+
+    return false;
   }
 
   getdarkmodepreviousstate() async {
