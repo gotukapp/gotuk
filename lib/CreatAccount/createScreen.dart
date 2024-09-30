@@ -208,7 +208,7 @@ class _createScreenState extends State<createScreen> {
       } else {
         errorMessage = 'Unable to create user.';
       }
-    } on Exception catch () {
+    } on Exception {
       errorMessage = 'Unable to create user.';
     }
     ScaffoldMessenger.of(context).showSnackBar(
