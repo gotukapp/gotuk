@@ -6,6 +6,7 @@ import 'package:dm/Login&ExtraDesign/showAllTours.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:dm/Utils/tour.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -70,7 +71,7 @@ class _homeState extends State<home> {
                           SizedBox(
                               height: MediaQuery.of(context).size.height * 0.01),
                           Text(
-                            "Hello, Joaquim! 👋",
+                            "Hello, ${FirebaseAuth.instance.currentUser?.displayName}! 👋",
                             style: TextStyle(
                                 color: notifire.getwhiteblackcolor,
                                 fontSize: 16,

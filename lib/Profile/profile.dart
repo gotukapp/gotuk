@@ -6,6 +6,7 @@ import 'package:dm/Profile/MyCupon.dart';
 import 'package:dm/Profile/Settings.dart';
 import 'package:dm/Profile/TransactionHistory.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -79,7 +80,7 @@ class _profileState extends State<profile> {
                         ),
                         const SizedBox(height: 20),
                         Text(
-                          "Joaquim Kennedy",
+                          "${FirebaseAuth.instance.currentUser?.displayName}",
                           style: TextStyle(
                               fontSize: 18,
                               color: LogoColor,
@@ -87,7 +88,7 @@ class _profileState extends State<profile> {
                         ),
                         const SizedBox(height: 10),
                         Text(
-                          "Porto, Portugal",
+                          "Lisboa, Portugal",
                           style: TextStyle(
                               fontSize: 16,
                               color: notifire.getwhiteblackcolor,
@@ -173,7 +174,8 @@ class _profileState extends State<profile> {
                           height: MediaQuery.of(context).size.height * 0.1),
                       AppButton(
                           buttontext: "LOGOUT",
-                          onclick: () {
+                          onclick: () async {
+                            await FirebaseAuth.instance.signOut();
                             Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
                                 builder: (context) => const loginscreen()),
                                     (route) => false);

@@ -7,7 +7,6 @@ import 'package:dm/CreatAccount/forgotpassword.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,7 +26,6 @@ class _loginscreenState extends State<loginscreen> {
   final phoneNumberController = TextEditingController();
   final passwordController = TextEditingController();
   bool showPassword = false;
-  final _storage = const FlutterSecureStorage();
 
   @override
   void initState() {
@@ -38,7 +36,6 @@ class _loginscreenState extends State<loginscreen> {
 
   @override
   Widget build(BuildContext context) {
-    ValueNotifier userCredential = ValueNotifier('');
     notifire = Provider.of<ColorNotifire>(context, listen: true);
     return Scaffold(
       backgroundColor: notifire.getbgcolor,
@@ -254,11 +251,10 @@ class _loginscreenState extends State<loginscreen> {
     String errorMessage = '';
     try {
       if (phoneNumberController.text.isNotEmpty && phoneNumberController.text.isNotEmpty) {
-        final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: "${phoneNumberController.text}@gotuk.pt",
           password: passwordController.text,
         );
-        print(credential);
         return true;
       } else {
         errorMessage = 'You must fill in the username and password.';
@@ -269,7 +265,7 @@ class _loginscreenState extends State<loginscreen> {
       } else {
         errorMessage = 'Unable to login.';
       }
-    } on Exception catch (e) {
+    } on Exception {
       errorMessage = 'Unable to login.';
     }
     ScaffoldMessenger.of(context).showSnackBar(

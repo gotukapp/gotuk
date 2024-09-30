@@ -4,14 +4,14 @@ import 'dart:async';
 import 'package:dm/CreatAccount/login.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-// ignore: unused_import
-import 'package:dm/IntroScreen/onbording.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../CreatAccount/createScreen.dart';
+import '../Login&ExtraDesign/homepage.dart';
 
 class onbording extends StatefulWidget {
   const onbording({super.key});
@@ -68,11 +68,19 @@ class BoardingPage extends StatefulWidget {
 }
 
 class _BoardingScreenState extends State<BoardingPage> {
-  // creating all the widget before making our home screen
 
   void initState() {
+    FirebaseAuth.instance
+        .idTokenChanges()
+        .listen((User? user) {
+      if (user != null) {
+        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+            builder: (context) => const homepage()),
+                (route) => false);
+      }
+    });
+
     getdarkmodepreviousstate();
-    super.initState();
     _currentPage = 0;
     slides = [
       Slide("assets/images/onboarding1.jpg", "Tuk Tuk booking with GoTuk",

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -70,7 +71,7 @@ class _dashboardState extends State<dashboard> {
                                               .size
                                               .height * 0.01),
                                       Text(
-                                        "Hello, Joaquim! 👋",
+                                        "Hello, ${FirebaseAuth.instance.currentUser?.displayName}! 👋",
                                         style: TextStyle(
                                             color: notifire.getwhiteblackcolor,
                                             fontSize: 16,
