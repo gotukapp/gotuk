@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../Utils/booking.dart';
+import '../Domain/trips.dart';
 
 
 class TransactionHistory extends StatefulWidget {
@@ -49,25 +49,25 @@ class _TransactionHistoryState extends State<TransactionHistory> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Pending Tours (${Booking.pendingBookings.length})",
+              Text("Pending Tours (${Trip.pendingTrips.length})",
                   style: TextStyle(
                       fontSize: 16,
                       color: LogoColor,
                       fontFamily: "Gilroy Bold")),
               const SizedBox(height: 1),
               SizedBox(
-                height: Booking.pendingBookings.isEmpty ? 0 : 200,
+                height: Trip.pendingTrips.isEmpty ? 0 : 200,
                 child: ListView.builder(
                   shrinkWrap: true,
                   padding: EdgeInsets.zero,
-                  itemCount: Booking.pendingBookings.length,
+                  itemCount: Trip.pendingTrips.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return getBookingLayout(Booking.pendingBookings[index], "WAITING", "CANCEL");
+                    return getBookingLayout(Trip.pendingTrips[index], "WAITING", "CANCEL");
                   },
                 )
               ),
               const SizedBox(height: 15),
-              Text("My Tours (${Booking.waitingBookings.length})",
+              Text("My Tours (${Trip.waitingTrips.length})",
                   style: TextStyle(
                       fontSize: 16,
                       color: LogoColor,
@@ -78,14 +78,14 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   padding: EdgeInsets.zero,
-                  itemCount: Booking.waitingBookings.length,
+                  itemCount: Trip.waitingTrips.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return getBookingLayout(Booking.waitingBookings[index], "BOOKED", "LET'S GO");
+                    return getBookingLayout(Trip.waitingTrips[index], "BOOKED", "LET'S GO");
                   },
                 ),
               ),
               const SizedBox(height: 15),
-              Text("Past Tours (${Booking.finishBookings.length})",
+              Text("Past Tours (${Trip.finishedTrips.length})",
                   style: TextStyle(
                       fontSize: 16,
                       color: LogoColor,
@@ -96,9 +96,9 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   padding: EdgeInsets.zero,
-                  itemCount: Booking.finishBookings.length,
+                  itemCount: Trip.finishedTrips.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return getBookingLayout(Booking.finishBookings[index], "FINISHED", "RATE TOUR");
+                    return getBookingLayout(Trip.finishedTrips[index], "FINISHED", "RATE TOUR");
                   },
                 ),
               ),
@@ -109,7 +109,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
     );
   }
 
-  getBookingLayout(Booking booking, String status, String action) {
+  getBookingLayout(Trip booking, String status, String action) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Container(

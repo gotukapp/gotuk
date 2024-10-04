@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Utils/customwidget .dart';
-import '../Utils/tour.dart';
+import '../Domain/tour.dart';
 
 class Chating extends StatefulWidget {
   const Chating({super.key});

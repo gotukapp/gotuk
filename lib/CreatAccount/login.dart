@@ -1,5 +1,6 @@
 // ignore_for_file: camel_case_types
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dm/CreatAccount/createScreen.dart';
 import 'package:dm/Login&ExtraDesign/homepage.dart';
 import 'package:dm/Utils/customwidget%20.dart';
@@ -11,6 +12,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../Domain/userFirebase.dart';
 import '../Utils/Colors.dart';
 
 class loginscreen extends StatefulWidget {
@@ -251,10 +253,13 @@ class _loginscreenState extends State<loginscreen> {
     String errorMessage = '';
     try {
       if (phoneNumberController.text.isNotEmpty && phoneNumberController.text.isNotEmpty) {
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
+        UserCredential credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: "${phoneNumberController.text}@gotuk.pt",
           password: passwordController.text,
         );
+
+        await getUserFirebaseInstance(isDriver ? "guides" : "clients", credential);
+
         return true;
       } else {
         errorMessage = 'You must fill in the username and password.';
@@ -286,7 +291,10 @@ class _loginscreenState extends State<loginscreen> {
         idToken: googleAuth?.idToken,
       );
 
-      await FirebaseAuth.instance.signInWithCredential(credential);
+      UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+      if (isDriver) {
+        await getUserFirebaseInstance(isDriver ? "guides" : "clients", userCredential);
+      }
 
       return true;
     } on Exception catch (e) {
@@ -310,5 +318,21 @@ class _loginscreenState extends State<loginscreen> {
     final prefs = await SharedPreferences.getInstance();
     bool? previousState = prefs.getBool("setIsDriver");
     isDriver = previousState ?? false;
+  }
+
+  Future<void> getUserFirebaseInstance(String collection, UserCredential credential) async {
+    final ref = FirebaseFirestore.instance.collection(collection).doc(credential.user?.uid)
+        .withConverter(
+      fromFirestore: UserFirebase.fromFirestore,
+      toFirestore: (UserFirebase user, _) => user.toFirestore(),
+    );
+    final docSnap = await ref.get();
+    final user = docSnap.data();
+    if (user == null) {
+      UserFirebase user = UserFirebase(credential.user!.uid, credential.user!.displayName, credential.user?.email, credential.user?.phoneNumber);
+      FirebaseFirestore.instance.collection(collection)
+          .doc(credential.user?.uid)
+          .set(user.toFirestore());
+    }
   }
 }

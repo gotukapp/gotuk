@@ -3,8 +3,10 @@
 import 'dart:ui';
 
 import 'package:dm/Utils/Colors.dart';
-import 'package:dm/Utils/tour.dart';
+import 'package:dm/Domain/tour.dart';
+import 'package:dm/Domain/trips.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../Login&ExtraDesign/tourdetail.dart';
 import 'dark_lightmode.dart';
@@ -86,7 +88,7 @@ AppButton({onclick, buttontext, Color? bgColor, Color? textColor}) {
   );
 }
 
-cupon({text1, text2, buttonText, Function()? onClick}) {
+cupon({text1, text1Color, text2, buttonText, Function()? onClick}) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
@@ -95,7 +97,7 @@ cupon({text1, text2, buttonText, Function()? onClick}) {
         children: [
           Text(text1,
               style: TextStyle(
-                  fontSize: 15, color: greyColor, fontFamily: "Gilroy Medium")),
+                  fontSize: 15, color: text1Color, fontFamily: "Gilroy Medium")),
           const SizedBox(height: 4),
           Text(text2,
               style: TextStyle(
@@ -267,6 +269,262 @@ tourListInfo(BuildContext context, ColorNotifire notifire, Tour tour) {
       ),
     ),
   );
+}
+
+tripInfo(BuildContext context, ColorNotifire notifire, Trip trip) {
+  return InkWell(
+    onTap: () {
+
+    },
+    child: Container(
+      width: double.infinity,
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        color: notifire.getdarklightgreycolor,
+      ),
+      child: Padding(
+          padding: const EdgeInsets.symmetric(
+              horizontal: 8, vertical: 8),
+          child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(DateFormat('E, d MMM yyyy HH:mm')
+                .format(trip.date),
+                style: TextStyle(
+                    fontSize: 15,
+                    color: notifire.getwhiteblackcolor)),
+              Row(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 4),
+                    height: 75,
+                    width: 75,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.asset(
+                        trip.tour.icon,
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        trip.tour.title.toUpperCase(),
+                        style: TextStyle(
+                            fontSize: 15,
+                            color: notifire.getwhiteblackcolor,
+                            fontFamily: "Gilroy Bold"),
+                      ),
+                      // const SizedBox(height: 6),
+                      SizedBox(
+                          height: MediaQuery.of(context) .size .height *
+                              0.001),
+                      Text(
+                        trip.tour.address,
+                        style: TextStyle(
+                            fontSize: 13,
+                            color: notifire.getwhiteblackcolor,
+                            fontFamily: "Gilroy Medium",
+                            overflow: TextOverflow.ellipsis),
+                      ),
+                      SizedBox(
+                          height: MediaQuery.of(context) .size .height *
+                              0.001),
+                      Row(
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width *
+                                0.3,
+                            child:  Text("${trip.persons == 3 ? "1-3" : "4-6"} Persons",
+                              style: TextStyle(
+                              fontSize: 15,
+                              color: notifire.getwhiteblackcolor,
+                              fontFamily: "Gilroy Medium")),
+                          )
+                        ],
+                      )
+                    ],
+                  )
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Total Price",
+                        style: TextStyle(
+                            fontSize: 15, color: notifire.getwhiteblackcolor, fontFamily: "Gilroy Medium")),
+                    const SizedBox(height: 4),
+                    Text("${trip.tour.getTourPrice(trip.persons == 3)}€",
+                        style: TextStyle(
+                            fontSize: 16, color: Darkblue, fontFamily: "Gilroy Bold")),
+                  ],
+                ),
+                InkWell(
+                    onTap: () {},
+                    child: Container(
+                      height: 40,
+                      width: 90,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50), color: trip.status == 'started' ? Darkblue : LogoColor),
+                      child: Center(
+                        child: Text(
+                          getTripButtonAction(trip),
+                          style: TextStyle(
+                              fontSize: 15, color: WhiteColor, fontFamily: "Gilroy Bold"),
+                        ),
+                      ),
+                    ),
+                  )
+              ],
+            )
+          ]
+      )
+      )
+    ),
+  );
+}
+
+newTripNotification(BuildContext context, ColorNotifire notifire, Trip trip) {
+  return InkWell(
+    onTap: () {
+
+    },
+    child: Container(
+        width: double.infinity,
+        margin: const EdgeInsets.symmetric(vertical: 2),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          color: notifire.getdarklightgreycolor,
+        ),
+        child: Padding(
+            padding: const EdgeInsets.symmetric(
+                horizontal: 8, vertical: 8),
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(DateFormat('E, d MMM yyyy HH:mm')
+                          .format(trip.date),
+                          style: TextStyle(
+                              fontSize: 15,
+                              color: notifire.getwhiteblackcolor,
+                              fontFamily: "Gilroy Bold")),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Total Price",
+                              style: TextStyle(
+                                  fontSize: 15, color: notifire.getwhiteblackcolor, fontFamily: "Gilroy Medium")),
+                          const SizedBox(height: 4),
+                          Text("${trip.tour.getTourPrice(trip.persons == 3)}€",
+                              style: TextStyle(
+                                  fontSize: 17, color: Darkblue, fontFamily: "Gilroy Bold")),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 4),
+                        height: 75,
+                        width: 75,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.asset(
+                            trip.tour.icon,
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            trip.tour.title.toUpperCase(),
+                            style: TextStyle(
+                                fontSize: 15,
+                                color: notifire.getwhiteblackcolor,
+                                fontFamily: "Gilroy Bold"),
+                          ),
+                          // const SizedBox(height: 6),
+                          SizedBox(
+                              height: MediaQuery.of(context) .size .height *
+                                  0.001),
+                          Text(
+                            trip.tour.address,
+                            style: TextStyle(
+                                fontSize: 13,
+                                color: notifire.getwhiteblackcolor,
+                                fontFamily: "Gilroy Medium",
+                                overflow: TextOverflow.ellipsis),
+                          ),
+                          SizedBox(
+                              height: MediaQuery.of(context) .size .height *
+                                  0.001),
+                          Row(
+                            children: [
+                              Container(
+                                width: MediaQuery.of(context).size.width *
+                                    0.3,
+                                child:  Text("${trip.persons == 3 ? "1-3" : "4-6"} Persons",
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: notifire.getwhiteblackcolor,
+                                        fontFamily: "Gilroy Medium")),
+                              )
+                            ],
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          trip.acceptTour();
+                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                        },
+                        child: Container(
+                          height: 40,
+                          width: 180,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50), color: Darkblue),
+                          child: Center(
+                            child: Text(
+                              "Accept",
+                              style: TextStyle(
+                                  fontSize: 15, color: WhiteColor, fontFamily: "Gilroy Bold"),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  )
+                ]
+            )
+        )
+    ),
+  );
+}
+
+
+String getTripButtonAction(Trip trip) {
+  return trip.status == 'started' ? "End Tour" : "Start Tour";
 }
 
 tourReview({double? review})   {

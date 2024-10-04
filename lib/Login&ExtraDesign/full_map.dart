@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../Utils/Colors.dart';
 import '../Utils/customwidget .dart';
 import '../Utils/dark_lightmode.dart';
-import '../Utils/tour.dart';
+import '../Domain/tour.dart';
 
 class FullMapPage extends StatelessWidget {
   const FullMapPage({super.key});

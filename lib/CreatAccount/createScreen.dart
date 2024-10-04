@@ -1,5 +1,6 @@
 // ignore_for_file: camel_case_types
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/CreatAccount/login.dart';
@@ -192,11 +193,21 @@ class _createScreenState extends State<createScreen> {
   Future<bool> createUser() async {
     String errorMessage = '';
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      UserCredential credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: "${phoneNumberController.text}@gotuk.pt",
         password: passwordController.text,
       );
       FirebaseAuth.instance.currentUser?.updateDisplayName(nameController.text);
+
+      FirebaseFirestore.instance
+          .collection(isDriver ? 'guides' : 'clients')
+          .doc(credential.user?.uid)
+          .set({
+        "email": emailController.text,
+        "name": nameController.text,
+        "phone": phoneNumberController.text
+      });
+
       return true;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {

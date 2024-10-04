@@ -1,10 +1,9 @@
 // ignore_for_file: non_constant_identifier_names, sized_box_for_whitespace, camel_case_types
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dm/Login&ExtraDesign/calendar.dart';
 import 'package:dm/Login&ExtraDesign/homepage.dart';
 import 'package:dm/Utils/Colors.dart';
-import 'package:dm/Utils/booking.dart';
+import 'package:dm/Domain/trips.dart';
 import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
-import '../Utils/tour.dart';
+import '../Domain/tour.dart';
 
 class checkout extends StatefulWidget {
   final int tourId;
@@ -1040,14 +1039,8 @@ class _checkoutState extends State<checkout> {
                       InkWell(
                         onTap: () {
                           selectedIndex = 0;
-                          Booking newBooking = new Booking(tour!, selectedDate!.copyWith(hour: hourSliderValue, minute: minutesSliderValue), smallPriceSelected ? 3 : 6, 0);
-                          bookings.add(newBooking);
-
-                          FirebaseFirestore.instance
-                              .collection('bookings')
-                              .add(<String, dynamic>{
-                            'tour': 2
-                          });
+                          Trip newTrip = new Trip.create(tour!.id, selectedDate!.copyWith(hour: hourSliderValue, minute: minutesSliderValue), smallPriceSelected ? 3 : 6, 'pending');
+                          Trip.addTrip(newTrip);
 
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => const homepage()));

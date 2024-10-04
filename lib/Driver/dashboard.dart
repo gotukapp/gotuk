@@ -2,13 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Login&ExtraDesign/notification.dart';
 import '../Utils/Colors.dart';
-import '../Utils/booking.dart';
+import '../Utils/customwidget .dart';
+import '../Domain/trips.dart';
 import '../Utils/dark_lightmode.dart';
 
 class dashboard extends StatefulWidget {
@@ -32,7 +32,7 @@ class _dashboardState extends State<dashboard> {
     notifire = Provider.of<ColorNotifire>(context, listen: true);
 
     final Stream<QuerySnapshot> usersStream =
-    FirebaseFirestore.instance.collection('bookings').snapshots();
+    FirebaseFirestore.instance.collection('trips').snapshots();
 
     return SafeArea(
         child: Scaffold(
@@ -41,16 +41,6 @@ class _dashboardState extends State<dashboard> {
                 stream: usersStream,
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot)
                 {
-                  if (snapshot.hasError) {
-                    return const Text('Something went wrong');
-                  }
-
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Text("Loading");
-                  }
-
-                  print(snapshot.data!.docs);
-
                   return Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 18, vertical: 8),
@@ -147,7 +137,7 @@ class _dashboardState extends State<dashboard> {
                                   .size
                                   .height * 0.025),
                               Text(
-                                "Booking Tours",
+                                "Next Tours",
                                 style: TextStyle(
                                     fontSize: 14,
                                     color: LogoColor,
@@ -171,8 +161,8 @@ class _dashboardState extends State<dashboard> {
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
                                             Transaction(text1: "3", text2: "Today"),
-                                            Transaction(text1: "6", text2: "Last 7 days"),
-                                            Transaction(text1: "10", text2: "Last 30 days"),
+                                            Transaction(text1: "6", text2: "Next 7 days"),
+                                            Transaction(text1: "10", text2: "Next 30 days"),
                                           ],
                                         ),
                                       ]
@@ -188,71 +178,10 @@ class _dashboardState extends State<dashboard> {
                               const SizedBox(height: 8),
                               Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 6),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(15),
-                                      color: notifire.getdarklightgreycolor),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 12, vertical: 12),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(DateFormat('E, d MMM yyyy HH:mm').format(
-                                                currentBook.date),
-                                                style: TextStyle(
-                                                    fontSize: 15,
-                                                    color: notifire.getgreycolor)),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
-                                            Image.asset(
-                                              currentBook.tour.icon,
-                                              height: 75,
-                                            ),
-                                            const SizedBox(width: 10),
-                                            Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                              children: [
-                                                Text(currentBook.tour.title.toUpperCase(),
-                                                    style: TextStyle(
-                                                        fontSize: 16,
-                                                        color:
-                                                        notifire.getwhiteblackcolor,
-                                                        fontFamily: "Gilroy Bold")),
-                                                const SizedBox(height: 6),
-                                                Text("${currentBook.persons} Persons",
-                                                    style: TextStyle(
-                                                        fontSize: 15,
-                                                        color: notifire.getgreycolor,
-                                                        fontFamily: "Gilroy Medium")),
-                                              ],
-                                            )
-                                          ],
-                                        ),
-                                        const SizedBox(height: 8),
-                                        cupon(
-                                          text1: "Total Price",
-                                          text2: "${currentBook.price}€",
-                                          buttonText: "Ongoing",
-                                          onClick: () {
-                                            // Navigator.of(context).push(MaterialPageRoute(
-                                            //     builder: (context) => Favourite()));
-                                          },
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
+                                child: tripInfo(context, notifire, currentBook),
                               ),
                               const SizedBox(height: 30),
-                              Text("Today Bookings",
+                              Text("Today Tours",
                                   style: TextStyle(
                                       fontSize: 16,
                                       color: LogoColor,
@@ -263,92 +192,9 @@ class _dashboardState extends State<dashboard> {
                                   physics: const NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,
                                   padding: EdgeInsets.zero,
-                                  itemCount: driverBookings.length,
+                                  itemCount: driverTrips.length,
                                   itemBuilder: (BuildContext context, int index) {
-                                    return Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 6),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(15),
-                                            color: notifire.getdarklightgreycolor),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 12, vertical: 12),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                                children: [
-                                                  Text(DateFormat('E, d MMM yyyy HH:mm')
-                                                      .format(driverBookings[index].date),
-                                                      style: TextStyle(
-                                                          fontSize: 15,
-                                                          color: notifire.getgreycolor)),
-                                                  Container(
-                                                    height: 40,
-                                                    width: 70,
-                                                    decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(
-                                                            50),
-                                                        color: Colors.amber[50]),
-                                                    child: const Center(
-                                                      child: Text(
-                                                        "Booked",
-                                                        style: TextStyle(
-                                                            fontSize: 14,
-                                                            color: Color(0xffFFBA55),
-                                                            fontFamily: "Gilroy Bold"),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Image.asset(
-                                                    driverBookings[index].tour.icon,
-                                                    height: 75,
-                                                  ),
-                                                  const SizedBox(width: 10),
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                    children: [
-                                                      Text(driverBookings[index].tour.title
-                                                          .toUpperCase(),
-                                                          style: TextStyle(
-                                                              fontSize: 16,
-                                                              color:
-                                                              notifire.getwhiteblackcolor,
-                                                              fontFamily: "Gilroy Bold")),
-                                                      const SizedBox(height: 6),
-                                                      Text("${driverBookings[index]
-                                                          .persons} Persons",
-                                                          style: TextStyle(
-                                                              fontSize: 15,
-                                                              color: notifire.getgreycolor,
-                                                              fontFamily: "Gilroy Medium")),
-                                                    ],
-                                                  )
-                                                ],
-                                              ),
-                                              const SizedBox(height: 8),
-                                              cupon(
-                                                text1: "Total Price",
-                                                text2: "${driverBookings[index].price}€",
-                                                buttonText: "Ready",
-                                                onClick: () {
-                                                  // Navigator.of(context).push(MaterialPageRoute(
-                                                  //     builder: (context) => Favourite()));
-                                                },
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    );
+                                    return tripInfo(context, notifire, driverTrips[index]);
                                   },
                                 ),
                               ),
@@ -378,43 +224,6 @@ class _dashboardState extends State<dashboard> {
               color: LogoColor,
               fontFamily: "Gilroy Bold"),
         )
-      ],
-    );
-  }
-
-  cupon({text1, text2, buttonText, Function()? onClick}) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(text1,
-                style: TextStyle(
-                    fontSize: 15, color: greyColor, fontFamily: "Gilroy Medium")),
-            const SizedBox(height: 4),
-            Text(text2,
-                style: TextStyle(
-                    fontSize: 16, color: Darkblue, fontFamily: "Gilroy Bold")),
-          ],
-        ),
-        if (buttonText.isNotEmpty)
-          ...[InkWell(
-            onTap: onClick,
-            child: Container(
-              height: 40,
-              width: 90,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50), color: Darkblue),
-              child: Center(
-                child: Text(
-                  buttonText,
-                  style: TextStyle(
-                      fontSize: 15, color: WhiteColor, fontFamily: "Gilroy Bold"),
-                ),
-              ),
-            ),
-          )],
       ],
     );
   }

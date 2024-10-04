@@ -5,7 +5,7 @@ import 'package:dm/Login&ExtraDesign/nearbyAllTours.dart';
 import 'package:dm/Login&ExtraDesign/showAllTours.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
-import 'package:dm/Utils/tour.dart';
+import 'package:dm/Domain/tour.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -39,8 +39,7 @@ class _homeState extends State<home> {
   late ColorNotifire notifire;
   @override
   Widget build(BuildContext context) {
-    final Stream<QuerySnapshot> usersStream =
-    FirebaseFirestore.instance.collection('bookings').snapshots();
+    final Stream<QuerySnapshot> usersStream = FirebaseFirestore.instance.collection('bookings').snapshots();
 
     notifire = Provider.of<ColorNotifire>(context, listen: true);
     return SafeArea(

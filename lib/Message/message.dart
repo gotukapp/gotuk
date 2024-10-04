@@ -3,13 +3,12 @@
 import 'package:dm/Message/chating.dart';
 import 'package:dm/Message/ShowMassage.dart';
 import 'package:dm/Utils/Colors.dart';
-import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../Utils/tour.dart';
+import '../Domain/tour.dart';
 
 class message extends StatefulWidget {
   const message({super.key});

@@ -1,4 +1,4 @@
-import 'package:dm/Utils/tour.dart';
+import 'package:dm/Domain/tour.dart';
 
 class Slot {
   final Tour? tour;

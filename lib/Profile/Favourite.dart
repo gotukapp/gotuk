@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Utils/dark_lightmode.dart';
-import '../Utils/tour.dart';
+import '../Domain/tour.dart';
 
 class Favourite extends StatefulWidget {
   const Favourite({super.key});

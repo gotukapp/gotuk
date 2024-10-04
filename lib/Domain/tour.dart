@@ -1,4 +1,4 @@
-import 'package:dm/Utils/review.dart';
+import 'package:dm/Domain/review.dart';
 
 Tour tour1 = Tour(1,
     "Lisboa Old City",

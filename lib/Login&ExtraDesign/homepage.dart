@@ -1,10 +1,14 @@
 // import 'package:dm/hoteldetailage.dart';
 // ignore_for_file: unused_field, library_private_types_in_public_api, camel_case_types
 
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dm/Profile/profile.dart';
-import 'package:dm/Search/Search.dart';
 import 'package:dm/Utils/Colors.dart';
+import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
+import 'package:dm/Domain/trips.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,7 +28,8 @@ class homepage extends StatefulWidget {
 class _homepageState extends State<homepage> {
   late int _lastTimeBackButtonWasTapped;
   static const exitTimeInMillis = 2000;
-  late bool isDriver = false;
+  bool isDriver = false;
+  StreamSubscription<QuerySnapshot<Object?>>? listener;
 
   final _pageOption = [
     const home(),
@@ -41,6 +46,7 @@ class _homepageState extends State<homepage> {
   void initState() {
     getdarkmodepreviousstate();
     getAppModeState();
+
     super.initState();
   }
 
@@ -107,5 +113,41 @@ class _homepageState extends State<homepage> {
     final prefs = await SharedPreferences.getInstance();
     bool? previousState = prefs.getBool("setIsDriver");
     isDriver = previousState ?? false;
+
+    if (isDriver) {
+      addFirebaseTripsListen();
+    }
+  }
+
+  @override
+  void dispose() {
+    print("dispose homepage");
+    if (listener != null) {
+      listener?.cancel();
+    }
+    super.dispose();
+  }
+
+  void addFirebaseTripsListen() {
+    final Stream<QuerySnapshot<Map<String, dynamic>>> usersStream =
+    FirebaseFirestore.instance.collection('trips').snapshots();
+
+    bool isFirtsTime = true;
+    listener = usersStream.listen((onData) {
+      if (!isFirtsTime) {
+        for (var change in onData.docChanges) {
+          if (change.type == DocumentChangeType.added) {
+            Trip t = Trip.fromFirestore(change.doc, null);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                duration: const Duration(seconds: 60),
+                content: newTripNotification(context, notifire, t),
+              ),
+            );
+          }
+        }
+      }
+      isFirtsTime = false;
+    });
   }
 }

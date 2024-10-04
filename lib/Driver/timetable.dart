@@ -8,8 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../Utils/Colors.dart';
 import '../Utils/customwidget .dart';
 import '../Utils/dark_lightmode.dart';
-import '../Utils/slot.dart';
-import '../Utils/tour.dart';
+import '../Domain/slot.dart';
+import '../Domain/tour.dart';
 
 class timetable extends StatefulWidget {
   const timetable({super.key});
