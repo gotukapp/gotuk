@@ -308,7 +308,7 @@ class _loginpageState extends State<loginpage> {
   }
 
   late ColorNotifire notifire;
-  late bool isDriver = false;
+  late bool guideMode = false;
 
   @override
   Widget build(BuildContext context) {
@@ -327,7 +327,7 @@ class _loginpageState extends State<loginpage> {
                   children: [
                     SizedBox(
                         width: MediaQuery.of(context).size.width * 0.065),
-                    Text("Driver mode",
+                    Text("Guide mode",
                         style: TextStyle(
                             fontSize: 15,
                             color: notifire.getwhiteblackcolor,
@@ -346,16 +346,16 @@ class _loginpageState extends State<loginpage> {
                         thumbColor: notifire.getdarkwhitecolor,
                         trackColor: notifire.getbuttoncolor,
                         activeColor: notifire.getdarkbluecolor,
-                        value: isDriver,
+                        value: guideMode,
                         onChanged: (value) async {
                           setState(() {
-                            isDriver = value;
+                            guideMode = value;
                           });
                           final prefs =
                           await SharedPreferences.getInstance();
                           setState(() {
-                            isDriver = value;
-                            prefs.setBool("setIsDriver", value);
+                            guideMode = value;
+                            prefs.setBool("setGuideMode", value);
                           });
                         },
                       ),
@@ -367,7 +367,7 @@ class _loginpageState extends State<loginpage> {
             SizedBox(height: MediaQuery.of(context).size.height / 6.5),
             Center(
               child: Image.asset(
-                "assets/images/applogo.png",
+                guideMode ? "assets/images/applogo_bw.png" : "assets/images/applogo.png",
                 height: 170,
                 width: 220,
               ),
@@ -396,7 +396,7 @@ class _loginpageState extends State<loginpage> {
               },
               // ignore: sort_child_properties_last
               child: Text(
-                isDriver ? 'CREATE DRIVER ACCOUNT' : 'CREATE ACCOUNT',
+                guideMode ? 'CREATE GUIDE ACCOUNT' : 'CREATE ACCOUNT',
                 style: TextStyle(
                     color: WhiteColor, fontSize: 16, fontFamily: "Gilroy Bold"),
               ),
@@ -414,7 +414,7 @@ class _loginpageState extends State<loginpage> {
               },
               // ignore: sort_child_properties_last
               child: Text(
-                isDriver ? 'LOGIN AS A DRIVER' :  'LOGIN',
+                guideMode ? 'LOGIN AS A GUIDE' :  'LOGIN',
                 style: TextStyle(
                     color: WhiteColor, fontSize: 16, fontFamily: "Gilroy Bold"),
               ),
@@ -442,8 +442,8 @@ class _loginpageState extends State<loginpage> {
 
   getAppModeState() async {
     final prefs = await SharedPreferences.getInstance();
-    bool? previousState = prefs.getBool("setIsDriver");
-    isDriver = previousState ?? false;
+    bool? previousState = prefs.getBool("setGuideMode");
+    guideMode = previousState ?? false;
   }
 }
 

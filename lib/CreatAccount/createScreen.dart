@@ -28,7 +28,7 @@ class _createScreenState extends State<createScreen> {
   }
 
   late ColorNotifire notifire;
-  late bool isDriver = false;
+  late bool guideMode = false;
   bool showPassword = false;
   final nameController = TextEditingController();
   final emailController = TextEditingController();
@@ -60,7 +60,7 @@ class _createScreenState extends State<createScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          isDriver ? "GoTuk Driver" : "Welcome to GoTuk",
+                          guideMode ? "GoTuk Driver" : "Welcome to GoTuk",
                           style: TextStyle(
                               fontSize: 22,
                               fontFamily: "Gilroy Bold",
@@ -200,7 +200,7 @@ class _createScreenState extends State<createScreen> {
       FirebaseAuth.instance.currentUser?.updateDisplayName(nameController.text);
 
       FirebaseFirestore.instance
-          .collection(isDriver ? 'guides' : 'clients')
+          .collection(guideMode ? 'guides' : 'clients')
           .doc(credential.user?.uid)
           .set({
         "email": emailController.text,
@@ -252,7 +252,7 @@ class _createScreenState extends State<createScreen> {
 
   getAppModeState() async {
     final prefs = await SharedPreferences.getInstance();
-    bool? previousState = prefs.getBool("setIsDriver");
-    isDriver = previousState ?? false;
+    bool? previousState = prefs.getBool("setGuideMode");
+    guideMode = previousState ?? false;
   }
 }

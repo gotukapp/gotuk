@@ -28,7 +28,7 @@ class homepage extends StatefulWidget {
 class _homepageState extends State<homepage> {
   late int _lastTimeBackButtonWasTapped;
   static const exitTimeInMillis = 2000;
-  bool isDriver = false;
+  bool guideMode = false;
   StreamSubscription<QuerySnapshot<Object?>>? listener;
 
   final _pageOption = [
@@ -95,7 +95,7 @@ class _homepageState extends State<homepage> {
           selectedIndex = index;
         },
       ),
-      body: isDriver ? _driverPageOption[selectedIndex] : _pageOption[selectedIndex],
+      body: guideMode ? _driverPageOption[selectedIndex] : _pageOption[selectedIndex],
     );
   }
 
@@ -111,10 +111,10 @@ class _homepageState extends State<homepage> {
 
   getAppModeState() async {
     final prefs = await SharedPreferences.getInstance();
-    bool? previousState = prefs.getBool("setIsDriver");
-    isDriver = previousState ?? false;
+    bool? previousState = prefs.getBool("setGuideMode");
+    guideMode = previousState ?? false;
 
-    if (isDriver) {
+    if (guideMode) {
       addFirebaseTripsListen();
     }
   }

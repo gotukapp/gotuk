@@ -31,7 +31,7 @@ class _profileState extends State<profile> {
   }
 
   late ColorNotifire notifire;
-  late bool isDriver = false;
+  late bool guideMode = false;
 
   @override
   Widget build(BuildContext context) {
@@ -145,11 +145,11 @@ class _profileState extends State<profile> {
                               TextColor: notifire.getwhiteblackcolor),
                           ProfileSetting(
                               image: "assets/images/clock.png",
-                              text: isDriver ? "Calendar" : "Transactions",
+                              text: guideMode ? "Calendar" : "Transactions",
                               icon: Icons.keyboard_arrow_right,
                               onclick: () {
                                 Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => isDriver ? const timetable()
+                                    builder: (context) => guideMode ? const timetable()
                                     : const TransactionHistory()));
                               },
                               boxcolor: notifire.getdarklightgreycolor,
@@ -223,7 +223,7 @@ class _profileState extends State<profile> {
 
   getAppModeState() async {
     final prefs = await SharedPreferences.getInstance();
-    bool? previousState = prefs.getBool("setIsDriver");
-    isDriver = previousState ?? false;
+    bool? previousState = prefs.getBool("setGuideMode");
+    guideMode = previousState ?? false;
   }
 }

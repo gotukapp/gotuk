@@ -24,7 +24,7 @@ class loginscreen extends StatefulWidget {
 
 class _loginscreenState extends State<loginscreen> {
   late ColorNotifire notifire;
-  late bool isDriver = false;
+  late bool guideMode = false;
   final phoneNumberController = TextEditingController();
   final passwordController = TextEditingController();
   bool showPassword = false;
@@ -63,7 +63,7 @@ class _loginscreenState extends State<loginscreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Welcome to GoTuk${isDriver ? " Driver" : ""}",
+                        "Welcome to GoTuk${guideMode ? " Driver" : ""}",
                         style: TextStyle(
                           fontSize: 24,
                           fontFamily: "Gilroy Bold",
@@ -258,7 +258,7 @@ class _loginscreenState extends State<loginscreen> {
           password: passwordController.text,
         );
 
-        await getUserFirebaseInstance(isDriver ? "guides" : "clients", credential);
+        await getUserFirebaseInstance(guideMode ? "guides" : "clients", credential);
 
         return true;
       } else {
@@ -292,8 +292,8 @@ class _loginscreenState extends State<loginscreen> {
       );
 
       UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-      if (isDriver) {
-        await getUserFirebaseInstance(isDriver ? "guides" : "clients", userCredential);
+      if (guideMode) {
+        await getUserFirebaseInstance(guideMode ? "guides" : "clients", userCredential);
       }
 
       return true;
@@ -316,8 +316,8 @@ class _loginscreenState extends State<loginscreen> {
 
   getAppModeState() async {
     final prefs = await SharedPreferences.getInstance();
-    bool? previousState = prefs.getBool("setIsDriver");
-    isDriver = previousState ?? false;
+    bool? previousState = prefs.getBool("setGuideMode");
+    guideMode = previousState ?? false;
   }
 
   Future<void> getUserFirebaseInstance(String collection, UserCredential credential) async {
