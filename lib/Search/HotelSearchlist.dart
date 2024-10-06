@@ -507,7 +507,7 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                               ),
                               const SizedBox(height: 6),
                               Text(
-                                "Book without waiting for the driver to respond",
+                                "Book without waiting for the guide to respond",
                                 style: TextStyle(
                                     fontSize: 13,
                                     color: greyColor,

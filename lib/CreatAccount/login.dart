@@ -12,7 +12,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../Domain/userFirebase.dart';
+import '../Domain/appUser.dart';
 import '../Utils/Colors.dart';
 
 class loginscreen extends StatefulWidget {
@@ -63,7 +63,7 @@ class _loginscreenState extends State<loginscreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Welcome to GoTuk${guideMode ? " Driver" : ""}",
+                        "Welcome to GoTuk${guideMode ? " Guide" : ""}",
                         style: TextStyle(
                           fontSize: 24,
                           fontFamily: "Gilroy Bold",
@@ -139,10 +139,10 @@ class _loginscreenState extends State<loginscreen> {
                       textColor: notifire.getwhiteblackcolor,
                       buttontext: "LOGIN",
                       onclick: () async {
-                        bool loginOk = await signInWithPhoneAndPassword();
-                        if(loginOk) {
+                        AppUser? user = await signInWithPhoneAndPassword();
+                        if(user != null) {
                           Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-                              builder: (context) => const homepage()),
+                              builder: (context) => homepage(user: user)),
                                   (route) => false);
                         }
                       }),
@@ -174,10 +174,10 @@ class _loginscreenState extends State<loginscreen> {
                           width: MediaQuery.of(context).size.width / 2.5,
                           child: InkWell(
                             onTap: () async {
-                              bool loginOk = await signInWithGoogle();
-                              if(loginOk) {
+                              AppUser? user = await signInWithGoogle();
+                              if(user != null) {
                                 Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-                                    builder: (context) => const homepage()),
+                                    builder: (context) => homepage(user: user)),
                                         (route) => false);
                               }
                             },
@@ -249,7 +249,7 @@ class _loginscreenState extends State<loginscreen> {
     );
   }
 
-  Future<bool> signInWithPhoneAndPassword() async {
+  Future<AppUser?> signInWithPhoneAndPassword() async {
     String errorMessage = '';
     try {
       if (phoneNumberController.text.isNotEmpty && phoneNumberController.text.isNotEmpty) {
@@ -258,9 +258,7 @@ class _loginscreenState extends State<loginscreen> {
           password: passwordController.text,
         );
 
-        await getUserFirebaseInstance(guideMode ? "guides" : "clients", credential);
-
-        return true;
+        return await getUserFirebaseInstance(guideMode, credential.user!);
       } else {
         errorMessage = 'You must fill in the username and password.';
       }
@@ -278,10 +276,10 @@ class _loginscreenState extends State<loginscreen> {
         content: Text(errorMessage),
       ),
     );
-    return false;
+    return null;
   }
 
-  Future<bool> signInWithGoogle() async {
+  Future<AppUser?> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       final GoogleSignInAuthentication? googleAuth =
@@ -292,16 +290,12 @@ class _loginscreenState extends State<loginscreen> {
       );
 
       UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-      if (guideMode) {
-        await getUserFirebaseInstance(guideMode ? "guides" : "clients", userCredential);
-      }
-
-      return true;
+      return await getUserFirebaseInstance(guideMode, userCredential.user!);
     } on Exception catch (e) {
       print('exception->$e');
     }
 
-    return false;
+    return null;
   }
 
   getdarkmodepreviousstate() async {
@@ -318,21 +312,5 @@ class _loginscreenState extends State<loginscreen> {
     final prefs = await SharedPreferences.getInstance();
     bool? previousState = prefs.getBool("setGuideMode");
     guideMode = previousState ?? false;
-  }
-
-  Future<void> getUserFirebaseInstance(String collection, UserCredential credential) async {
-    final ref = FirebaseFirestore.instance.collection(collection).doc(credential.user?.uid)
-        .withConverter(
-      fromFirestore: UserFirebase.fromFirestore,
-      toFirestore: (UserFirebase user, _) => user.toFirestore(),
-    );
-    final docSnap = await ref.get();
-    final user = docSnap.data();
-    if (user == null) {
-      UserFirebase user = UserFirebase(credential.user!.uid, credential.user!.displayName, credential.user?.email, credential.user?.phoneNumber);
-      FirebaseFirestore.instance.collection(collection)
-          .doc(credential.user?.uid)
-          .set(user.toFirestore());
-    }
   }
 }

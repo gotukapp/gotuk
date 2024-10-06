@@ -1041,9 +1041,7 @@ class _checkoutState extends State<checkout> {
                           selectedIndex = 0;
                           Trip newTrip = new Trip.create(tour!.id, selectedDate!.copyWith(hour: hourSliderValue, minute: minutesSliderValue), smallPriceSelected ? 3 : 6, 'pending');
                           Trip.addTrip(newTrip);
-
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const homepage()));
+                          Navigator.of(context)..pop()..pop()..pop();
                         },
                         child: Container(
                           margin: const EdgeInsets.only(

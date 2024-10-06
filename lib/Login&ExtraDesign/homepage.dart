@@ -12,6 +12,7 @@ import 'package:dm/Domain/trips.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../Domain/appUser.dart';
 import 'home.dart';
 import '../Driver/dashboard.dart';
 import '../Message/message.dart';
@@ -19,7 +20,9 @@ import '../Message/message.dart';
 int selectedIndex = 0;
 
 class homepage extends StatefulWidget {
-  const homepage({super.key});
+  final AppUser user;
+
+  const homepage({super.key, required this.user});
 
   @override
   _homepageState createState() => _homepageState();

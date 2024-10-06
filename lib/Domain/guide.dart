@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dm/Domain/userFirebase.dart';
+import 'package:dm/Domain/appUser.dart';
 
-class Guide extends UserFirebase {
+class Guide extends AppUser {
 
   Guide(super.id, super.name, super.email, super.phone);
 

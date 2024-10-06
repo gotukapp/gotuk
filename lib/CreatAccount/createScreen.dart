@@ -60,7 +60,7 @@ class _createScreenState extends State<createScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          guideMode ? "GoTuk Driver" : "Welcome to GoTuk",
+                          guideMode ? "GoTuk Guide" : "Welcome to GoTuk",
                           style: TextStyle(
                               fontSize: 22,
                               fontFamily: "Gilroy Bold",

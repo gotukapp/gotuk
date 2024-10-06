@@ -11,6 +11,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../CreatAccount/createScreen.dart';
+import '../Domain/appUser.dart';
 import '../Login&ExtraDesign/homepage.dart';
 
 class onbording extends StatefulWidget {
@@ -21,6 +22,8 @@ class onbording extends StatefulWidget {
 }
 
 class _onbordingState extends State<onbording> {
+  late bool guideMode = false;
+
   @override
   void initState() {
     getdarkmodepreviousstate();
@@ -28,9 +31,20 @@ class _onbordingState extends State<onbording> {
 
     Future.delayed(
         const Duration(seconds: 3),
-      () {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => const BoardingPage()));
+      () async {
+        FirebaseAuth.instance
+            .idTokenChanges()
+            .listen((User? user) async {
+          if (user != null) {
+            AppUser user = await getUserFirebaseInstance(this.guideMode, FirebaseAuth.instance.currentUser!);
+            Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                builder: (context) => homepage(user: user)),
+                    (route) => false);
+          } else {
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => const BoardingPage()));
+          }
+        });
       },
    );
   }
@@ -57,6 +71,12 @@ class _onbordingState extends State<onbording> {
       notifire.setIsDark = previousState;
     }
   }
+
+  getAppModeState() async {
+    final prefs = await SharedPreferences.getInstance();
+    bool? previousState = prefs.getBool("setGuideMode");
+    guideMode = previousState ?? false;
+  }
 }
 
 class BoardingPage extends StatefulWidget {
@@ -70,16 +90,6 @@ class BoardingPage extends StatefulWidget {
 class _BoardingScreenState extends State<BoardingPage> {
 
   void initState() {
-    FirebaseAuth.instance
-        .idTokenChanges()
-        .listen((User? user) {
-      if (user != null) {
-        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-            builder: (context) => const homepage()),
-                (route) => false);
-      }
-    });
-
     getdarkmodepreviousstate();
     _currentPage = 0;
     slides = [
