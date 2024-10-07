@@ -43,7 +43,7 @@ class Trip {
       SnapshotOptions? options,
       ) {
     final data = snapshot.data();
-    return Trip( snapshot.id, data?['tourId'], data?['date'], data?['persons'], data?['status'], data?['userId']);
+    return Trip( snapshot.id, data?['tourId'], data?['date'].toDate(), data?['persons'], data?['status'], data?['userId']);
   }
 
   Map<String, dynamic> toFirestore() {

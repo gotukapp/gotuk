@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'client.dart';
 import 'guide.dart';
 
-class AppUser {
+abstract class AppUser {
 
   final String id;
   final String? name;
@@ -12,12 +12,6 @@ class AppUser {
   final String? phone;
 
   AppUser(this.id, this.name, this.email, this.phone);
-
-  factory AppUser.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot,
-      SnapshotOptions? options,) {
-    final data = snapshot.data();
-    return AppUser(snapshot.id, data?['name'], data?['email'], data?['phone']);
-  }
 
   Map<String, dynamic> toFirestore() {
     return {
@@ -41,7 +35,7 @@ Future<AppUser> getUserFirebaseInstance(bool guideMode, User user) async {
     appUser = guideMode ? Guide(user.uid,
         user.displayName,
         user.email,
-        user.phoneNumber) :
+        user.phoneNumber, false) :
     Client(user.uid,
         user.displayName,
         user.email,

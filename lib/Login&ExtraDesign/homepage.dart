@@ -13,8 +13,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Domain/appUser.dart';
+import '../Domain/guide.dart';
+import '../Guide/dashboard.dart';
 import 'home.dart';
-import '../Driver/dashboard.dart';
 import '../Message/message.dart';
 
 int selectedIndex = 0;
@@ -34,17 +35,6 @@ class _homepageState extends State<homepage> {
   bool guideMode = false;
   StreamSubscription<QuerySnapshot<Object?>>? listener;
 
-  final _pageOption = [
-    const home(),
-    const message(),
-    const profile(),
-  ];
-
-  final _driverPageOption = [
-    const dashboard(),
-    const message(),
-    const profile(),
-  ];
   @override
   void initState() {
     getdarkmodepreviousstate();
@@ -57,6 +47,18 @@ class _homepageState extends State<homepage> {
 
   @override
   Widget build(BuildContext context) {
+    final pageOption = [
+      const home(),
+      const message(),
+      const profile(),
+    ];
+
+    final driverPageOption = [
+      dashboard(guide: widget.user as Guide),
+      const message(),
+      const profile(),
+    ];
+
     notifire = Provider.of<ColorNotifire>(context, listen: true);
     return
         // WillPopScope(
@@ -98,7 +100,7 @@ class _homepageState extends State<homepage> {
           selectedIndex = index;
         },
       ),
-      body: guideMode ? _driverPageOption[selectedIndex] : _pageOption[selectedIndex],
+      body: guideMode ? driverPageOption[selectedIndex] : pageOption[selectedIndex],
     );
   }
 
@@ -118,7 +120,10 @@ class _homepageState extends State<homepage> {
     guideMode = previousState ?? false;
 
     if (guideMode) {
-      addFirebaseTripsListen();
+      Guide guide = widget.user as Guide;
+      if (guide.accountValidated) {
+        addFirebaseTripsListen();
+      }
     }
   }
 

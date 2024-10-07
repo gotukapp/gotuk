@@ -27,6 +27,7 @@ class _onbordingState extends State<onbording> {
   @override
   void initState() {
     getdarkmodepreviousstate();
+    getAppModeState();
     super.initState();
 
     Future.delayed(

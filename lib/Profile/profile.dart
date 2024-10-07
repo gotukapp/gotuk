@@ -11,7 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../Driver/timetable.dart';
+import '../Guide/account.dart';
+import '../Guide/timetable.dart';
 import '../Utils/Colors.dart';
 import '../Utils/customwidget .dart';
 
@@ -156,18 +157,33 @@ class _profileState extends State<profile> {
                               iconcolor: notifire.getwhiteblackcolor,
                               ImageColor: notifire.getwhiteblackcolor,
                               TextColor: notifire.getwhiteblackcolor),
-                          ProfileSetting(
-                              image: "assets/images/discount.png",
-                              text: "Promotions",
-                              icon: Icons.keyboard_arrow_right,
-                              onclick: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => const MyCupon()));
-                              },
-                              boxcolor: notifire.getdarkmodecolor,
-                              iconcolor: notifire.getwhiteblackcolor,
-                              ImageColor: notifire.getwhiteblackcolor,
-                              TextColor: notifire.getwhiteblackcolor)
+                          if (guideMode)
+                            ProfileSetting(
+                                image: "assets/images/profile.png",
+                                text: "Account",
+                                icon: Icons.keyboard_arrow_right,
+                                onclick: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => const account()
+                                  ));
+                                },
+                                boxcolor: notifire.getdarkmodecolor,
+                                iconcolor: notifire.getwhiteblackcolor,
+                                ImageColor: notifire.getwhiteblackcolor,
+                                TextColor: notifire.getwhiteblackcolor)
+                          else
+                            ProfileSetting(
+                                image: "assets/images/discount.png",
+                                text: "Promotions",
+                                icon: Icons.keyboard_arrow_right,
+                                onclick: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => const MyCupon()));
+                                },
+                                boxcolor: notifire.getdarkmodecolor,
+                                iconcolor: notifire.getwhiteblackcolor,
+                                ImageColor: notifire.getwhiteblackcolor,
+                                TextColor: notifire.getwhiteblackcolor)
                         ],
                       ),
                       SizedBox(
