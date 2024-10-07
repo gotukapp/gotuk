@@ -160,7 +160,7 @@ class _createScreenState extends State<createScreen> {
                   )
                 ),
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.05,
+                height: MediaQuery.of(context).size.height * 0.02,
               ),
               Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 8),

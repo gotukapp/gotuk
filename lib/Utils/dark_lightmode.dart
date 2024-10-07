@@ -9,6 +9,7 @@ class ColorNotifire with ChangeNotifier {
   }
 
   get getIsDark => isDark;
+  get getwhitegrey => isDark ? greyColor : bgcolor;
   get getbgcolor => isDark ? darkmode : bgcolor; //background color
   get getlogobgcolor => isDark ? darkmode : LogoColor; //background color
   get getdarkmodecolor => isDark ? boxcolor : WhiteColor; //containar color

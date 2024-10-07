@@ -6,6 +6,7 @@ import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/CreatAccount/forgotpassword.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
@@ -39,7 +40,7 @@ class _loginscreenState extends State<loginscreen> {
   Widget build(BuildContext context) {
     notifire = Provider.of<ColorNotifire>(context, listen: true);
     return Scaffold(
-      backgroundColor: notifire.getbgcolor,
+      backgroundColor: notifire.getwhitegrey,
       appBar: PreferredSize(
           preferredSize: const Size.fromHeight(75),
           child: CustomAppbar(
@@ -69,20 +70,20 @@ class _loginscreenState extends State<loginscreen> {
                           color: WhiteColor,
                         ),
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.005),
                       Text("Please login to your account",
                           style: TextStyle(
                             fontSize: 16,
                             color: WhiteColor,
                             fontFamily: "Gilroy Medium",
                           )),
-                      SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                       Text("Phone Number",
                           style: TextStyle(
                               fontSize: 15,
                               fontFamily: "Gilroy Medium",
                               color: WhiteColor)),
-                      SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.005),
                       textfield(
                           fieldColor: notifire.getfieldcolor,
                           hintColor: notifire.gettextfieldcolor,
@@ -97,7 +98,7 @@ class _loginscreenState extends State<loginscreen> {
                             fontFamily: "Gilroy Medium",
                             color: WhiteColor),
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.005),
                       textfield(
                           password: !showPassword,
                           fieldColor: notifire.getfieldcolor,
@@ -132,11 +133,11 @@ class _loginscreenState extends State<loginscreen> {
                                   fontFamily: "Gilroy Medium")),
                         )),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.04),
                   AppButton(
                       bgColor: notifire.getlogowhitecolor,
                       textColor: notifire.getwhiteblackcolor,
-                      buttontext: "LOGIN",
+                      buttontext: guideMode ? "LOGIN AS A GUIDE" : "LOGIN",
                       onclick: () async {
                         AppUser? user = await signInWithPhoneAndPassword();
                         if(user != null) {
@@ -169,7 +170,7 @@ class _loginscreenState extends State<loginscreen> {
                               borderRadius: BorderRadius.circular(50),
                               color: notifire.getdarkmodecolor),
                           // margin: EdgeInsets.only(top: 12),
-                          height: 50,
+                          height: 45,
                           width: MediaQuery.of(context).size.width / 2.5,
                           child: InkWell(
                             onTap: () async {
@@ -181,8 +182,7 @@ class _loginscreenState extends State<loginscreen> {
                               }
                             },
                             child: ClipRRect(
-                              borderRadius:
-                              const BorderRadius.all(Radius.circular(50)),
+                              borderRadius: const BorderRadius.all(Radius.circular(50)),
                               child: Center(
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -206,7 +206,7 @@ class _loginscreenState extends State<loginscreen> {
                             borderRadius: BorderRadius.circular(50),
                           ),
                           // margin: EdgeInsets.only(top: 12),
-                          height: 50,
+                          height: 45,
                           width: MediaQuery.of(context).size.width / 2.5,
                           child: InkWell(
                             onTap: () {},
@@ -240,6 +240,51 @@ class _loginscreenState extends State<loginscreen> {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => const createScreen()));
                     }),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Row(
+                      children: [
+                        SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.065),
+                        Text("I want to be a Guide",
+                            style: TextStyle(
+                                fontSize: 18,
+                                color: notifire.getwhitelogocolor,
+                                fontFamily: "Gilroy Bold")),
+                      ],
+                    ),
+                    // ignore: sized_box_for_whitespace
+                    Container(
+                      height: 60.0,
+                      width: 80.0,
+                      child: FittedBox(
+                        fit: BoxFit.fill,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: CupertinoSwitch(
+                            thumbColor: notifire.getdarkwhitecolor,
+                            trackColor: notifire.getbuttoncolor,
+                            activeColor: notifire.getdarkbluecolor,
+                            value: guideMode,
+                            onChanged: (value) async {
+                              setState(() {
+                                guideMode = value;
+                              });
+                              final prefs =
+                              await SharedPreferences.getInstance();
+                              setState(() {
+                                guideMode = value;
+                                prefs.setBool("setGuideMode", value);
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             )
             )

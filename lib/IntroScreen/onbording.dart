@@ -330,55 +330,10 @@ class _loginpageState extends State<loginpage> {
         padding: const EdgeInsets.symmetric(horizontal: 12),
         child: Column(
           children: [
-            SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Row(
-                  children: [
-                    SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.065),
-                    Text("Guide mode",
-                        style: TextStyle(
-                            fontSize: 15,
-                            color: notifire.getwhiteblackcolor,
-                            fontFamily: "Gilroy Bold")),
-                  ],
-                ),
-                // ignore: sized_box_for_whitespace
-                Container(
-                  height: 43.0,
-                  width: 60.0,
-                  child: FittedBox(
-                    fit: BoxFit.fill,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: CupertinoSwitch(
-                        thumbColor: notifire.getdarkwhitecolor,
-                        trackColor: notifire.getbuttoncolor,
-                        activeColor: notifire.getdarkbluecolor,
-                        value: guideMode,
-                        onChanged: (value) async {
-                          setState(() {
-                            guideMode = value;
-                          });
-                          final prefs =
-                          await SharedPreferences.getInstance();
-                          setState(() {
-                            guideMode = value;
-                            prefs.setBool("setGuideMode", value);
-                          });
-                        },
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
             SizedBox(height: MediaQuery.of(context).size.height / 6.5),
             Center(
               child: Image.asset(
-                guideMode ? "assets/images/applogo_bw.png" : "assets/images/applogo.png",
+                "assets/images/applogo.png",
                 height: 170,
                 width: 220,
               ),
@@ -434,7 +389,52 @@ class _loginpageState extends State<loginpage> {
                   fixedSize: const Size(400, 45),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(50))),
-            )
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Row(
+                  children: [
+                    SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.065),
+                    Text("I want to be a Guide",
+                        style: TextStyle(
+                            fontSize: 18,
+                            color: notifire.getwhitelogocolor,
+                            fontFamily: "Gilroy Bold")),
+                  ],
+                ),
+                // ignore: sized_box_for_whitespace
+                Container(
+                  height: 80.0,
+                  width: 120.0,
+                  child: FittedBox(
+                    fit: BoxFit.fill,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CupertinoSwitch(
+                        thumbColor: notifire.getdarkwhitecolor,
+                        trackColor: notifire.getbuttoncolor,
+                        activeColor: notifire.getdarkbluecolor,
+                        value: guideMode,
+                        onChanged: (value) async {
+                          setState(() {
+                            guideMode = value;
+                          });
+                          final prefs =
+                          await SharedPreferences.getInstance();
+                          setState(() {
+                            guideMode = value;
+                            prefs.setBool("setGuideMode", value);
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
