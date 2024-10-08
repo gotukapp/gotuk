@@ -368,7 +368,13 @@ tripInfo(BuildContext context, ColorNotifire notifire, Trip trip) {
                   ],
                 ),
                 InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      if (trip.status == "booked") {
+                        trip.startTour();
+                      } else if (trip.status == "started") {
+                        trip.finishTour();
+                      }
+                    },
                     child: Container(
                       height: 40,
                       width: 90,

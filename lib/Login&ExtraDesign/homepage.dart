@@ -53,11 +53,11 @@ class _homepageState extends State<homepage> {
       const profile(),
     ];
 
-    final driverPageOption = [
+    final driverPageOption = guideMode ? [
       dashboard(guide: widget.user as Guide),
       const message(),
       const profile(),
-    ];
+    ] : [];
 
     notifire = Provider.of<ColorNotifire>(context, listen: true);
     return

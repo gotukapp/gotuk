@@ -19,12 +19,6 @@ List trips = [
 
 Trip currentBook = Trip.create(tourList[0].id, DateTime(2024,7,29,10,0,0), 6, 'started');
 
-List driverTrips = [
-  Trip.create(tourList[0].id, DateTime(2024,7,29,13,0,0), 6, 'booked'),
-  Trip.create(tourList[1].id, DateTime(2024,7,29,15,30,0), 6, 'booked'),
-  Trip.create(tourList[3].id, DateTime(2024,7,29,18,30,0), 6, 'booked')
-];
-
 class Trip {
 
   String? id;
@@ -97,6 +91,24 @@ class Trip {
     FirebaseFirestore.instance
         .collection('trips')
         .doc(id)
-        .update({"status": "booked", "guidId": FirebaseAuth.instance.currentUser?.uid});
+        .update({"status": "booked",
+      "guidId": FirebaseAuth.instance.currentUser?.uid,
+      "bookedDate": DateTime.now()});
+  }
+
+  void startTour() {
+    FirebaseFirestore.instance
+        .collection('trips')
+        .doc(id)
+        .update({"status": "started",
+      "startedDate": DateTime.now()});
+  }
+
+  void finishTour() {
+    FirebaseFirestore.instance
+        .collection('trips')
+        .doc(id)
+        .update({"status": "finished",
+      "finishedDate": DateTime.now()});
   }
 }

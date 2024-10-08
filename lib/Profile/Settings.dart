@@ -4,6 +4,7 @@ import 'package:dm/CreatAccount/login.dart';
 import 'package:dm/Profile/Language.dart';
 import 'package:dm/Profile/MyProfile.dart';
 import 'package:dm/Profile/NotificationSetting.dart';
+import 'package:dm/Profile/support.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:flutter/cupertino.dart';
@@ -176,6 +177,25 @@ class _SettingsState extends State<Settings> {
                   iconcolor: notifire.getwhiteblackcolor,
                   ImageColor: RedColor,
                   TextColor: RedColor),
+              const SizedBox(height: 10),
+              Text("Support",
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: notifire.getwhiteblackcolor,
+                      fontWeight: FontWeight.bold)),
+              const SizedBox(height: 10),
+              AccountSetting(
+                  image: "assets/images/support.png",
+                  text: "Support",
+                  icon: Icons.keyboard_arrow_right,
+                  onclick: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const Support()));
+                  },
+                  boxcolor: notifire.getdarkmodecolor,
+                  iconcolor: notifire.getwhiteblackcolor,
+                  ImageColor: notifire.getwhiteblackcolor,
+                  TextColor: notifire.getwhiteblackcolor),
             ],
           ),
         ),
