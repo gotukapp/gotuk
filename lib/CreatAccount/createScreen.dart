@@ -27,7 +27,7 @@ class _createScreenState extends State<createScreen> {
     super.initState();
   }
 
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
   late bool guideMode = false;
   bool showPassword = false;
   final nameController = TextEditingController();
@@ -37,23 +37,23 @@ class _createScreenState extends State<createScreen> {
 
   @override
   Widget build(BuildContext context) {
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
-      backgroundColor: notifire.getbgcolor,
+      backgroundColor: notifier.getbgcolor,
       appBar: PreferredSize(
           preferredSize: const Size.fromHeight(75),
           child: CustomAppbar(
               centertext: "",
               ActionIcon: null,
-              bgcolor: notifire.getlogobgcolor,
-              actioniconcolor: notifire.getwhiteblackcolor,
-              leadingiconcolor: notifire.getwhiteblackcolor)),
+              bgcolor: notifier.getlogobgcolor,
+              actioniconcolor: notifier.getwhiteblackcolor,
+              leadingiconcolor: notifier.getwhiteblackcolor)),
       body: SingleChildScrollView(
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                color: notifire.getlogobgcolor,
+                color: notifier.getlogobgcolor,
                 child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 8),
                     child: Column(
@@ -82,8 +82,8 @@ class _createScreenState extends State<createScreen> {
                                 color: WhiteColor)),
                         SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                         textfield(
-                            fieldColor: notifire.getfieldcolor,
-                            hintColor: notifire.gettextfieldcolor,
+                            fieldColor: notifier.getfieldcolor,
+                            hintColor: notifier.gettextfieldcolor,
                             text: 'Enter your name',
                             suffix: null,
                             controller: nameController),
@@ -95,8 +95,8 @@ class _createScreenState extends State<createScreen> {
                                 color: WhiteColor)),
                         SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                         textfield(
-                            fieldColor: notifire.getfieldcolor,
-                            hintColor: notifire.gettextfieldcolor,
+                            fieldColor: notifier.getfieldcolor,
+                            hintColor: notifier.gettextfieldcolor,
                             text: 'Enter your email',
                             controller: emailController,
                             suffix: null),
@@ -110,8 +110,8 @@ class _createScreenState extends State<createScreen> {
                         ),
                         SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                         textfield(
-                            fieldColor: notifire.getfieldcolor,
-                            hintColor: notifire.gettextfieldcolor,
+                            fieldColor: notifier.getfieldcolor,
+                            hintColor: notifier.gettextfieldcolor,
                             text: 'Enter your number',
                             suffix: null,
                             controller: phoneNumberController),
@@ -124,8 +124,8 @@ class _createScreenState extends State<createScreen> {
                         SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                         textfield(
                             password: !showPassword,
-                            fieldColor: notifire.getfieldcolor,
-                            hintColor: notifire.gettextfieldcolor,
+                            fieldColor: notifier.getfieldcolor,
+                            hintColor: notifier.gettextfieldcolor,
                             text: 'Enter your password',
                             suffix: InkWell(
                               onTap: () {
@@ -133,7 +133,7 @@ class _createScreenState extends State<createScreen> {
                               },
                               child: Icon(
                                 Icons.visibility_off,
-                                color: notifire.getgreycolor,
+                                color: notifier.getgreycolor,
                               ),
                             ),
                             controller: passwordController),
@@ -141,8 +141,8 @@ class _createScreenState extends State<createScreen> {
                           height: MediaQuery.of(context).size.height * 0.03,
                         ),
                         AppButton(
-                          bgColor: notifire.getlogowhitecolor,
-                          textColor: notifire.getwhiteblackcolor,
+                          bgColor: notifier.getlogowhitecolor,
+                          textColor: notifier.getwhiteblackcolor,
                           onclick: () async {
                             bool userCreated = await createUser();
                             if (userCreated) {
@@ -234,9 +234,9 @@ class _createScreenState extends State<createScreen> {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifier.setIsDark = previusstate;
     }
   }
 

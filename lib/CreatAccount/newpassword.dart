@@ -16,7 +16,7 @@ class newpassword extends StatefulWidget {
 }
 
 class _newpasswordState extends State<newpassword> {
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
   @override
   void initState() {
     getdarkmodepreviousstate();
@@ -25,17 +25,17 @@ class _newpasswordState extends State<newpassword> {
 
   @override
   Widget build(BuildContext context) {
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
-      backgroundColor: notifire.getlogobgcolor,
+      backgroundColor: notifier.getlogobgcolor,
       appBar: PreferredSize(
           preferredSize: const Size.fromHeight(75),
           child: CustomAppbar(
               centertext: "",
               ActionIcon: null,
-              bgcolor: notifire.getlogobgcolor,
-              actioniconcolor: notifire.getwhiteblackcolor,
-              leadingiconcolor: notifire.getwhiteblackcolor)),
+              bgcolor: notifier.getlogobgcolor,
+              actioniconcolor: notifier.getwhiteblackcolor,
+              leadingiconcolor: notifier.getwhiteblackcolor)),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -60,11 +60,11 @@ class _newpasswordState extends State<newpassword> {
                       color: WhiteColor)),
               SizedBox(height: MediaQuery.of(context).size.height * 0.01),
               textfield(
-                fieldColor: notifire.getfieldcolor,
-                hintColor: notifire.gettextfieldcolor,
+                fieldColor: notifier.getfieldcolor,
+                hintColor: notifier.gettextfieldcolor,
                 text: 'New Password',
                 suffix:
-                    Icon(Icons.visibility_off, color: notifire.getgreycolor),
+                    Icon(Icons.visibility_off, color: notifier.getgreycolor),
               ),
               const SizedBox(height: 20),
               Text("Confirm Password",
@@ -74,16 +74,16 @@ class _newpasswordState extends State<newpassword> {
                       color: WhiteColor)),
               SizedBox(height: MediaQuery.of(context).size.height * 0.01),
               textfield(
-                fieldColor: notifire.getfieldcolor,
-                hintColor: notifire.gettextfieldcolor,
+                fieldColor: notifier.getfieldcolor,
+                hintColor: notifier.gettextfieldcolor,
                 text: 'Confirm Password',
                 suffix:
-                    Icon(Icons.visibility_off, color: notifire.getgreycolor),
+                    Icon(Icons.visibility_off, color: notifier.getgreycolor),
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.05),
               AppButton(
-                bgColor: notifire.getlogowhitecolor,
-                textColor: notifire.getwhiteblackcolor,
+                bgColor: notifier.getlogowhitecolor,
+                textColor: notifier.getwhiteblackcolor,
                 buttontext: "Reset Password",
                 onclick: bottomsheet,
               ),
@@ -97,7 +97,7 @@ class _newpasswordState extends State<newpassword> {
   bottomsheet() {
     return showModalBottomSheet(
         context: context,
-        backgroundColor: notifire.getbgcolor,
+        backgroundColor: notifier.getbgcolor,
         elevation: 2,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
@@ -138,7 +138,7 @@ class _newpasswordState extends State<newpassword> {
                               style: TextStyle(
                                   fontSize: 20,
                                   fontFamily: "Gilroy Bold",
-                                  color: notifire.getwhiteblackcolor),
+                                  color: notifier.getwhiteblackcolor),
                             ),
                           ),
                           SizedBox(
@@ -151,7 +151,7 @@ class _newpasswordState extends State<newpassword> {
                               style: TextStyle(
                                   fontSize: 14,
                                   fontFamily: "Gilroy Medium",
-                                  color: notifire.getgreycolor),
+                                  color: notifier.getgreycolor),
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -196,9 +196,9 @@ class _newpasswordState extends State<newpassword> {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifier.setIsDark = previusstate;
     }
   }
 }

@@ -22,23 +22,23 @@ class _MyProfileState extends State<MyProfile> {
     super.initState();
   }
 
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
   @override
   Widget build(BuildContext context) {
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
-        backgroundColor: notifire.getbgcolor,
-        leading: BackButton(color: notifire.getwhiteblackcolor),
+        backgroundColor: notifier.getbgcolor,
+        leading: BackButton(color: notifier.getwhiteblackcolor),
         title: Text(
           "My Profile",
           style: TextStyle(
-              color: notifire.getwhiteblackcolor, fontFamily: "Gilroy Bold"),
+              color: notifier.getwhiteblackcolor, fontFamily: "Gilroy Bold"),
         ),
       ),
-      backgroundColor: notifire.getbgcolor,
+      backgroundColor: notifier.getbgcolor,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
@@ -48,7 +48,7 @@ class _MyProfileState extends State<MyProfile> {
               Container(
                 height: 200,
                 width: 200,
-                color: notifire.getbgcolor,
+                color: notifier.getbgcolor,
                 child: Stack(
                   children: [
                     const Positioned(
@@ -89,13 +89,13 @@ class _MyProfileState extends State<MyProfile> {
                     "Full Name",
                     style: TextStyle(
                         fontSize: 16,
-                        color: notifire.getwhiteblackcolor,
+                        color: notifier.getwhiteblackcolor,
                         fontFamily: "Gilroy Bold"),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                   textfield(
-                      fieldColor: notifire.getdarkmodecolor,
-                      hintColor: notifire.getgreycolor,
+                      fieldColor: notifier.getdarkmodecolor,
+                      hintColor: notifier.getgreycolor,
                       text: 'Enter your Name',
                       suffix: null),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.04),
@@ -103,13 +103,13 @@ class _MyProfileState extends State<MyProfile> {
                     "Phone Number",
                     style: TextStyle(
                         fontSize: 16,
-                        color: notifire.getwhiteblackcolor,
+                        color: notifier.getwhiteblackcolor,
                         fontFamily: "Gilroy Bold"),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                   textfield(
-                      fieldColor: notifire.getdarkmodecolor,
-                      hintColor: notifire.getgreycolor,
+                      fieldColor: notifier.getdarkmodecolor,
+                      hintColor: notifier.getgreycolor,
                       text: 'Enter your Number',
                       suffix: null),
                 ],
@@ -147,9 +147,9 @@ class _MyProfileState extends State<MyProfile> {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifier.setIsDark = previusstate;
     }
   }
 }

@@ -24,23 +24,23 @@ class _LanguageState extends State<Language> {
     super.initState();
   }
 
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
   late String language = Localizations.localeOf(context).toString();
 
   @override
   Widget build(BuildContext context) {
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
-      backgroundColor: notifire.getbgcolor,
+      backgroundColor: notifier.getbgcolor,
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
-        backgroundColor: notifire.getbgcolor,
-        leading: BackButton(color: notifire.getwhiteblackcolor),
+        backgroundColor: notifier.getbgcolor,
+        leading: BackButton(color: notifier.getwhiteblackcolor),
         title: Text(
           AppLocalizations.of(context)!.language,
           style: TextStyle(
-              color: notifire.getwhiteblackcolor, fontFamily: "Gilroy bold"),
+              color: notifier.getwhiteblackcolor, fontFamily: "Gilroy bold"),
         ),
       ),
       body: Padding(
@@ -70,7 +70,7 @@ class _LanguageState extends State<Language> {
                                   height: 55,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(15),
-                                      color: notifire.getdarkmodecolor),
+                                      color: notifier.getdarkmodecolor),
                                   child: ListTile(
                                     leading: Image.asset(
                                       "assets/images/Flag_${appLanguages[index]["code"]}.png",
@@ -79,7 +79,7 @@ class _LanguageState extends State<Language> {
                                     title: Text(getTranslation(appLanguages[index]["name"]),
                                         style: TextStyle(
                                             fontSize: 16,
-                                            color: notifire.getwhiteblackcolor,
+                                            color: notifier.getwhiteblackcolor,
                                             fontFamily: "Gilroy Medium")),
                                     trailing: language == appLanguages[index]["code"].toLowerCase() ? Icon(Icons.check, color: Darkblue) : const Text(''),
                                   ),
@@ -99,9 +99,9 @@ class _LanguageState extends State<Language> {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifier.setIsDark = previusstate;
     }
   }
 

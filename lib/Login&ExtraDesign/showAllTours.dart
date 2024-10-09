@@ -23,21 +23,21 @@ class _showAllToursState extends State<showAllTours> {
     super.initState();
   }
 
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
   @override
   Widget build(BuildContext context) {
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
       appBar: PreferredSize(
           preferredSize: const Size.fromHeight(75),
           child: CustomAppbar(
               centertext: "Recomended for you",
               ActionIcon: null,
-              bgcolor: notifire.getbgcolor,
-              actioniconcolor: notifire.getwhiteblackcolor,
-              leadingiconcolor: notifire.getwhiteblackcolor,
-              titlecolor: notifire.getwhiteblackcolor)),
-      backgroundColor: notifire.getbgcolor,
+              bgcolor: notifier.getbgcolor,
+              actioniconcolor: notifier.getwhiteblackcolor,
+              leadingiconcolor: notifier.getwhiteblackcolor,
+              titlecolor: notifier.getwhiteblackcolor)),
+      backgroundColor: notifier.getbgcolor,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
         child: SizedBox(
@@ -54,7 +54,7 @@ class _showAllToursState extends State<showAllTours> {
                 width: 280,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
-                    color: notifire.getdarkmodecolor),
+                    color: notifier.getdarkmodecolor),
                 child: Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -91,7 +91,7 @@ class _showAllToursState extends State<showAllTours> {
                                       "${tourList[index].priceLow}€ - ${tourList[index].priceHigh}€",
                                       style: TextStyle(
                                           fontSize: 12,
-                                          color: notifire.getdarkwhitecolor,
+                                          color: notifier.getdarkwhitecolor,
                                           fontFamily: "Gilroy Bold"),
                                     ),
                                   )),
@@ -106,7 +106,7 @@ class _showAllToursState extends State<showAllTours> {
                         style: TextStyle(
                             fontSize: 15,
                             fontFamily: "Gilroy Bold",
-                            color: notifire.getwhiteblackcolor),
+                            color: notifier.getwhiteblackcolor),
                       ),
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.01),
@@ -114,13 +114,13 @@ class _showAllToursState extends State<showAllTours> {
                         tourList[index].address,
                         style: TextStyle(
                             fontSize: 12,
-                            color: notifire.getgreycolor,
+                            color: notifier.getgreycolor,
                             fontFamily: "Gilroy Medium",
                             overflow: TextOverflow.ellipsis),
                       ),
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.001),
-                      Divider(color: notifire.getgreycolor),
+                      Divider(color: notifier.getgreycolor),
                       // SizedBox(
                       //     height: MediaQuery.of(context)
                       //             .size
@@ -145,18 +145,18 @@ class _showAllToursState extends State<showAllTours> {
         Image.asset(
           image!,
           height: 25,
-          color: notifire.getdarkbluecolor,
+          color: notifier.getdarkbluecolor,
         ),
         const SizedBox(width: 5),
         Text(
           text,
           style: TextStyle(
-              color: notifire.getgreycolor, fontFamily: "Gilroy Medium"),
+              color: notifier.getgreycolor, fontFamily: "Gilroy Medium"),
         ),
         const SizedBox(width: 16),
         CircleAvatar(
           radius: radi,
-          backgroundColor: notifire.getgreycolor,
+          backgroundColor: notifier.getgreycolor,
         )
       ],
     );
@@ -166,9 +166,9 @@ class _showAllToursState extends State<showAllTours> {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifier.setIsDark = previusstate;
     }
   }
 }

@@ -75,7 +75,7 @@ class _checkoutState extends State<checkout> {
 
   int _currentPage = 0;
 
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
   @override
   Widget build(BuildContext context) {
     setState(() {
@@ -85,18 +85,18 @@ class _checkoutState extends State<checkout> {
       tours.addAll(tourList);
       carrosselDefaultPage = tourList.indexOf(tour!);
     }
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
-      backgroundColor: notifire.getbgcolor,
+      backgroundColor: notifier.getbgcolor,
       appBar: PreferredSize(
           preferredSize: const Size.fromHeight(75),
           child: CustomAppbar(
               centertext: "Checkout",
               ActionIcon: Icons.more_vert,
-              bgcolor: notifire.getbgcolor,
-              actioniconcolor: notifire.getwhiteblackcolor,
-              leadingiconcolor: notifire.getwhiteblackcolor,
-              titlecolor: notifire.getwhiteblackcolor)),
+              bgcolor: notifier.getbgcolor,
+              actioniconcolor: notifier.getwhiteblackcolor,
+              leadingiconcolor: notifier.getwhiteblackcolor,
+              titlecolor: notifier.getwhiteblackcolor)),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
@@ -217,13 +217,13 @@ class _checkoutState extends State<checkout> {
                   Text("Go Now",
                       style: TextStyle(
                           fontSize: 16,
-                          color: notifire.getwhiteblackcolor,
+                          color: notifier.getwhiteblackcolor,
                           fontFamily: "Gilroy Bold")),
                   const SizedBox(height: 8),
                   Text(" ....  Explicação de como funciona ....",
                       style: TextStyle(
                           fontSize: 14,
-                          color: notifire.getwhiteblackcolor,
+                          color: notifier.getwhiteblackcolor,
                           fontFamily: "Gilroy Bold")),
                 ],
               const SizedBox(height: 10),
@@ -244,12 +244,12 @@ class _checkoutState extends State<checkout> {
                       style: TextStyle(
                           fontSize: 16,
                           fontFamily: "Gilroy Bold",
-                          color: notifire.getwhiteblackcolor),
+                          color: notifier.getwhiteblackcolor),
                     ),
                     Theme(
                       data: ThemeData(
                           unselectedWidgetColor:
-                          notifire.getdarkwhitecolor),
+                          notifier.getdarkwhitecolor),
                       child: Checkbox(
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5)),
@@ -267,13 +267,13 @@ class _checkoutState extends State<checkout> {
               if (withTaxNumber)
                 ...[
                   textfield(
-                      fieldColor: notifire.getfieldcolor,
-                      hintColor: notifire.gettextfieldcolor,
+                      fieldColor: notifier.getfieldcolor,
+                      hintColor: notifier.gettextfieldcolor,
                       text: 'Tax number',
                       suffix: null),
                 ],
               Divider(
-                color: notifire.getgreycolor,
+                color: notifier.getgreycolor,
                 thickness: 1,
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.03),
@@ -294,13 +294,13 @@ class _checkoutState extends State<checkout> {
                         style: TextStyle(
                             fontSize: 14,
                             fontFamily: "Gilroy Medium",
-                            color: notifire.getwhiteblackcolor),
+                            color: notifier.getwhiteblackcolor),
                       ),
                       Text(
                           "${tour?.getTourPrice(smallPriceSelected)}€",
                         style: TextStyle(
                             fontSize: 14,
-                            color: notifire.getwhiteblackcolor,
+                            color: notifier.getwhiteblackcolor,
                             fontFamily: "Gilroy Medium"),
                       ),
                     ],
@@ -313,12 +313,12 @@ class _checkoutState extends State<checkout> {
                           style: TextStyle(
                               fontSize: 14,
                               fontFamily: "Gilroy Medium",
-                              color: notifire.getwhiteblackcolor)),
+                              color: notifier.getwhiteblackcolor)),
                       Text("${tour?.getFeePrice(smallPriceSelected)}€",
                           style: TextStyle(
                               fontSize: 14,
                               fontFamily: "Gilroy Medium",
-                              color: notifire.getwhiteblackcolor)),
+                              color: notifier.getwhiteblackcolor)),
                     ],
                   ),
                   const SizedBox(height: 15),
@@ -329,12 +329,12 @@ class _checkoutState extends State<checkout> {
                           style: TextStyle(
                               fontSize: 16,
                               fontFamily: "Gilroy Bold",
-                              color: notifire.getwhiteblackcolor)),
+                              color: notifier.getwhiteblackcolor)),
                       Text("${tour?.getTotalPrice(smallPriceSelected)}€",
                           style: TextStyle(
                               fontSize: 16,
                               fontFamily: "Gilroy Bold",
-                              color: notifire.getwhiteblackcolor)),
+                              color: notifier.getwhiteblackcolor)),
                     ],
                   ),
                   const SizedBox(height: 25),
@@ -370,7 +370,7 @@ class _checkoutState extends State<checkout> {
       margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 6),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
-        color: notifire.getdarkmodecolor,
+        color: notifier.getdarkmodecolor,
       ),
       child: Row(
         children: [
@@ -397,7 +397,7 @@ class _checkoutState extends State<checkout> {
                 style: TextStyle(
                     fontSize: 16,
                     fontFamily: "Gilroy Bold",
-                    color: notifire.getwhiteblackcolor),
+                    color: notifier.getwhiteblackcolor),
               ),
               // const SizedBox(height: 6),
               SizedBox(
@@ -406,7 +406,7 @@ class _checkoutState extends State<checkout> {
                 t.address,
                 style: TextStyle(
                     fontSize: 14,
-                    color: notifire.getwhiteblackcolor,
+                    color: notifier.getwhiteblackcolor,
                     fontFamily: "Gilroy Medium"),
               ),
               SizedBox(
@@ -430,7 +430,7 @@ class _checkoutState extends State<checkout> {
                               tour!.review.toString(),
                               style: TextStyle(
                                   fontSize: 16,
-                                  color: notifire.getdarkbluecolor,
+                                  color: notifier.getdarkbluecolor,
                                   fontWeight: FontWeight.bold),
                             )
                           ],
@@ -454,7 +454,7 @@ class _checkoutState extends State<checkout> {
         Text(heding!,
             style: TextStyle(
                 fontSize: 16,
-                color: notifire.getwhiteblackcolor,
+                color: notifier.getwhiteblackcolor,
                 fontFamily: "Gilroy Bold")),
         const SizedBox(height: 8),
         InkWell(
@@ -464,7 +464,7 @@ class _checkoutState extends State<checkout> {
             width: double.infinity,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
-                color: notifire.getdarkmodecolor),
+                color: notifier.getdarkmodecolor),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
               child: Row(
@@ -483,11 +483,11 @@ class _checkoutState extends State<checkout> {
                         style: TextStyle(
                             fontSize: 14,
                             fontFamily: "Gilroy Medium",
-                            color: notifire.getwhiteblackcolor),
+                            color: notifier.getwhiteblackcolor),
                       ),
                     ],
                   ),
-                  Icon(icon, color: notifire.getgreycolor)
+                  Icon(icon, color: notifier.getgreycolor)
                 ],
               ),
             ),
@@ -499,7 +499,7 @@ class _checkoutState extends State<checkout> {
 
   guideBottomSheet() {
     return showModalBottomSheet(
-        backgroundColor: notifire.getbgcolor,
+        backgroundColor: notifier.getbgcolor,
         isScrollControlled: true,
         context: context,
         shape:
@@ -523,7 +523,7 @@ class _checkoutState extends State<checkout> {
                           style: TextStyle(
                               fontFamily: "Gilroy Bold",
                               fontSize: 18,
-                              color: notifire.getwhiteblackcolor),
+                              color: notifier.getwhiteblackcolor),
                         ),
                         InkWell(
                             onTap: () {
@@ -531,7 +531,7 @@ class _checkoutState extends State<checkout> {
                             },
                             child: Icon(
                               Icons.close,
-                              color: notifire.getwhiteblackcolor,
+                              color: notifier.getwhiteblackcolor,
                             ))
                       ],
                     ),
@@ -557,7 +557,7 @@ class _checkoutState extends State<checkout> {
                               "Vehicle Type",
                               style: TextStyle(
                                   fontSize: 16,
-                                  color: notifire.getwhiteblackcolor,
+                                  color: notifier.getwhiteblackcolor,
                                   fontFamily: "Gilroy Bold"),
                             ),
                             const SizedBox(height: 6),
@@ -579,9 +579,9 @@ class _checkoutState extends State<checkout> {
                               padding: const EdgeInsets.all(8.0),
                               child: CupertinoSwitch(
                                 value: vehicleTypeSwitchValue,
-                                thumbColor: notifire.getdarkwhitecolor,
-                                trackColor: notifire.getbuttoncolor,
-                                activeColor: notifire.getdarkbluecolor,
+                                thumbColor: notifier.getdarkwhitecolor,
+                                trackColor: notifier.getbuttoncolor,
+                                activeColor: notifier.getdarkbluecolor,
                                 onChanged: (value) {
                                   setState(() {
                                     vehicleTypeSwitchValue = value;
@@ -611,7 +611,7 @@ class _checkoutState extends State<checkout> {
 
   timerBottomSheet() {
     showModalBottomSheet(
-        backgroundColor: notifire.getbgcolor,
+        backgroundColor: notifier.getbgcolor,
         context: context,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         builder: (context) {
@@ -696,7 +696,7 @@ class _checkoutState extends State<checkout> {
 
   languagesbottomsheet() {
     return showModalBottomSheet(
-        backgroundColor: notifire.getbgcolor,
+        backgroundColor: notifier.getbgcolor,
         context: context,
         shape:
         RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
@@ -719,7 +719,7 @@ class _checkoutState extends State<checkout> {
                                   style: TextStyle(
                                       fontSize: 18,
                                       fontFamily: "Gilroy Bold",
-                                      color: notifire.getwhiteblackcolor),
+                                      color: notifier.getwhiteblackcolor),
                                 ),
                                 InkWell(
                                     onTap: () {
@@ -727,7 +727,7 @@ class _checkoutState extends State<checkout> {
                                     },
                                     child: Icon(
                                       Icons.close,
-                                      color: notifire.getwhiteblackcolor,
+                                      color: notifier.getwhiteblackcolor,
                                     ))
                               ],
                             ),
@@ -794,7 +794,7 @@ class _checkoutState extends State<checkout> {
   paymentmodelbottomsheet() {
     return showModalBottomSheet(
         isScrollControlled: true,
-        backgroundColor: notifire.getbgcolor,
+        backgroundColor: notifier.getbgcolor,
         context: context,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
@@ -819,7 +819,7 @@ class _checkoutState extends State<checkout> {
                               style: TextStyle(
                                   fontSize: 18,
                                   fontFamily: "Gilroy Bold",
-                                  color: notifire.getwhiteblackcolor),
+                                  color: notifier.getwhiteblackcolor),
                             ),
                             InkWell(
                                 onTap: () {
@@ -827,7 +827,7 @@ class _checkoutState extends State<checkout> {
                                 },
                                 child: Icon(
                                   Icons.close,
-                                  color: notifire.getwhiteblackcolor,
+                                  color: notifier.getwhiteblackcolor,
                                 ))
                           ],
                         ),
@@ -836,7 +836,7 @@ class _checkoutState extends State<checkout> {
                           height: 60,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
-                              color: notifire.getdarkmodecolor),
+                              color: notifier.getdarkmodecolor),
                           child: Padding(
                             padding: const EdgeInsets.only(left: 6),
                             child: Row(
@@ -851,7 +851,7 @@ class _checkoutState extends State<checkout> {
                                   style: TextStyle(
                                       fontSize: 15,
                                       fontFamily: "Gilroy Bold",
-                                      color: notifire.getwhiteblackcolor),
+                                      color: notifier.getwhiteblackcolor),
                                 ),
                                 SizedBox(
                                     width: MediaQuery.of(context).size.width /
@@ -859,7 +859,7 @@ class _checkoutState extends State<checkout> {
                                 Theme(
                                   data: ThemeData(
                                       unselectedWidgetColor:
-                                          notifire.getdarkwhitecolor),
+                                          notifier.getdarkwhitecolor),
                                   child: Checkbox(
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(5)),
@@ -881,7 +881,7 @@ class _checkoutState extends State<checkout> {
                           height: 60,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
-                              color: notifire.getdarkmodecolor),
+                              color: notifier.getdarkmodecolor),
                           child: Padding(
                             padding: const EdgeInsets.only(left: 6),
                             child: Row(
@@ -896,7 +896,7 @@ class _checkoutState extends State<checkout> {
                                   style: TextStyle(
                                       fontSize: 15,
                                       fontFamily: "Gilroy Bold",
-                                      color: notifire.getwhiteblackcolor),
+                                      color: notifier.getwhiteblackcolor),
                                 ),
                                 SizedBox(
                                     width: MediaQuery.of(context).size.width /
@@ -904,7 +904,7 @@ class _checkoutState extends State<checkout> {
                                 Theme(
                                   data: ThemeData(
                                       unselectedWidgetColor:
-                                          notifire.getdarkwhitecolor),
+                                          notifier.getdarkwhitecolor),
                                   child: Checkbox(
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(5)),
@@ -926,7 +926,7 @@ class _checkoutState extends State<checkout> {
                           height: 60,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
-                              color: notifire.getdarkmodecolor),
+                              color: notifier.getdarkmodecolor),
                           child: Row(
                             children: [
                               const SizedBox(width: 10),
@@ -935,11 +935,11 @@ class _checkoutState extends State<checkout> {
                                 width: 40,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(12),
-                                    color: notifire.getgreycolor),
+                                    color: notifier.getgreycolor),
                                 child: Center(
                                   child: CircleAvatar(
                                       backgroundColor:
-                                          notifire.getdarkbluecolor,
+                                          notifier.getdarkbluecolor,
                                       radius: 14,
                                       child: Image.asset(
                                           "assets/images/add.png",
@@ -951,7 +951,7 @@ class _checkoutState extends State<checkout> {
                                   style: TextStyle(
                                       fontSize: 15,
                                       fontFamily: "Gilroy Bold",
-                                      color: notifire.getwhiteblackcolor)),
+                                      color: notifier.getwhiteblackcolor)),
                             ],
                           ),
                         ),
@@ -973,7 +973,7 @@ class _checkoutState extends State<checkout> {
   BookingSuccessfull() {
     return showModalBottomSheet(
         isScrollControlled: true,
-        backgroundColor: notifire.getbgcolor,
+        backgroundColor: notifier.getbgcolor,
         context: context,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
@@ -1016,7 +1016,7 @@ class _checkoutState extends State<checkout> {
                                 style: TextStyle(
                                     fontSize: 20,
                                     fontFamily: "Gilroy Bold",
-                                    color: notifire.getwhiteblackcolor),
+                                    color: notifier.getwhiteblackcolor),
                               ),
                             ),
                             const SizedBox(
@@ -1028,7 +1028,7 @@ class _checkoutState extends State<checkout> {
                                 "Congratulations! Please check in on the appropriate date. Enjoy your trip!",
                                 style: TextStyle(
                                     fontSize: 14,
-                                    color: notifire.getgreycolor,
+                                    color: notifier.getgreycolor,
                                     fontFamily: "Gilroy Medium"),
                                 textAlign: TextAlign.center,
                               ),
@@ -1145,9 +1145,9 @@ class _checkoutState extends State<checkout> {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifier.setIsDark = previusstate;
     }
   }
 
@@ -1167,11 +1167,11 @@ class _checkoutState extends State<checkout> {
           height: 35,
           width: 35,
           child: Theme(
-            data: ThemeData(unselectedWidgetColor: notifire.getwhiteblackcolor),
+            data: ThemeData(unselectedWidgetColor: notifier.getwhiteblackcolor),
             child: Checkbox(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
-                    side: BorderSide(color: notifire.getwhiteblackcolor)),
+                    side: BorderSide(color: notifier.getwhiteblackcolor)),
                 value: CheckValue,
                 onChanged: OnChange),
           ),

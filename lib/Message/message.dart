@@ -24,12 +24,12 @@ class _messageState extends State<message> {
     super.initState();
   }
 
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
   @override
   Widget build(BuildContext context) {
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
-      backgroundColor: notifire.getbgcolor,
+      backgroundColor: notifier.getbgcolor,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
         child: Column(
@@ -42,12 +42,12 @@ class _messageState extends State<message> {
                   "Message",
                   style: TextStyle(
                       fontSize: 18,
-                      color: notifire.getwhiteblackcolor,
+                      color: notifier.getwhiteblackcolor,
                       fontFamily: "Gilroy bold"),
                 ),
                 CircleAvatar(
                     radius: 22,
-                    backgroundColor: notifire.getdarkmodecolor,
+                    backgroundColor: notifier.getdarkmodecolor,
                     child: InkWell(
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
@@ -56,7 +56,7 @@ class _messageState extends State<message> {
                       child: Image.asset(
                         "assets/images/notification.png",
                         height: 25,
-                        color: notifire.getwhiteblackcolor,
+                        color: notifier.getwhiteblackcolor,
                       ),
                     ))
               ],
@@ -73,14 +73,14 @@ class _messageState extends State<message> {
                             borderRadius: BorderRadius.circular(
                               50,
                             ),
-                            color: notifire.getdarkmodecolor),
+                            color: notifier.getdarkmodecolor),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 6),
                           child: TextField(
                             decoration: InputDecoration(
                               hintText: 'Search a tour',
                               hintStyle: TextStyle(
-                                  color: notifire.getgreycolor,
+                                  color: notifier.getgreycolor,
                                   fontFamily: "Gilroy Medium"),
                               prefixIcon: Padding(
                                 padding:
@@ -88,7 +88,7 @@ class _messageState extends State<message> {
                                 child: Image.asset(
                                   "assets/images/search.png",
                                   height: 25,
-                                  color: notifire.getgreycolor,
+                                  color: notifier.getgreycolor,
                                 ),
                               ),
                               border: InputBorder.none,
@@ -124,14 +124,14 @@ class _messageState extends State<message> {
                                       allReviews[index].name,
                                       style: TextStyle(
                                           fontSize: 15,
-                                          color: notifire.getwhiteblackcolor,
+                                          color: notifier.getwhiteblackcolor,
                                           fontFamily: "Gilroy Bold"),
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                     subtitle: Text(
                                       allReviews[index].message,
                                       style: TextStyle(
-                                          color: notifire.getgreycolor,
+                                          color: notifier.getgreycolor,
                                           fontFamily: "Gilroy Medium"),
                                       overflow: TextOverflow.ellipsis,
                                     ),
@@ -147,7 +147,7 @@ class _messageState extends State<message> {
                                           style: TextStyle(
                                               fontSize: 13,
                                               color:
-                                                  notifire.getwhiteblackcolor,
+                                                  notifier.getwhiteblackcolor,
                                               fontFamily: "Gilroy Medium"),
                                         ),
                                         SizedBox(
@@ -156,14 +156,14 @@ class _messageState extends State<message> {
                                                     .width *
                                                 0.01),
                                         CircleAvatar(
-                                          backgroundColor: notifire.getredcolor,
+                                          backgroundColor: notifier.getredcolor,
                                           radius: 10,
                                           child: Text(
                                             "12",
                                             style: TextStyle(
                                                 fontSize: 10,
                                                 color:
-                                                    notifire.getdarkwhitecolor),
+                                                    notifier.getdarkwhitecolor),
                                           ),
                                         )
                                       ],
@@ -187,9 +187,9 @@ class _messageState extends State<message> {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifier.setIsDark = previusstate;
     }
   }
 }

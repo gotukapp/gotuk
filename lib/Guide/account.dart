@@ -81,23 +81,23 @@ class _AccountState extends State<account> {
     super.initState();
   }
 
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
   @override
   Widget build(BuildContext context) {
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
-        backgroundColor: notifire.getblackwhitecolor,
-        leading: BackButton(color: notifire.getwhiteblackcolor),
+        backgroundColor: notifier.getblackwhitecolor,
+        leading: BackButton(color: notifier.getwhiteblackcolor),
         title: Text(
           "Account",
           style: TextStyle(
-              color: notifire.getwhiteblackcolor, fontFamily: "Gilroy Bold"),
+              color: notifier.getwhiteblackcolor, fontFamily: "Gilroy Bold"),
         ),
       ),
-      backgroundColor: notifire.getblackwhitecolor,
+      backgroundColor: notifier.getblackwhitecolor,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
@@ -107,7 +107,7 @@ class _AccountState extends State<account> {
                 _buildPanel(),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.06),
                 AppButton(
-                    bgColor: notifire.getlogobgcolor,
+                    bgColor: notifier.getlogobgcolor,
                     textColor: WhiteColor,
                     buttontext: "Submit Data",
                     onclick: () async {
@@ -139,12 +139,12 @@ class _AccountState extends State<account> {
                 item.headerValue,
                 style: TextStyle(
                     fontSize: 16,
-                    color: notifire.getwhiteblackcolor,
+                    color: notifier.getwhiteblackcolor,
                     fontFamily: "Gilroy Bold"),
               ),
             );
           },
-          body: identificationDocumentWidget(notifire, context),
+          body: identificationDocumentWidget(notifier, context),
           isExpanded: item.isExpanded,
         );
       }).toList(),
@@ -165,7 +165,7 @@ class _AccountState extends State<account> {
   }*/
 
 
-  Widget identificationDocumentWidget(ColorNotifire notifire, BuildContext context) {
+  Widget identificationDocumentWidget(ColorNotifier notifier, BuildContext context) {
     return Padding(
         padding: const EdgeInsets.all(10),
         child: Column(
@@ -175,13 +175,13 @@ class _AccountState extends State<account> {
               "Identification Number",
               style: TextStyle(
                   fontSize: 16,
-                  color: notifire.getwhiteblackcolor,
+                  color: notifier.getwhiteblackcolor,
                   fontFamily: "Gilroy Bold"),
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.01),
             textfield(
-                fieldColor: notifire.getdarkmodecolor,
-                hintColor: notifire.getgreycolor,
+                fieldColor: notifier.getdarkmodecolor,
+                hintColor: notifier.getgreycolor,
                 text: 'Enter your Identification Number',
                 suffix: null),
             SizedBox(height: MediaQuery.of(context).size.height * 0.02),
@@ -189,18 +189,18 @@ class _AccountState extends State<account> {
               "Expiration Date",
               style: TextStyle(
                   fontSize: 16,
-                  color: notifire.getwhiteblackcolor,
+                  color: notifier.getwhiteblackcolor,
                   fontFamily: "Gilroy Bold"),
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.01),
             textfield(
-                fieldColor: notifire.getdarkmodecolor,
-                hintColor: notifire.getgreycolor,
+                fieldColor: notifier.getdarkmodecolor,
+                hintColor: notifier.getgreycolor,
                 text: 'Enter your Number',
                 suffix: null),
             SizedBox(height: MediaQuery.of(context).size.height * 0.02),
             AppButton(
-                bgColor: notifire.getlogobgcolor,
+                bgColor: notifier.getlogobgcolor,
                 textColor: WhiteColor,
                 buttontext: "Attach Document",
                 onclick: () async {
@@ -216,9 +216,9 @@ class _AccountState extends State<account> {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifier.setIsDark = previusstate;
     }
   }
 

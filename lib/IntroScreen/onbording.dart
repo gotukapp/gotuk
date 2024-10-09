@@ -46,13 +46,13 @@ class _onbordingState extends State<onbording> {
    );
   }
 
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
 
   @override
   Widget build(BuildContext context) {
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
-      backgroundColor: notifire.getbgcolor,
+      backgroundColor: notifier.getbgcolor,
       body: Center(
           child: Image.asset("assets/images/applogo.png",
               height: 170, width: 200)),
@@ -63,9 +63,9 @@ class _onbordingState extends State<onbording> {
     final prefs = await SharedPreferences.getInstance();
     bool? previousState = prefs.getBool("setIsDark");
     if (previousState == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
     } else {
-      notifire.setIsDark = previousState;
+      notifier.setIsDark = previousState;
     }
   }
 
@@ -110,12 +110,12 @@ class _BoardingScreenState extends State<BoardingPage> {
     return slides.map(_buildSlide).toList();
   }
 
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
 
   Widget _buildSlide(Slide slide) {
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
-      backgroundColor: notifire.getbgcolor,
+      backgroundColor: notifier.getbgcolor,
       body: Column(
         children: <Widget>[
           SizedBox(
@@ -141,7 +141,7 @@ class _BoardingScreenState extends State<BoardingPage> {
               style: TextStyle(
                   fontSize: 24,
                   fontFamily: "Gilroy Bold",
-                  color: notifire.getwhiteblackcolor), //heding Text
+                  color: notifier.getwhiteblackcolor), //heding Text
             ),
           ),
           SizedBox(height: MediaQuery.of(context).size.height * 0.02),
@@ -152,7 +152,7 @@ class _BoardingScreenState extends State<BoardingPage> {
               textAlign: TextAlign.center,
               style: TextStyle(
                   fontSize: 20,
-                  color: notifire.getdarkgreycolor,
+                  color: notifier.getdarkgreycolor,
                   fontFamily: "Gilroy Medium"), //subtext
             ),
           ),
@@ -293,9 +293,9 @@ class _BoardingScreenState extends State<BoardingPage> {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifier.setIsDark = previusstate;
     }
   }
 }
@@ -314,14 +314,14 @@ class _loginpageState extends State<loginpage> {
     super.initState();
   }
 
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
   late bool guideMode = false;
 
   @override
   Widget build(BuildContext context) {
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
-      backgroundColor: notifire.getbgcolor,
+      backgroundColor: notifier.getbgcolor,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12),
         child: Column(
@@ -340,14 +340,14 @@ class _loginpageState extends State<loginpage> {
               style: TextStyle(
                   fontSize: 25,
                   fontFamily: "Gilroy Bold",
-                  color: notifire.getwhiteblackcolor),
+                  color: notifier.getwhiteblackcolor),
             ),
             const SizedBox(height: 10),
             Text(
                 "If you are new here, please create your account before booking a tour.",
                 style: TextStyle(
                     fontSize: 20,
-                    color: notifire.getdarkgreycolor,
+                    color: notifier.getdarkgreycolor,
                     fontFamily: "Gilroy Medium"),
                 textAlign: TextAlign.center),
             SizedBox(height: MediaQuery.of(context).size.height * 0.05),
@@ -397,7 +397,7 @@ class _loginpageState extends State<loginpage> {
                     Text("I want to be a Guide",
                         style: TextStyle(
                             fontSize: 18,
-                            color: notifire.getwhitelogocolor,
+                            color: notifier.getwhitelogocolor,
                             fontFamily: "Gilroy Bold")),
                   ],
                 ),
@@ -410,9 +410,9 @@ class _loginpageState extends State<loginpage> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: CupertinoSwitch(
-                        thumbColor: notifire.getdarkwhitecolor,
-                        trackColor: notifire.getbuttoncolor,
-                        activeColor: notifire.getdarkbluecolor,
+                        thumbColor: notifier.getdarkwhitecolor,
+                        trackColor: notifier.getbuttoncolor,
+                        activeColor: notifier.getdarkbluecolor,
                         value: guideMode,
                         onChanged: (value) async {
                           setState(() {
@@ -441,9 +441,9 @@ class _loginpageState extends State<loginpage> {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifier.setIsDark = previusstate;
     }
   }
 

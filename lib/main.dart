@@ -19,7 +19,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => ColorNotifire()),
+        ChangeNotifierProvider(create: (_) => ColorNotifier()),
       ],
       child: BoardingScreen(),
     ),

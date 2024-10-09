@@ -19,23 +19,23 @@ class _SupportState extends State<Support> {
     super.initState();
   }
 
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
   @override
   Widget build(BuildContext context) {
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
-        backgroundColor: notifire.getbgcolor,
-        leading: BackButton(color: notifire.getwhiteblackcolor),
+        backgroundColor: notifier.getbgcolor,
+        leading: BackButton(color: notifier.getwhiteblackcolor),
         title: Text(
           "Support",
           style: TextStyle(
-              color: notifire.getwhiteblackcolor, fontFamily: "Gilroy Bold"),
+              color: notifier.getwhiteblackcolor, fontFamily: "Gilroy Bold"),
         ),
       ),
-      backgroundColor: notifire.getbgcolor,
+      backgroundColor: notifier.getbgcolor,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
@@ -44,19 +44,19 @@ class _SupportState extends State<Support> {
               Text("FAQ",
                   style: TextStyle(
                       fontSize: 18,
-                      color: notifire.getwhitelogocolor,
+                      color: notifier.getwhitelogocolor,
                       fontFamily: "Gilroy Medium")),
               const SizedBox(height: 10),
               Text("Formulário de Contacto",
                   style: TextStyle(
                       fontSize: 18,
-                      color: notifire.getwhitelogocolor,
+                      color: notifier.getwhitelogocolor,
                       fontFamily: "Gilroy Medium")),
               const SizedBox(height: 10),
               Text("Contactos",
                   style: TextStyle(
                       fontSize: 18,
-                      color: notifire.getwhitelogocolor,
+                      color: notifier.getwhitelogocolor,
                       fontFamily: "Gilroy Medium")),
             ],
           )
@@ -69,9 +69,9 @@ class _SupportState extends State<Support> {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifier.setIsDark = previusstate;
     }
   }
 }

@@ -17,7 +17,7 @@ class forgotpassword extends StatefulWidget {
 }
 
 class _forgotpasswordState extends State<forgotpassword> {
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
   @override
   void initState() {
     getdarkmodepreviousstate();
@@ -26,17 +26,17 @@ class _forgotpasswordState extends State<forgotpassword> {
 
   @override
   Widget build(BuildContext context) {
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
-      backgroundColor: notifire.getlogobgcolor,
+      backgroundColor: notifier.getlogobgcolor,
       appBar: PreferredSize(
           preferredSize: const Size.fromHeight(75),
           child: CustomAppbar(
               centertext: "",
               ActionIcon: null,
-              bgcolor: notifire.getlogobgcolor,
-              actioniconcolor: notifire.getwhiteblackcolor,
-              leadingiconcolor: notifire.getwhiteblackcolor)),
+              bgcolor: notifier.getlogobgcolor,
+              actioniconcolor: notifier.getwhiteblackcolor,
+              leadingiconcolor: notifier.getwhiteblackcolor)),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,8 +61,8 @@ class _forgotpasswordState extends State<forgotpassword> {
                   color: WhiteColor)),
           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
           textfield(
-            fieldColor: notifire.getfieldcolor,
-            hintColor: notifire.gettextfieldcolor,
+            fieldColor: notifier.getfieldcolor,
+            hintColor: notifier.gettextfieldcolor,
             text: 'Enter your phone number',
             suffix: null,
           ),
@@ -70,8 +70,8 @@ class _forgotpasswordState extends State<forgotpassword> {
             height: MediaQuery.of(context).size.height * 0.05,
           ),
           AppButton(
-              bgColor: notifire.getlogowhitecolor,
-              textColor: notifire.getwhiteblackcolor,
+              bgColor: notifier.getlogowhitecolor,
+              textColor: notifier.getwhiteblackcolor,
               buttontext: "Send Code",
               onclick: () {
                 Navigator.of(context).push(MaterialPageRoute(
@@ -86,9 +86,9 @@ class _forgotpasswordState extends State<forgotpassword> {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifier.setIsDark = previusstate;
     }
   }
 }

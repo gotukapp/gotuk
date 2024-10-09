@@ -41,14 +41,14 @@ class _tourdetailpageState extends State<tourdetailpage> {
   }
 
   int _currentPage = 0;
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
   @override
   Widget build(BuildContext context) {
     tour = tourList.firstWhere((tour) => tour.id == widget.tourId);
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
       bottomNavigationBar: Container(
-        color: notifire.getblackwhitecolor,
+        color: notifier.getblackwhitecolor,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           child: Row(
@@ -104,18 +104,18 @@ class _tourdetailpageState extends State<tourdetailpage> {
           ),
         ),
       ),
-      backgroundColor: notifire.getblackwhitecolor,
+      backgroundColor: notifier.getblackwhitecolor,
       body:
       CustomScrollView(slivers: <Widget>[
         SliverAppBar(
           elevation: 0,
-          backgroundColor: notifire.getblackwhitecolor,
+          backgroundColor: notifier.getblackwhitecolor,
           leading: Padding(
             padding: const EdgeInsets.only(top: 8, left: 12),
             child: CircleAvatar(
-              backgroundColor: notifire.getlightblackcolor,
+              backgroundColor: notifier.getlightblackcolor,
               child: BackButton(
-                color: notifire.getdarkwhitecolor,
+                color: notifier.getdarkwhitecolor,
               ),
             ),
           ),
@@ -126,10 +126,10 @@ class _tourdetailpageState extends State<tourdetailpage> {
                 children: [
                   CircleAvatar(
                     radius: 22,
-                    backgroundColor: notifire.getlightblackcolor,
+                    backgroundColor: notifier.getlightblackcolor,
                     child: Image.asset(
                       "assets/images/share.png",
-                      color: notifire.getdarkwhitecolor,
+                      color: notifier.getdarkwhitecolor,
                       height: 30,
                     ),
                   ),
@@ -140,10 +140,10 @@ class _tourdetailpageState extends State<tourdetailpage> {
                     },
                     child: CircleAvatar(
                         radius: 22,
-                        backgroundColor: tour!.favorite == true ? Colors.red : notifire.getlightblackcolor,
+                        backgroundColor: tour!.favorite == true ? Colors.red : notifier.getlightblackcolor,
                         child: Image.asset(
                           "assets/images/heart.png",
-                          color: notifire.getdarkwhitecolor,
+                          color: notifier.getdarkwhitecolor,
                           height: 25,
                         ),
                       ),
@@ -180,7 +180,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                       tour!.title.toUpperCase(),
                       style: TextStyle(
                           fontSize: 18,
-                          color: notifire.getwhiteblackcolor,
+                          color: notifier.getwhiteblackcolor,
                           fontFamily: "Gilroy Bold"),
                     ),
                     const SizedBox(height: 10),
@@ -200,7 +200,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                             Text(
                               tour!.address,
                               style: TextStyle(
-                                  color: notifire.getwhiteblackcolor,
+                                  color: notifier.getwhiteblackcolor,
                                   fontSize: 14,
                                   fontFamily: "Gilroy Medium"),
                             )
@@ -213,14 +213,14 @@ class _tourdetailpageState extends State<tourdetailpage> {
                               "4.2",
                               style: TextStyle(
                                   fontSize: 16,
-                                  color: notifire.getdarkbluecolor,
+                                  color: notifier.getdarkbluecolor,
                                   fontFamily: "Gilroy Bold"),
                             ),
                             Text(
                               "(${tour!.reviews.length} Reviews)",
                               style: TextStyle(
                                   fontSize: 14,
-                                  color: notifire.getwhiteblackcolor,
+                                  color: notifier.getwhiteblackcolor,
                                   fontFamily: "Gilroy Medium"),
                             ),
                           ],
@@ -247,7 +247,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                                     "1-3",
                                     style: TextStyle(
                                         fontSize: 16,
-                                        color: notifire.getwhiteblackcolor,
+                                        color: notifier.getwhiteblackcolor,
                                         fontFamily: "Gilroy Bold"),
                                   ),
                                   SizedBox(width: 10),
@@ -255,7 +255,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                                     "${tour!.priceLow}€",
                                     style: TextStyle(
                                         fontSize: 16,
-                                        color: notifire.getdarkbluecolor,
+                                        color: notifier.getdarkbluecolor,
                                         fontFamily: "Gilroy Bold"),
                                   ),
                                   Text(
@@ -263,7 +263,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                                     style: TextStyle(
                                         fontFamily: "Gilroy Medium",
                                         fontSize: 14,
-                                        color: notifire.getwhiteblackcolor),
+                                        color: notifier.getwhiteblackcolor),
                                   )
                                 ]
                             ),
@@ -273,7 +273,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                                   "4-6",
                                   style: TextStyle(
                                       fontSize: 16,
-                                      color: notifire.getwhiteblackcolor,
+                                      color: notifier.getwhiteblackcolor,
                                       fontFamily: "Gilroy Bold"),
                                 ),
                                 SizedBox(width: 10),
@@ -281,7 +281,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                                   "${tour!.priceHigh}€",
                                   style: TextStyle(
                                       fontSize: 16,
-                                      color: notifire.getdarkbluecolor,
+                                      color: notifier.getdarkbluecolor,
                                       fontFamily: "Gilroy Bold"),
                                 ),
                                 Text(
@@ -289,7 +289,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                                   style: TextStyle(
                                       fontFamily: "Gilroy Medium",
                                       fontSize: 14,
-                                      color: notifire.getwhiteblackcolor),
+                                      color: notifier.getwhiteblackcolor),
                                 ),
                               ],
                             )
@@ -312,7 +312,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                           tour!.duration,
                           style: TextStyle(
                               fontSize: 18,
-                              color: notifire.getwhiteblackcolor,
+                              color: notifier.getwhiteblackcolor,
                               fontFamily: "Gilroy Bold"),
                         )
                       ],
@@ -336,7 +336,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                             child: Text(
                               "View Route Details",
                               style: TextStyle(
-                                  color: notifire.getdarkbluecolor,
+                                  color: notifier.getdarkbluecolor,
                                   fontFamily: "Gilroy Medium"),
                             )
                         )
@@ -351,7 +351,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                           style: TextStyle(
                               fontSize: 16,
                               fontFamily: "Gilroy Bold",
-                              color: notifire.getwhiteblackcolor),
+                              color: notifier.getwhiteblackcolor),
                         ),
                         InkWell(
                           onTap: () {
@@ -363,7 +363,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                             "See All",
                             style: TextStyle(
                                 fontSize: 15,
-                                color: notifire.getdarkbluecolor,
+                                color: notifier.getdarkbluecolor,
                                 fontFamily: "Gilroy Medium"),
                           ),
                         ),
@@ -413,7 +413,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                                                 tour!.reviews[index].name,
                                                 style: TextStyle(
                                                     fontSize: 15,
-                                                    color: notifire
+                                                    color: notifier
                                                         .getwhiteblackcolor,
                                                     fontFamily: "Gilroy Bold"),
                                               ),
@@ -439,7 +439,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                                                   style: TextStyle(
                                                       fontSize: 15,
                                                       fontFamily: "Gilroy Bold",
-                                                      color: notifire
+                                                      color: notifier
                                                           .getwhiteblackcolor)))
                                         ],
                                       ),
@@ -457,7 +457,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                                           tour!.reviews[index].message.toString(),
                                           style: TextStyle(
                                               fontSize: 14,
-                                              color: notifire.getgreycolor,
+                                              color: notifier.getgreycolor,
                                               fontFamily: "Gilroy Medium"),
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
@@ -468,7 +468,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                                 ],
                               ),
                               Divider(
-                                color: notifire.getgreycolor,
+                                color: notifier.getgreycolor,
                               )
                             ],
                           );
@@ -531,9 +531,9 @@ class _tourdetailpageState extends State<tourdetailpage> {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifier.setIsDark = previusstate;
     }
   }
 }

@@ -191,7 +191,7 @@ ProfileSetting(
   );
 }
 
-tourListInfo(BuildContext context, ColorNotifire notifire, Tour tour) {
+tourListInfo(BuildContext context, ColorNotifier notifier, Tour tour) {
   return InkWell(
     onTap: () {
       Navigator.of(context).push(MaterialPageRoute(
@@ -202,7 +202,7 @@ tourListInfo(BuildContext context, ColorNotifire notifire, Tour tour) {
       margin: const EdgeInsets.symmetric(vertical: 6),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
-        color: notifire.getdarklightgreycolor,
+        color: notifier.getdarklightgreycolor,
       ),
       child: Row(
         children: [
@@ -226,7 +226,7 @@ tourListInfo(BuildContext context, ColorNotifire notifire, Tour tour) {
                 tour.title.toUpperCase(),
                 style: TextStyle(
                     fontSize: 15,
-                    color: notifire.getwhiteblackcolor,
+                    color: notifier.getwhiteblackcolor,
                     fontFamily: "Gilroy Bold"),
               ),
               // const SizedBox(height: 6),
@@ -237,7 +237,7 @@ tourListInfo(BuildContext context, ColorNotifire notifire, Tour tour) {
                 tour.address,
                 style: TextStyle(
                     fontSize: 13,
-                    color: notifire.getgreycolor,
+                    color: notifier.getgreycolor,
                     fontFamily: "Gilroy Medium",
                     overflow: TextOverflow.ellipsis),
               ),
@@ -271,7 +271,7 @@ tourListInfo(BuildContext context, ColorNotifire notifire, Tour tour) {
   );
 }
 
-tripInfo(BuildContext context, ColorNotifire notifire, Trip trip) {
+tripInfo(BuildContext context, ColorNotifier notifier, Trip trip) {
   return InkWell(
     onTap: () {
 
@@ -281,7 +281,7 @@ tripInfo(BuildContext context, ColorNotifire notifire, Trip trip) {
       margin: const EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
-        color: notifire.getdarklightgreycolor,
+        color: notifier.getdarklightgreycolor,
       ),
       child: Padding(
           padding: const EdgeInsets.symmetric(
@@ -293,7 +293,7 @@ tripInfo(BuildContext context, ColorNotifire notifire, Trip trip) {
                 .format(trip.date),
                 style: TextStyle(
                     fontSize: 15,
-                    color: notifire.getwhiteblackcolor)),
+                    color: notifier.getwhiteblackcolor)),
               Row(
                 children: [
                   Container(
@@ -316,7 +316,7 @@ tripInfo(BuildContext context, ColorNotifire notifire, Trip trip) {
                         trip.tour.title.toUpperCase(),
                         style: TextStyle(
                             fontSize: 15,
-                            color: notifire.getwhiteblackcolor,
+                            color: notifier.getwhiteblackcolor,
                             fontFamily: "Gilroy Bold"),
                       ),
                       // const SizedBox(height: 6),
@@ -327,7 +327,7 @@ tripInfo(BuildContext context, ColorNotifire notifire, Trip trip) {
                         trip.tour.address,
                         style: TextStyle(
                             fontSize: 13,
-                            color: notifire.getwhiteblackcolor,
+                            color: notifier.getwhiteblackcolor,
                             fontFamily: "Gilroy Medium",
                             overflow: TextOverflow.ellipsis),
                       ),
@@ -342,7 +342,7 @@ tripInfo(BuildContext context, ColorNotifire notifire, Trip trip) {
                             child:  Text("${trip.persons == 3 ? "1-3" : "4-6"} Persons",
                               style: TextStyle(
                               fontSize: 15,
-                              color: notifire.getwhiteblackcolor,
+                              color: notifier.getwhiteblackcolor,
                               fontFamily: "Gilroy Medium")),
                           )
                         ],
@@ -360,7 +360,7 @@ tripInfo(BuildContext context, ColorNotifire notifire, Trip trip) {
                   children: [
                     Text("Total Price",
                         style: TextStyle(
-                            fontSize: 15, color: notifire.getwhiteblackcolor, fontFamily: "Gilroy Medium")),
+                            fontSize: 15, color: notifier.getwhiteblackcolor, fontFamily: "Gilroy Medium")),
                     const SizedBox(height: 4),
                     Text("${trip.tour.getTourPrice(trip.persons == 3)}€",
                         style: TextStyle(
@@ -398,7 +398,7 @@ tripInfo(BuildContext context, ColorNotifire notifire, Trip trip) {
   );
 }
 
-newTripNotification(BuildContext context, ColorNotifire notifire, Trip trip) {
+newTripNotification(BuildContext context, ColorNotifier notifier, Trip trip) {
   return InkWell(
     onTap: () {
 
@@ -408,7 +408,7 @@ newTripNotification(BuildContext context, ColorNotifire notifire, Trip trip) {
         margin: const EdgeInsets.symmetric(vertical: 2),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
-          color: notifire.getdarklightgreycolor,
+          color: notifier.getdarklightgreycolor,
         ),
         child: Padding(
             padding: const EdgeInsets.symmetric(
@@ -423,14 +423,14 @@ newTripNotification(BuildContext context, ColorNotifire notifire, Trip trip) {
                           .format(trip.date),
                           style: TextStyle(
                               fontSize: 15,
-                              color: notifire.getwhiteblackcolor,
+                              color: notifier.getwhiteblackcolor,
                               fontFamily: "Gilroy Bold")),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text("Total Price",
                               style: TextStyle(
-                                  fontSize: 15, color: notifire.getwhiteblackcolor, fontFamily: "Gilroy Medium")),
+                                  fontSize: 15, color: notifier.getwhiteblackcolor, fontFamily: "Gilroy Medium")),
                           const SizedBox(height: 4),
                           Text("${trip.tour.getTourPrice(trip.persons == 3)}€",
                               style: TextStyle(
@@ -461,7 +461,7 @@ newTripNotification(BuildContext context, ColorNotifire notifire, Trip trip) {
                             trip.tour.title.toUpperCase(),
                             style: TextStyle(
                                 fontSize: 15,
-                                color: notifire.getwhiteblackcolor,
+                                color: notifier.getwhiteblackcolor,
                                 fontFamily: "Gilroy Bold"),
                           ),
                           // const SizedBox(height: 6),
@@ -472,7 +472,7 @@ newTripNotification(BuildContext context, ColorNotifire notifire, Trip trip) {
                             trip.tour.address,
                             style: TextStyle(
                                 fontSize: 13,
-                                color: notifire.getwhiteblackcolor,
+                                color: notifier.getwhiteblackcolor,
                                 fontFamily: "Gilroy Medium",
                                 overflow: TextOverflow.ellipsis),
                           ),
@@ -487,7 +487,7 @@ newTripNotification(BuildContext context, ColorNotifire notifire, Trip trip) {
                                 child:  Text("${trip.persons == 3 ? "1-3" : "4-6"} Persons",
                                     style: TextStyle(
                                         fontSize: 15,
-                                        color: notifire.getwhiteblackcolor,
+                                        color: notifier.getwhiteblackcolor,
                                         fontFamily: "Gilroy Medium")),
                               )
                             ],

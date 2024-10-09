@@ -1,7 +1,7 @@
 import 'package:dm/Utils/Colors.dart';
 import 'package:flutter/material.dart';
 
-class ColorNotifire with ChangeNotifier {
+class ColorNotifier with ChangeNotifier {
   bool isDark = false;
   set setIsDark(value) {
     isDark = value;

@@ -25,12 +25,12 @@ class _ChatingState extends State<Chating> {
     super.initState();
   }
 
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
   @override
   Widget build(BuildContext context) {
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
-      backgroundColor: notifire.getblackwhitecolor,
+      backgroundColor: notifier.getblackwhitecolor,
       body: Column(
         children: [
           SizedBox(height: MediaQuery.of(context).size.height * 0.05),
@@ -43,8 +43,8 @@ class _ChatingState extends State<Chating> {
               leading: Padding(
                 padding: const EdgeInsets.only(left: 12, top: 6),
                 child: CircleAvatar(
-                    backgroundColor: notifire.getdarkmodecolor,
-                    child: BackButton(color: notifire.getwhiteblackcolor)),
+                    backgroundColor: notifier.getdarkmodecolor,
+                    child: BackButton(color: notifier.getwhiteblackcolor)),
               ),
               title: Column(
                 children: [
@@ -82,13 +82,13 @@ class _ChatingState extends State<Chating> {
                           Text("Kim Hayo",
                               style: TextStyle(
                                   fontSize: 18,
-                                  color: notifire.getwhiteblackcolor,
+                                  color: notifier.getwhiteblackcolor,
                                   fontFamily: "Gilroy Bold")),
                           const SizedBox(height: 4),
                           Text("Online",
                               style: TextStyle(
                                   fontSize: 15,
-                                  color: notifire.getgreycolor,
+                                  color: notifier.getgreycolor,
                                   fontFamily: "Gilroy Medium")),
                         ],
                       ),
@@ -99,10 +99,10 @@ class _ChatingState extends State<Chating> {
               trailing: Padding(
                 padding: const EdgeInsets.only(top: 6),
                 child: CircleAvatar(
-                  backgroundColor: notifire.getdarkmodecolor,
+                  backgroundColor: notifier.getdarkmodecolor,
                   child: Icon(
                     Icons.more_vert,
-                    color: notifire.getwhiteblackcolor,
+                    color: notifier.getwhiteblackcolor,
                   ),
                 ),
               ),
@@ -116,7 +116,7 @@ class _ChatingState extends State<Chating> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    tourListInfo(context, notifire, tourList[0]),
+                    tourListInfo(context, notifier, tourList[0]),
                     Massagelist(
                         SenderText:
                             "Hi, i'm already here",
@@ -152,7 +152,7 @@ class _ChatingState extends State<Chating> {
               decoration: InputDecoration(
                 hintText: "Write a reply",
                 hintStyle: TextStyle(
-                    fontFamily: "Gilroy Medium", color: notifire.getgreycolor),
+                    fontFamily: "Gilroy Medium", color: notifier.getgreycolor),
                 prefixIcon: Padding(
                   padding: const EdgeInsets.all(6.0),
                   child: CustomPopupMenu(
@@ -164,7 +164,7 @@ class _ChatingState extends State<Chating> {
                       child: Image.asset(
                         "assets/images/pin.png",
                         height: 25,
-                        color: notifire.getgreycolor,
+                        color: notifier.getgreycolor,
                       ),
                     ),
                     menuBuilder: () => ClipRRect(
@@ -227,7 +227,7 @@ class _ChatingState extends State<Chating> {
                     borderRadius: BorderRadius.all(Radius.circular(50))),
                 enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
-                      color: notifire.getgreywhite,
+                      color: notifier.getgreywhite,
                     ),
                     borderRadius: BorderRadius.circular(50)),
               ),
@@ -264,7 +264,7 @@ class _ChatingState extends State<Chating> {
                         topLeft: Radius.circular(10),
                         bottomLeft: Radius.circular(10),
                         bottomRight: Radius.circular(10)),
-                    color: notifire.getdarkbluecolor),
+                    color: notifier.getdarkbluecolor),
                 width: MediaQuery.of(context).size.width * 0.70,
                 child: Padding(
                   padding:
@@ -275,7 +275,7 @@ class _ChatingState extends State<Chating> {
                         SenderText,
                         style: TextStyle(
                             fontSize: 14,
-                            color: notifire.getdarkwhitecolor,
+                            color: notifier.getdarkwhitecolor,
                             fontFamily: "Gilroy Medium"),
                       ),
                     ],
@@ -287,7 +287,7 @@ class _ChatingState extends State<Chating> {
             Text(
               timetext,
               style: TextStyle(
-                  color: notifire.getgreycolor,
+                  color: notifier.getgreycolor,
                   fontSize: 15,
                   fontFamily: "Gilroy Medium"),
             )
@@ -315,7 +315,7 @@ class _ChatingState extends State<Chating> {
                     style: TextStyle(
                         fontSize: 14,
                         fontFamily: "Gilroy Medium",
-                        color: notifire.getwhiteblackcolor),
+                        color: notifier.getwhiteblackcolor),
                   ),
                 ),
               ),
@@ -346,7 +346,7 @@ class _ChatingState extends State<Chating> {
                     style: TextStyle(
                         fontSize: 14,
                         fontFamily: "Gilroy Medium",
-                        color: notifire.getwhiteblackcolor),
+                        color: notifier.getwhiteblackcolor),
                   ),
                 ),
               ),
@@ -354,7 +354,7 @@ class _ChatingState extends State<Chating> {
             const SizedBox(height: 4),
             Text(timetext2,
                 style: TextStyle(
-                    color: notifire.getgreycolor,
+                    color: notifier.getgreycolor,
                     fontSize: 15,
                     fontFamily: "Gilroy Medium")),
             const SizedBox(height: 10),
@@ -369,7 +369,7 @@ class _ChatingState extends State<Chating> {
                             topLeft: Radius.circular(10),
                             bottomLeft: Radius.circular(10),
                             bottomRight: Radius.circular(10)),
-                        color: notifire.getdarkbluecolor),
+                        color: notifier.getdarkbluecolor),
                     width: MediaQuery.of(context).size.width * 0.70,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
@@ -380,7 +380,7 @@ class _ChatingState extends State<Chating> {
                             SenderText,
                             style: TextStyle(
                                 fontSize: 14,
-                                color: notifire.getdarkwhitecolor,
+                                color: notifier.getdarkwhitecolor,
                                 fontFamily: "Gilroy Medium"),
                           ),
                         ],
@@ -392,7 +392,7 @@ class _ChatingState extends State<Chating> {
                 Text(
                   timetext3,
                   style: TextStyle(
-                      color: notifire.getgreycolor,
+                      color: notifier.getgreycolor,
                       fontSize: 15,
                       fontFamily: "Gilroy Medium"),
                 )
@@ -408,9 +408,9 @@ class _ChatingState extends State<Chating> {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifier.setIsDark = previusstate;
     }
   }
 }

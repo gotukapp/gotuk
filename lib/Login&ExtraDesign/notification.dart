@@ -24,12 +24,12 @@ class _notificationState extends State<notification> {
     super.initState();
   }
 
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
   @override
   Widget build(BuildContext context) {
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
-      backgroundColor: notifire.getbgcolor,
+      backgroundColor: notifier.getbgcolor,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Column(
@@ -45,7 +45,7 @@ class _notificationState extends State<notification> {
                         "Recent",
                         style: TextStyle(
                             fontSize: 16,
-                            color: notifire.getwhiteblackcolor,
+                            color: notifier.getwhiteblackcolor,
                             fontFamily: "Gilroy Bold"),
                       ),
                       // CircleAvatar(
@@ -63,7 +63,7 @@ class _notificationState extends State<notification> {
                       child: Text(
                         "Mark All Read",
                         style: TextStyle(
-                            color: notifire.getdarkbluecolor,
+                            color: notifier.getdarkbluecolor,
                             fontFamily: "Gilroy Medium"),
                       ))
                 ],
@@ -107,7 +107,7 @@ class _notificationState extends State<notification> {
                                         style: TextStyle(
                                           fontSize: 15,
                                           fontFamily: "Gilroy Bold",
-                                          color: notifire.getwhiteblackcolor,
+                                          color: notifier.getwhiteblackcolor,
                                         ),
                                       ),
                                     ),
@@ -120,7 +120,7 @@ class _notificationState extends State<notification> {
                                           .toString(),
                                       style: TextStyle(
                                           fontSize: 15,
-                                          color: notifire.getgreycolor,
+                                          color: notifier.getgreycolor,
                                           fontFamily: "Gilroy Medium"))
                                 ],
                               ),
@@ -157,7 +157,7 @@ class _notificationState extends State<notification> {
       ),
       appBar: AppBar(
         leading: BackButton(
-          color: notifire.getwhiteblackcolor,
+          color: notifier.getwhiteblackcolor,
         ),
         actions: [
           Container(
@@ -170,21 +170,21 @@ class _notificationState extends State<notification> {
                           builder: (context) => const NotificationSetting()));
                     },
                     child: CircleAvatar(
-                        backgroundColor: notifire.getdarkmodecolor,
+                        backgroundColor: notifier.getdarkmodecolor,
                         child: Image.asset(
                           "assets/images/setting.png",
                           height: 25,
-                          color: notifire.getwhiteblackcolor,
+                          color: notifier.getwhiteblackcolor,
                         )),
                   )))
         ],
         elevation: 0,
-        backgroundColor: notifire.getbgcolor,
+        backgroundColor: notifier.getbgcolor,
         title: Text(
           "Notification",
           style: TextStyle(
               fontSize: 20,
-              color: notifire.getwhiteblackcolor,
+              color: notifier.getwhiteblackcolor,
               fontFamily: "Gilroy Bold"),
         ),
         centerTitle: true,
@@ -196,9 +196,9 @@ class _notificationState extends State<notification> {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifier.setIsDark = previusstate;
     }
   }
 }

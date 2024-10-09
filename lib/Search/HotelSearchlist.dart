@@ -36,15 +36,15 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
     super.initState();
   }
 
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
   @override
   Widget build(BuildContext context) {
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
       appBar: PreferredSize(
           preferredSize: const Size.fromHeight(75),
           child: AppBar(
-            backgroundColor: notifire.getbgcolor,
+            backgroundColor: notifier.getbgcolor,
             actions: [
               Padding(
                   padding: const EdgeInsets.only(top: 30, right: 18),
@@ -53,7 +53,7 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                     child: Image.asset(
                       "assets/images/Filter.png",
                       height: 50,
-                      color: notifire.getwhiteblackcolor,
+                      color: notifier.getwhiteblackcolor,
                     ),
                   ))
             ],
@@ -64,7 +64,7 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
               child: Text(
                 "Search",
                 style: TextStyle(
-                    color: notifire.getwhiteblackcolor,
+                    color: notifier.getwhiteblackcolor,
                     fontFamily: "Gilroy Bold",
                     fontSize: 20),
               ),
@@ -72,10 +72,10 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
             leading: Padding(
                 padding: const EdgeInsets.only(top: 25),
                 child: BackButton(
-                  color: notifire.getwhiteblackcolor,
+                  color: notifier.getwhiteblackcolor,
                 )),
           )),
-      backgroundColor: notifire.getbgcolor,
+      backgroundColor: notifier.getbgcolor,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         child: Column(
@@ -88,20 +88,20 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                     borderRadius: BorderRadius.circular(
                       50,
                     ),
-                    color: notifire.getdarkmodecolor),
+                    color: notifier.getdarkmodecolor),
                 child: Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
                   child: TextField(
                     decoration: InputDecoration(
                       hintText: 'Search a tour',
-                      hintStyle: TextStyle(color: notifire.getgreycolor),
+                      hintStyle: TextStyle(color: notifier.getgreycolor),
                       prefixIcon: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Image.asset(
                           "assets/images/search.png",
                           height: 50,
-                          color: notifire.getgreycolor,
+                          color: notifier.getgreycolor,
                         ),
                       ),
                       suffixIcon: Padding(
@@ -110,7 +110,7 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                             onTap: Shortby,
                             child: Icon(
                               Icons.filter_list,
-                              color: notifire.getgreycolor,
+                              color: notifier.getgreycolor,
                             )),
                       ),
                       border: InputBorder.none,
@@ -122,7 +122,7 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
               "Popular Tours",
               style: TextStyle(
                   fontSize: 16,
-                  color: notifire.getwhiteblackcolor,
+                  color: notifier.getwhiteblackcolor,
                   fontFamily: "Gilroy Bold"),
             ),
             const SizedBox(height: 15),
@@ -138,7 +138,7 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                         child: Container(
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15),
-                              color: notifire.getdarkmodecolor),
+                              color: notifier.getdarkmodecolor),
                           child: Column(
                             children: [
                               Stack(
@@ -207,14 +207,14 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                                           style: TextStyle(
                                               fontSize: 16,
                                               color:
-                                                  notifire.getwhiteblackcolor,
+                                                  notifier.getwhiteblackcolor,
                                               fontFamily: "Gilroy Bold"),
                                         ),
                                         Text(
                                           hotelList2[index]["price"].toString(),
                                           style: TextStyle(
                                               fontSize: 16,
-                                              color: notifire.getdarkbluecolor,
+                                              color: notifier.getdarkbluecolor,
                                               fontFamily: "Gilroy Bold"),
                                         )
                                       ],
@@ -229,7 +229,7 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                                             Image.asset(
                                               "assets/images/location.png",
                                               height: 20,
-                                              color: notifire.getdarkbluecolor,
+                                              color: notifier.getdarkbluecolor,
                                             ),
                                             const SizedBox(width: 10),
                                             SizedBox(
@@ -243,7 +243,7 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                                                 style: TextStyle(
                                                     fontSize: 14,
                                                     color:
-                                                        notifire.getgreycolor,
+                                                        notifier.getgreycolor,
                                                     fontFamily: "Gilroy Medium",
                                                     overflow:
                                                         TextOverflow.ellipsis),
@@ -257,7 +257,7 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                                               "Per Tour",
                                               style: TextStyle(
                                                   fontSize: 16,
-                                                  color: notifire.getgreycolor,
+                                                  color: notifier.getgreycolor,
                                                   fontFamily: "Gilroy Medium"),
                                             ),
                                           ],
@@ -301,7 +301,7 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
 
   bottomsheet() {
     return showModalBottomSheet(
-        backgroundColor: notifire.getbgcolor,
+        backgroundColor: notifier.getbgcolor,
         isScrollControlled: true,
         context: context,
         shape: const RoundedRectangleBorder(
@@ -327,7 +327,7 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                             style: TextStyle(
                                 fontSize: 18,
                                 fontFamily: "Gilroy Bold",
-                                color: notifire.getwhiteblackcolor),
+                                color: notifier.getwhiteblackcolor),
                           ),
                           InkWell(
                               onTap: () {
@@ -335,7 +335,7 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                               },
                               child: Icon(
                                 Icons.close,
-                                color: notifire.getwhiteblackcolor,
+                                color: notifier.getwhiteblackcolor,
                               ))
                         ],
                       ),
@@ -345,19 +345,19 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                         "Travelers",
                         style: TextStyle(
                             fontSize: 16,
-                            color: notifire.getwhiteblackcolor,
+                            color: notifier.getwhiteblackcolor,
                             fontFamily: "Gilroy Bold"),
                       ),
                       const SizedBox(height: 10),
                       Container(
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
-                            color: notifire.getdarkmodecolor),
+                            color: notifier.getdarkmodecolor),
                         child: TextField(
                           decoration: InputDecoration(
                             hintText: "Travelers detail",
                             hintStyle: TextStyle(
-                              color: notifire.getgreycolor,
+                              color: notifier.getgreycolor,
                               fontFamily: "Gilroy Medium",
                             ),
                             suffixIcon: Padding(
@@ -379,13 +379,13 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      Divider(color: notifire.getgreycolor),
+                      Divider(color: notifier.getgreycolor),
                       const SizedBox(height: 4),
                       Text(
                         "Price Range",
                         style: TextStyle(
                             fontSize: 16,
-                            color: notifire.getwhiteblackcolor,
+                            color: notifier.getwhiteblackcolor,
                             fontFamily: "Gilroy Bold"),
                       ),
                       const SizedBox(height: 10),
@@ -397,13 +397,13 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                             width: MediaQuery.of(context).size.width / 2.2,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(15),
-                                color: notifire.getdarkmodecolor),
+                                color: notifier.getdarkmodecolor),
                             child: TextField(
                               decoration: InputDecoration(
                                 hintText: "Min",
                                 hintStyle: TextStyle(
                                     fontFamily: "Gilroy Medium",
-                                    color: notifire.getgreycolor),
+                                    color: notifier.getgreycolor),
                                 suffixIcon: Padding(
                                   padding: const EdgeInsets.all(6),
                                   child: DropdownButtonHideUnderline(
@@ -412,7 +412,7 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                                       value: dropdownvalue1,
                                       icon: Icon(
                                         Icons.keyboard_arrow_down,
-                                        color: notifire.getdarkbluecolor,
+                                        color: notifier.getdarkbluecolor,
                                       ),
                                       items: items.map((String items) {
                                         return DropdownMenuItem(
@@ -443,13 +443,13 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                             width: MediaQuery.of(context).size.width / 2.2,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(15),
-                                color: notifire.getdarkmodecolor),
+                                color: notifier.getdarkmodecolor),
                             child: TextField(
                               decoration: InputDecoration(
                                 hintText: "Max",
                                 hintStyle: TextStyle(
                                     fontFamily: "Gilroy Medium",
-                                    color: notifire.getgreycolor),
+                                    color: notifier.getgreycolor),
                                 suffixIcon: Padding(
                                   padding: const EdgeInsets.all(6),
                                   child: DropdownButtonHideUnderline(
@@ -458,7 +458,7 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                                       value: dropdownvalue,
                                       icon: Icon(
                                         Icons.keyboard_arrow_down,
-                                        color: notifire.getdarkbluecolor,
+                                        color: notifier.getdarkbluecolor,
                                       ),
                                       items: mexitems.map((String mexitems) {
                                         return DropdownMenuItem(
@@ -489,7 +489,7 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                         ],
                       ),
                       const SizedBox(height: 10),
-                      Divider(color: notifire.getgreycolor),
+                      Divider(color: notifier.getgreycolor),
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.01),
                       Row(
@@ -502,7 +502,7 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                                 "Instant Book",
                                 style: TextStyle(
                                     fontSize: 16,
-                                    color: notifire.getwhiteblackcolor,
+                                    color: notifier.getwhiteblackcolor,
                                     fontFamily: "Gilroy Bold"),
                               ),
                               const SizedBox(height: 6),
@@ -524,9 +524,9 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                                 padding: const EdgeInsets.all(8.0),
                                 child: CupertinoSwitch(
                                   value: switchValue,
-                                  thumbColor: notifire.getdarkwhitecolor,
-                                  trackColor: notifire.getbuttoncolor,
-                                  activeColor: notifire.getdarkbluecolor,
+                                  thumbColor: notifier.getdarkwhitecolor,
+                                  trackColor: notifier.getbuttoncolor,
+                                  activeColor: notifier.getdarkbluecolor,
                                   onChanged: (value) {
                                     setState(() {
                                       switchValue = value;
@@ -539,14 +539,14 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                         ],
                       ),
                       const SizedBox(height: 10),
-                      Divider(color: notifire.getgreycolor),
+                      Divider(color: notifier.getgreycolor),
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.01),
                       Text(
                         "Facilities",
                         style: TextStyle(
                             fontSize: 16,
-                            color: notifire.getwhiteblackcolor,
+                            color: notifier.getwhiteblackcolor,
                             fontFamily: "Gilroy Bold"),
                       ),
                       const SizedBox(height: 6),
@@ -578,14 +578,14 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                         },
                       ),
                       const SizedBox(height: 10),
-                      Divider(color: notifire.getgreycolor),
+                      Divider(color: notifier.getgreycolor),
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.01),
                       Text(
                         "Ratings",
                         style: TextStyle(
                             fontSize: 16,
-                            color: notifire.getwhiteblackcolor,
+                            color: notifier.getwhiteblackcolor,
                             fontFamily: "Gilroy Bold"),
                       ),
                       SizedBox(
@@ -627,11 +627,11 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
           height: 35,
           width: 35,
           child: Theme(
-            data: ThemeData(unselectedWidgetColor: notifire.getwhiteblackcolor),
+            data: ThemeData(unselectedWidgetColor: notifier.getwhiteblackcolor),
             child: Checkbox(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5),
-                    side: BorderSide(color: notifire.getwhiteblackcolor)),
+                    side: BorderSide(color: notifier.getwhiteblackcolor)),
                 value: ChackValue,
                 onChanged: OnChange),
           ),
@@ -646,7 +646,7 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
       width: 55,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: notifire.getdarkmodecolor),
+          color: notifier.getdarkmodecolor),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         child: Row(
@@ -657,7 +657,7 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
               RetingText!,
               style: TextStyle(
                 fontSize: 14,
-                color: notifire.getwhiteblackcolor,
+                color: notifier.getwhiteblackcolor,
                 fontWeight: FontWeight.bold,
               ),
             )
@@ -670,7 +670,7 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
   Shortby() {
     return showModalBottomSheet(
         // isScrollControlled: true,
-        backgroundColor: notifire.getbgcolor,
+        backgroundColor: notifier.getbgcolor,
         context: context,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
@@ -695,7 +695,7 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                           style: TextStyle(
                               fontSize: 18,
                               fontFamily: "Gilroy Bold",
-                              color: notifire.getwhiteblackcolor),
+                              color: notifier.getwhiteblackcolor),
                         ),
                         InkWell(
                             onTap: () {
@@ -703,7 +703,7 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
                             },
                             child: Icon(
                               Icons.close,
-                              color: notifire.getwhiteblackcolor,
+                              color: notifier.getwhiteblackcolor,
                             ))
                       ],
                     ),
@@ -759,18 +759,18 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
         Image.asset(
           image!,
           height: 25,
-          color: notifire.getdarkbluecolor,
+          color: notifier.getdarkbluecolor,
         ),
         const SizedBox(width: 5),
         Text(
           text,
           style: TextStyle(
-              color: notifire.getgreycolor, fontFamily: "Gilroy Medium"),
+              color: notifier.getgreycolor, fontFamily: "Gilroy Medium"),
         ),
         const SizedBox(width: 3),
         CircleAvatar(
           radius: radi,
-          backgroundColor: notifire.getgreycolor,
+          backgroundColor: notifier.getgreycolor,
         )
       ],
     );
@@ -780,9 +780,9 @@ class _HotelSearchlistState extends State<HotelSearchlist> {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifier.setIsDark = previusstate;
     }
   }
 }

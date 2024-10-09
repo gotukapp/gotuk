@@ -27,7 +27,7 @@ class _timetableState extends State<timetable> {
     items = generateItems();
   }
 
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
   late List<TimetableItem<Slot>> items;
 
   @override
@@ -40,7 +40,7 @@ class _timetableState extends State<timetable> {
       endHour: 21,
     );
 
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return SafeArea(
         child: Scaffold(
             appBar: PreferredSize(
@@ -48,11 +48,11 @@ class _timetableState extends State<timetable> {
                 child: CustomAppbar(
                     centertext: "Calendar",
                     ActionIcon: null,
-                    bgcolor: notifire.getbgcolor,
-                    actioniconcolor: notifire.getwhiteblackcolor,
-                    leadingiconcolor: notifire.getwhiteblackcolor,
-                    titlecolor: notifire.getwhiteblackcolor)),
-            backgroundColor: notifire.getblackwhitecolor,
+                    bgcolor: notifier.getbgcolor,
+                    actioniconcolor: notifier.getwhiteblackcolor,
+                    leadingiconcolor: notifier.getwhiteblackcolor,
+                    titlecolor: notifier.getwhiteblackcolor)),
+            backgroundColor: notifier.getblackwhitecolor,
             body: Padding(
                 padding: const EdgeInsets.symmetric(
                     horizontal: 18, vertical: 8),
@@ -146,9 +146,9 @@ class _timetableState extends State<timetable> {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifier.setIsDark = previusstate;
     }
   }
 

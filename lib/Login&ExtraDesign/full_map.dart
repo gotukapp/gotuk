@@ -30,7 +30,7 @@ class FullMap extends StatefulWidget {
 class FullMapState extends State<FullMap> {
   MapLibreMapController? mapController;
   var isLight = true;
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
   late Circle circle;
   late Timer routeTimer;
   late Timer showStarPoint;
@@ -206,18 +206,18 @@ class FullMapState extends State<FullMap> {
 
   @override
   Widget build(BuildContext context) {
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
       appBar: PreferredSize(
           preferredSize: const Size.fromHeight(75),
           child: CustomAppbar(
               centertext: "Tour Details",
               ActionIcon: null,
-              bgcolor: notifire.getblackwhitecolor,
-              actioniconcolor: notifire.getwhiteblackcolor,
-              leadingiconcolor: notifire.getwhiteblackcolor,
-              titlecolor: notifire.getwhiteblackcolor)),
-      backgroundColor: notifire.getblackwhitecolor,
+              bgcolor: notifier.getblackwhitecolor,
+              actioniconcolor: notifier.getwhiteblackcolor,
+              leadingiconcolor: notifier.getwhiteblackcolor,
+              titlecolor: notifier.getwhiteblackcolor)),
+      backgroundColor: notifier.getblackwhitecolor,
       body: MapLibreMap(
         styleString: 'https://api.maptiler.com/maps/satellite/style.json?key=c9mafO6rAK56K3BOW5w1',
         onMapCreated: _onMapCreated,
@@ -238,9 +238,9 @@ class FullMapState extends State<FullMap> {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifier.setIsDark = previusstate;
     }
   }
 }

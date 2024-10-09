@@ -20,12 +20,12 @@ class _ShowMassageState extends State<ShowMassage> {
     super.initState();
   }
 
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
   @override
   Widget build(BuildContext context) {
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
-      backgroundColor: notifire.getbgcolor,
+      backgroundColor: notifier.getbgcolor,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
         child: Column(
@@ -38,7 +38,7 @@ class _ShowMassageState extends State<ShowMassage> {
                   "Messages",
                   style: TextStyle(
                       fontSize: 18,
-                      color: notifire.getwhiteblackcolor,
+                      color: notifier.getwhiteblackcolor,
                       fontFamily: "Gilroy Bold"),
                 ),
                 InkWell(
@@ -48,11 +48,11 @@ class _ShowMassageState extends State<ShowMassage> {
                     },
                     child: CircleAvatar(
                         radius: 22,
-                        backgroundColor: notifire.getdarkmodecolor,
+                        backgroundColor: notifier.getdarkmodecolor,
                         child: Image.asset(
                           "assets/images/setting.png",
                           height: 25,
-                          color: notifire.getwhiteblackcolor,
+                          color: notifier.getwhiteblackcolor,
                         )))
               ],
             ),
@@ -64,21 +64,21 @@ class _ShowMassageState extends State<ShowMassage> {
                     borderRadius: BorderRadius.circular(
                       50,
                     ),
-                    color: notifire.getdarkmodecolor),
+                    color: notifier.getdarkmodecolor),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 6),
                   child: TextField(
                     decoration: InputDecoration(
                       hintText: 'Search a tour',
                       hintStyle: TextStyle(
-                          color: notifire.getgreycolor,
+                          color: notifier.getgreycolor,
                           fontFamily: "Gilroy Medium"),
                       prefixIcon: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         child: Image.asset(
                           "assets/images/search.png",
                           height: 25,
-                          color: notifire.getgreycolor,
+                          color: notifier.getgreycolor,
                         ),
                       ),
                       border: InputBorder.none,
@@ -95,7 +95,7 @@ class _ShowMassageState extends State<ShowMassage> {
               "No Messages Here",
               style: TextStyle(
                   fontSize: 18,
-                  color: notifire.getwhiteblackcolor,
+                  color: notifier.getwhiteblackcolor,
                   fontFamily: "Gilroy Bold"),
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.02),
@@ -103,7 +103,7 @@ class _ShowMassageState extends State<ShowMassage> {
               "Let’s start messaging with others or with seller",
               style: TextStyle(
                   fontSize: 14,
-                  color: notifire.getgreycolor,
+                  color: notifier.getgreycolor,
                   fontFamily: "Gilroy Medium"),
             ),
           ],
@@ -116,9 +116,9 @@ class _ShowMassageState extends State<ShowMassage> {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifier.setIsDark = previusstate;
     }
   }
 }

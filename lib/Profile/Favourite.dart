@@ -22,23 +22,23 @@ class _FavouriteState extends State<Favourite> {
     super.initState();
   }
 
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
   @override
   Widget build(BuildContext context) {
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
-        backgroundColor: notifire.getblackwhitecolor,
-        leading: BackButton(color: notifire.getwhiteblackcolor),
+        backgroundColor: notifier.getblackwhitecolor,
+        leading: BackButton(color: notifier.getwhiteblackcolor),
         title: Text(
           "Favourite",
           style: TextStyle(
-              color: notifire.getwhiteblackcolor, fontFamily: "Gilroy Bold"),
+              color: notifier.getwhiteblackcolor, fontFamily: "Gilroy Bold"),
         ),
       ),
-      backgroundColor: notifire.getblackwhitecolor,
+      backgroundColor: notifier.getblackwhitecolor,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -48,7 +48,7 @@ class _FavouriteState extends State<Favourite> {
               Text("Favourite Items",
                   style: TextStyle(
                       fontSize: 16,
-                      color: notifire.getwhiteblackcolor,
+                      color: notifier.getwhiteblackcolor,
                       fontWeight: FontWeight.bold)),
               const SizedBox(height: 4),
               ListView.builder(
@@ -57,7 +57,7 @@ class _FavouriteState extends State<Favourite> {
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: tourList.where((i) => i.favorite == true).length,
                 itemBuilder: (BuildContext context, int index) {
-                  return tourListInfo(context, notifire, tourList.where((i) => i.favorite == true).toList()[index]);
+                  return tourListInfo(context, notifier, tourList.where((i) => i.favorite == true).toList()[index]);
                 },
               )
             ],
@@ -71,9 +71,9 @@ class _FavouriteState extends State<Favourite> {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifier.setIsDark = previusstate;
     }
   }
 }

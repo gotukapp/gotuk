@@ -60,13 +60,13 @@ class _SearchState extends State<Search> {
     }
   }
 
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
 
   @override
   Widget build(BuildContext context) {
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
-      backgroundColor: notifire.getbgcolor,
+      backgroundColor: notifier.getbgcolor,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         child: Column(
@@ -80,7 +80,7 @@ class _SearchState extends State<Search> {
                   "Search",
                   style: TextStyle(
                       fontSize: 18,
-                      color: notifire.getwhiteblackcolor,
+                      color: notifier.getwhiteblackcolor,
                       fontFamily: "Gilroy Bold"),
                 ),
                 InkWell(
@@ -97,11 +97,11 @@ class _SearchState extends State<Search> {
                           });
                         },
                         child: CircleAvatar(
-                          backgroundColor: notifire.getdarkmodecolor,
+                          backgroundColor: notifier.getdarkmodecolor,
                           child: Image.asset(
                             "assets/images/notification.png",
                             height: 25,
-                            color: notifire.getwhiteblackcolor,
+                            color: notifier.getwhiteblackcolor,
                           ),
                         ),
                       ),
@@ -110,7 +110,7 @@ class _SearchState extends State<Search> {
                           child: !notification
                               ? CircleAvatar(
                                   radius: 4,
-                                  backgroundColor: notifire.getredcolor,
+                                  backgroundColor: notifier.getredcolor,
                                 )
                               : const SizedBox())
                     ],
@@ -126,7 +126,7 @@ class _SearchState extends State<Search> {
                     borderRadius: BorderRadius.circular(
                       50,
                     ),
-                    color: notifire.getdarkmodecolor),
+                    color: notifier.getdarkmodecolor),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 6),
                   child: TextField(
@@ -138,18 +138,18 @@ class _SearchState extends State<Search> {
                     decoration: InputDecoration(
                       hintText: 'Search a tour',
                       hintStyle: TextStyle(
-                          color: notifire.getgreycolor,
+                          color: notifier.getgreycolor,
                           fontFamily: "Gilroy Medium"),
                       prefixIcon: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         child: Image.asset(
                           "assets/images/search.png",
                           height: 25,
-                          color: notifire.getgreycolor,
+                          color: notifier.getgreycolor,
                         ),
                       ),
                       suffixIcon:
-                          Icon(Icons.filter_list, color: notifire.getgreycolor),
+                          Icon(Icons.filter_list, color: notifier.getgreycolor),
                       border: InputBorder.none,
                     ),
                   ),
@@ -166,7 +166,7 @@ class _SearchState extends State<Search> {
                           "Recent Searches",
                           style: TextStyle(
                               fontSize: 16,
-                              color: notifire.getgreycolor,
+                              color: notifier.getgreycolor,
                               fontFamily: "Gilroy Medium"),
                         ),
                         InkWell(
@@ -179,7 +179,7 @@ class _SearchState extends State<Search> {
                             "Clear All",
                             style: TextStyle(
                                 fontSize: 15,
-                                color: notifire.getredcolor,
+                                color: notifier.getredcolor,
                                 fontFamily: "Gilroy Medium"),
                           ),
                         ),
@@ -202,7 +202,7 @@ class _SearchState extends State<Search> {
                                     children: [
                                       Image.asset(
                                         "assets/images/clock.png",
-                                        color: notifire.getgreycolor,
+                                        color: notifier.getgreycolor,
                                         height: 25,
                                       ),
                                       SizedBox(
@@ -219,7 +219,7 @@ class _SearchState extends State<Search> {
                                             style: TextStyle(
                                                 fontSize: 15,
                                                 fontFamily: "Gilroy Bold",
-                                                color: notifire
+                                                color: notifier
                                                     .getwhiteblackcolor),
                                           ),
                                           SizedBox(
@@ -238,7 +238,7 @@ class _SearchState extends State<Search> {
                                                     fontSize: 15,
                                                     fontFamily: "Gilroy Medium",
                                                     color:
-                                                        notifire.getgreycolor),
+                                                        notifier.getgreycolor),
                                                 overflow:
                                                     TextOverflow.ellipsis),
                                           ),
@@ -260,13 +260,13 @@ class _SearchState extends State<Search> {
                           style: TextStyle(
                               fontSize: 16,
                               fontFamily: "Gilroy Bold",
-                              color: notifire.getwhiteblackcolor),
+                              color: notifier.getwhiteblackcolor),
                         ),
                         Text(
                           "See All",
                           style: TextStyle(
                               fontSize: 15,
-                              color: notifire.getdarkbluecolor,
+                              color: notifier.getdarkbluecolor,
                               fontFamily: "Gilroy Medium"),
                         ),
                       ],
@@ -290,7 +290,7 @@ class _SearchState extends State<Search> {
                                 width: 280,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(12),
-                                    color: notifire.getdarkmodecolor),
+                                    color: notifier.getdarkmodecolor),
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 10, vertical: 10),
@@ -357,7 +357,7 @@ class _SearchState extends State<Search> {
                                           style: TextStyle(
                                               fontSize: 15,
                                               color:
-                                                  notifire.getwhiteblackcolor,
+                                                  notifier.getwhiteblackcolor,
                                               fontFamily: "Gilroy Bold"),
                                         ),
                                         SizedBox(
@@ -370,7 +370,7 @@ class _SearchState extends State<Search> {
                                               .toString(),
                                           style: TextStyle(
                                               fontSize: 12,
-                                              color: notifire.getgreycolor,
+                                              color: notifier.getgreycolor,
                                               overflow: TextOverflow.ellipsis),
                                         ),
                                         SizedBox(
@@ -421,18 +421,18 @@ class _SearchState extends State<Search> {
         Image.asset(
           image!,
           height: 22,
-          color: notifire.getdarkbluecolor,
+          color: notifier.getdarkbluecolor,
         ),
         const SizedBox(width: 5),
         Text(
           text,
           style: TextStyle(
-              color: notifire.getgreycolor, fontFamily: "Gilroy Medium"),
+              color: notifier.getgreycolor, fontFamily: "Gilroy Medium"),
         ),
         const SizedBox(width: 11),
         CircleAvatar(
           radius: radi,
-          backgroundColor: notifire.getgreycolor,
+          backgroundColor: notifier.getgreycolor,
         )
       ],
     );
@@ -442,9 +442,9 @@ class _SearchState extends State<Search> {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifier.setIsDark = previusstate;
     }
   }
 }

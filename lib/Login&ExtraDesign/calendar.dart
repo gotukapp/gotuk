@@ -47,11 +47,11 @@ class calendarState extends State<calendar> {
     super.initState();
   }
 
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
 
   @override
   Widget build(BuildContext context) {
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         home: Scaffold(
@@ -60,11 +60,11 @@ class calendarState extends State<calendar> {
                 child: CustomAppbar(
                     centertext: "Calendar",
                     ActionIcon: Icons.more_vert,
-                    bgcolor: notifire.getbgcolor,
-                    actioniconcolor: notifire.getwhiteblackcolor,
-                    leadingiconcolor: notifire.getwhiteblackcolor,
-                    titlecolor: notifire.getwhiteblackcolor)),
-            backgroundColor: notifire.getbgcolor,
+                    bgcolor: notifier.getbgcolor,
+                    actioniconcolor: notifier.getwhiteblackcolor,
+                    leadingiconcolor: notifier.getwhiteblackcolor,
+                    titlecolor: notifier.getwhiteblackcolor)),
+            backgroundColor: notifier.getbgcolor,
             // ignore: sized_box_for_whitespace
             bottomNavigationBar: Container(
               height: 80,
@@ -122,7 +122,7 @@ class calendarState extends State<calendar> {
                         startRangeSelectionColor: Darkblue,
                         monthCellStyle: DateRangePickerMonthCellStyle(
                             blackoutDateTextStyle: TextStyle(color: Darkblue)),
-                        backgroundColor: notifire.getbgcolor,
+                        backgroundColor: notifier.getbgcolor,
                         onSelectionChanged: _onSelectionChanged,
                         selectionMode: DateRangePickerSelectionMode.single,
                         initialSelectedRange: PickerDateRange(
@@ -141,9 +141,9 @@ class calendarState extends State<calendar> {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifier.setIsDark = previusstate;
     }
   }
 }

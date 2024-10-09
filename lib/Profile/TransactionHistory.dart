@@ -26,23 +26,23 @@ class _TransactionHistoryState extends State<TransactionHistory> {
     super.initState();
   }
 
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
   @override
   Widget build(BuildContext context) {
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
-        backgroundColor: notifire.getblackwhitecolor,
-        leading: BackButton(color: notifire.getwhiteblackcolor),
+        backgroundColor: notifier.getblackwhitecolor,
+        leading: BackButton(color: notifier.getwhiteblackcolor),
         title: Text(
           "Transaction History",
           style: TextStyle(
-              color: notifire.getwhiteblackcolor, fontFamily: "Gilroy Bold"),
+              color: notifier.getwhiteblackcolor, fontFamily: "Gilroy Bold"),
         ),
       ),
-      backgroundColor: notifire.getblackwhitecolor,
+      backgroundColor: notifier.getblackwhitecolor,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         child: SingleChildScrollView(
@@ -116,7 +116,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
         height: 150,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            color: notifire.getdarklightgreycolor),
+            color: notifier.getdarklightgreycolor),
         child: Padding(
           padding: const EdgeInsets.symmetric(
               horizontal: 10, vertical: 5),
@@ -175,7 +175,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                           Text(DateFormat('E, d MMM yyyy - HH:mm').format(booking.date),
                               style: TextStyle(
                                   fontSize: 12,
-                                  color: notifire.getwhiteblackcolor)),
+                                  color: notifier.getwhiteblackcolor)),
                         ],
                       ),
                       const SizedBox(height: 10),
@@ -183,12 +183,12 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                           style: TextStyle(
                               fontSize: 14,
                               color:
-                              notifire.getwhiteblackcolor,
+                              notifier.getwhiteblackcolor,
                               fontFamily: "Gilroy Bold")),
                       Text("${booking.persons} Persons",
                           style: TextStyle(
                               fontSize: 12,
-                              color: notifire.getwhiteblackcolor,
+                              color: notifier.getwhiteblackcolor,
                               fontFamily: "Gilroy Medium")),
                       const SizedBox(height: 10),
                       Row(
@@ -200,7 +200,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                           children: [
                               Text("Total Price",
                                   style: TextStyle(
-                                      fontSize: 12, color: notifire.getwhiteblackcolor, fontFamily: "Gilroy Medium")),
+                                      fontSize: 12, color: notifier.getwhiteblackcolor, fontFamily: "Gilroy Medium")),
                               Text("${booking.price}€",
                                   style: TextStyle(
                                       fontSize: 14, color: Darkblue, fontFamily: "Gilroy Bold")),
@@ -241,9 +241,9 @@ class _TransactionHistoryState extends State<TransactionHistory> {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifier.setIsDark = previusstate;
     }
   }
 }

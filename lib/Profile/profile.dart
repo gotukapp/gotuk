@@ -31,15 +31,15 @@ class _profileState extends State<profile> {
     super.initState();
   }
 
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
   late bool guideMode = false;
 
   @override
   Widget build(BuildContext context) {
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return SafeArea(
       child: Scaffold(
-          backgroundColor: notifire.getblackwhitecolor,
+          backgroundColor: notifier.getblackwhitecolor,
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             child: SingleChildScrollView(
@@ -62,11 +62,11 @@ class _profileState extends State<profile> {
                                 builder: (context) => const Settings()));
                           },
                           child: CircleAvatar(
-                              backgroundColor: notifire.getdarkmodecolor,
+                              backgroundColor: notifier.getdarkmodecolor,
                               child: Image.asset(
                                 "assets/images/setting.png",
                                 height: 25,
-                                color: notifire.getwhiteblackcolor,
+                                color: notifier.getwhiteblackcolor,
                               ))),
                     ],
                   ),
@@ -75,7 +75,7 @@ class _profileState extends State<profile> {
                       children: [
                         CircleAvatar(
                           radius: 60,
-                          backgroundColor: notifire.getwhiteblackcolor,
+                          backgroundColor: notifier.getwhiteblackcolor,
                           backgroundImage:
                               const AssetImage("assets/images/person.jpg"),
                         ),
@@ -92,7 +92,7 @@ class _profileState extends State<profile> {
                           "Lisboa, Portugal",
                           style: TextStyle(
                               fontSize: 16,
-                              color: notifire.getwhiteblackcolor,
+                              color: notifier.getwhiteblackcolor,
                               fontFamily: "Gilroy Medium"),
                         ),
                       ],
@@ -102,7 +102,7 @@ class _profileState extends State<profile> {
                   Container(
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
-                        color: notifire.getdarklightgreycolor),
+                        color: notifier.getdarklightgreycolor),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 10, vertical: 10),
@@ -140,10 +140,10 @@ class _profileState extends State<profile> {
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => const Favourite()));
                               },
-                              boxcolor: notifire.getdarklightgreycolor,
-                              iconcolor: notifire.getwhiteblackcolor,
-                              ImageColor: notifire.getwhiteblackcolor,
-                              TextColor: notifire.getwhiteblackcolor),
+                              boxcolor: notifier.getdarklightgreycolor,
+                              iconcolor: notifier.getwhiteblackcolor,
+                              ImageColor: notifier.getwhiteblackcolor,
+                              TextColor: notifier.getwhiteblackcolor),
                           ProfileSetting(
                               image: "assets/images/clock.png",
                               text: guideMode ? "Calendar" : "Transactions",
@@ -153,10 +153,10 @@ class _profileState extends State<profile> {
                                     builder: (context) => guideMode ? const timetable()
                                     : const TransactionHistory()));
                               },
-                              boxcolor: notifire.getdarklightgreycolor,
-                              iconcolor: notifire.getwhiteblackcolor,
-                              ImageColor: notifire.getwhiteblackcolor,
-                              TextColor: notifire.getwhiteblackcolor),
+                              boxcolor: notifier.getdarklightgreycolor,
+                              iconcolor: notifier.getwhiteblackcolor,
+                              ImageColor: notifier.getwhiteblackcolor,
+                              TextColor: notifier.getwhiteblackcolor),
                           if (guideMode)
                             ProfileSetting(
                                 image: "assets/images/profile.png",
@@ -167,10 +167,10 @@ class _profileState extends State<profile> {
                                       builder: (context) => const account()
                                   ));
                                 },
-                                boxcolor: notifire.getdarkmodecolor,
-                                iconcolor: notifire.getwhiteblackcolor,
-                                ImageColor: notifire.getwhiteblackcolor,
-                                TextColor: notifire.getwhiteblackcolor)
+                                boxcolor: notifier.getdarkmodecolor,
+                                iconcolor: notifier.getwhiteblackcolor,
+                                ImageColor: notifier.getwhiteblackcolor,
+                                TextColor: notifier.getwhiteblackcolor)
                           else
                             ProfileSetting(
                                 image: "assets/images/discount.png",
@@ -180,10 +180,10 @@ class _profileState extends State<profile> {
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (context) => const MyCupon()));
                                 },
-                                boxcolor: notifire.getdarkmodecolor,
-                                iconcolor: notifire.getwhiteblackcolor,
-                                ImageColor: notifire.getwhiteblackcolor,
-                                TextColor: notifire.getwhiteblackcolor)
+                                boxcolor: notifier.getdarkmodecolor,
+                                iconcolor: notifier.getwhiteblackcolor,
+                                ImageColor: notifier.getwhiteblackcolor,
+                                TextColor: notifier.getwhiteblackcolor)
                         ],
                       ),
                       SizedBox(
@@ -220,7 +220,7 @@ class _profileState extends State<profile> {
           text2,
           style: TextStyle(
               fontSize: 14,
-              color: notifire.getwhiteblackcolor,
+              color: notifier.getwhiteblackcolor,
               fontFamily: "Gilroy Medium"),
         ),
       ],
@@ -231,9 +231,9 @@ class _profileState extends State<profile> {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifier.setIsDark = previusstate;
     }
   }
 

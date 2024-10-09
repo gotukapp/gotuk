@@ -28,12 +28,13 @@ class _dashboardState extends State<dashboard> {
     super.initState();
   }
 
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
   @override
   Widget build(BuildContext context) {
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     final now = DateTime.now();
     final tomorrow = DateTime(now.year, now.month, now.day + 1, 0, 0, 0);
+    final today = DateTime(now.year, now.month, now.day, 0, 0, 0);
     final month = DateTime(now.year, now.month, now.day - 30, 0, 0, 0);
 
     final db = FirebaseFirestore.instance.collection("trips");
@@ -52,6 +53,7 @@ class _dashboardState extends State<dashboard> {
         .where("guidId", isEqualTo: widget.guide.id)
         .where("status", isEqualTo: "booked")
         .where("date", isLessThan:  tomorrow)
+        .where("date", isGreaterThan:  today)
         .orderBy("date")
         .snapshots();
 
@@ -63,7 +65,7 @@ class _dashboardState extends State<dashboard> {
 
     return SafeArea(
         child: Scaffold(
-            backgroundColor: notifire.getblackwhitecolor,
+            backgroundColor: notifier.getblackwhitecolor,
             body: Padding(
               padding: const EdgeInsets.symmetric(
               horizontal: 18, vertical: 8),
@@ -86,7 +88,7 @@ class _dashboardState extends State<dashboard> {
                               Text(
                                 "Hello, ${FirebaseAuth.instance.currentUser?.displayName}! 👋",
                                 style: TextStyle(
-                                    color: notifire.getwhiteblackcolor,
+                                    color: notifier.getwhiteblackcolor,
                                     fontSize: 16,
                                     fontFamily: "Gilroy Medium"),
                               ),
@@ -110,11 +112,11 @@ class _dashboardState extends State<dashboard> {
                                     builder: (context) => const notification()));
                               },
                               child: CircleAvatar(
-                                  backgroundColor: notifire.getdarkmodecolor,
+                                  backgroundColor: notifier.getdarkmodecolor,
                                   child: Image.asset(
                                     "assets/images/notification.png",
                                     height: 25,
-                                    color: notifire.getwhiteblackcolor,
+                                    color: notifier.getwhiteblackcolor,
                                   )))
                         ],
                       ),
@@ -154,7 +156,7 @@ class _dashboardState extends State<dashboard> {
                               return Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(15),
-                                  color: notifire.getdarklightgreycolor),
+                                  color: notifier.getdarklightgreycolor),
                                   child: Padding(
                                       padding: const EdgeInsets.symmetric(
                                       horizontal: 10, vertical: 10),
@@ -194,7 +196,7 @@ class _dashboardState extends State<dashboard> {
                           Container(
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(15),
-                                color: notifire.getdarklightgreycolor),
+                                color: notifier.getdarklightgreycolor),
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 10, vertical: 10),
@@ -233,7 +235,7 @@ class _dashboardState extends State<dashboard> {
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 6),
                                 child: tripInfo(
-                                    context, notifire,  Trip.fromFirestore(snapshot.data!.docs[0], null)),
+                                    context, notifier,  Trip.fromFirestore(snapshot.data!.docs[0], null)),
                               );
                             }
                             return const SizedBox();
@@ -257,7 +259,7 @@ class _dashboardState extends State<dashboard> {
                                   itemCount: snapshot.data != null ? snapshot.data!.docs.length : 0,
                                   itemBuilder: (BuildContext context,
                                       int index) {
-                                    return tripInfo(context, notifire,
+                                    return tripInfo(context, notifier,
                                         Trip.fromFirestore(snapshot.data!.docs[index], null));
                                   },
                                 ),
@@ -278,7 +280,7 @@ class _dashboardState extends State<dashboard> {
           text2,
           style: TextStyle(
               fontSize: 14,
-              color: notifire.getwhiteblackcolor,
+              color: notifier.getwhiteblackcolor,
               fontFamily: "Gilroy Medium"),
         ),
         const SizedBox(height: 1),
@@ -297,9 +299,9 @@ class _dashboardState extends State<dashboard> {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifier.setIsDark = previusstate;
     }
   }
 

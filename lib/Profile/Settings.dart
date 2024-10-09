@@ -28,23 +28,23 @@ class _SettingsState extends State<Settings> {
   }
 
   bool switchValue = false;
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
 
   @override
   Widget build(BuildContext context) {
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
-        backgroundColor: notifire.getbgcolor,
-        leading: BackButton(color: notifire.getwhiteblackcolor),
+        backgroundColor: notifier.getbgcolor,
+        leading: BackButton(color: notifier.getwhiteblackcolor),
         title: Text(
           "Settings",
-          style: TextStyle(color: notifire.getwhiteblackcolor),
+          style: TextStyle(color: notifier.getwhiteblackcolor),
         ),
       ),
-      backgroundColor: notifire.getbgcolor,
+      backgroundColor: notifier.getbgcolor,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
@@ -54,7 +54,7 @@ class _SettingsState extends State<Settings> {
               Text("Account Settings",
                   style: TextStyle(
                       fontSize: 16,
-                      color: notifire.getwhiteblackcolor,
+                      color: notifier.getwhiteblackcolor,
                       fontWeight: FontWeight.bold)),
               const SizedBox(height: 10),
               AccountSetting(
@@ -65,10 +65,10 @@ class _SettingsState extends State<Settings> {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => const MyProfile()));
                 },
-                boxcolor: notifire.getdarkmodecolor,
-                ImageColor: notifire.getwhiteblackcolor,
-                iconcolor: notifire.getwhiteblackcolor,
-                TextColor: notifire.getwhiteblackcolor,
+                boxcolor: notifier.getdarkmodecolor,
+                ImageColor: notifier.getwhiteblackcolor,
+                iconcolor: notifier.getwhiteblackcolor,
+                TextColor: notifier.getwhiteblackcolor,
               ),
               AccountSetting(
                 image: "assets/images/notification.png",
@@ -78,10 +78,10 @@ class _SettingsState extends State<Settings> {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => const NotificationSetting()));
                 },
-                boxcolor: notifire.getdarkmodecolor,
-                ImageColor: notifire.getwhiteblackcolor,
-                iconcolor: notifire.getwhiteblackcolor,
-                TextColor: notifire.getwhiteblackcolor,
+                boxcolor: notifier.getdarkmodecolor,
+                ImageColor: notifier.getwhiteblackcolor,
+                iconcolor: notifier.getwhiteblackcolor,
+                TextColor: notifier.getwhiteblackcolor,
               ),
               AccountSetting(
                   image: "assets/images/Payments.png",
@@ -91,15 +91,15 @@ class _SettingsState extends State<Settings> {
                     // Navigator.of(context).push(
                     //     MaterialPageRoute(builder: (context) => Favourite()));
                   },
-                  boxcolor: notifire.getdarkmodecolor,
-                  ImageColor: notifire.getwhiteblackcolor,
-                  iconcolor: notifire.getwhiteblackcolor,
-                  TextColor: notifire.getwhiteblackcolor),
+                  boxcolor: notifier.getdarkmodecolor,
+                  ImageColor: notifier.getwhiteblackcolor,
+                  iconcolor: notifier.getwhiteblackcolor,
+                  TextColor: notifier.getwhiteblackcolor),
               const SizedBox(height: 10),
               Text("Preferences",
                   style: TextStyle(
                       fontSize: 16,
-                      color: notifire.getwhiteblackcolor,
+                      color: notifier.getwhiteblackcolor,
                       fontWeight: FontWeight.bold)),
               const SizedBox(height: 10),
               AccountSetting(
@@ -110,33 +110,33 @@ class _SettingsState extends State<Settings> {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => const Language()));
                   },
-                  boxcolor: notifire.getdarkmodecolor,
-                  iconcolor: notifire.getwhiteblackcolor,
-                  ImageColor: notifire.getwhiteblackcolor,
-                  TextColor: notifire.getwhiteblackcolor),
+                  boxcolor: notifier.getdarkmodecolor,
+                  iconcolor: notifier.getwhiteblackcolor,
+                  ImageColor: notifier.getwhiteblackcolor,
+                  TextColor: notifier.getwhiteblackcolor),
               Container(
                   margin: const EdgeInsets.symmetric(vertical: 4),
                   height: 55,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
-                    color: notifire.getdarkmodecolor,
+                    color: notifier.getdarkmodecolor,
                   ),
                   child:
                     ListTile(
                       leading: Image.asset(
                         "assets/images/moon.png",
                         height: 30,
-                        color: notifire.getwhiteblackcolor,
+                        color: notifier.getwhiteblackcolor,
                       ),
                       title: Text("Dark Mode",
                           style: TextStyle(
                               fontSize: 15,
-                              color: notifire.getwhiteblackcolor,
+                              color: notifier.getwhiteblackcolor,
                               fontFamily: "Gilroy Bold")),
                       trailing: CupertinoSwitch(
-                        thumbColor: notifire.getdarkwhitecolor,
-                        trackColor: notifire.getbuttoncolor,
-                        activeColor: notifire.getdarkbluecolor,
+                        thumbColor: notifier.getdarkwhitecolor,
+                        trackColor: notifier.getbuttoncolor,
+                        activeColor: notifier.getdarkbluecolor,
                         value: switchValue,
                         onChanged: (value) async {
                           setState(() {
@@ -145,7 +145,7 @@ class _SettingsState extends State<Settings> {
                           final prefs =
                           await SharedPreferences.getInstance();
                           setState(() {
-                            notifire.setIsDark = value;
+                            notifier.setIsDark = value;
                             prefs.setBool("setIsDark", value);
                           });
                         },
@@ -161,10 +161,10 @@ class _SettingsState extends State<Settings> {
                     // Navigator.of(context).push(
                     //     MaterialPageRoute(builder: (context) => Favourite()));
                   },
-                  boxcolor: notifire.getdarkmodecolor,
-                  ImageColor: notifire.getwhiteblackcolor,
-                  iconcolor: notifire.getwhiteblackcolor,
-                  TextColor: notifire.getwhiteblackcolor),
+                  boxcolor: notifier.getdarkmodecolor,
+                  ImageColor: notifier.getwhiteblackcolor,
+                  iconcolor: notifier.getwhiteblackcolor,
+                  TextColor: notifier.getwhiteblackcolor),
               AccountSetting(
                   image: "assets/images/logout.png",
                   text: "Log Out",
@@ -173,15 +173,15 @@ class _SettingsState extends State<Settings> {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => const loginscreen()));
                   },
-                  boxcolor: notifire.getdarkmodecolor,
-                  iconcolor: notifire.getwhiteblackcolor,
+                  boxcolor: notifier.getdarkmodecolor,
+                  iconcolor: notifier.getwhiteblackcolor,
                   ImageColor: RedColor,
                   TextColor: RedColor),
               const SizedBox(height: 10),
               Text("Support",
                   style: TextStyle(
                       fontSize: 16,
-                      color: notifire.getwhiteblackcolor,
+                      color: notifier.getwhiteblackcolor,
                       fontWeight: FontWeight.bold)),
               const SizedBox(height: 10),
               AccountSetting(
@@ -192,10 +192,10 @@ class _SettingsState extends State<Settings> {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => const Support()));
                   },
-                  boxcolor: notifire.getdarkmodecolor,
-                  iconcolor: notifire.getwhiteblackcolor,
-                  ImageColor: notifire.getwhiteblackcolor,
-                  TextColor: notifire.getwhiteblackcolor),
+                  boxcolor: notifier.getdarkmodecolor,
+                  iconcolor: notifier.getwhiteblackcolor,
+                  ImageColor: notifier.getwhiteblackcolor,
+                  TextColor: notifier.getwhiteblackcolor),
             ],
           ),
         ),
@@ -207,10 +207,10 @@ class _SettingsState extends State<Settings> {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
       switchValue = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifier.setIsDark = previusstate;
       switchValue = true;
     }
   }

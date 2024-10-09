@@ -36,15 +36,15 @@ class _homeState extends State<home> {
     super.initState();
   }
 
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
   @override
   Widget build(BuildContext context) {
     final Stream<QuerySnapshot> usersStream = FirebaseFirestore.instance.collection('bookings').snapshots();
 
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return SafeArea(
       child: Scaffold(
-        backgroundColor: notifire.getblackwhitecolor,
+        backgroundColor: notifier.getblackwhitecolor,
         body: StreamBuilder<QuerySnapshot>(
           stream: usersStream,
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -72,7 +72,7 @@ class _homeState extends State<home> {
                           Text(
                             "Hello, ${FirebaseAuth.instance.currentUser?.displayName}! 👋",
                             style: TextStyle(
-                                color: notifire.getwhiteblackcolor,
+                                color: notifier.getwhiteblackcolor,
                                 fontSize: 16,
                                 fontFamily: "Gilroy Medium"),
                           ),
@@ -93,11 +93,11 @@ class _homeState extends State<home> {
                                 builder: (context) => const notification()));
                           },
                           child: CircleAvatar(
-                              backgroundColor: notifire.getdarkmodecolor,
+                              backgroundColor: notifier.getdarkmodecolor,
                               child: Image.asset(
                                 "assets/images/notification.png",
                                 height: 25,
-                                color: notifire.getwhiteblackcolor,
+                                color: notifier.getwhiteblackcolor,
                               )))
                     ],
                   ),
@@ -168,7 +168,7 @@ class _homeState extends State<home> {
                                 "Recommended",
                                 style: TextStyle(
                                     fontFamily: "Gilroy Bold",
-                                    color: notifire.getwhiteblackcolor),
+                                    color: notifier.getwhiteblackcolor),
                               ),
                               InkWell(
                                 onTap: () {
@@ -179,7 +179,7 @@ class _homeState extends State<home> {
                                 child: Text(
                                   "See All",
                                   style: TextStyle(
-                                      color: notifire.getdarkbluecolor,
+                                      color: notifier.getdarkbluecolor,
                                       fontFamily: "Gilroy Medium"),
                                 ),
                               ),
@@ -231,7 +231,7 @@ class _homeState extends State<home> {
                                                         height: 90,
                                                         decoration: BoxDecoration(
                                                             borderRadius: BorderRadius.circular(12),
-                                                            color: notifire.getdarklightgreycolor),
+                                                            color: notifier.getdarklightgreycolor),
                                                         child: Padding(
                                                           padding: const EdgeInsets.symmetric(
                                                               horizontal: 10, vertical: 10),
@@ -245,7 +245,7 @@ class _homeState extends State<home> {
                                                                     fontSize: 14,
                                                                     fontFamily: "Gilroy Bold",
                                                                     color:
-                                                                    notifire.getwhiteblackcolor),
+                                                                    notifier.getwhiteblackcolor),
                                                               ),
                                                               SizedBox(
                                                                   height: MediaQuery.of(context)
@@ -256,7 +256,7 @@ class _homeState extends State<home> {
                                                                 tourList[0].address,
                                                                 style: TextStyle(
                                                                     fontSize: 12,
-                                                                    color: notifire.getwhiteblackcolor,
+                                                                    color: notifier.getwhiteblackcolor,
                                                                     fontFamily: "Gilroy Medium",
                                                                     overflow: TextOverflow.ellipsis),
                                                               ),
@@ -304,7 +304,7 @@ class _homeState extends State<home> {
                                 "Nearby Tour",
                                 style: TextStyle(
                                     fontFamily: "Gilroy Bold",
-                                    color: notifire.getwhiteblackcolor),
+                                    color: notifier.getwhiteblackcolor),
                               ),
                               InkWell(
                                 onTap: () {
@@ -315,7 +315,7 @@ class _homeState extends State<home> {
                                 child: Text(
                                   "See All",
                                   style: TextStyle(
-                                    color: notifire.getdarkbluecolor,
+                                    color: notifier.getdarkbluecolor,
                                     fontFamily: "Gilroy Medium",
                                   ),
                                 ),
@@ -330,7 +330,7 @@ class _homeState extends State<home> {
                             physics: const NeverScrollableScrollPhysics(),
                             itemCount: nearbyTours.length,
                             itemBuilder: (BuildContext context, int index) {
-                              return tourListInfo(context, notifire, nearbyTours[index]);
+                              return tourListInfo(context, notifier, nearbyTours[index]);
                             },
                           )
                         ],
@@ -366,7 +366,7 @@ class _homeState extends State<home> {
         Text(
           text,
           style: TextStyle(
-              color: notifire.getwhiteblackcolor, fontFamily: "Gilroy Medium"),
+              color: notifier.getwhiteblackcolor, fontFamily: "Gilroy Medium"),
         )
       ],
     );
@@ -376,9 +376,9 @@ class _homeState extends State<home> {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifier.setIsDark = previusstate;
     }
   }
 }

@@ -36,21 +36,21 @@ class _verifyaccountState extends State<verifyaccount> {
   int _start = 30;
 
   void startTimer() {}
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
 
   @override
   Widget build(BuildContext context) {
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
-        backgroundColor: notifire.getlogobgcolor,
+        backgroundColor: notifier.getlogobgcolor,
         appBar: PreferredSize(
             preferredSize: const Size.fromHeight(75),
             child: CustomAppbar(
                 centertext: "",
                 ActionIcon: null,
-                bgcolor: notifire.getlogobgcolor,
-                actioniconcolor: notifire.getwhiteblackcolor,
-                leadingiconcolor: notifire.getwhiteblackcolor)),
+                bgcolor: notifier.getlogobgcolor,
+                actioniconcolor: notifier.getwhiteblackcolor,
+                leadingiconcolor: notifier.getwhiteblackcolor)),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
@@ -81,15 +81,15 @@ class _verifyaccountState extends State<verifyaccount> {
                       color: WhiteColor)),
               SizedBox(height: MediaQuery.of(context).size.height * 0.01),
               textfield(
-                fieldColor: notifire.getdarkmodecolor,
-                hintColor: notifire.getgreycolor,
+                fieldColor: notifier.getdarkmodecolor,
+                hintColor: notifier.getgreycolor,
                 text: 'Verification Code',
                 suffix: Padding(
                   padding: const EdgeInsets.only(top: 8),
                   child: Text(
                     "Resend in  " + formatedTime(_start).toString(),
                     style: TextStyle(
-                        color: notifire.getgreycolor,
+                        color: notifier.getgreycolor,
                         fontFamily: "Gilroy Medium"),
                   ),
                 ),
@@ -98,8 +98,8 @@ class _verifyaccountState extends State<verifyaccount> {
                 height: MediaQuery.of(context).size.height *0.05,
               ),
               AppButton(
-                bgColor: notifire.getblackwhitecolor,
-                textColor: notifire.getwhitelogocolor,
+                bgColor: notifier.getblackwhitecolor,
+                textColor: notifier.getwhitelogocolor,
                 buttontext: "VERIFY ACCOUNT",
                 onclick: bottomsheet,
               ),
@@ -127,7 +127,7 @@ class _verifyaccountState extends State<verifyaccount> {
   bottomsheet() {
     return showModalBottomSheet(
         context: context,
-        backgroundColor: notifire.getbgcolor,
+        backgroundColor: notifier.getbgcolor,
         elevation: 2,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
@@ -168,7 +168,7 @@ class _verifyaccountState extends State<verifyaccount> {
                               style: TextStyle(
                                   fontSize: 20,
                                   fontFamily: "Gilroy Bold",
-                                  color: notifire.getwhiteblackcolor),
+                                  color: notifier.getwhiteblackcolor),
                             ),
                           ),
                           SizedBox(
@@ -181,7 +181,7 @@ class _verifyaccountState extends State<verifyaccount> {
                               style: TextStyle(
                                   fontSize: 16,
                                   fontFamily: "Gilroy Medium",
-                                  color: notifire.getdarkgreycolor),
+                                  color: notifier.getdarkgreycolor),
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -226,9 +226,9 @@ class _verifyaccountState extends State<verifyaccount> {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifier.setIsDark = previusstate;
     }
   }
 }

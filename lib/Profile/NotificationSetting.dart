@@ -25,23 +25,23 @@ class _NotificationSettingState extends State<NotificationSetting> {
   bool status2 = false;
   bool status3 = true;
   bool switchValue = false;
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
   @override
   Widget build(BuildContext context) {
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
-        backgroundColor: notifire.getdarkscolor,
-        leading: BackButton(color: notifire.getwhiteblackcolor),
+        backgroundColor: notifier.getdarkscolor,
+        leading: BackButton(color: notifier.getwhiteblackcolor),
         title: Text(
           "Notification Settings",
           style: TextStyle(
-              color: notifire.getwhiteblackcolor, fontFamily: "Gilroy Bold"),
+              color: notifier.getwhiteblackcolor, fontFamily: "Gilroy Bold"),
         ),
       ),
-      backgroundColor: notifire.getdarkscolor,
+      backgroundColor: notifier.getdarkscolor,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         child: Column(
@@ -97,7 +97,7 @@ class _NotificationSettingState extends State<NotificationSetting> {
                   title,
                   style: TextStyle(
                       fontSize: 16,
-                      color: notifire.getwhiteblackcolor,
+                      color: notifier.getwhiteblackcolor,
                       fontFamily: "Gilroy Bold"),
                 ),
                 const SizedBox(height: 6),
@@ -120,9 +120,9 @@ class _NotificationSettingState extends State<NotificationSetting> {
                   padding: const EdgeInsets.all(8.0),
                   child: CupertinoSwitch(
                       value: status,
-                      thumbColor: notifire.getdarkwhitecolor,
-                      trackColor: notifire.getbuttoncolor,
-                      activeColor: notifire.getdarkbluecolor,
+                      thumbColor: notifier.getdarkwhitecolor,
+                      trackColor: notifier.getbuttoncolor,
+                      activeColor: notifier.getdarkbluecolor,
                       onChanged: toggel),
                 ),
               ),
@@ -137,9 +137,9 @@ class _NotificationSettingState extends State<NotificationSetting> {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifier.setIsDark = previusstate;
     }
   }
 }

@@ -22,21 +22,21 @@ class _nearbyAllToursState extends State<nearbyAllTours> {
     super.initState();
   }
 
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
   @override
   Widget build(BuildContext context) {
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
       appBar: PreferredSize(
           preferredSize: const Size.fromHeight(75),
           child: CustomAppbar(
               centertext: "Nearby Tuk Tuk for you",
               ActionIcon: null,
-              bgcolor: notifire.getblackwhitecolor,
-              actioniconcolor: notifire.getwhiteblackcolor,
-              leadingiconcolor: notifire.getwhiteblackcolor,
-              titlecolor: notifire.getwhiteblackcolor)),
-      backgroundColor: notifire.getblackwhitecolor,
+              bgcolor: notifier.getblackwhitecolor,
+              actioniconcolor: notifier.getwhiteblackcolor,
+              leadingiconcolor: notifier.getwhiteblackcolor,
+              titlecolor: notifier.getwhiteblackcolor)),
+      backgroundColor: notifier.getblackwhitecolor,
       body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
           child: SizedBox(
@@ -45,7 +45,7 @@ class _nearbyAllToursState extends State<nearbyAllTours> {
               padding: EdgeInsets.zero,
               itemCount: nearbyTours.length,
               itemBuilder: (BuildContext context, int index) {
-                return tourListInfo(context, notifire, nearbyTours[index]);
+                return tourListInfo(context, notifier, nearbyTours[index]);
               },
             )),
       )
@@ -56,9 +56,9 @@ class _nearbyAllToursState extends State<nearbyAllTours> {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifier.setIsDark = previusstate;
     }
   }
 }

@@ -20,23 +20,23 @@ class _MyCuponState extends State<MyCupon> {
     super.initState();
   }
 
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
   @override
   Widget build(BuildContext context) {
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
-        backgroundColor: notifire.getbgcolor,
-        leading: BackButton(color: notifire.getwhiteblackcolor),
+        backgroundColor: notifier.getbgcolor,
+        leading: BackButton(color: notifier.getwhiteblackcolor),
         title: Text(
           "Cupon",
           style: TextStyle(
-              color: notifire.getwhiteblackcolor, fontFamily: "Gilroy Bold"),
+              color: notifier.getwhiteblackcolor, fontFamily: "Gilroy Bold"),
         ),
       ),
-      backgroundColor: notifire.getbgcolor,
+      backgroundColor: notifier.getbgcolor,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
@@ -46,7 +46,7 @@ class _MyCuponState extends State<MyCupon> {
               Text("4 Ready to Use",
                   style: TextStyle(
                       fontSize: 16,
-                      color: notifire.getwhiteblackcolor,
+                      color: notifier.getwhiteblackcolor,
                       fontFamily: "Gilroy Bold")),
               const SizedBox(height: 10),
               SizedBox(
@@ -61,7 +61,7 @@ class _MyCuponState extends State<MyCupon> {
                         child: Container(
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15),
-                              color: notifire.getdarkmodecolor),
+                              color: notifier.getdarkmodecolor),
                           child: Column(
                             children: [
                               ListTile(
@@ -72,7 +72,7 @@ class _MyCuponState extends State<MyCupon> {
                                   style: TextStyle(
                                       fontFamily: "Gilroy Bold",
                                       fontSize: 16,
-                                      color: notifire.getwhiteblackcolor),
+                                      color: notifier.getwhiteblackcolor),
                                 ),
                                 subtitle: Row(
                                   children: [
@@ -80,14 +80,14 @@ class _MyCuponState extends State<MyCupon> {
                                       "Expired in 2 days",
                                       style: TextStyle(
                                           fontSize: 14,
-                                          color: notifire.getgreycolor,
+                                          color: notifier.getgreycolor,
                                           fontFamily: "Gilroy Medium"),
                                     ),
                                     const SizedBox(width: 4),
                                     Text("See Detail",
                                         style: TextStyle(
                                             fontSize: 15,
-                                            color: notifire.getdarkbluecolor,
+                                            color: notifier.getdarkbluecolor,
                                             fontFamily: "Gilroy Medium")),
                                   ],
                                 ),
@@ -122,9 +122,9 @@ class _MyCuponState extends State<MyCupon> {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifier.setIsDark = previusstate;
     }
   }
 }

@@ -23,7 +23,7 @@ class loginscreen extends StatefulWidget {
 }
 
 class _loginscreenState extends State<loginscreen> {
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
   late bool guideMode = false;
   final phoneNumberController = TextEditingController();
   final passwordController = TextEditingController();
@@ -38,23 +38,23 @@ class _loginscreenState extends State<loginscreen> {
 
   @override
   Widget build(BuildContext context) {
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
-      backgroundColor: notifire.getwhitegrey,
+      backgroundColor: notifier.getwhitegrey,
       appBar: PreferredSize(
           preferredSize: const Size.fromHeight(75),
           child: CustomAppbar(
               centertext: "",
               ActionIcon: null,
-              bgcolor: notifire.getlogobgcolor,
-              actioniconcolor: notifire.getwhiteblackcolor,
-              leadingiconcolor: notifire.getwhiteblackcolor)),
+              bgcolor: notifier.getlogobgcolor,
+              actioniconcolor: notifier.getwhiteblackcolor,
+              leadingiconcolor: notifier.getwhiteblackcolor)),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              color: notifire.getlogobgcolor,
+              color: notifier.getlogobgcolor,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 12),
                 child:
@@ -85,8 +85,8 @@ class _loginscreenState extends State<loginscreen> {
                               color: WhiteColor)),
                       SizedBox(height: MediaQuery.of(context).size.height * 0.005),
                       textfield(
-                          fieldColor: notifire.getfieldcolor,
-                          hintColor: notifire.gettextfieldcolor,
+                          fieldColor: notifier.getfieldcolor,
+                          hintColor: notifier.gettextfieldcolor,
                           text: 'Enter your number',
                           suffix: null,
                           controller: phoneNumberController),
@@ -101,8 +101,8 @@ class _loginscreenState extends State<loginscreen> {
                       SizedBox(height: MediaQuery.of(context).size.height * 0.005),
                       textfield(
                           password: !showPassword,
-                          fieldColor: notifire.getfieldcolor,
-                          hintColor: notifire.gettextfieldcolor,
+                          fieldColor: notifier.getfieldcolor,
+                          hintColor: notifier.gettextfieldcolor,
                           text: 'Enter your password',
                           suffix: InkWell(
                             onTap: () {
@@ -110,7 +110,7 @@ class _loginscreenState extends State<loginscreen> {
                             },
                             child: Icon(
                               Icons.visibility_off,
-                              color: notifire.getgreycolor,
+                              color: notifier.getgreycolor,
                             ),
                           ),
                           controller: passwordController),
@@ -135,8 +135,8 @@ class _loginscreenState extends State<loginscreen> {
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.04),
                   AppButton(
-                      bgColor: notifire.getlogowhitecolor,
-                      textColor: notifire.getwhiteblackcolor,
+                      bgColor: notifier.getlogowhitecolor,
+                      textColor: notifier.getwhiteblackcolor,
                       buttontext: guideMode ? "LOGIN AS A GUIDE" : "LOGIN",
                       onclick: () async {
                         AppUser? user = await signInWithPhoneAndPassword();
@@ -168,7 +168,7 @@ class _loginscreenState extends State<loginscreen> {
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(50),
-                              color: notifire.getdarkmodecolor),
+                              color: notifier.getdarkmodecolor),
                           // margin: EdgeInsets.only(top: 12),
                           height: 45,
                           width: MediaQuery.of(context).size.width / 2.5,
@@ -194,7 +194,7 @@ class _loginscreenState extends State<loginscreen> {
                                       style: TextStyle(
                                           fontSize: 17,
                                           fontFamily: "Gilroy Medium",
-                                          color: notifire.getwhiteblackcolor),
+                                          color: notifier.getwhiteblackcolor),
                                     )
                                   ],
                                 ),
@@ -251,7 +251,7 @@ class _loginscreenState extends State<loginscreen> {
                         Text("I want to be a Guide",
                             style: TextStyle(
                                 fontSize: 18,
-                                color: notifire.getwhitelogocolor,
+                                color: notifier.getwhitelogocolor,
                                 fontFamily: "Gilroy Bold")),
                       ],
                     ),
@@ -264,9 +264,9 @@ class _loginscreenState extends State<loginscreen> {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: CupertinoSwitch(
-                            thumbColor: notifire.getdarkwhitecolor,
-                            trackColor: notifire.getbuttoncolor,
-                            activeColor: notifire.getdarkbluecolor,
+                            thumbColor: notifier.getdarkwhitecolor,
+                            trackColor: notifier.getbuttoncolor,
+                            activeColor: notifier.getdarkbluecolor,
                             value: guideMode,
                             onChanged: (value) async {
                               setState(() {
@@ -346,9 +346,9 @@ class _loginscreenState extends State<loginscreen> {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifier.setIsDark = previusstate;
     }
   }
 

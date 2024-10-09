@@ -43,7 +43,7 @@ class _homepageState extends State<homepage> {
     super.initState();
   }
 
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +59,7 @@ class _homepageState extends State<homepage> {
       const profile(),
     ] : [];
 
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return
         // WillPopScope(
         // // onWillPop: _handleWillPop,
@@ -67,12 +67,12 @@ class _homepageState extends State<homepage> {
         Scaffold(
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        unselectedItemColor: notifire.getwhiteblackcolor,
-        backgroundColor: notifire.getbgcolor,
+        unselectedItemColor: notifier.getwhiteblackcolor,
+        backgroundColor: notifier.getbgcolor,
         elevation: 0,
         selectedLabelStyle: const TextStyle(
             fontFamily: 'Gilroy Bold', fontWeight: FontWeight.bold),
-        fixedColor: notifire.getwhiteblackcolor,
+        fixedColor: notifier.getwhiteblackcolor,
         unselectedLabelStyle: const TextStyle(fontFamily: 'Gilroy Medium'),
         currentIndex: selectedIndex,
         showSelectedLabels: true,
@@ -108,9 +108,9 @@ class _homepageState extends State<homepage> {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifier.setIsDark = previusstate;
     }
   }
 
@@ -133,6 +133,7 @@ class _homepageState extends State<homepage> {
     if (listener != null) {
       listener?.cancel();
     }
+    selectedIndex = 0;
     super.dispose();
   }
 
@@ -149,7 +150,7 @@ class _homepageState extends State<homepage> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 duration: const Duration(seconds: 60),
-                content: newTripNotification(context, notifire, t),
+                content: newTripNotification(context, notifier, t),
               ),
             );
           }

@@ -25,25 +25,25 @@ class _reviewState extends State<review> {
     super.initState();
   }
 
-  late ColorNotifire notifire;
+  late ColorNotifier notifier;
 
   @override
   Widget build(BuildContext context) {
-    notifire = Provider.of<ColorNotifire>(context, listen: true);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
       appBar: PreferredSize(
           preferredSize: const Size.fromHeight(75),
           child: CustomAppbar(
               centertext: "Reviews",
               ActionIcon: Icons.more_vert,
-              bgcolor: notifire.getblackwhitecolor)),
-      backgroundColor: notifire.getblackwhitecolor,
+              bgcolor: notifier.getblackwhitecolor)),
+      backgroundColor: notifier.getblackwhitecolor,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
           child: Column(
             children: [
-              tourListInfo(context, notifire, widget.tour),
+              tourListInfo(context, notifier, widget.tour),
               ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
@@ -132,9 +132,9 @@ class _reviewState extends State<review> {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
     if (previusstate == null) {
-      notifire.setIsDark = false;
+      notifier.setIsDark = false;
     } else {
-      notifire.setIsDark = previusstate;
+      notifier.setIsDark = previusstate;
     }
   }
 }
