@@ -33,10 +33,7 @@ class _onbordingState extends State<onbording> {
     Future.delayed(
         const Duration(seconds: 3),
       () async {
-        FirebaseAuth.instance
-            .idTokenChanges()
-            .listen((User? user) async {
-          if (user != null) {
+          if (FirebaseAuth.instance.currentUser != null) {
             AppUser user = await getUserFirebaseInstance(this.guideMode, FirebaseAuth.instance.currentUser!);
             Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
                 builder: (context) => homepage(user: user)),
@@ -45,7 +42,6 @@ class _onbordingState extends State<onbording> {
             Navigator.pushReplacement(
                 context, MaterialPageRoute(builder: (context) => const BoardingPage()));
           }
-        });
       },
    );
   }
@@ -354,7 +350,7 @@ class _loginpageState extends State<loginpage> {
                     color: notifire.getdarkgreycolor,
                     fontFamily: "Gilroy Medium"),
                 textAlign: TextAlign.center),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.05),
             FilledButton(
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
