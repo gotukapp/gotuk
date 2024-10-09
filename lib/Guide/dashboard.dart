@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dm/Guide/tripsList.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -35,32 +36,40 @@ class _dashboardState extends State<dashboard> {
     final now = DateTime.now();
     final tomorrow = DateTime(now.year, now.month, now.day + 1, 0, 0, 0);
     final today = DateTime(now.year, now.month, now.day, 0, 0, 0);
-    final month = DateTime(now.year, now.month, now.day - 30, 0, 0, 0);
+    final lastWeek = DateTime(now.year, now.month, now.day - 7, 0, 0, 0);
+    final nextWeek = DateTime(now.year, now.month, now.day + 7, 0, 0, 0);
+    final lastMonth = DateTime(now.year, now.month, now.day - 30, 0, 0, 0);
+    final nextMonth = DateTime(now.year, now.month, now.day + 30, 0, 0, 0);
 
     final db = FirebaseFirestore.instance.collection("trips");
 
     final Stream<QuerySnapshot<Map<String, dynamic>>> finishedTrips =
     db
-        .where("guidId", isEqualTo: widget.guide.id)
+        .where("guideId", isEqualTo: widget.guide.id)
         .where("status", isEqualTo: "finished")
-        .where("date", isGreaterThan:  month)
+        .where("date", isGreaterThan:  lastMonth)
         .orderBy("date")
         .snapshots();
 
-
     final Stream<QuerySnapshot<Map<String, dynamic>>> bookedTrips =
-        db
-        .where("guidId", isEqualTo: widget.guide.id)
+    db
+        .where("guideId", isEqualTo: widget.guide.id)
         .where("status", isEqualTo: "booked")
-        .where("date", isLessThan:  tomorrow)
+        .where("date", isLessThan:  nextMonth)
         .where("date", isGreaterThan:  today)
         .orderBy("date")
         .snapshots();
 
     final Stream<QuerySnapshot<Map<String, dynamic>>> currentTrips =
     db
-        .where("guidId", isEqualTo: widget.guide.id)
+        .where("guideId", isEqualTo: widget.guide.id)
         .where("status", isEqualTo: "started")
+        .snapshots();
+
+    final Stream<QuerySnapshot<Map<String, dynamic>>> pendingTrips =
+    db
+        .where("date", isGreaterThan:  today)
+        .where("status", isEqualTo: "pending")
         .snapshots();
 
     return SafeArea(
@@ -106,18 +115,44 @@ class _dashboardState extends State<dashboard> {
                               ),
                             ],
                           ),
-                          InkWell(
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => const notification()));
-                              },
-                              child: CircleAvatar(
-                                  backgroundColor: notifier.getdarkmodecolor,
-                                  child: Image.asset(
-                                    "assets/images/notification.png",
-                                    height: 25,
-                                    color: notifier.getwhiteblackcolor,
-                                  )))
+                          Row(
+                            children: [
+                                StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                                stream: pendingTrips,
+                                builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                    if (snapshot.data != null && snapshot.data!.docs.isNotEmpty) {
+                                      return InkWell(
+                                        onTap: () {
+                                          Navigator.of(context).push(MaterialPageRoute(
+                                              builder: (context) => const TripsList()));
+                                        },
+                                        child: CircleAvatar(
+                                            backgroundColor: notifier.getdarkmodecolor,
+                                            child: Image.asset(
+                                              "assets/images/newTripCalendar.png",
+                                              height: 25,
+                                              color: LogoColor,
+                                            ))
+                                      );
+                                    } else {
+                                      return const SizedBox();
+                                    }
+                                  }
+                                ),
+                              InkWell(
+                                  onTap: () {
+                                    Navigator.of(context).push(MaterialPageRoute(
+                                        builder: (context) => const notification()));
+                                  },
+                                  child: CircleAvatar(
+                                      backgroundColor: notifier.getdarkmodecolor,
+                                      child: Image.asset(
+                                        "assets/images/notification.png",
+                                        height: 25,
+                                        color: notifier.getwhiteblackcolor,
+                                      )))
+                            ],
+                          )
                         ],
                       ),
                       if (!widget.guide.accountValidated)
@@ -153,22 +188,30 @@ class _dashboardState extends State<dashboard> {
                           StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                             stream: finishedTrips,
                             builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                              return Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  color: notifier.getdarklightgreycolor),
+                                int finishedTripsToday = 0;
+                                int finishedTripsThisWeek = 0;
+                                int finishedTripsThisMonth = 0;
+                                if(snapshot.hasData) {
+                                  finishedTripsToday = snapshot.data!.docs.where((d) => d['date'].toDate().compareTo(today) > 0).length;
+                                  finishedTripsThisWeek = snapshot.data!.docs.where((d) => d['date'].toDate().compareTo(lastWeek) > 0).length;
+                                  finishedTripsThisMonth = snapshot.data!.docs.length;
+                                }
+                                return Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      color: notifier.getdarklightgreycolor),
                                   child: Padding(
                                       padding: const EdgeInsets.symmetric(
-                                      horizontal: 10, vertical: 10),
+                                          horizontal: 10, vertical: 10),
                                       child: Column(
-                                      mainAxisAlignment: MainAxisAlignment .spaceBetween,
-                                      children: [
-                                        Row(
                                           mainAxisAlignment: MainAxisAlignment .spaceBetween,
                                           children: [
-                                            Transaction(text1: "2", text2: "Today"),
-                                            Transaction(text1: "9", text2: "Last 7 days"),
-                                            Transaction(text1: snapshot.data != null ? snapshot.data!.docs.length.toString() : "0", text2: "Last 30 days"),
+                                          Row(
+                                          mainAxisAlignment: MainAxisAlignment .spaceBetween,
+                                          children: [
+                                            Transaction(text1: finishedTripsToday.toString(), text2: "Today"),
+                                            Transaction(text1: finishedTripsThisWeek.toString(), text2: "Last 7 days"),
+                                            Transaction(text1: finishedTripsThisMonth.toString(), text2: "Last 30 days"),
                                           ],
                                         ),
                                     ]
@@ -193,33 +236,42 @@ class _dashboardState extends State<dashboard> {
                               .of(context)
                               .size
                               .height * 0.001),
-                          Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                color: notifier.getdarklightgreycolor),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 10),
-                              child: Column(
-                                  mainAxisAlignment: MainAxisAlignment
-                                      .spaceBetween,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment
-                                          .spaceBetween,
-                                      children: [
-                                        Transaction(
-                                            text1: "3", text2: "Today"),
-                                        Transaction(text1: "6",
-                                            text2: "Next 7 days"),
-                                        Transaction(text1: "10",
-                                            text2: "Next 30 days"),
-                                      ],
-                                    ),
-                                  ]
+                          StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                          stream: bookedTrips,
+                          builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                            int bookedTripsToday = 0;
+                            int bookedTripsThisWeek = 0;
+                            int bookedTripsThisMonth = 0;
+                            if(snapshot.hasData) {
+                              bookedTripsToday = snapshot.data!.docs.where((d) => d['date'].toDate().compareTo(tomorrow) < 0).length;
+                              bookedTripsThisWeek = snapshot.data!.docs.where((d) => d['date'].toDate().compareTo(nextWeek) < 0).length;
+                              bookedTripsThisMonth = snapshot.data!.docs.length;
+                            }
+                            return Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: notifier.getdarklightgreycolor),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 10),
+                                child: Column(
+                                    mainAxisAlignment: MainAxisAlignment
+                                        .spaceBetween,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment
+                                            .spaceBetween,
+                                        children: [
+                                          Transaction(text1: bookedTripsToday.toString(), text2: "Today"),
+                                          Transaction(text1: bookedTripsThisWeek.toString(), text2: "Next 7 days"),
+                                          Transaction(text1: bookedTripsThisMonth.toString(), text2: "Next 30 days"),
+                                        ],
+                                      ),
+                                    ]
+                                ),
                               ),
-                            ),
-                          ),
+                            );
+                          }),
                           const SizedBox(height: 30),
                           Text("Current Tour",
                               style: TextStyle(
@@ -251,16 +303,19 @@ class _dashboardState extends State<dashboard> {
                             stream: bookedTrips,
                             builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot)
                             {
+                              List<DocumentSnapshot<Map<String, dynamic>>> todayTrips = snapshot.data != null
+                                  ? snapshot.data!.docs.where((d) => d['date'].toDate().compareTo(tomorrow) < 0).toList()
+                                  : [];
                               return SizedBox(
                                 child: ListView.builder(
                                   physics: const NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,
                                   padding: EdgeInsets.zero,
-                                  itemCount: snapshot.data != null ? snapshot.data!.docs.length : 0,
+                                  itemCount: todayTrips.length,
                                   itemBuilder: (BuildContext context,
                                       int index) {
                                     return tripInfo(context, notifier,
-                                        Trip.fromFirestore(snapshot.data!.docs[index], null));
+                                        Trip.fromFirestore(todayTrips[index], null));
                                   },
                                 ),
                               );

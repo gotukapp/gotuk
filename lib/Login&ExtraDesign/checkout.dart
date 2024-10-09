@@ -41,7 +41,7 @@ class _checkoutState extends State<checkout> {
   Color highPriceColor = greyColor;
 
   DateTime? selectedDate;
-  int hourSliderValue = DateTime.now().hour < 9 ? 9 : (DateTime.now().hour > 21 ? 21 : DateTime.now().hour);
+  int hourSliderValue = DateTime.now().hour < 9 ? 9 : (DateTime.now().hour > 20 ? 20 : DateTime.now().hour);
   int minutesSliderValue = 0;
 
 

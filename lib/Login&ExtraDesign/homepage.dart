@@ -141,9 +141,9 @@ class _homepageState extends State<homepage> {
     final Stream<QuerySnapshot<Map<String, dynamic>>> usersStream =
     FirebaseFirestore.instance.collection('trips').snapshots();
 
-    bool isFirtsTime = true;
+    bool isFirstTime = true;
     listener = usersStream.listen((onData) {
-      if (!isFirtsTime) {
+      if (!isFirstTime) {
         for (var change in onData.docChanges) {
           if (change.type == DocumentChangeType.added) {
             Trip t = Trip.fromFirestore(change.doc, null);
@@ -156,7 +156,7 @@ class _homepageState extends State<homepage> {
           }
         }
       }
-      isFirtsTime = false;
+      isFirstTime = false;
     });
   }
 }

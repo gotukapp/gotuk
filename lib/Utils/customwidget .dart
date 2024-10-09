@@ -370,14 +370,29 @@ tripInfo(BuildContext context, ColorNotifier notifier, Trip trip) {
                 InkWell(
                     onTap: () {
                       if (trip.status == "booked") {
-                        trip.startTour();
+                        showConfirmationMessage(context,
+                            "Start Tour",
+                            "Are you sure you want to start this tour?",
+                            () => trip.startTour(),
+                            () {});
                       } else if (trip.status == "started") {
-                        trip.finishTour();
+                        showConfirmationMessage(context,
+                            "Finish Tour",
+                            "Are you sure you want to finish this tour?",
+                                () => trip.finishTour(),
+                                () {});
+                      } else if (trip.status == "pending") {
+                        showConfirmationMessage(context,
+                            "Accept Tour",
+                            "Are you sure you want to accept this tour?",
+                                () => trip.acceptTour(),
+                                () {});
+
                       }
                     },
                     child: Container(
                       height: 40,
-                      width: 90,
+                      width: 110,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(50), color: trip.status == 'started' ? Darkblue : LogoColor),
                       child: Center(
@@ -502,8 +517,14 @@ newTripNotification(BuildContext context, ColorNotifier notifier, Trip trip) {
                     children: [
                       InkWell(
                         onTap: () {
-                          trip.acceptTour();
-                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                          showConfirmationMessage(context,
+                            "Accept Tour",
+                            "Are you sure you want to accept this tour?",
+                              () {
+                                trip.acceptTour();
+                                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                              },
+                              () {});
                         },
                         child: Container(
                           height: 40,
@@ -530,7 +551,15 @@ newTripNotification(BuildContext context, ColorNotifier notifier, Trip trip) {
 
 
 String getTripButtonAction(Trip trip) {
-  return trip.status == 'started' ? "End Tour" : "Start Tour";
+  if (trip.status == 'started') {
+    return "End Tour";
+  }
+
+  if (trip.status == 'booked') {
+    return "Start Tour";
+  }
+
+  return "Accept Tour";
 }
 
 tourReview({double? review})   {
@@ -558,6 +587,34 @@ tourReview({double? review})   {
         ),
       )
     ],
+  );
+}
+
+showConfirmationMessage(BuildContext context, String title, String description, Function()? onClickOk, Function()? onClickCancel) {
+  return showDialog<String>(
+    context: context,
+    builder: (BuildContext context) => AlertDialog(
+      title: Text(title),
+      content: Text(description),
+      actions: <Widget>[
+        if (onClickCancel != null)
+          TextButton(
+            onPressed: () {
+              onClickCancel.call();
+              Navigator.pop(context, 'Cancel');
+            },
+            child: const Text('Cancel'),
+          ),
+        if (onClickOk != null)
+          TextButton(
+            onPressed: () {
+              onClickOk.call();
+              Navigator.pop(context, 'OK');
+            },
+            child: const Text('OK'),
+          ),
+      ],
+    ),
   );
 }
 

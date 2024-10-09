@@ -17,8 +17,6 @@ List trips = [
   Trip.create(tourList[0].id, DateTime(2024,8,2,14,0,0), 3, 'finished')
 ];
 
-Trip currentBook = Trip.create(tourList[0].id, DateTime(2024,7,29,10,0,0), 6, 'started');
-
 class Trip {
 
   String? id;
@@ -26,9 +24,10 @@ class Trip {
   final DateTime date;
   final int persons;
   final String status;
-  String? userId;
+  String? clientId;
+  String? guideId;
 
-  Trip(this.id, this.tourId, this.date, this.persons, this.status, this.userId);
+  Trip(this.id, this.tourId, this.date, this.persons, this.status, this.clientId);
 
   Trip.create(this.tourId, this.date, this.persons, this.status);
 
@@ -37,7 +36,7 @@ class Trip {
       SnapshotOptions? options,
       ) {
     final data = snapshot.data();
-    return Trip( snapshot.id, data?['tourId'], data?['date'].toDate(), data?['persons'], data?['status'], data?['userId']);
+    return Trip( snapshot.id, data?['tourId'], data?['date'].toDate(), data?['persons'], data?['status'], data?['clientId']);
   }
 
   Map<String, dynamic> toFirestore() {
@@ -46,7 +45,7 @@ class Trip {
       "date": date,
       "persons": persons,
       "status": status,
-      if (userId != null) "userId": userId,
+      if (clientId != null) "clientId": clientId,
     };
   }
 
@@ -80,7 +79,7 @@ class Trip {
         .collection('trips')
         .add(<String, dynamic>{
       'tourId': trip.tour.id,
-      'userId': FirebaseAuth.instance.currentUser?.uid,
+      'clientId': FirebaseAuth.instance.currentUser?.uid,
       'status': trip.status,
       'date': trip.date,
       'persons': trip.persons
@@ -92,7 +91,7 @@ class Trip {
         .collection('trips')
         .doc(id)
         .update({"status": "booked",
-      "guidId": FirebaseAuth.instance.currentUser?.uid,
+      "guideId": FirebaseAuth.instance.currentUser?.uid,
       "bookedDate": DateTime.now()});
   }
 
