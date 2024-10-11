@@ -4,7 +4,7 @@ import 'package:dm/CreatAccount/login.dart';
 import 'package:dm/Profile/Favourite.dart';
 import 'package:dm/Profile/MyCupon.dart';
 import 'package:dm/Profile/Settings.dart';
-import 'package:dm/Profile/TransactionHistory.dart';
+import 'package:dm/Profile/tripsHistory.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -109,7 +109,7 @@ class _profileState extends State<profile> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Transaction(text1: "26", text2: "Transactions"),
+                          Transaction(text1: "26", text2: "History"),
                           Transaction(text1: "12", text2: "Reviews"),
                           Transaction(text1: "4", text2: "Bookings"),
                         ],
@@ -146,12 +146,12 @@ class _profileState extends State<profile> {
                               TextColor: notifier.getwhiteblackcolor),
                           ProfileSetting(
                               image: "assets/images/clock.png",
-                              text: guideMode ? "Calendar" : "Transactions",
+                              text: guideMode ? "Calendar" : "History",
                               icon: Icons.keyboard_arrow_right,
                               onclick: () {
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => guideMode ? const timetable()
-                                    : const TransactionHistory()));
+                                    : const TripsHistory()));
                               },
                               boxcolor: notifier.getdarklightgreycolor,
                               iconcolor: notifier.getwhiteblackcolor,

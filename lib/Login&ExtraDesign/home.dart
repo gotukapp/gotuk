@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dm/Login&ExtraDesign/nearbyAllTours.dart';
 import 'package:dm/Login&ExtraDesign/showAllTours.dart';
+import 'package:dm/Login&ExtraDesign/tripsBooked.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:dm/Domain/tour.dart';
@@ -24,13 +25,10 @@ class home extends StatefulWidget {
 }
 
 class _homeState extends State<home> {
-  //  String dropdownvalue1 = "0";
-  // var mexitems = ["0", "1", "2", "3", "4", "5"];
   @override
   void initState() {
     getdarkmodepreviousstate();
     Firebase.initializeApp().whenComplete(() {
-      print("completed");
       setState(() {});
     });
     super.initState();
@@ -39,24 +37,22 @@ class _homeState extends State<home> {
   late ColorNotifier notifier;
   @override
   Widget build(BuildContext context) {
-    final Stream<QuerySnapshot> usersStream = FirebaseFirestore.instance.collection('bookings').snapshots();
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day, 0, 0, 0);
+
+    final db = FirebaseFirestore.instance.collection("trips");
+    final Stream<QuerySnapshot<Map<String, dynamic>>> pendingTrips =
+    db
+        .where("clientId", isEqualTo:  FirebaseAuth.instance.currentUser?.uid)
+        .where("status", whereIn: ["pending", "booked", 'started'])
+        .orderBy("date")
+        .snapshots();
 
     notifier = Provider.of<ColorNotifier>(context, listen: true);
     return SafeArea(
       child: Scaffold(
         backgroundColor: notifier.getblackwhitecolor,
-        body: StreamBuilder<QuerySnapshot>(
-          stream: usersStream,
-          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (snapshot.hasError) {
-              return const Text('Something went wrong');
-            }
-
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Text("Loading");
-            }
-
-            return Padding(
+        body: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,18 +83,44 @@ class _homeState extends State<home> {
                           ),
                         ],
                       ),
-                      InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const notification()));
-                          },
-                          child: CircleAvatar(
-                              backgroundColor: notifier.getdarkmodecolor,
-                              child: Image.asset(
-                                "assets/images/notification.png",
-                                height: 25,
-                                color: notifier.getwhiteblackcolor,
-                              )))
+                      Row(
+                        children: [
+                          StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                              stream: pendingTrips,
+                              builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                if (snapshot.data != null && snapshot.data!.docs.isNotEmpty) {
+                                  return InkWell(
+                                      onTap: () {
+                                        Navigator.of(context).push(MaterialPageRoute(
+                                            builder: (context) => const TripsBooked()));
+                                      },
+                                      child: CircleAvatar(
+                                          backgroundColor: notifier.getdarkmodecolor,
+                                          child: Image.asset(
+                                            "assets/images/newTripCalendar.png",
+                                            height: 25,
+                                            color: LogoColor,
+                                          ))
+                                  );
+                                } else {
+                                  return const SizedBox();
+                                }
+                              }
+                          ),
+                          InkWell(
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => const notification()));
+                              },
+                              child: CircleAvatar(
+                                  backgroundColor: notifier.getdarkmodecolor,
+                                  child: Image.asset(
+                                    "assets/images/notification.png",
+                                    height: 25,
+                                    color: notifier.getwhiteblackcolor,
+                                  )))
+                          ]
+                      )
                     ],
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.015),
@@ -339,18 +361,8 @@ class _homeState extends State<home> {
                   ),
                 ],
               ),
-            );
-          },
-        )
+            )
     ));
-  }
-
-  void getData() async {
-    final docRef = FirebaseFirestore.instance.collection("cities").doc("SF");
-    docRef.snapshots().listen(
-          (event) => print("current data: ${event.data()}"),
-      onError: (error) => print("Listen failed: $error"),
-    );
   }
 
   tourDuration({String? image, text, double? radi}) {

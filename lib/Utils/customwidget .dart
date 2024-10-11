@@ -7,6 +7,7 @@ import 'package:dm/Domain/tour.dart';
 import 'package:dm/Domain/trips.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../Login&ExtraDesign/tourdetail.dart';
 import 'dark_lightmode.dart';
@@ -409,6 +410,139 @@ tripInfo(BuildContext context, ColorNotifier notifier, Trip trip) {
           ]
       )
       )
+    ),
+  );
+}
+
+getBookingLayout(BuildContext context, ColorNotifier notifier, Trip trip) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 6),
+    child: Container(
+      height: 150,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          color: notifier.getdarklightgreycolor),
+      child: Padding(
+          padding: const EdgeInsets.symmetric(
+              horizontal: 10, vertical: 5),
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Stack(
+                    children: [
+                      Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10),
+                          child: Container(
+                            height: 110,
+                            width: 130,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: Image.asset(
+                                  trip.tour.img,
+                                  fit: BoxFit.fill
+                              ),
+                            ),
+                          )
+                      ),
+                      Positioned(
+                        left: 30,
+                        width: 70,
+                        height: 25,
+                        child: Container(
+                          height: 25,
+                          width: 70,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              color: WhiteColor),
+                          child: Center(
+                            child: Text(
+                              AppLocalizations.of(context)!.tripStatus(trip.status).toUpperCase(),
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  color: trip.status == 'finished' ? BlackColor : (trip.status == 'pending' ? LogoColor : Darkblue) ,
+                                  fontFamily: "Gilroy Bold"),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ]
+                ),
+                const SizedBox(width: 10),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 15),
+                    Row(
+                      children: [
+                        Text(DateFormat('E, d MMM yyyy - HH:mm').format(trip.date),
+                            style: TextStyle(
+                                fontSize: 12,
+                                color: notifier.getwhiteblackcolor)),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Text(trip.tour.title.toUpperCase(),
+                        style: TextStyle(
+                            fontSize: 14,
+                            color:
+                            notifier.getwhiteblackcolor,
+                            fontFamily: "Gilroy Bold")),
+                    Text("${trip.persons} Persons",
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: notifier.getwhiteblackcolor,
+                            fontFamily: "Gilroy Medium")),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Total Price",
+                                style: TextStyle(
+                                    fontSize: 12, color: notifier.getwhiteblackcolor, fontFamily: "Gilroy Medium")),
+                            Text("${trip.price}€",
+                                style: TextStyle(
+                                    fontSize: 14, color: Darkblue, fontFamily: "Gilroy Bold")),
+                          ],
+                        ),
+                        SizedBox(width: MediaQuery.of(context).size.width * 0.10),
+                        if (trip.status == 'pending' ||
+                            trip.status == 'booked' ||
+                            trip.status == 'finished' )
+                          InkWell(
+                            onTap: () {
+                              // Navigator.of(context).push(MaterialPageRoute(
+                              //     builder: (context) => Favourite()));
+                            },
+                            child: Container(
+                              height: 25,
+                              width: 70,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50), color: LogoColor),
+                              child: Center(
+                                child: Text(
+                                  trip.status == 'pending' ? AppLocalizations.of(context)!.cancel :
+                                    (trip.status == 'booked' ? AppLocalizations.of(context)!.letsGo
+                                        : (trip.status == 'finished' ? AppLocalizations.of(context)!.rateTour : '')),
+                                  style: TextStyle(
+                                      fontSize: 10, color: WhiteColor, fontFamily: "Gilroy Bold"),
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ],
+                )
+              ]
+          )
+      ),
     ),
   );
 }

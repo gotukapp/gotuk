@@ -2,5 +2,14 @@
     "getStarted": "GET STARTED",
     "language": "Language",
     "english": "English",
-    "portuguese": "Portuguese"
+    "portuguese": "Portuguese",
+    "tripStatus": "{choice, select, pending {Pending} booked {Booked} started {Started} finished {Finished} other {Other}}",
+    "@tripStatus": {
+        "placeholders": {
+            "choice": {}
+        }
+    },
+    "rateTour": "Rate Tour",
+    "letsGo": "Let's Go",
+    "cancel": "Cacelar"
 }

@@ -3,6 +3,7 @@
 // ignore: unused_import
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,14 +12,14 @@ import '../Domain/trips.dart';
 import '../Utils/customwidget .dart';
 
 
-class TripsList extends StatefulWidget {
-  const TripsList({super.key});
+class TripsBooked extends StatefulWidget {
+  const TripsBooked({super.key});
 
   @override
-  State<TripsList> createState() => _TripsListState();
+  State<TripsBooked> createState() => _TripsBookedState();
 }
 
-class _TripsListState extends State<TripsList> {
+class _TripsBookedState extends State<TripsBooked> {
   @override
   void initState() {
     getdarkmodepreviousstate();
@@ -34,8 +35,9 @@ class _TripsListState extends State<TripsList> {
     final db = FirebaseFirestore.instance.collection("trips");
     final Stream<QuerySnapshot<Map<String, dynamic>>> pendingTrips =
     db
-        .where("date", isGreaterThan:  today)
-        .where("status", isEqualTo: "pending")
+        .where("clientId", isEqualTo:  FirebaseAuth.instance.currentUser?.uid)
+        .where("status", whereIn: ["pending", "booked", 'started'])
+        .orderBy("date")
         .snapshots();
 
     notifier = Provider.of<ColorNotifier>(context, listen: true);
@@ -46,7 +48,7 @@ class _TripsListState extends State<TripsList> {
         backgroundColor: notifier.getblackwhitecolor,
         leading: BackButton(color: notifier.getwhiteblackcolor),
         title: Text(
-          "Pending Tours",
+          "My Tours",
           style: TextStyle(
               color: notifier.getwhiteblackcolor, fontFamily: "Gilroy Bold"),
         ),
@@ -62,19 +64,16 @@ class _TripsListState extends State<TripsList> {
                   stream: pendingTrips,
                   builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot)
                   {
-                    List<DocumentSnapshot<Map<String, dynamic>>> todayTrips = snapshot.data != null
-                        ? snapshot.data!.docs.toList()
-                        : [];
                     return SizedBox(
                       child: ListView.builder(
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         padding: EdgeInsets.zero,
-                        itemCount: todayTrips.length,
+                        itemCount: snapshot.data != null ? snapshot.data!.docs.length : 0,
                         itemBuilder: (BuildContext context,
                             int index) {
-                          return tripInfo(context, notifier,
-                              Trip.fromFirestore(todayTrips[index], null));
+                          return getBookingLayout(context, notifier,
+                              Trip.fromFirestore(snapshot.data!.docs[index], null));
                         },
                       ),
                     );

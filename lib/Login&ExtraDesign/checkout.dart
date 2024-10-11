@@ -220,7 +220,7 @@ class _checkoutState extends State<checkout> {
                           color: notifier.getwhiteblackcolor,
                           fontFamily: "Gilroy Bold")),
                   const SizedBox(height: 8),
-                  Text(" ....  Explicação de como funciona ....",
+                  Text(" ....  The GoNow solution allows you to make a reservation for today ....",
                       style: TextStyle(
                           fontSize: 14,
                           color: notifier.getwhiteblackcolor,

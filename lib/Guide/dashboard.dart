@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dm/Guide/tripsList.dart';
+import 'package:dm/Guide/tripsPending.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -124,7 +124,7 @@ class _dashboardState extends State<dashboard> {
                                       return InkWell(
                                         onTap: () {
                                           Navigator.of(context).push(MaterialPageRoute(
-                                              builder: (context) => const TripsList()));
+                                              builder: (context) => const TripsPending()));
                                         },
                                         child: CircleAvatar(
                                             backgroundColor: notifier.getdarkmodecolor,
