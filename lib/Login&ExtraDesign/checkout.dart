@@ -28,14 +28,14 @@ class checkout extends StatefulWidget {
 }
 
 class _checkoutState extends State<checkout> {
-  bool isChecked = false;
-  bool isChecked1 = false;
+  bool masterCard = false;
+  bool visa = false;
   bool withTaxNumber = false;
   bool vehicleTypeSwitchValue = false;
   bool smallPriceSelected = true;
-
   bool guideFeaturesSaved = false;
   List checkedLanguages = List<Object>.generate(languages.length, (i) => { ...languages[i], "value": false });
+  final taxNumberController = TextEditingController();
 
   Color smallPriceColor = LogoColor;
   Color highPriceColor = greyColor;
@@ -267,10 +267,11 @@ class _checkoutState extends State<checkout> {
               if (withTaxNumber)
                 ...[
                   textfield(
-                      fieldColor: notifier.getfieldcolor,
-                      hintColor: notifier.gettextfieldcolor,
-                      text: 'Tax number',
-                      suffix: null),
+                    controller: taxNumberController,
+                    fieldColor: notifier.getfieldcolor,
+                    hintColor: notifier.gettextfieldcolor,
+                    text: 'Tax number',
+                    suffix: null),
                 ],
               Divider(
                 color: notifier.getgreycolor,
@@ -594,7 +595,7 @@ class _checkoutState extends State<checkout> {
                       ],
                     ),
                     SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.05,
+                      height: MediaQuery.of(context).size.height * 0.03,
                     ),
                     AppButton(
                         buttontext: "Continue",
@@ -606,7 +607,7 @@ class _checkoutState extends State<checkout> {
               ),
             );
           });
-        }).then((value) => setState(() => guideFeaturesSaved = value));
+        }).then((value) => setState(() => guideFeaturesSaved = value ?? false));
   }
 
   timerBottomSheet() {
@@ -621,7 +622,7 @@ class _checkoutState extends State<checkout> {
                 height: MediaQuery.of(context).size.height * 0.45,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                  child: Stack(
+                  child: Column(
                     children: [
                       Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -661,10 +662,10 @@ class _checkoutState extends State<checkout> {
                               )
                             ])
                           ]),
-                      Positioned(
+                      const SizedBox(height: 20),
+                      Row(
                         // left: 100,
-                        top: MediaQuery.of(context).size.height / 3,
-                        child: InkWell(
+                        children: [InkWell(
                           onTap: () {
                             Navigator.pop(context, true);
                           },
@@ -684,7 +685,8 @@ class _checkoutState extends State<checkout> {
                                   fontWeight: FontWeight.bold),
                             )),
                           ),
-                        ),
+                        )
+                        ]
                       ),
                     ],
                   ),
@@ -863,10 +865,10 @@ class _checkoutState extends State<checkout> {
                                   child: Checkbox(
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(5)),
-                                    value: isChecked,
+                                    value: masterCard,
                                     onChanged: (value) {
                                       setState(() {
-                                        isChecked = value!;
+                                        masterCard = value!;
                                       });
                                     },
                                   ),
@@ -908,10 +910,10 @@ class _checkoutState extends State<checkout> {
                                   child: Checkbox(
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(5)),
-                                    value: isChecked1,
+                                    value: visa,
                                     onChanged: (value) {
                                       setState(() {
-                                        isChecked1 = value!;
+                                        visa = value!;
                                       });
                                     },
                                   ),
@@ -1039,7 +1041,15 @@ class _checkoutState extends State<checkout> {
                       InkWell(
                         onTap: () {
                           selectedIndex = 0;
-                          Trip newTrip = new Trip.create(tour!.id, selectedDate!.copyWith(hour: hourSliderValue, minute: minutesSliderValue), smallPriceSelected ? 3 : 6, 'pending');
+                          Trip newTrip = Trip.create(tour!.id,
+                              selectedDate!.copyWith(hour: hourSliderValue, minute: minutesSliderValue),
+                              smallPriceSelected ? 3 : 6,
+                              'pending',
+                              getAllSelectedLanguages(),
+                              masterCard ? 'mastercard' : 'visa',
+                              '',
+                              withTaxNumber,
+                              taxNumberController.text);
                           Trip.addTrip(newTrip);
                           Navigator.of(context)..pop()..pop()..pop();
                         },
@@ -1185,7 +1195,7 @@ class _checkoutState extends State<checkout> {
     for (var element in checkedLanguages) {
       if(element["value"]) {
         selectedLanguages =  element["code"] + (selectedLanguages.isNotEmpty ? " " : "") + selectedLanguages;
-      };
+      }
     }
     return selectedLanguages;
   }

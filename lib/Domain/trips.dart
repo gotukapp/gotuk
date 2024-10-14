@@ -2,21 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dm/Domain/tour.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-List trips = [
-  Trip.create(tourList[0].id, DateTime(2024,8,1,13,0,0), 6, 'pending'),
-  Trip.create(tourList[1].id, DateTime(2024,8,10,10,30,0), 6, 'booked'),
-  Trip.create(tourList[3].id, DateTime(2024,8,4,18,30,0), 6, 'finished'),
-  Trip.create(tourList[2].id, DateTime(2024,8,5,11,30,0), 6, 'finished'),
-  Trip.create(tourList[0].id, DateTime(2024,8,2,14,0,0), 3, 'finished'),
-  Trip.create(tourList[0].id, DateTime(2024,8,2,14,0,0), 3, 'finished'),
-  Trip.create(tourList[0].id, DateTime(2024,8,2,14,0,0), 3, 'pending'),
-  Trip.create(tourList[0].id, DateTime(2024,8,2,14,0,0), 3, 'finished'),
-  Trip.create(tourList[0].id, DateTime(2024,8,2,14,0,0), 3, 'booked'),
-  Trip.create(tourList[0].id, DateTime(2024,8,2,14,0,0), 3, 'booked'),
-  Trip.create(tourList[0].id, DateTime(2024,8,2,14,0,0), 3, 'booked'),
-  Trip.create(tourList[0].id, DateTime(2024,8,2,14,0,0), 3, 'finished')
-];
-
 class Trip {
 
   String? id;
@@ -24,19 +9,39 @@ class Trip {
   final DateTime date;
   final int persons;
   final String status;
+  final String guideLang;
+  final String paymentMethod;
+  final String creditCardId;
+  final bool withTaxNumber;
+  final String taxNumber;
   String? clientId;
   String? guideId;
 
-  Trip(this.id, this.tourId, this.date, this.persons, this.status, this.clientId);
+  Trip(this.id, this.tourId, this.date, this.persons, this.status,
+      this.clientId, this.guideLang, this.paymentMethod, this.creditCardId,
+      this.withTaxNumber, this.taxNumber);
 
-  Trip.create(this.tourId, this.date, this.persons, this.status);
+  Trip.create(this.tourId, this.date, this.persons, this.status,
+      this.guideLang, this.paymentMethod, this.creditCardId,
+      this.withTaxNumber, this.taxNumber);
 
   factory Trip.fromFirestore(
       DocumentSnapshot<Map<String, dynamic>> snapshot,
       SnapshotOptions? options,
       ) {
     final data = snapshot.data();
-    return Trip( snapshot.id, data?['tourId'], data?['date'].toDate(), data?['persons'], data?['status'], data?['clientId']);
+    return Trip( snapshot.id,
+        data?['tourId'],
+        data?['date'].toDate(),
+        data?['persons'],
+        data?['status'],
+        data?['clientId'],
+        data?['guideLang'],
+        data?['paymentMethod'],
+        data?['creditCardId'],
+        data?['withTaxNumber'],
+        data?['taxNumber']
+    );
   }
 
   Map<String, dynamic> toFirestore() {
@@ -61,20 +66,7 @@ class Trip {
     return tour.getTourPrice(false);
   }
 
-  static List get pendingTrips {
-    return trips.where((b) => b.status == 'pending').toList();
-  }
-
-  static List get waitingTrips {
-    return trips.where((b) => b.status == 'booked').toList();
-  }
-
-  static List get finishedTrips {
-    return trips.where((b) => b.status == 'finished').toList();
-  }
-
   static addTrip(Trip trip) {
-    trips.add(trip);
     FirebaseFirestore.instance
         .collection('trips')
         .add(<String, dynamic>{

@@ -71,17 +71,12 @@ class calendarState extends State<calendar> {
               child: Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      InkWell(
+                  child: InkWell(
                         onTap: () {
                           Navigator.pop(context, _selectedDate);
                         },
                         child: Container(
                           height: 70,
-                          width: MediaQuery.of(context).size.width * 0.95,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(50),
                             color: Darkblue,
@@ -97,8 +92,7 @@ class calendarState extends State<calendar> {
                           ),
                         ),
                       ),
-                    ],
-                  )),
+              ),
             ),
             body: SingleChildScrollView(
               child: Column(
