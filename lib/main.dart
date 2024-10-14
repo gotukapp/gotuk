@@ -9,6 +9,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'Utils/LocaleModel.dart';
 import 'Utils/dark_lightmode.dart';
 import 'firebase_options.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,13 +17,20 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => ColorNotifier()),
-      ],
-      child: BoardingScreen(),
-    ),
+  await SentryFlutter.init(
+        (options) {
+      options.dsn = 'https://cb0b9bfde90c6f924714674c28e39324@o4508120479039488.ingest.de.sentry.io/4508120483102800';
+      options.tracesSampleRate = 1.0;
+      options.profilesSampleRate = 1.0;
+    },
+    appRunner: () => runApp(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => ColorNotifier()),
+        ],
+        child: BoardingScreen(),
+      ),
+    )
   );
 }
 

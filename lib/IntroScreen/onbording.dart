@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../CreatAccount/createScreen.dart';
 import '../Domain/appUser.dart';
@@ -34,10 +35,21 @@ class _onbordingState extends State<onbording> {
         const Duration(seconds: 3),
       () async {
           if (FirebaseAuth.instance.currentUser != null) {
-            AppUser user = await getUserFirebaseInstance(this.guideMode, FirebaseAuth.instance.currentUser!);
-            Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-                builder: (context) => homepage(user: user)),
-                    (route) => false);
+            try {
+              AppUser user = await getUserFirebaseInstance(
+                  guideMode, FirebaseAuth.instance.currentUser!);
+              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                  builder: (context) => homepage(user: user)),
+                      (route) => false);
+            } catch (exception, stackTrace) {
+                await Sentry.captureException(
+                exception,
+                stackTrace: stackTrace,
+                );
+
+                Navigator.pushReplacement(
+                    context, MaterialPageRoute(builder: (context) => const BoardingPage()));
+            }
           } else {
             Navigator.pushReplacement(
                 context, MaterialPageRoute(builder: (context) => const BoardingPage()));
@@ -126,8 +138,8 @@ class _BoardingScreenState extends State<BoardingPage> {
             height: MediaQuery.of(context).size.height / 2.2, //imagee size
             width: double.infinity,
             child: FittedBox(
-            child:Image.asset(slide.image),
-            fit: BoxFit.fill,
+              fit: BoxFit.fill,
+              child:Image.asset(slide.image),
             ),
           ),
           SizedBox(
