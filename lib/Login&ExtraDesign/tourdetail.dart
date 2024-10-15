@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Domain/tour.dart';
-import 'full_map.dart';
+import 'fullMap.dart';
 
 class tourdetailpage extends StatefulWidget {
   final int tourId;

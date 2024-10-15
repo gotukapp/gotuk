@@ -37,9 +37,6 @@ class _homeState extends State<home> {
   late ColorNotifier notifier;
   @override
   Widget build(BuildContext context) {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day, 0, 0, 0);
-
     final db = FirebaseFirestore.instance.collection("trips");
     final Stream<QuerySnapshot<Map<String, dynamic>>> pendingTrips =
     db

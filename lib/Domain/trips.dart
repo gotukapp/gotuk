@@ -74,17 +74,28 @@ class Trip {
       'clientId': FirebaseAuth.instance.currentUser?.uid,
       'status': trip.status,
       'date': trip.date,
-      'persons': trip.persons
+      'persons': trip.persons,
+      'guideLang': trip.guideLang,
+      'paymentMethod': trip.paymentMethod,
+      'creditCardId': trip.creditCardId,
+      'withTaxNumber': trip.withTaxNumber,
+      'taxNumber': trip.taxNumber
     });
   }
 
-  void acceptTour() {
-    FirebaseFirestore.instance
-        .collection('trips')
-        .doc(id)
-        .update({"status": "booked",
-      "guideId": FirebaseAuth.instance.currentUser?.uid,
-      "bookedDate": DateTime.now()});
+  Future<bool> acceptTour() async {
+    final sfDocRef = FirebaseFirestore.instance.collection("trips").doc(id);
+    return await FirebaseFirestore.instance.runTransaction((transaction) async {
+      final snapshot = await transaction.get(sfDocRef);
+      final currentStatus = snapshot.get("status");
+      if (currentStatus == 'pending') {
+        transaction.update(sfDocRef, {"status": "booked",
+            "guideId": FirebaseAuth.instance.currentUser?.uid,
+            "bookedDate": DateTime.now()});
+        return true;
+      }
+      return false;
+    });
   }
 
   void startTour() {

@@ -386,7 +386,12 @@ tripInfo(BuildContext context, ColorNotifier notifier, Trip trip) {
                         showConfirmationMessage(context,
                             "Accept Tour",
                             "Are you sure you want to accept this tour?",
-                                () => trip.acceptTour(),
+                                () async {
+                                    bool result = await trip.acceptTour();
+                                    if (context.mounted) {
+                                      showTripAcceptResultMessage(context, result);
+                                    }
+                                },
                                 () {});
 
                       }
@@ -654,9 +659,13 @@ newTripNotification(BuildContext context, ColorNotifier notifier, Trip trip) {
                           showConfirmationMessage(context,
                             "Accept Tour",
                             "Are you sure you want to accept this tour?",
-                              () {
-                                trip.acceptTour();
-                                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                              () async {
+                                bool result = await trip.acceptTour();
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context)
+                                      .hideCurrentSnackBar();
+                                  showTripAcceptResultMessage(context, result);
+                                }
                               },
                               () {});
                         },
@@ -750,6 +759,34 @@ showConfirmationMessage(BuildContext context, String title, String description, 
       ],
     ),
   );
+}
+
+showTripAcceptResultMessage(BuildContext context, bool result) {
+  if (result) {
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: lightGrey,
+          content: Text(
+              "Tour booking accepted!",
+              style: TextStyle(
+                  fontSize: 14,
+                  fontFamily: "Gilroy Medium",
+                  color: Darkblue)
+          ),
+        )
+    );
+  } else  {
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: lightGrey,
+          content: Text("This tour has already been accepted by another Guide!",
+              style: TextStyle(
+                  fontSize: 14,
+                  fontFamily: "Gilroy Medium",
+                  color: LogoColor)
+          ),
+        ));
+  }
 }
 
 List hotelList = [
