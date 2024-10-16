@@ -43,7 +43,7 @@ class _reviewState extends State<review> {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
           child: Column(
             children: [
-              tourListInfo(context, notifier, widget.tour),
+              tourLayout(context, notifier, widget.tour),
               ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,

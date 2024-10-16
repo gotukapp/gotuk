@@ -57,7 +57,7 @@ class _FavouriteState extends State<Favourite> {
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: tourList.where((i) => i.favorite == true).length,
                 itemBuilder: (BuildContext context, int index) {
-                  return tourListInfo(context, notifier, tourList.where((i) => i.favorite == true).toList()[index]);
+                  return tourLayout(context, notifier, tourList.where((i) => i.favorite == true).toList()[index]);
                 },
               )
             ],

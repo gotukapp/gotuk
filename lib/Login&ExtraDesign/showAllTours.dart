@@ -1,6 +1,6 @@
 // ignore_for_file: file_names
 
-import 'package:dm/Login&ExtraDesign/tourdetail.dart';
+import 'package:dm/Login&ExtraDesign/tourDetail.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
@@ -47,7 +47,7 @@ class _showAllToursState extends State<showAllTours> {
             return InkWell(
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => tourdetailpage(tourList[index].id)));
+                    builder: (context) => TourDetail(tourList[index].id)));
               },
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),

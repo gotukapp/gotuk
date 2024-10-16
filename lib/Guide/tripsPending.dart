@@ -73,7 +73,7 @@ class _TripsPendingState extends State<TripsPending> {
                         itemCount: todayTrips.length,
                         itemBuilder: (BuildContext context,
                             int index) {
-                          return tripInfo(context, notifier,
+                          return guideTripLayout(context, notifier,
                               Trip.fromFirestore(todayTrips[index], null));
                         },
                       ),

@@ -11,15 +11,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../Domain/tour.dart';
 import 'fullMap.dart';
 
-class tourdetailpage extends StatefulWidget {
+class TourDetail extends StatefulWidget {
   final int tourId;
 
-  const tourdetailpage(this.tourId, {super.key});
+  const TourDetail(this.tourId, {super.key});
   @override
-  State<tourdetailpage> createState() => _tourdetailpageState();
+  State<TourDetail> createState() => _TourDetailState();
 }
 
-class _tourdetailpageState extends State<tourdetailpage> {
+class _TourDetailState extends State<TourDetail> {
   bool _pinned = true;
   bool _snap = false;
   bool _floating = false;
@@ -156,7 +156,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
           pinned: _pinned,
           snap: _snap,
           floating: _floating,
-          expandedHeight: 250,
+          expandedHeight: 220,
           flexibleSpace: FlexibleSpaceBar(
             background: PageView(
               controller: _pageController,
@@ -189,68 +189,71 @@ class _tourdetailpageState extends State<tourdetailpage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Image.asset(
                               "assets/images/location.png",
                               height: 20,
+                              width: 20,
                               color: LogoColor,
                             ),
+                            const SizedBox(width: 5),
                             Text(
                               tour!.address,
                               style: TextStyle(
                                   color: notifier.getwhiteblackcolor,
-                                  fontSize: 14,
+                                  fontSize: 16,
                                   fontFamily: "Gilroy Medium"),
                             )
                           ],
-                        ),
-                        Row(
-                          children: [
-                            Image.asset("assets/images/star.png", height: 18),
-                            Text(
-                              "4.2",
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: notifier.getdarkbluecolor,
-                                  fontFamily: "Gilroy Bold"),
-                            ),
-                            Text(
-                              "(${tour!.reviews.length} Reviews)",
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: notifier.getwhiteblackcolor,
-                                  fontFamily: "Gilroy Medium"),
-                            ),
-                          ],
-                        ),
+                        )
                       ],
                     ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.03,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                      Image.asset("assets/images/star.png", height: 18),
+                      const SizedBox(width: 1),
+                      Text(
+                        "4.2",
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: notifier.getdarkbluecolor,
+                            fontFamily: "Gilroy Bold"),
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        "(${tour!.reviews.length} Reviews)",
+                        style: TextStyle(
+                            fontSize: 14,
+                            color: notifier.getwhiteblackcolor,
+                            fontFamily: "Gilroy Medium"),
+                      )],
                     ),
+                    const SizedBox(height: 15),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Image.asset(
-                          "assets/images/user.png",
+                          "assets/images/profile.png",
                           height: 20,
+                          width: 20,
                           color: LogoColor,
                         ),
-                        SizedBox(width: 20),
+                        const SizedBox(width: 10),
                         Column(
                           children: [
                             Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Text(
                                     "1-3",
                                     style: TextStyle(
                                         fontSize: 16,
                                         color: notifier.getwhiteblackcolor,
-                                        fontFamily: "Gilroy Bold"),
+                                        fontFamily: "Gilroy Medium"),
                                   ),
-                                  SizedBox(width: 10),
+                                  const SizedBox(width: 10),
                                   Text(
                                     "${tour!.priceLow}€",
                                     style: TextStyle(
@@ -268,13 +271,14 @@ class _tourdetailpageState extends State<tourdetailpage> {
                                 ]
                             ),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Text(
                                   "4-6",
                                   style: TextStyle(
                                       fontSize: 16,
                                       color: notifier.getwhiteblackcolor,
-                                      fontFamily: "Gilroy Bold"),
+                                      fontFamily: "Gilroy Medium"),
                                 ),
                                 SizedBox(width: 10),
                                 Text(
@@ -297,36 +301,37 @@ class _tourdetailpageState extends State<tourdetailpage> {
                         )
                       ],
                     ),
-                    SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.015),
+                    const SizedBox(height: 10),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Image.asset(
                           "assets/images/timer.png",
                           height: 20,
+                          width: 20,
                           color: LogoColor,
                         ),
-                        SizedBox(width: 20),
+                        const SizedBox(width: 10),
                         Text(
                           tour!.duration,
                           style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 16,
                               color: notifier.getwhiteblackcolor,
-                              fontFamily: "Gilroy Bold"),
+                              fontFamily: "Gilroy Medium"),
                         )
                       ],
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                    const SizedBox(height: 15),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Image.asset(
                           "assets/images/map-location.png",
                           height: 20,
+                          width: 20,
                           color: LogoColor,
                         ),
-                        SizedBox(width: 20),
+                        const SizedBox(width: 10),
                         InkWell(
                             onTap: () {
                               Navigator.of(context).push(MaterialPageRoute(
@@ -336,6 +341,7 @@ class _tourdetailpageState extends State<tourdetailpage> {
                             child: Text(
                               "View Route Details",
                               style: TextStyle(
+                                  fontSize: 16,
                                   color: notifier.getdarkbluecolor,
                                   fontFamily: "Gilroy Medium"),
                             )

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dm/Domain/tour.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,10 +18,11 @@ class Trip {
   final String taxNumber;
   String? clientId;
   String? guideId;
+  String? reservationId;
 
   Trip(this.id, this.tourId, this.date, this.persons, this.status,
-      this.clientId, this.guideLang, this.paymentMethod, this.creditCardId,
-      this.withTaxNumber, this.taxNumber);
+      this.clientId, this.guideId, this.guideLang, this.paymentMethod, this.creditCardId,
+      this.withTaxNumber, this.taxNumber, this.reservationId);
 
   Trip.create(this.tourId, this.date, this.persons, this.status,
       this.guideLang, this.paymentMethod, this.creditCardId,
@@ -30,17 +33,19 @@ class Trip {
       SnapshotOptions? options,
       ) {
     final data = snapshot.data();
-    return Trip( snapshot.id,
+    return Trip(snapshot.id,
         data?['tourId'],
         data?['date'].toDate(),
         data?['persons'],
         data?['status'],
         data?['clientId'],
+        data?['guideId'],
         data?['guideLang'],
         data?['paymentMethod'],
         data?['creditCardId'],
         data?['withTaxNumber'],
-        data?['taxNumber']
+        data?['taxNumber'],
+        data?['reservationId']
     );
   }
 
@@ -66,8 +71,8 @@ class Trip {
     return tour.getTourPrice(false);
   }
 
-  static addTrip(Trip trip) {
-    FirebaseFirestore.instance
+  static Future<DocumentReference<Map<String, dynamic>>> addTrip(Trip trip) {
+    return FirebaseFirestore.instance
         .collection('trips')
         .add(<String, dynamic>{
       'tourId': trip.tour.id,
@@ -79,7 +84,7 @@ class Trip {
       'paymentMethod': trip.paymentMethod,
       'creditCardId': trip.creditCardId,
       'withTaxNumber': trip.withTaxNumber,
-      'taxNumber': trip.taxNumber
+      'taxNumber': trip.taxNumber,
     });
   }
 
@@ -91,7 +96,8 @@ class Trip {
       if (currentStatus == 'pending') {
         transaction.update(sfDocRef, {"status": "booked",
             "guideId": FirebaseAuth.instance.currentUser?.uid,
-            "bookedDate": DateTime.now()});
+            "bookedDate": DateTime.now(),
+            "reservationId": generateReservationId()});
         return true;
       }
       return false;
@@ -112,5 +118,15 @@ class Trip {
         .doc(id)
         .update({"status": "finished",
       "finishedDate": DateTime.now()});
+  }
+
+  String generateReservationId()
+  {
+    var letters = "ABCDEFGHJKMNPQRSTUXY";
+    String text = "";
+    for (var i = 0; i < 6; i++) {
+      text += letters[(Random().nextDouble() * letters.length).round()];
+    }
+    return text;
   }
 }

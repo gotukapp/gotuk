@@ -116,7 +116,7 @@ class _ChatingState extends State<Chating> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    tourListInfo(context, notifier, tourList[0]),
+                    tourLayout(context, notifier, tourList[0]),
                     Massagelist(
                         SenderText:
                             "Hi, i'm already here",

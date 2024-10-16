@@ -14,7 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Utils/customwidget .dart';
 import 'checkout.dart';
-import 'tourdetail.dart';
+import 'tourDetail.dart';
 import 'notification.dart';
 
 class home extends StatefulWidget {
@@ -219,7 +219,7 @@ class _homeState extends State<home> {
                                         onTap: () {
                                           Navigator.of(context).push(MaterialPageRoute(
                                               builder: (context) =>
-                                                  tourdetailpage(tourList[index].id)));
+                                                  TourDetail(tourList[index].id)));
                                         },
                                         child: Stack(
                                             children: [
@@ -349,7 +349,7 @@ class _homeState extends State<home> {
                             physics: const NeverScrollableScrollPhysics(),
                             itemCount: nearbyTours.length,
                             itemBuilder: (BuildContext context, int index) {
-                              return tourListInfo(context, notifier, nearbyTours[index]);
+                              return tourLayout(context, notifier, nearbyTours[index]);
                             },
                           )
                         ],

@@ -69,7 +69,7 @@ class _TripsBookedState extends State<TripsBooked> {
                         itemCount: snapshot.data != null ? snapshot.data!.docs.length : 0,
                         itemBuilder: (BuildContext context,
                             int index) {
-                          return getBookingLayout(context, notifier,
+                          return clientTripLayout(context, notifier,
                               Trip.fromFirestore(snapshot.data!.docs[index], null));
                         },
                       ),

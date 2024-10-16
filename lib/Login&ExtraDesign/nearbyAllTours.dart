@@ -45,7 +45,7 @@ class _nearbyAllToursState extends State<nearbyAllTours> {
               padding: EdgeInsets.zero,
               itemCount: nearbyTours.length,
               itemBuilder: (BuildContext context, int index) {
-                return tourListInfo(context, notifier, nearbyTours[index]);
+                return tourLayout(context, notifier, nearbyTours[index]);
               },
             )),
       )

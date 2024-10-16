@@ -2,12 +2,12 @@
 
 import 'package:dm/Login&ExtraDesign/calendar.dart';
 import 'package:dm/Login&ExtraDesign/homepage.dart';
+import 'package:dm/Login&ExtraDesign/tripDetail.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Domain/trips.dart';
 import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:provider/provider.dart';
@@ -1050,8 +1050,10 @@ class _checkoutState extends State<checkout> {
                               '',
                               withTaxNumber,
                               taxNumberController.text);
-                          Trip.addTrip(newTrip);
-                          Navigator.of(context)..pop()..pop()..pop();
+                          Trip.addTrip(newTrip).then((docRef) {
+                            Navigator.of(context)..pop()..pop()..pop()..push(MaterialPageRoute(
+                                builder: (context) => TripDetail(docRef.id)));
+                          });
                         },
                         child: Container(
                           margin: const EdgeInsets.only(
