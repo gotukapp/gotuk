@@ -200,7 +200,7 @@ class _createScreenState extends State<createScreen> {
       FirebaseAuth.instance.currentUser?.updateDisplayName(nameController.text);
 
       FirebaseFirestore.instance
-          .collection(guideMode ? 'guides' : 'clients')
+          .collection("users")
           .doc(credential.user?.uid)
           .set({
         "email": emailController.text,

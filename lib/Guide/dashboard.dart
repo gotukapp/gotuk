@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dm/Domain/appUser.dart';
 import 'package:dm/Guide/tripsPending.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,22 +7,21 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../Domain/guide.dart';
 import '../Login&ExtraDesign/notification.dart';
 import '../Utils/Colors.dart';
 import '../Utils/customwidget .dart';
 import '../Domain/trips.dart';
 import '../Utils/dark_lightmode.dart';
 
-class dashboard extends StatefulWidget {
-  final Guide guide;
-  const dashboard({super.key, required this.guide});
+class Dashboard extends StatefulWidget {
+  final AppUser guide;
+  const Dashboard({super.key, required this.guide});
 
   @override
-  State<dashboard> createState() => _dashboardState();
+  State<Dashboard> createState() => _DashboardState();
 }
 
-class _dashboardState extends State<dashboard> {
+class _DashboardState extends State<Dashboard> {
 
   @override
   void initState() {
@@ -42,10 +42,13 @@ class _dashboardState extends State<dashboard> {
     final nextMonth = DateTime(now.year, now.month, now.day + 30, 0, 0, 0);
 
     final db = FirebaseFirestore.instance.collection("trips");
+    final userDocRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser?.uid);
 
     final Stream<QuerySnapshot<Map<String, dynamic>>> finishedTrips =
     db
-        .where("guideId", isEqualTo: widget.guide.id)
+        .where("guideRef", isEqualTo: userDocRef)
         .where("status", isEqualTo: "finished")
         .where("date", isGreaterThan:  lastMonth)
         .orderBy("date")
@@ -53,7 +56,7 @@ class _dashboardState extends State<dashboard> {
 
     final Stream<QuerySnapshot<Map<String, dynamic>>> bookedTrips =
     db
-        .where("guideId", isEqualTo: widget.guide.id)
+        .where("guideRef", isEqualTo: userDocRef)
         .where("status", isEqualTo: "booked")
         .where("date", isLessThan:  nextMonth)
         .where("date", isGreaterThan:  today)
@@ -62,7 +65,7 @@ class _dashboardState extends State<dashboard> {
 
     final Stream<QuerySnapshot<Map<String, dynamic>>> currentTrips =
     db
-        .where("guideId", isEqualTo: widget.guide.id)
+        .where("guideRef", isEqualTo: userDocRef)
         .where("status", isEqualTo: "started")
         .snapshots();
 

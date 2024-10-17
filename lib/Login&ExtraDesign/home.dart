@@ -38,9 +38,13 @@ class _homeState extends State<home> {
   @override
   Widget build(BuildContext context) {
     final db = FirebaseFirestore.instance.collection("trips");
+    final userDocRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser?.uid);
+
     final Stream<QuerySnapshot<Map<String, dynamic>>> pendingTrips =
     db
-        .where("clientId", isEqualTo:  FirebaseAuth.instance.currentUser?.uid)
+        .where("clientRef", isEqualTo: userDocRef)
         .where("status", whereIn: ["pending", "booked", 'started'])
         .orderBy("date")
         .snapshots();

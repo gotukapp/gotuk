@@ -30,10 +30,13 @@ class _TripsHistoryState extends State<TripsHistory> {
   @override
   Widget build(BuildContext context) {
     final db = FirebaseFirestore.instance.collection("trips");
+    final userDocRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser?.uid);
 
     final Stream<QuerySnapshot<Map<String, dynamic>>> finishedTrips =
     db
-        .where("clientId", isEqualTo: FirebaseAuth.instance.currentUser?.uid)
+        .where("clientRef", isEqualTo: userDocRef)
         .where("status", isEqualTo: "finished")
         .orderBy("date")
         .snapshots();

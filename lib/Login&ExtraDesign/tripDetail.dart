@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../Domain/guide.dart';
+import '../Domain/appUser.dart';
 import '../Domain/trips.dart';
 
 class TripDetail extends StatefulWidget {
@@ -51,7 +51,7 @@ class _TripDetailState extends State<TripDetail> {
       toFirestore: (Trip trip, _) => trip.toFirestore(),
     );
 
-    final dbGuides = FirebaseFirestore.instance.collection("guides");
+    final dbUsers = FirebaseFirestore.instance.collection("users");
 
 
     notifier = Provider.of<ColorNotifier>(context, listen: true);
@@ -208,17 +208,17 @@ class _TripDetailState extends State<TripDetail> {
                                   height: 50,
                                   color: notifier.getgreycolor,
                                 ),
-                                if (trip?.guideId != null)
+                                if (trip?.guideRef != null)
                                   StreamBuilder(
-                                  stream: dbGuides.doc(trip?.guideId).withConverter(
-                                    fromFirestore: Guide.fromFirestore,
-                                    toFirestore: (Guide guide, _) => guide.toFirestore(),
+                                  stream: trip?.guideRef?.withConverter(
+                                    fromFirestore: AppUser.fromFirestore,
+                                    toFirestore: (AppUser guide, _) => guide.toFirestore(),
                                   ).snapshots(),
                                   builder: (context, snapshot) {
                                     if (!snapshot.hasData) {
                                       return const Text("Loading");
                                     }
-                                    Guide? guide = snapshot.data?.data();
+                                    AppUser? guide = snapshot.data?.data();
                                     return Column(
                                       children: [
                                         Row(
@@ -308,7 +308,7 @@ class _TripDetailState extends State<TripDetail> {
                                             Text("${trip?.tour.getTourPrice(trip?.persons == 3)}€",
                                               style: TextStyle(
                                                   fontSize: 18,
-                                                  color: notifier.getwhiteblackcolor,
+                                                  color: Darkblue,
                                                   fontFamily: "Gilroy Medium"),
                                             )
                                           ],

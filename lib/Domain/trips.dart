@@ -16,12 +16,12 @@ class Trip {
   final String creditCardId;
   final bool withTaxNumber;
   final String taxNumber;
-  String? clientId;
-  String? guideId;
+  DocumentReference? clientRef;
+  DocumentReference? guideRef;
   String? reservationId;
 
-  Trip(this.id, this.tourId, this.date, this.persons, this.status,
-      this.clientId, this.guideId, this.guideLang, this.paymentMethod, this.creditCardId,
+  Trip(this.id, this.tourId, this.date, this.persons, this.status, this.clientRef,
+      this.guideRef, this.guideLang, this.paymentMethod, this.creditCardId,
       this.withTaxNumber, this.taxNumber, this.reservationId);
 
   Trip.create(this.tourId, this.date, this.persons, this.status,
@@ -38,8 +38,8 @@ class Trip {
         data?['date'].toDate(),
         data?['persons'],
         data?['status'],
-        data?['clientId'],
-        data?['guideId'],
+        data?['clientRef'],
+        data?['guideRef'],
         data?['guideLang'],
         data?['paymentMethod'],
         data?['creditCardId'],
@@ -55,7 +55,7 @@ class Trip {
       "date": date,
       "persons": persons,
       "status": status,
-      if (clientId != null) "clientId": clientId,
+      if (clientRef != null) "clientRef": clientRef,
     };
   }
 
@@ -76,7 +76,7 @@ class Trip {
         .collection('trips')
         .add(<String, dynamic>{
       'tourId': trip.tour.id,
-      'clientId': FirebaseAuth.instance.currentUser?.uid,
+      'clientRef': FirebaseFirestore.instance.doc('users/${FirebaseAuth.instance.currentUser!.uid}'),
       'status': trip.status,
       'date': trip.date,
       'persons': trip.persons,
@@ -95,7 +95,7 @@ class Trip {
       final currentStatus = snapshot.get("status");
       if (currentStatus == 'pending') {
         transaction.update(sfDocRef, {"status": "booked",
-            "guideId": FirebaseAuth.instance.currentUser?.uid,
+            "guideRef": FirebaseFirestore.instance.doc('users/${FirebaseAuth.instance.currentUser!.uid}'),
             "bookedDate": DateTime.now(),
             "reservationId": generateReservationId()});
         return true;

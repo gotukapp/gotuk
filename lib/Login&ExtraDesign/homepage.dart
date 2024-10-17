@@ -13,7 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Domain/appUser.dart';
-import '../Domain/guide.dart';
 import '../Guide/dashboard.dart';
 import 'home.dart';
 import '../Message/message.dart';
@@ -54,7 +53,7 @@ class _homepageState extends State<homepage> {
     ];
 
     final driverPageOption = guideMode ? [
-      dashboard(guide: widget.user as Guide),
+      Dashboard(guide: widget.user),
       const message(),
       const profile(),
     ] : [];
@@ -120,7 +119,7 @@ class _homepageState extends State<homepage> {
     guideMode = previousState ?? false;
 
     if (guideMode) {
-      Guide guide = widget.user as Guide;
+      AppUser guide = widget.user;
       if (guide.accountValidated) {
         addFirebaseTripsListen();
       }
