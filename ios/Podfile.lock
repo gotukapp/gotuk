@@ -1371,17 +1371,10 @@ PODS:
     - nanopb/encode (= 3.30910.0)
   - nanopb/decode (3.30910.0)
   - nanopb/encode (3.30910.0)
-  - package_info_plus (0.4.5):
-    - Flutter
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
   - RecaptchaInterop (100.0.0)
-  - Sentry/HybridSDK (8.36.0)
-  - sentry_flutter (8.9.0):
-    - Flutter
-    - FlutterMacOS
-    - Sentry/HybridSDK (= 8.36.0)
   - share (0.0.1):
     - Flutter
   - shared_preferences_foundation (0.0.1):
@@ -1401,9 +1394,7 @@ DEPENDENCIES:
   - flutter_sms (from `.symlinks/plugins/flutter_sms/ios`)
   - google_sign_in_ios (from `.symlinks/plugins/google_sign_in_ios/darwin`)
   - maplibre_gl (from `.symlinks/plugins/maplibre_gl/ios`)
-  - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
-  - sentry_flutter (from `.symlinks/plugins/sentry_flutter/ios`)
   - share (from `.symlinks/plugins/share/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
@@ -1434,7 +1425,6 @@ SPEC REPOS:
     - MapLibre
     - nanopb
     - RecaptchaInterop
-    - Sentry
 
 EXTERNAL SOURCES:
   cloud_firestore:
@@ -1457,12 +1447,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/google_sign_in_ios/darwin"
   maplibre_gl:
     :path: ".symlinks/plugins/maplibre_gl/ios"
-  package_info_plus:
-    :path: ".symlinks/plugins/package_info_plus/ios"
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
-  sentry_flutter:
-    :path: ".symlinks/plugins/sentry_flutter/ios"
   share:
     :path: ".symlinks/plugins/share/ios"
   shared_preferences_foundation:
@@ -1504,11 +1490,8 @@ SPEC CHECKSUMS:
   MapLibre: 0ebfa9329d313cec8bf0a5ba5a336a1dc903785e
   maplibre_gl: 943a491fffb3337c1b9de57fd377206d18c16e34
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
-  package_info_plus: 58f0028419748fad15bf008b270aaa8e54380b1c
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
   RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
-  Sentry: f8374b5415bc38dfb5645941b3ae31230fbeae57
-  sentry_flutter: 0eb93e5279eb41e2392212afe1ccd2fecb4f8cbe
   share: 0b2c3e82132f5888bccca3351c504d0003b3b410
   shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
   url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
