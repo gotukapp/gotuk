@@ -150,7 +150,7 @@ class _profileState extends State<profile> {
                               icon: Icons.keyboard_arrow_right,
                               onclick: () {
                                 Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => guideMode ? const timetable()
+                                    builder: (context) => guideMode ? const TimeTable()
                                     : const TripsHistory()));
                               },
                               boxcolor: notifier.getdarklightgreycolor,

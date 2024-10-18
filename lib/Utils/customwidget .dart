@@ -656,7 +656,8 @@ newTripNotification(BuildContext context, ColorNotifier notifier, Trip trip) {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  Row(
+                  if (trip.status == 'pending')
+                    Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       InkWell(

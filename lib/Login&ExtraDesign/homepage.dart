@@ -146,9 +146,10 @@ class _homepageState extends State<homepage> {
         for (var change in onData.docChanges) {
           if (change.type == DocumentChangeType.added) {
             Trip t = Trip.fromFirestore(change.doc, null);
+            int duration = t.status == 'booked' ? 10 : 60;
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                duration: const Duration(seconds: 60),
+                duration: Duration(seconds: duration),
                 content: newTripNotification(context, notifier, t),
               ),
             );

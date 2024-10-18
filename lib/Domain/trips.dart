@@ -24,10 +24,6 @@ class Trip {
       this.guideRef, this.guideLang, this.paymentMethod, this.creditCardId,
       this.withTaxNumber, this.taxNumber, this.reservationId);
 
-  Trip.create(this.tourId, this.date, this.persons, this.status,
-      this.guideLang, this.paymentMethod, this.creditCardId,
-      this.withTaxNumber, this.taxNumber);
-
   factory Trip.fromFirestore(
       DocumentSnapshot<Map<String, dynamic>> snapshot,
       SnapshotOptions? options,
@@ -71,20 +67,26 @@ class Trip {
     return tour.getTourPrice(false);
   }
 
-  static Future<DocumentReference<Map<String, dynamic>>> addTrip(Trip trip) {
+  static Future<DocumentReference<Map<String, dynamic>>> addTrip(DocumentReference guideRef, int tourId,
+      DateTime date, int persons, String status,
+      String guideLang, String paymentMethod, String creditCardId,
+      bool withTaxNumber, String taxNumber) {
     return FirebaseFirestore.instance
         .collection('trips')
         .add(<String, dynamic>{
-      'tourId': trip.tour.id,
+      'tourId': tourId,
+      'reservationId': status == 'booked' ? generateReservationId() : '',
       'clientRef': FirebaseFirestore.instance.doc('users/${FirebaseAuth.instance.currentUser!.uid}'),
-      'status': trip.status,
-      'date': trip.date,
-      'persons': trip.persons,
-      'guideLang': trip.guideLang,
-      'paymentMethod': trip.paymentMethod,
-      'creditCardId': trip.creditCardId,
-      'withTaxNumber': trip.withTaxNumber,
-      'taxNumber': trip.taxNumber,
+      'guideRef': guideRef,
+      'status': status,
+      'date': date,
+      'persons': persons,
+      'guideLang': guideLang,
+      'paymentMethod': paymentMethod,
+      'creditCardId': creditCardId,
+      'withTaxNumber': withTaxNumber,
+      'taxNumber': taxNumber,
+      'creationDate': DateTime.now()
     });
   }
 
@@ -96,7 +98,7 @@ class Trip {
       if (currentStatus == 'pending') {
         transaction.update(sfDocRef, {"status": "booked",
             "guideRef": FirebaseFirestore.instance.doc('users/${FirebaseAuth.instance.currentUser!.uid}'),
-            "bookedDate": DateTime.now(),
+            "acceptedDate": DateTime.now(),
             "reservationId": generateReservationId()});
         return true;
       }
@@ -120,7 +122,7 @@ class Trip {
       "finishedDate": DateTime.now()});
   }
 
-  String generateReservationId()
+  static String generateReservationId()
   {
     var letters = "ABCDEFGHJKMNPQRSTUXY";
     String text = "";

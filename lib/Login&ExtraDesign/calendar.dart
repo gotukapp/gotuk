@@ -10,13 +10,17 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
-class calendar extends StatefulWidget {
+class Calendar extends StatefulWidget {
+  final DateTime? selectedDate;
+
+  const Calendar({super.key, this.selectedDate});
+
   @override
-  calendarState createState() => calendarState();
+  CalendarState createState() => CalendarState();
 }
 
-class calendarState extends State<calendar> {
-  DateTime? _selectedDate;
+class CalendarState extends State<Calendar> {
+  DateTime? _selectedDate ;
   String _dateCount = '';
   String _range = '';
   String _rangeCount = '';
@@ -35,7 +39,7 @@ class calendarState extends State<calendar> {
         _selectedDate = args.value;
       } else if (args.value is List<DateTime>) {
         _dateCount = args.value.length.toString();
-      } else {
+      } else if(args.value != null) {
         _rangeCount = args.value.length.toString();
       }
     });
@@ -43,6 +47,7 @@ class calendarState extends State<calendar> {
 
   @override
   void initState() {
+    _selectedDate = widget.selectedDate;
     getdarkmodepreviousstate();
     super.initState();
   }
@@ -110,6 +115,8 @@ class calendarState extends State<calendar> {
                         ),
                       ),
                       SfDateRangePicker(
+                        minDate: DateTime.now().add(const Duration(days: 2)),
+                        maxDate: DateTime.now().add(const Duration(days: 32)),
                         rangeTextStyle: TextStyle(color: WhiteColor),
                         toggleDaySelection: true,
                         endRangeSelectionColor: Darkblue,
@@ -119,6 +126,7 @@ class calendarState extends State<calendar> {
                         backgroundColor: notifier.getbgcolor,
                         onSelectionChanged: _onSelectionChanged,
                         selectionMode: DateRangePickerSelectionMode.single,
+                        initialSelectedDate: _selectedDate,
                         initialSelectedRange: PickerDateRange(
                             DateTime.now().subtract(const Duration(days: 4)),
                             DateTime.now().add(const Duration(days: 3))),

@@ -1,5 +1,6 @@
 // ignore_for_file: non_constant_identifier_names, sized_box_for_whitespace, camel_case_types
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dm/Login&ExtraDesign/calendar.dart';
 import 'package:dm/Login&ExtraDesign/homepage.dart';
 import 'package:dm/Login&ExtraDesign/tripDetail.dart';
@@ -99,7 +100,7 @@ class _checkoutState extends State<checkout> {
               titlecolor: notifier.getwhiteblackcolor)),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -124,7 +125,7 @@ class _checkoutState extends State<checkout> {
               )
               else
                 tourInfo(tour),
-              const SizedBox(height: 15),
+              const SizedBox(height: 5),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -185,33 +186,34 @@ class _checkoutState extends State<checkout> {
                 ],
               ),
               if (!widget.goNow)
-                ...[const SizedBox(height: 15),
-                selectdetail(
-                  heding: "Date",
-                  image: "assets/images/calendar.png",
-                  text: selectedDate != null ? DateFormat('dd/MM/yyyy').format(selectedDate!) : "Select Dates",
-                  icon: Icons.keyboard_arrow_down,
-                  onclick: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => calendar(),
-                    )).then((value) {
-                      setState(() {
-                        selectedDate = value; // you receive here
-                      });
-                    });
-                  },
-                ),
-                const SizedBox(height: 10),
-                selectdetail(
-                    heding: "Time",
-                    image: "assets/images/timer.png",
-                    text: timeSaved
-                        ? "$hourSliderValue:${minutesSliderValue == 0
-                        ? "00"
-                        : minutesSliderValue.toString()}"
-                        : "Select Time",
-                    icon: Icons.keyboard_arrow_down,
-                    onclick: timerBottomSheet)],
+                ...[
+                    const SizedBox(height: 15),
+                    selectDetail(
+                      heding: "Date",
+                      image: "assets/images/calendar.png",
+                      text: selectedDate != null ? DateFormat('dd/MM/yyyy').format(selectedDate!) : "Select Dates",
+                      icon: Icons.keyboard_arrow_down,
+                      onclick: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => Calendar(selectedDate: selectedDate,),
+                        )).then((value) {
+                          setState(() {
+                            selectedDate = value; // you receive here
+                          });
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 10),
+                    selectDetail(
+                        heding: "Time",
+                        image: "assets/images/timer.png",
+                        text: timeSaved
+                            ? "$hourSliderValue:${minutesSliderValue == 0
+                            ? "00"
+                            : minutesSliderValue.toString()}"
+                            : "Select Time",
+                        icon: Icons.keyboard_arrow_down,
+                        onclick: timerBottomSheet)],
               if (widget.goNow)
                 ...[const SizedBox(height: 10),
                   Text("Go Now",
@@ -227,7 +229,7 @@ class _checkoutState extends State<checkout> {
                           fontFamily: "Gilroy Bold")),
                 ],
               const SizedBox(height: 10),
-              selectdetail(
+              selectDetail(
                   heding: "Guide Features",
                   image: "assets/images/guest.png",
                   text: guideFeaturesSaved ? getAllSelectedLanguages() : "Select Guide Features",
@@ -340,7 +342,7 @@ class _checkoutState extends State<checkout> {
                   ),
                   const SizedBox(height: 25),
                   InkWell(
-                    onTap: paymentmodelbottomsheet,
+                    onTap: paymentModelBottomSheet,
                     child: Container(
                       height: 50,
                       width: double.infinity,
@@ -448,7 +450,7 @@ class _checkoutState extends State<checkout> {
     );
   }
 
-  Widget selectdetail({heding, image, text, icon, onclick}) {
+  Widget selectDetail({heding, image, text, icon, onclick}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -540,7 +542,7 @@ class _checkoutState extends State<checkout> {
                         height: MediaQuery.of(context).size.height * 0.025),
                     SizedBox(
                         height: MediaQuery.of(context).size.height * 0.01),
-                    selectdetail(
+                    selectDetail(
                         heding: "Preferred language",
                         image: "assets/images/Langauge.png",
                         text: guideFeaturesSaved ? getAllSelectedLanguages() : "Select Language",
@@ -793,7 +795,17 @@ class _checkoutState extends State<checkout> {
         }).then((value) => setState(() { guideFeaturesSaved = value; }));
   }
 
-  paymentmodelbottomsheet() {
+  paymentModelBottomSheet() {
+    final db = FirebaseFirestore.instance.collection("users");
+    final Stream<QuerySnapshot<Map<String, dynamic>>> guides =
+      db.where("language", arrayContainsAny: checkedLanguages
+          .map((item) => item["value"] ? item["code"].toString().toLowerCase() : null)
+          .where((item) => item != null)
+          .toList())
+        .where("accountValidated", isEqualTo: true)
+        .orderBy("rating", descending: true).snapshots();
+
+
     return showModalBottomSheet(
         isScrollControlled: true,
         backgroundColor: notifier.getbgcolor,
@@ -801,178 +813,188 @@ class _checkoutState extends State<checkout> {
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         builder: (context) {
-          return StatefulBuilder(
-              builder: (BuildContext context, StateSetter setState) {
-            return Container(
-              height: MediaQuery.of(context).size.height * 0.65,
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                child: Stack(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Payment Method",
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  fontFamily: "Gilroy Bold",
-                                  color: notifier.getwhiteblackcolor),
-                            ),
-                            InkWell(
-                                onTap: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Icon(
-                                  Icons.close,
-                                  color: notifier.getwhiteblackcolor,
-                                ))
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        Container(
-                          height: 60,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              color: notifier.getdarkmodecolor),
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 6),
-                            child: Row(
-                              children: [
-                                Image.asset(
-                                  "assets/images/mastercard.png",
-                                  height: 25,
-                                ),
-                                const SizedBox(width: 25),
-                                Text(
-                                  "Master Card",
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      fontFamily: "Gilroy Bold",
-                                      color: notifier.getwhiteblackcolor),
-                                ),
-                                SizedBox(
-                                    width: MediaQuery.of(context).size.width /
-                                        2.82),
-                                Theme(
-                                  data: ThemeData(
-                                      unselectedWidgetColor:
-                                          notifier.getdarkwhitecolor),
-                                  child: Checkbox(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(5)),
-                                    value: masterCard,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        masterCard = value!;
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.03),
-                        Container(
-                          height: 60,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              color: notifier.getdarkmodecolor),
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 6),
-                            child: Row(
-                              children: [
-                                Image.asset(
-                                  "assets/images/Visa.png",
-                                  height: 25,
-                                ),
-                                const SizedBox(width: 27),
-                                Text(
-                                  "Visa",
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      fontFamily: "Gilroy Bold",
-                                      color: notifier.getwhiteblackcolor),
-                                ),
-                                SizedBox(
-                                    width: MediaQuery.of(context).size.width /
-                                        1.98),
-                                Theme(
-                                  data: ThemeData(
-                                      unselectedWidgetColor:
-                                          notifier.getdarkwhitecolor),
-                                  child: Checkbox(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(5)),
-                                    value: visa,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        visa = value!;
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.03),
-                        Container(
-                          height: 60,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              color: notifier.getdarkmodecolor),
-                          child: Row(
+          return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+              stream: guides,
+              builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                if (!snapshot.hasData) {
+                  return const Text("Loading...");
+                }
+                final guideRef = snapshot.data!.docs.isNotEmpty ? snapshot.data?.docs[0].reference : null;
+                return StatefulBuilder(
+                    builder: (BuildContext context, StateSetter setState) {
+                      return Container(
+                        height: MediaQuery.of(context).size.height * 0.65,
+                        child: Padding(
+                          padding:
+                          const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                          child: Stack(
                             children: [
-                              const SizedBox(width: 10),
-                              Container(
-                                height: 40,
-                                width: 40,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12),
-                                    color: notifier.getgreycolor),
-                                child: Center(
-                                  child: CircleAvatar(
-                                      backgroundColor:
-                                          notifier.getdarkbluecolor,
-                                      radius: 14,
-                                      child: Image.asset(
-                                          "assets/images/add.png",
-                                          height: 25)),
-                                ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "Payment Method",
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontFamily: "Gilroy Bold",
+                                            color: notifier.getwhiteblackcolor),
+                                      ),
+                                      InkWell(
+                                          onTap: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Icon(
+                                            Icons.close,
+                                            color: notifier.getwhiteblackcolor,
+                                          ))
+                                    ],
+                                  ),
+                                  const SizedBox(height: 20),
+                                  Container(
+                                    height: 60,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12),
+                                        color: notifier.getdarkmodecolor),
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 6),
+                                      child: Row(
+                                        children: [
+                                          Image.asset(
+                                            "assets/images/mastercard.png",
+                                            height: 25,
+                                          ),
+                                          const SizedBox(width: 25),
+                                          Text(
+                                            "Master Card",
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                fontFamily: "Gilroy Bold",
+                                                color: notifier.getwhiteblackcolor),
+                                          ),
+                                          SizedBox(
+                                              width: MediaQuery.of(context).size.width /
+                                                  2.82),
+                                          Theme(
+                                            data: ThemeData(
+                                                unselectedWidgetColor:
+                                                notifier.getdarkwhitecolor),
+                                            child: Checkbox(
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(5)),
+                                              value: masterCard,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  masterCard = value!;
+                                                });
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                      height: MediaQuery.of(context).size.height * 0.03),
+                                  Container(
+                                    height: 60,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12),
+                                        color: notifier.getdarkmodecolor),
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 6),
+                                      child: Row(
+                                        children: [
+                                          Image.asset(
+                                            "assets/images/Visa.png",
+                                            height: 25,
+                                          ),
+                                          const SizedBox(width: 27),
+                                          Text(
+                                            "Visa",
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                fontFamily: "Gilroy Bold",
+                                                color: notifier.getwhiteblackcolor),
+                                          ),
+                                          SizedBox(
+                                              width: MediaQuery.of(context).size.width /
+                                                  1.98),
+                                          Theme(
+                                            data: ThemeData(
+                                                unselectedWidgetColor:
+                                                notifier.getdarkwhitecolor),
+                                            child: Checkbox(
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(5)),
+                                              value: visa,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  visa = value!;
+                                                });
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                      height: MediaQuery.of(context).size.height * 0.03),
+                                  Container(
+                                    height: 60,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12),
+                                        color: notifier.getdarkmodecolor),
+                                    child: Row(
+                                      children: [
+                                        const SizedBox(width: 10),
+                                        Container(
+                                          height: 40,
+                                          width: 40,
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(12),
+                                              color: notifier.getgreycolor),
+                                          child: Center(
+                                            child: CircleAvatar(
+                                                backgroundColor:
+                                                notifier.getdarkbluecolor,
+                                                radius: 14,
+                                                child: Image.asset(
+                                                    "assets/images/add.png",
+                                                    height: 25)),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 33),
+                                        Text("Add Debit Card",
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                fontFamily: "Gilroy Bold",
+                                                color: notifier.getwhiteblackcolor)),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                      height: MediaQuery.of(context).size.height * 0.12),
+                                  AppButton(
+                                      buttontext: "Confirm and Pay",
+                                      onclick: () {
+                                        return bookingSuccessfully(guideRef!);
+                                      })
+                                ],
                               ),
-                              const SizedBox(width: 33),
-                              Text("Add Debit Card",
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      fontFamily: "Gilroy Bold",
-                                      color: notifier.getwhiteblackcolor)),
                             ],
                           ),
                         ),
-                        SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.12),
-                        AppButton(
-                            buttontext: "Confirm and Pay",
-                            onclick: BookingSuccessfull)
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            );
-          });
+                      );
+                    });
+              });
         });
   }
 
-  BookingSuccessfull() {
+  bookingSuccessfully(DocumentReference guideRef) {
     return showModalBottomSheet(
         isScrollControlled: true,
         backgroundColor: notifier.getbgcolor,
@@ -1041,16 +1063,17 @@ class _checkoutState extends State<checkout> {
                       InkWell(
                         onTap: () {
                           selectedIndex = 0;
-                          Trip newTrip = Trip.create(tour!.id,
+                          Trip.addTrip(
+                              guideRef,
+                              tour!.id,
                               selectedDate!.copyWith(hour: hourSliderValue, minute: minutesSliderValue),
                               smallPriceSelected ? 3 : 6,
-                              'pending',
+                              'booked',
                               getAllSelectedLanguages(),
                               masterCard ? 'mastercard' : 'visa',
                               '',
                               withTaxNumber,
-                              taxNumberController.text);
-                          Trip.addTrip(newTrip).then((docRef) {
+                              taxNumberController.text).then((docRef) {
                             Navigator.of(context)..pop()..pop()..pop()..push(MaterialPageRoute(
                                 builder: (context) => TripDetail(docRef.id)));
                           });
