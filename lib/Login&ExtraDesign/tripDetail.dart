@@ -50,10 +50,6 @@ class _TripDetailState extends State<TripDetail> {
       fromFirestore: Trip.fromFirestore,
       toFirestore: (Trip trip, _) => trip.toFirestore(),
     );
-
-    final dbUsers = FirebaseFirestore.instance.collection("users");
-
-
     notifier = Provider.of<ColorNotifier>(context, listen: true);
     return StreamBuilder(
         stream: ref.snapshots(),
@@ -205,7 +201,7 @@ class _TripDetailState extends State<TripDetail> {
                                   ],
                                 ),
                                 Divider(
-                                  height: 50,
+                                  height: 30,
                                   color: notifier.getgreycolor,
                                 ),
                                 if (trip?.guideRef != null)
@@ -218,34 +214,32 @@ class _TripDetailState extends State<TripDetail> {
                                     if (!snapshot.hasData) {
                                       return const Text("Loading");
                                     }
+                                    DocumentReference tuktukRef = snapshot.data?.get("tuktuk");
                                     AppUser? guide = snapshot.data?.data();
                                     return Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
+                                        Text("Guide",
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              color: notifier.getwhiteblackcolor,
+                                              fontFamily: "Gilroy Bold"),
+                                        ),
+                                        SizedBox(
+                                            height: MediaQuery.of(context).size.height * 0.01),
                                         Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment: MainAxisAlignment.start,
                                           children: [
+                                            CircleAvatar(
+                                              backgroundColor: WhiteColor,
+                                              backgroundImage: AssetImage(
+                                                  trip!.tour.reviews[0].img),
+                                              radius: 25,
+                                            ),
+                                            const SizedBox(width: 25),
                                             Column(
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                Row(
-                                                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  // crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Image.asset(
-                                                      "assets/images/guide-card.png",
-                                                      height: 20,
-                                                      width: 20,
-                                                      color: LogoColor,
-                                                    ),
-                                                    const SizedBox(width: 5),
-                                                    Text("Guide",
-                                                      style: TextStyle(
-                                                          fontSize: 14,
-                                                          color: notifier.getwhiteblackcolor,
-                                                          fontFamily: "Gilroy"),
-                                                    )
-                                                  ],
-                                                ),
                                                 Text(guide!.name!,
                                                   style: TextStyle(
                                                       fontSize: 16,
@@ -273,43 +267,79 @@ class _TripDetailState extends State<TripDetail> {
                                                   ],
                                                 )
                                               ],
-                                            ),
-                                            CircleAvatar(
-                                              backgroundColor: WhiteColor,
-                                              backgroundImage: AssetImage(
-                                                  trip!.tour.reviews[0].img),
-                                              radius: 25,
                                             )
                                           ],
                                         ),
                                         SizedBox(
                                             height: MediaQuery.of(context).size.height * 0.03),
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Row(
-                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                            StreamBuilder(
+                                                stream: tuktukRef.snapshots(),
+                                                builder: (context, snapshot) {
+                                                  if (!snapshot.hasData) {
+                                                    return const Text("Loading");
+                                                  }
+                                                  return Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Row(
+                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                        children: [
+                                                          Image.asset(
+                                                            "assets/images/license-plate.png",
+                                                            height: 20,
+                                                            width: 20,
+                                                            color: LogoColor,
+                                                          ),
+                                                          const SizedBox(width: 5),
+                                                          Text("License Plate",
+                                                            style: TextStyle(
+                                                                fontSize: 14,
+                                                                color: notifier.getwhiteblackcolor,
+                                                                fontFamily: "Gilroy"),
+                                                          )
+                                                        ],
+                                                      ),
+                                                      Text(snapshot.data?.get("licensePlate"),
+                                                        style: TextStyle(
+                                                            fontSize: 16,
+                                                            color: notifier
+                                                                .getwhiteblackcolor,
+                                                            fontFamily: "Gilroy Medium"),
+                                                      )
+                                                    ],
+                                                  );
+                                                }),
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                Image.asset(
-                                                  "assets/images/credit-card.png",
-                                                  height: 20,
-                                                  width: 20,
-                                                  color: LogoColor,
+                                                Row(
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    Image.asset(
+                                                      "assets/images/credit-card.png",
+                                                      height: 20,
+                                                      width: 20,
+                                                      color: LogoColor,
+                                                    ),
+                                                    const SizedBox(width: 5),
+                                                    Text("Payment to Guide",
+                                                      style: TextStyle(
+                                                          fontSize: 14,
+                                                          color: notifier.getwhiteblackcolor,
+                                                          fontFamily: "Gilroy"),
+                                                    )
+                                                  ],
                                                 ),
-                                                const SizedBox(width: 5),
-                                                Text("Payment to Guide",
+                                                Text("${trip?.tour.getTourPrice(trip?.persons == 3)}€",
                                                   style: TextStyle(
-                                                      fontSize: 14,
-                                                      color: notifier.getwhiteblackcolor,
-                                                      fontFamily: "Gilroy"),
+                                                      fontSize: 18,
+                                                      color: Darkblue,
+                                                      fontFamily: "Gilroy Medium"),
                                                 )
                                               ],
-                                            ),
-                                            Text("${trip?.tour.getTourPrice(trip?.persons == 3)}€",
-                                              style: TextStyle(
-                                                  fontSize: 18,
-                                                  color: Darkblue,
-                                                  fontFamily: "Gilroy Medium"),
                                             )
                                           ],
                                         )
