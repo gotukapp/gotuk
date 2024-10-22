@@ -225,7 +225,7 @@ tourLayout(BuildContext context, ColorNotifier notifier, Tour tour) {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                tour.title.toUpperCase(),
+                tour.name.toUpperCase(),
                 style: TextStyle(
                     fontSize: 15,
                     color: notifier.getwhiteblackcolor,
@@ -315,7 +315,7 @@ guideTripLayout(BuildContext context, ColorNotifier notifier, Trip trip) {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        trip.tour.title.toUpperCase(),
+                        trip.tour.name.toUpperCase(),
                         style: TextStyle(
                             fontSize: 15,
                             color: notifier.getwhiteblackcolor,
@@ -495,7 +495,7 @@ clientTripLayout(BuildContext context, ColorNotifier notifier, Trip trip) {
                         ],
                       ),
                       const SizedBox(height: 10),
-                      Text(trip.tour.title.toUpperCase(),
+                      Text(trip.tour.name.toUpperCase(),
                           style: TextStyle(
                               fontSize: 14,
                               color:
@@ -617,7 +617,7 @@ newTripNotification(BuildContext context, ColorNotifier notifier, Trip trip) {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            trip.tour.title.toUpperCase(),
+                            trip.tour.name.toUpperCase(),
                             style: TextStyle(
                                 fontSize: 15,
                                 color: notifier.getwhiteblackcolor,

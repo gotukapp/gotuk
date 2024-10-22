@@ -102,7 +102,7 @@ class _showAllToursState extends State<showAllTours> {
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.02),
                       Text(
-                        tourList[index].title,
+                        tourList[index].name,
                         style: TextStyle(
                             fontSize: 15,
                             fontFamily: "Gilroy Bold",

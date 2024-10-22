@@ -12,8 +12,10 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class Calendar extends StatefulWidget {
   final DateTime? selectedDate;
+  final DateTime? maxDate;
+  final DateTime? minDate;
 
-  const Calendar({super.key, this.selectedDate});
+  const Calendar({super.key, this.selectedDate, this.minDate, this.maxDate});
 
   @override
   CalendarState createState() => CalendarState();
@@ -115,8 +117,8 @@ class CalendarState extends State<Calendar> {
                         ),
                       ),
                       SfDateRangePicker(
-                        minDate: DateTime.now().add(const Duration(days: 2)),
-                        maxDate: DateTime.now().add(const Duration(days: 32)),
+                        minDate: widget.minDate,
+                        maxDate: widget.maxDate,
                         rangeTextStyle: TextStyle(color: WhiteColor),
                         toggleDaySelection: true,
                         endRangeSelectionColor: Darkblue,

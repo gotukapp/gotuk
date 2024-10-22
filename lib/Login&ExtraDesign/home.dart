@@ -29,7 +29,15 @@ class _homeState extends State<home> {
   void initState() {
     getdarkmodepreviousstate();
     Firebase.initializeApp().whenComplete(() {
-      setState(() {});
+      setState(() {
+        FirebaseFirestore.instance.collection("tours").get().then(
+              (querySnapshot) {
+            for (var docSnapshot in querySnapshot.docs) {
+              print('${docSnapshot.id} => ${docSnapshot.data()}');
+            }
+          }
+        );
+      });
     });
     super.initState();
   }
@@ -263,7 +271,7 @@ class _homeState extends State<home> {
                                                             CrossAxisAlignment.start,
                                                             children: [
                                                               Text(
-                                                                tourList[index].title.toUpperCase(),
+                                                                tourList[index].name.toUpperCase(),
                                                                 style: TextStyle(
                                                                     fontSize: 14,
                                                                     fontFamily: "Gilroy Bold",

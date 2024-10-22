@@ -155,7 +155,7 @@ class _TimeTableState extends State<TimeTable> {
                                       borderRadius: BorderRadius.circular(5), color: item.data!.status == 0 ? Colors.green :
                                   (item.data!.status == 1 ? Colors.red : Colors.grey) ),
                                   child: Center(
-                                      child: Text(item.data!.status == 2 ? item.data!.tour!.title : "Slot",
+                                      child: Text(item.data!.status == 2 ? item.data!.tour!.name : "Slot",
                                           style: TextStyle(
                                               fontSize: 10,
                                               color: BlackColor,

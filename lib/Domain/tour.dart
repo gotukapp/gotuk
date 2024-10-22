@@ -10,20 +10,22 @@ Tour tour1 = Tour(1,
     "assets/images/tour1_img1.jpg",
     4.5,
     coords, starPoints, allReviews);
-Tour tour2 = Tour(2, "Lisboa New City", "1h30",
+Tour tour2 = Tour(2, "Lisboa New City",
+    "1h30",
     "assets/images/tour2_img1.jpg",
     ["assets/images/tour2_img1.jpg","assets/images/tour2_img2.jpg","assets/images/tour2_img3.jpg","assets/images/tour2_img4.jpg"],
     110, 135,
     "Terreiro do Paço (Praça do Comércio)",
     "assets/images/tour2_img1.jpg", 4.9, coords, starPoints, allReviews);
-Tour tour3 = Tour(3, "Discoveries in Belém", "1h30 - 2h30",
+Tour tour3 = Tour(3, "Discoveries in Belém",
+    "2h - 2h30",
     "assets/images/tour3_img1.jpg",
     ["assets/images/tour3_img1.jpg","assets/images/tour3_img2.jpg","assets/images/tour3_img3.jpg","assets/images/tour3_img4.jpg"],
     140, 180,
     "Mosteiro dos Jerónimos",
     "assets/images/tour3_img1.jpg", 4.6, coords, starPoints, allReviews);
 Tour tour4 = Tour(4, "Cristo Rei",
-    "1h30 - 2h30",
+    "2h - 2h30",
     "assets/images/tour4_img1.jpg",
     ["assets/images/tour4_img1.jpg"],
     95, 135,
@@ -128,7 +130,7 @@ List<Review> allReviews = [
 
 class Tour {
   final int id;
-  final String title;
+  final String name;
   final String duration;
   final String img;
   final List<String> images;
@@ -143,12 +145,12 @@ class Tour {
   bool? favorite;
 
 
-  Tour(this.id, this.title, this.duration, this.img, this.images, this.priceLow,
+  Tour(this.id, this.name, this.duration, this.img, this.images, this.priceLow,
       this.priceHigh, this.address, this.icon, this.review, this.coords, this.starPoints, this.reviews);
 
   Tour.fromJson(Map<String, dynamic> json)
       : id = json['id'] as int,
-        title = json['title'] as String,
+        name = json['name'] as String,
         duration = json['duration'] as String,
         img = json['img'] as String,
         images = json['images'] as List<String>,
@@ -164,7 +166,7 @@ class Tour {
   Map<String, dynamic> toJson() =>
       {
         'id': id,
-        'title': title,
+        'title': name,
         'duration': duration,
         'img': img,
         'images': images,

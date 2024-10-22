@@ -32,7 +32,7 @@ class _checkoutState extends State<checkout> {
   bool masterCard = false;
   bool visa = false;
   bool withTaxNumber = false;
-  bool vehicleTypeSwitchValue = false;
+  bool onlyElectricVehicles = false;
   bool smallPriceSelected = true;
   bool guideFeaturesSaved = false;
   List checkedLanguages = List<Object>.generate(languages.length, (i) => { ...languages[i], "value": false });
@@ -47,13 +47,21 @@ class _checkoutState extends State<checkout> {
 
 
   bool timeSaved = false;
+  int? guidesAvailable;
 
   Tour? tour;
   List<Tour> tours = [];
   int carrosselDefaultPage = 0;
 
+  DocumentReference? guideRef;
+
+  Query<Map<String, dynamic>> guides = FirebaseFirestore.instance.collection("users")
+      .where("accountValidated", isEqualTo: true);
+
   @override
   void initState() {
+    guidesAvailable = 0;
+    tour = tourList.firstWhere((tour) => tour.id == widget.tourId);
     getdarkmodepreviousstate();
     super.initState();
   }
@@ -79,20 +87,18 @@ class _checkoutState extends State<checkout> {
   late ColorNotifier notifier;
   @override
   Widget build(BuildContext context) {
-    setState(() {
-      tour = tourList.firstWhere((tour) => tour.id == widget.tourId);
-    });
     if(widget.goNow){
       tours.addAll(tourList);
       carrosselDefaultPage = tourList.indexOf(tour!);
     }
+
     notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
       backgroundColor: notifier.getbgcolor,
       appBar: PreferredSize(
           preferredSize: const Size.fromHeight(75),
           child: CustomAppbar(
-              centertext: "Checkout",
+              centertext: "Checkout${widget.goNow ? " - GoNow" : ""}" ,
               ActionIcon: Icons.more_vert,
               bgcolor: notifier.getbgcolor,
               actioniconcolor: notifier.getwhiteblackcolor,
@@ -100,10 +106,18 @@ class _checkoutState extends State<checkout> {
               titlecolor: notifier.getwhiteblackcolor)),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              if (widget.goNow)
+                ...[Text(" ....  The GoNow solution allows you to make a reservation for today/tomorrow ....",
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: notifier.getwhiteblackcolor,
+                          fontFamily: "Gilroy Bold")),
+                  const SizedBox(height: 10)
+                ],
               if (widget.goNow)
                 CarouselSlider(
                 options: CarouselOptions(
@@ -125,12 +139,25 @@ class _checkoutState extends State<checkout> {
               )
               else
                 tourInfo(tour),
+              if (!widget.goNow && selectedDate != null)
+                Text("Guides available: $guidesAvailable",
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontFamily: "Gilroy Medium",
+                        color: notifier.getwhiteblackcolor)),
+              Divider(
+                color: notifier.getgreycolor,
+                thickness: 2,
+              ),
               const SizedBox(height: 5),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   InkWell(
-                    onTap: () { changeButtonColor(); },
+                    onTap: () {
+                      changeButtonColor();
+                      filterGuides();
+                    },
                     child: Container(
                       height: 50,
                       width: 125,
@@ -157,7 +184,10 @@ class _checkoutState extends State<checkout> {
                     ),
                   ),
                   InkWell(
-                    onTap: () { changeButtonColor();  },
+                    onTap: () {
+                      changeButtonColor();
+                      filterGuides();
+                    },
                     child: Container(
                       height: 50,
                       width: 125,
@@ -185,56 +215,51 @@ class _checkoutState extends State<checkout> {
                   ),
                 ],
               ),
-              if (!widget.goNow)
-                ...[
-                    const SizedBox(height: 15),
-                    selectDetail(
-                      heding: "Date",
-                      image: "assets/images/calendar.png",
-                      text: selectedDate != null ? DateFormat('dd/MM/yyyy').format(selectedDate!) : "Select Dates",
-                      icon: Icons.keyboard_arrow_down,
-                      onclick: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => Calendar(selectedDate: selectedDate,),
-                        )).then((value) {
-                          setState(() {
-                            selectedDate = value; // you receive here
-                          });
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 10),
-                    selectDetail(
-                        heding: "Time",
-                        image: "assets/images/timer.png",
-                        text: timeSaved
-                            ? "$hourSliderValue:${minutesSliderValue == 0
-                            ? "00"
-                            : minutesSliderValue.toString()}"
-                            : "Select Time",
-                        icon: Icons.keyboard_arrow_down,
-                        onclick: timerBottomSheet)],
-              if (widget.goNow)
-                ...[const SizedBox(height: 10),
-                  Text("Go Now",
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: notifier.getwhiteblackcolor,
-                          fontFamily: "Gilroy Bold")),
-                  const SizedBox(height: 8),
-                  Text(" ....  The GoNow solution allows you to make a reservation for today ....",
-                      style: TextStyle(
-                          fontSize: 14,
-                          color: notifier.getwhiteblackcolor,
-                          fontFamily: "Gilroy Bold")),
-                ],
+              const SizedBox(height: 5),
+              selectDetail(
+                heding: "Date",
+                image: "assets/images/calendar.png",
+                text: selectedDate != null ? DateFormat('dd/MM/yyyy').format(selectedDate!) : "Select Dates",
+                icon: Icons.keyboard_arrow_down,
+                onclick: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => widget.goNow ? Calendar(selectedDate: selectedDate,
+                        minDate: DateTime.now(),
+                        maxDate: DateTime.now().add(const Duration(days: 1))) :
+                        Calendar(selectedDate: selectedDate,
+                            minDate: DateTime.now().add(const Duration(days: 2)),
+                            maxDate: DateTime.now().add(const Duration(days: 32))),
+                  )).then((value) {
+                    filterGuides();
+                    setState(() {
+                      selectedDate = value; // you receive here
+                    });
+                  });
+                },
+              ),
+              const SizedBox(height: 10),
+              selectDetail(
+                  heding: "Time",
+                  image: "assets/images/timer.png",
+                  text: timeSaved
+                      ? "$hourSliderValue:${minutesSliderValue == 0
+                      ? "00"
+                      : minutesSliderValue.toString()}"
+                      : "Select Time",
+                  icon: Icons.keyboard_arrow_down,
+                  onclick: timerBottomSheet),
               const SizedBox(height: 10),
               selectDetail(
                   heding: "Guide Features",
                   image: "assets/images/guest.png",
                   text: guideFeaturesSaved ? getAllSelectedLanguages() : "Select Guide Features",
                   icon: Icons.keyboard_arrow_down,
-                  onclick: guideBottomSheet),
+                  onclick: () {
+                    guideBottomSheet().then((value) {
+                      setState(() => guideFeaturesSaved = value ?? false);
+                      filterGuides();
+                    });
+                  }),
               const SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.only(left: 6),
@@ -279,7 +304,7 @@ class _checkoutState extends State<checkout> {
                 color: notifier.getgreycolor,
                 thickness: 1,
               ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -342,7 +367,7 @@ class _checkoutState extends State<checkout> {
                   ),
                   const SizedBox(height: 25),
                   InkWell(
-                    onTap: paymentModelBottomSheet,
+                    onTap: () => { paymentModelBottomSheet(guideRef!) },
                     child: Container(
                       height: 50,
                       width: double.infinity,
@@ -365,6 +390,23 @@ class _checkoutState extends State<checkout> {
         ),
       ),
     );
+  }
+
+  void filterGuides() {
+    List<String?> currentSelectedLanguages = checkedLanguages.map((item) => item["value"] ? item["code"].toString().toLowerCase() : null)
+        .where((item) => item != null)
+        .toList();
+
+    guides
+        .where("tuktukElectric", whereIn: onlyElectricVehicles ? [true] : [true, false])
+        .where("tuktukSeats", isGreaterThanOrEqualTo: smallPriceSelected ? 3 : 6)
+        .where("language", arrayContainsAny: currentSelectedLanguages.isNotEmpty ? currentSelectedLanguages : checkedLanguages.map((item) => item["code"].toString().toLowerCase()).toList())
+        .orderBy("rating", descending: true).get().then((querySnapshot) {
+      setState(() {
+        guideRef = querySnapshot.docs.isNotEmpty ? querySnapshot.docs[0].reference : null;
+        guidesAvailable = querySnapshot.docs.length;
+      });
+    });
   }
 
   Widget tourInfo(t) {
@@ -396,7 +438,7 @@ class _checkoutState extends State<checkout> {
               SizedBox(
                   height: MediaQuery.of(context).size.height * 0.012),
               Text(
-                t.title.toUpperCase(),
+                t.name.toUpperCase(),
                 style: TextStyle(
                     fontSize: 16,
                     fontFamily: "Gilroy Bold",
@@ -581,13 +623,13 @@ class _checkoutState extends State<checkout> {
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: CupertinoSwitch(
-                                value: vehicleTypeSwitchValue,
+                                value: onlyElectricVehicles,
                                 thumbColor: notifier.getdarkwhitecolor,
                                 trackColor: notifier.getbuttoncolor,
                                 activeColor: notifier.getdarkbluecolor,
                                 onChanged: (value) {
                                   setState(() {
-                                    vehicleTypeSwitchValue = value;
+                                    onlyElectricVehicles = value;
                                   });
                                 },
                               ),
@@ -609,7 +651,7 @@ class _checkoutState extends State<checkout> {
               ),
             );
           });
-        }).then((value) => setState(() => guideFeaturesSaved = value ?? false));
+        });
   }
 
   timerBottomSheet() {
@@ -795,17 +837,7 @@ class _checkoutState extends State<checkout> {
         }).then((value) => setState(() { guideFeaturesSaved = value; }));
   }
 
-  paymentModelBottomSheet() {
-    final db = FirebaseFirestore.instance.collection("users");
-    final Stream<QuerySnapshot<Map<String, dynamic>>> guides =
-      db.where("language", arrayContainsAny: checkedLanguages
-          .map((item) => item["value"] ? item["code"].toString().toLowerCase() : null)
-          .where((item) => item != null)
-          .toList())
-        .where("accountValidated", isEqualTo: true)
-        .orderBy("rating", descending: true).snapshots();
-
-
+  paymentModelBottomSheet(DocumentReference guideRef) {
     return showModalBottomSheet(
         isScrollControlled: true,
         backgroundColor: notifier.getbgcolor,
@@ -813,14 +845,7 @@ class _checkoutState extends State<checkout> {
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         builder: (context) {
-          return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-              stream: guides,
-              builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                if (!snapshot.hasData) {
-                  return const Text("Loading...");
-                }
-                final guideRef = snapshot.data!.docs.isNotEmpty ? snapshot.data?.docs[0].reference : null;
-                return StatefulBuilder(
+          return StatefulBuilder(
                     builder: (BuildContext context, StateSetter setState) {
                       return Container(
                         height: MediaQuery.of(context).size.height * 0.65,
@@ -981,7 +1006,7 @@ class _checkoutState extends State<checkout> {
                                   AppButton(
                                       buttontext: "Confirm and Pay",
                                       onclick: () {
-                                        return bookingSuccessfully(guideRef!);
+                                        return bookingSuccessfully(guideRef);
                                       })
                                 ],
                               ),
@@ -990,7 +1015,6 @@ class _checkoutState extends State<checkout> {
                         ),
                       );
                     });
-              });
         });
   }
 

@@ -101,7 +101,7 @@ class _TripDetailState extends State<TripDetail> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  trip!.tour.title.toUpperCase(),
+                                  trip!.tour.name.toUpperCase(),
                                   style: TextStyle(
                                       fontSize: 18,
                                       color: notifier.getwhiteblackcolor,
