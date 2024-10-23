@@ -14,8 +14,9 @@ import '../Domain/trips.dart';
 
 class TripDetail extends StatefulWidget {
   final String tripId;
+  final bool guideMode;
 
-  const TripDetail(this.tripId, {super.key});
+  const TripDetail(this.tripId, this.guideMode, {super.key});
   @override
   State<TripDetail> createState() => _TripDetailState();
 }
@@ -76,7 +77,7 @@ class _TripDetailState extends State<TripDetail> {
                   pinned: _pinned,
                   snap: _snap,
                   floating: _floating,
-                  expandedHeight: 220,
+                  expandedHeight: MediaQuery.of(context).size.height * 0.32,
                   flexibleSpace: FlexibleSpaceBar(
                       background: PageView(
                           controller: _pageController,
@@ -204,7 +205,7 @@ class _TripDetailState extends State<TripDetail> {
                                   height: 30,
                                   color: notifier.getgreycolor,
                                 ),
-                                if (trip?.guideRef != null)
+                                if (trip?.guideRef != null && !widget.guideMode)
                                   StreamBuilder(
                                   stream: trip?.guideRef?.withConverter(
                                     fromFirestore: AppUser.fromFirestore,
@@ -345,7 +346,87 @@ class _TripDetailState extends State<TripDetail> {
                                         )
                                       ]
                                     );
-                                })
+                                }),
+                                if (widget.guideMode)
+                                  StreamBuilder(
+                                      stream: trip?.clientRef?.withConverter(
+                                        fromFirestore: AppUser.fromFirestore,
+                                        toFirestore: (AppUser client, _) => client.toFirestore(),
+                                      ).snapshots(),
+                                      builder: (context, snapshot) {
+                                        if (!snapshot.hasData) {
+                                          return const Text("Loading");
+                                        }
+                                        AppUser? client = snapshot.data?.data();
+                                        return Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text("Client",
+                                                style: TextStyle(
+                                                    fontSize: 18,
+                                                    color: notifier.getwhiteblackcolor,
+                                                    fontFamily: "Gilroy Bold"),
+                                              ),
+                                              SizedBox(
+                                                  height: MediaQuery.of(context).size.height * 0.01),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: [
+                                                  CircleAvatar(
+                                                    backgroundColor: WhiteColor,
+                                                    backgroundImage: AssetImage(
+                                                        trip!.tour.reviews[0].img),
+                                                    radius: 25,
+                                                  ),
+                                                  const SizedBox(width: 25),
+                                                  Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text(client!.name!,
+                                                        style: TextStyle(
+                                                            fontSize: 16,
+                                                            color: notifier
+                                                                .getwhiteblackcolor,
+                                                            fontFamily: "Gilroy Medium"),
+                                                      )
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                  height: MediaQuery.of(context).size.height * 0.03),
+                                              Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    children: [
+                                                      Image.asset(
+                                                        "assets/images/credit-card.png",
+                                                        height: 20,
+                                                        width: 20,
+                                                        color: LogoColor,
+                                                      ),
+                                                      const SizedBox(width: 5),
+                                                      Text("Payment to receive",
+                                                        style: TextStyle(
+                                                            fontSize: 14,
+                                                            color: notifier.getwhiteblackcolor,
+                                                            fontFamily: "Gilroy"),
+                                                      )
+                                                    ],
+                                                  ),
+                                                  Text("${trip?.tour.getTourPrice(trip?.persons == 3)}€",
+                                                    style: TextStyle(
+                                                        fontSize: 18,
+                                                        color: Darkblue,
+                                                        fontFamily: "Gilroy Medium"),
+                                                  )
+                                                ],
+                                              )
+                                            ]
+                                        );
+                                      })
                               ],
                             ),
                           ]),
@@ -364,8 +445,8 @@ class _TripDetailState extends State<TripDetail> {
           height: MediaQuery.of(context).size.height / 3,
           width: double.infinity,
           child: FittedBox(
-            child:Image.asset(image),
             fit: BoxFit.fill,
+            child:Image.asset(image),
           ),
         )
       ],

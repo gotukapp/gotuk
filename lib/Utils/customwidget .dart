@@ -276,7 +276,8 @@ tourLayout(BuildContext context, ColorNotifier notifier, Tour tour) {
 guideTripLayout(BuildContext context, ColorNotifier notifier, Trip trip) {
   return InkWell(
     onTap: () {
-
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => TripDetail(trip.id!, true)));
     },
     child: Container(
       width: double.infinity,
@@ -426,7 +427,7 @@ clientTripLayout(BuildContext context, ColorNotifier notifier, Trip trip) {
     child: InkWell(
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => TripDetail(trip.id!)));
+              builder: (context) => TripDetail(trip.id!, false)));
         },
         child: Container(
         height: 150,

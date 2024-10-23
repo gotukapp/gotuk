@@ -1,5 +1,6 @@
 // ignore_for_file: file_names
 
+import 'package:collection/collection.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
@@ -19,6 +20,7 @@ class Item {
     required this.expandedValue,
     required this.headerValue,
     required this.status,
+    required this.fields,
     this.isExpanded = false,
   });
 
@@ -26,6 +28,7 @@ class Item {
   String headerValue;
   String status;
   bool isExpanded;
+  List<dynamic> fields;
 }
 
 Color validated = const Color(0xff66dd66);
@@ -34,42 +37,78 @@ List<Item> generateItems(int numberOfItems) {
   return [ Item(
       headerValue: 'Documento de Identificação',
       expandedValue: 'Documento de Identificação',
-      status: 'not submitted'
+      status: 'not submitted',
+      fields: [
+        { "name": "Nº CC/Passaporte", "description": "Número do documento"},
+        { "name": "Validade", "description": "Data de Validade"},
+        { "name": "Carta de condução", "description": "Número do documento"},
+        { "name": "Validade", "description": "Data de Validade"}
+      ]
     ),
     Item(
-        headerValue: 'Certidão Registo Comercial',
-        expandedValue: 'Certidão Registo Comercial',
-        status: 'submitted'
+        headerValue: 'Comprovativo de Actividade',
+        expandedValue: 'Comprovativo de Actividade',
+        status: 'submitted',
+        fields: [
+          { "name": "Declaração Abertura Atividade ", "description": ""},
+        ]
     ),
     Item(
         headerValue: 'Licença RNAAT',
         expandedValue: 'Licença RNAAT',
-        status: 'validated'
+        status: 'validated',
+        fields: [
+          { "name": "Nº Registo", "description": ""}
+        ]
     ),
     Item(
-        headerValue: 'Certificação de Formação',
-        expandedValue: 'Certificação de Formação',
-        status: 'not valid'
+        headerValue: 'Formação',
+        expandedValue: 'Formação',
+        status: 'not valid',
+        fields: []
     ),
     Item(
         headerValue: 'Apólice de Seguro de Responsabilidade Civil',
         expandedValue: 'Apólice de Seguro de Responsabilidade Civil',
-        status: 'not submitted'
+        status: 'not submitted',
+        fields: [
+          { "name": "Companhia de Seguros", "description": "Nome"},
+          { "name": "Nº Apólice", "description": "Indique o Número"},
+          { "name": "Validade", "description": "Data de Validade"}
+        ]
     ),
     Item(
         headerValue: 'Apólice de seguro de Acidentes de trabalho',
         expandedValue: 'Apólice de seguro de Acidentes de trabalho',
-        status: 'not submitted'
-    ),
-    Item(
-        headerValue: 'Apólice de seguro Automóvel',
-        expandedValue: 'Apólice de seguro Automóvel',
-        status: 'not submitted'
+        status: 'not submitted',
+        fields: [
+          { "name": "Companhia de Seguros", "description": "Nome"},
+          { "name": "Nº Apólice", "description": "Indique o Número"},
+          { "name": "Validade", "description": "Data de Validade"}
+        ]
     ),
     Item(
         headerValue: 'Apólice de Seguro de Acidentes Pessoais',
         expandedValue: 'Apólice de Seguro de Acidentes Pessoais',
-        status: 'not submitted'
+        status: 'not submitted',
+        fields: [
+          { "name": "Companhia de Seguros", "description": "Nome"},
+          { "name": "Nº Apólice", "description": "Indique o Número"},
+          { "name": "Validade", "description": "Data de Validade"}
+        ]
+    ),
+    Item(
+        headerValue: 'Dados do Veículo',
+        expandedValue: 'Dados do Veículo',
+        status: 'not submitted',
+        fields: [
+          { "name": "Matrícula", "description": ""},
+          { "name": "Lugares", "description": ""},
+          { "name": "Tipo de Veículo", "description": ""},
+          { "name": "Companhia de Seguros", "description": "Nome"},
+          { "name": "Nº Apólice", "description": "Indique o Número"},
+          { "name": "Validade", "description": "Data de Validade"}
+        ]
     )
   ];
 }
@@ -101,20 +140,18 @@ class _AccountState extends State<account> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-          child: Container(
-            child: Column(
-              children: [
-                _buildPanel(),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.06),
-                AppButton(
-                    bgColor: notifier.getlogobgcolor,
-                    textColor: WhiteColor,
-                    buttontext: "Submit Data",
-                    onclick: () async {
+          child: Column(
+            children: [
+              _buildPanel(),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.06),
+              AppButton(
+                  bgColor: notifier.getlogobgcolor,
+                  textColor: WhiteColor,
+                  buttontext: "Submit Data",
+                  onclick: () async {
 
-                    })
-              ]
-            )
+                  })
+            ]
           )
         ),
       ),
@@ -144,7 +181,7 @@ class _AccountState extends State<account> {
               ),
             );
           },
-          body: identificationDocumentWidget(notifier, context),
+          body: identificationDocumentWidget(notifier, context, item.fields),
           isExpanded: item.isExpanded,
         );
       }).toList(),
@@ -165,40 +202,30 @@ class _AccountState extends State<account> {
   }*/
 
 
-  Widget identificationDocumentWidget(ColorNotifier notifier, BuildContext context) {
+  Widget identificationDocumentWidget(ColorNotifier notifier, BuildContext context, List<dynamic> fields) {
     return Padding(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.only(left: 10, right: 10, bottom: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Identification Number",
-              style: TextStyle(
-                  fontSize: 16,
-                  color: notifier.getwhiteblackcolor,
-                  fontFamily: "Gilroy Bold"),
-            ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-            textfield(
+          children: [ ...fields.map((item) {
+
+             return [const SizedBox(height: 10),
+               Text(item["name"],
+                style: TextStyle(
+                    fontSize: 16,
+                    color: notifier.getwhiteblackcolor,
+                    fontFamily: "Gilroy Bold"),
+              ),
+              const SizedBox(height: 10),
+              textfield(
                 fieldColor: notifier.getdarkmodecolor,
                 hintColor: notifier.getgreycolor,
-                text: 'Enter your Identification Number',
+                text: item["description"],
                 suffix: null),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-            Text(
-              "Expiration Date",
-              style: TextStyle(
-                  fontSize: 16,
-                  color: notifier.getwhiteblackcolor,
-                  fontFamily: "Gilroy Bold"),
-            ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-            textfield(
-                fieldColor: notifier.getdarkmodecolor,
-                hintColor: notifier.getgreycolor,
-                text: 'Enter your Number',
-                suffix: null),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+              const SizedBox(height: 10)
+             ];
+            }).flattened,
+            const SizedBox(height: 10),
             AppButton(
                 bgColor: notifier.getlogobgcolor,
                 textColor: WhiteColor,
@@ -206,7 +233,7 @@ class _AccountState extends State<account> {
                 onclick: () async {
 
                 })
-          ],
+          ]
         )
     );
   }

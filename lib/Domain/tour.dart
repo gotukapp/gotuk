@@ -15,28 +15,28 @@ Tour tour2 = Tour(2, "Lisboa New City",
     "assets/images/tour2_img1.jpg",
     ["assets/images/tour2_img1.jpg","assets/images/tour2_img2.jpg","assets/images/tour2_img3.jpg","assets/images/tour2_img4.jpg"],
     110, 135,
-    "Terreiro do Paço (Praça do Comércio)",
-    "assets/images/tour2_img1.jpg", 4.9, coords, starPoints, allReviews);
+    "Terreiro do Paço",
+    "assets/images/tour2_img1.jpg", 4.9, coords, starPoints2, allReviews);
 Tour tour3 = Tour(3, "Discoveries in Belém",
     "2h - 2h30",
     "assets/images/tour3_img1.jpg",
     ["assets/images/tour3_img1.jpg","assets/images/tour3_img2.jpg","assets/images/tour3_img3.jpg","assets/images/tour3_img4.jpg"],
     140, 180,
     "Mosteiro dos Jerónimos",
-    "assets/images/tour3_img1.jpg", 4.6, coords, starPoints, allReviews);
+    "assets/images/tour3_img1.jpg", 4.6, coords, starPoints3, allReviews);
 Tour tour4 = Tour(4, "Cristo Rei",
     "2h - 2h30",
     "assets/images/tour4_img1.jpg",
     ["assets/images/tour4_img1.jpg"],
     95, 135,
-    "Lisboa", "assets/images/tour4_img1.jpg", 4.6, coords, starPoints, allReviews);
+    "Lisboa", "assets/images/tour4_img1.jpg", 4.6, coords, starPoints4, allReviews);
 Tour tour5 = Tour(5,
     "Three sight hills",
     "1h30 - 2h",
     "assets/images/tour5_img1.jpg",
     ["assets/images/tour5_img1.jpg", "assets/images/tour5_img2.jpg","assets/images/tour5_img3.jpg"],
     105, 152,
-    "Parque Eduardo VII, Lisboa", "assets/images/tour5_img1.jpg", 4.7, coords, starPoints, allReviews);
+    "Parque Eduardo VII, Lisboa", "assets/images/tour5_img1.jpg", 4.7, coords, starPoints5, allReviews);
 
 List<Tour> tourList = [tour1, tour2, tour3, tour4, tour5];
 
@@ -119,6 +119,33 @@ List starPoints = [
   { "index":42, "name": "São Vicente", "img": "assets/images/tour1_img1.jpg" },
   { "index":48, "name": "Miradouro da Senhora do Monte", "img": "assets/images/tour1_img1.jpg" },
   { "index":66, "name": "Mouraria", "img": "assets/images/tour1_img1.jpg" }
+];
+
+List starPoints2 = [
+  { "index": 0, "name": "Praça do Comércio", "img": "assets/images/tour1_img4.jpg" },
+  { "index":17, "name": "Chiado Garrett", "img": "assets/images/tour1_img3.jpg" },
+  { "index":35, "name": "Largo do Carmo", "img": "assets/images/tour1_img2.jpg" },
+  { "index":42, "name": "Bairro Alto", "img": "assets/images/tour1_img1.jpg" },
+  { "index":48, "name": "Elevador de Santa Justa", "img": "assets/images/tour1_img1.jpg" },
+  { "index":66, "name": "São Pedro de Alcântara", "img": "assets/images/tour1_img1.jpg" },
+  { "index":66, "name": "Parlamento São Bento", "img": "assets/images/tour1_img1.jpg" }
+];
+
+List starPoints3 = [
+  { "index": 0, "name": "Mosteiro dos Jerónimos", "img": "assets/images/tour1_img4.jpg" },
+  { "index":17, "name": "Museu dos Descobrimentos", "img": "assets/images/tour1_img3.jpg" },
+  { "index":35, "name": "Torre de Belém", "img": "assets/images/tour1_img2.jpg" }
+];
+
+List starPoints4 = [
+  { "index": 0, "name": "Lisboa", "img": "assets/images/tour1_img4.jpg" },
+  { "index":17, "name": "Cristo Rei", "img": "assets/images/tour1_img3.jpg" }
+];
+
+List starPoints5 = [
+  { "index": 0, "name": "Senhora do Monte", "img": "assets/images/tour1_img4.jpg" },
+  { "index":17, "name": "Parque Eduardo Sétimo", "img": "assets/images/tour1_img3.jpg" },
+  { "index":35, "name": "São Pedro de Alcântara", "img": "assets/images/tour1_img2.jpg" }
 ];
 
 List<Review> allReviews = [

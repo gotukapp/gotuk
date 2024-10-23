@@ -37,6 +37,7 @@ class _checkoutState extends State<checkout> {
   bool guideFeaturesSaved = false;
   List checkedLanguages = List<Object>.generate(languages.length, (i) => { ...languages[i], "value": false });
   final taxNumberController = TextEditingController();
+  String? pickupPointSelected;
 
   Color smallPriceColor = LogoColor;
   Color highPriceColor = greyColor;
@@ -73,16 +74,6 @@ class _checkoutState extends State<checkout> {
       highPriceColor = smallPriceSelected ? greyColor : LogoColor;
     });
   }
-
-  List<Widget> _buildSlides(List<Tour> slides) {
-    return slides.map(_buildSlide).toList();
-  }
-
-  void _handlingOnPageChanged(int page) {
-    setState(() => _currentPage = page);
-  }
-
-  int _currentPage = 0;
 
   late ColorNotifier notifier;
   @override
@@ -126,6 +117,7 @@ class _checkoutState extends State<checkout> {
                     viewportFraction: 0.9,
                     onPageChanged: (index, reason) {
                       setState(() {
+                        pickupPointSelected = null;
                         tour = tourList[index%5];
                       });
                     }),
@@ -215,6 +207,17 @@ class _checkoutState extends State<checkout> {
                   ),
                 ],
               ),
+              if (widget.goNow)
+                ...[const SizedBox(height: 10),
+                  selectDetail(
+                    heding: "Pickup Point",
+                    image: "assets/images/location.png",
+                    text: pickupPointSelected ?? "Select Pickup Point",
+                    icon: Icons.keyboard_arrow_down,
+                    onclick: () {
+                      pickupPointBottomSheet(tour!.starPoints.map((value) => value["name"].toString()).toList());
+                    },
+                )],
               const SizedBox(height: 5),
               selectDetail(
                 heding: "Date",
@@ -589,7 +592,7 @@ class _checkoutState extends State<checkout> {
                         image: "assets/images/Langauge.png",
                         text: guideFeaturesSaved ? getAllSelectedLanguages() : "Select Language",
                         icon: Icons.keyboard_arrow_right,
-                        onclick: languagesbottomsheet),
+                        onclick: languagesBottomSheet),
                     SizedBox(
                         height: MediaQuery.of(context).size.height * 0.025),
                     Row(
@@ -740,7 +743,7 @@ class _checkoutState extends State<checkout> {
         }).then((value) => setState(() { timeSaved = value; }));
   }
 
-  languagesbottomsheet() {
+  languagesBottomSheet() {
     return showModalBottomSheet(
         backgroundColor: notifier.getbgcolor,
         context: context,
@@ -835,6 +838,52 @@ class _checkoutState extends State<checkout> {
                 );
               });
         }).then((value) => setState(() { guideFeaturesSaved = value; }));
+  }
+
+  pickupPointBottomSheet(List<String> pickupPoints) {
+    int selectedIndex = pickupPointSelected != null ? pickupPoints.indexOf(pickupPointSelected!) : 0;
+    return showCupertinoModalPopup(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          height: 220.0,
+          color: CupertinoColors.white,
+          child: Column(
+            children: [
+              Container(
+                height: 150.0,
+                child: CupertinoPicker(
+                  itemExtent: 32.0,
+                  scrollController: FixedExtentScrollController(initialItem: selectedIndex),
+                  onSelectedItemChanged: (int index) {
+                    setState(() {
+                      selectedIndex = index;
+                    });
+                  },
+                  children: List<Widget>.generate(pickupPoints.length, (int index) {
+                    return Center(
+                      child: Text(
+                        pickupPoints[index],
+                        style: const TextStyle(fontSize: 20),
+                      ),
+                    );
+                  }),
+                ),
+              ),
+              CupertinoButton(
+                child: const Text('Confirm'),
+                onPressed: () {
+                  setState(() {
+                    pickupPointSelected = pickupPoints[selectedIndex];
+                  });
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   paymentModelBottomSheet(DocumentReference guideRef) {
@@ -1099,7 +1148,7 @@ class _checkoutState extends State<checkout> {
                               withTaxNumber,
                               taxNumberController.text).then((docRef) {
                             Navigator.of(context)..pop()..pop()..pop()..push(MaterialPageRoute(
-                                builder: (context) => TripDetail(docRef.id)));
+                                builder: (context) => TripDetail(docRef.id, false)));
                           });
                         },
                         child: Container(
@@ -1128,43 +1177,6 @@ class _checkoutState extends State<checkout> {
         });
   }
 
-  Widget _buildSlide(Tour tour) {
-    return Column(
-      children: <Widget>[
-        Container(
-          height: 110,
-          child: tourInfo(tour),
-        )
-      ],
-    );
-  }
-
-  Widget _buildDots({
-    List<String>? slides,
-    int? index,
-  }) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        for(int i=0;i<slides!.length;i++)
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              // borderRadius: const BorderRadius.all(
-              //   Radius.circular(50),
-              // ),
-              // color: Color(0xFF000000),
-              color: _currentPage == i ? Darkblue : greyColor,
-            ),
-            margin: const EdgeInsets.only(right: 8),
-            curve: Curves.easeIn,
-            width: _currentPage == i ? 12 : 8,
-            height: _currentPage == i ? 12 : 8,
-          )
-      ],
-    );
-  }
 
   // PaymentCard(
   //     {Function(bool?)? OnChage, String? image, CardName, bool? check}) {

@@ -284,7 +284,7 @@ class _homeState extends State<home> {
                                                                       .height *
                                                                       0.0005),
                                                               Text(
-                                                                tourList[0].address,
+                                                                tourList[index].address,
                                                                 style: TextStyle(
                                                                     fontSize: 12,
                                                                     color: notifier.getwhiteblackcolor,
