@@ -19,7 +19,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import '../Domain/tour.dart';
 
 class checkout extends StatefulWidget {
-  final int tourId;
+  final String tourId;
   final bool goNow;
 
   const checkout({super.key,required this.tourId,required this.goNow});
@@ -218,28 +218,26 @@ class _checkoutState extends State<checkout> {
                       pickupPointBottomSheet(tour!.starPoints.map((value) => value["name"].toString()).toList());
                     },
                 )],
-              const SizedBox(height: 5),
-              selectDetail(
-                heding: "Date",
-                image: "assets/images/calendar.png",
-                text: selectedDate != null ? DateFormat('dd/MM/yyyy').format(selectedDate!) : "Select Dates",
-                icon: Icons.keyboard_arrow_down,
-                onclick: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => widget.goNow ? Calendar(selectedDate: selectedDate,
-                        minDate: DateTime.now(),
-                        maxDate: DateTime.now().add(const Duration(days: 1))) :
-                        Calendar(selectedDate: selectedDate,
-                            minDate: DateTime.now().add(const Duration(days: 2)),
-                            maxDate: DateTime.now().add(const Duration(days: 32))),
-                  )).then((value) {
-                    filterGuides();
-                    setState(() {
-                      selectedDate = value; // you receive here
+              if (!widget.goNow)
+                ...[ const SizedBox(height: 5),
+                selectDetail(
+                  heding: "Date",
+                  image: "assets/images/calendar.png",
+                  text: selectedDate != null ? DateFormat('dd/MM/yyyy').format(selectedDate!) : "Select Dates",
+                  icon: Icons.keyboard_arrow_down,
+                  onclick: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => Calendar(selectedDate: selectedDate,
+                              minDate: DateTime.now().add(const Duration(days: 1)),
+                              maxDate: DateTime.now().add(const Duration(days: 32))),
+                    )).then((value) {
+                      filterGuides();
+                      setState(() {
+                        selectedDate = value; // you receive here
+                      });
                     });
-                  });
-                },
-              ),
+                  },
+                )],
               const SizedBox(height: 10),
               selectDetail(
                   heding: "Time",
@@ -1136,9 +1134,12 @@ class _checkoutState extends State<checkout> {
                       InkWell(
                         onTap: () {
                           selectedIndex = 0;
+                          if (widget.goNow) {
+                            selectedDate = DateTime.now();
+                          }
                           Trip.addTrip(
                               guideRef,
-                              tour!.id,
+                              tour!.id!,
                               selectedDate!.copyWith(hour: hourSliderValue, minute: minutesSliderValue),
                               smallPriceSelected ? 3 : 6,
                               'booked',

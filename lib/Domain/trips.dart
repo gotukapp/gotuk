@@ -7,7 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 class Trip {
 
   String? id;
-  final int tourId;
+  final DocumentReference tourRef;
   final DateTime date;
   final int persons;
   final String status;
@@ -20,7 +20,7 @@ class Trip {
   DocumentReference? guideRef;
   String? reservationId;
 
-  Trip(this.id, this.tourId, this.date, this.persons, this.status, this.clientRef,
+  Trip(this.id, this.tourRef, this.date, this.persons, this.status, this.clientRef,
       this.guideRef, this.guideLang, this.paymentMethod, this.creditCardId,
       this.withTaxNumber, this.taxNumber, this.reservationId);
 
@@ -47,7 +47,7 @@ class Trip {
 
   Map<String, dynamic> toFirestore() {
     return {
-      "tourId": tourId,
+      "tourId": tourRef,
       "date": date,
       "persons": persons,
       "status": status,
@@ -56,7 +56,7 @@ class Trip {
   }
 
   Tour get tour {
-    return tourList.firstWhere((t) => t.id == tourId);
+    return tourList.firstWhere((t) => t.id == tourRef.id);
   }
 
   double get price {
@@ -67,14 +67,14 @@ class Trip {
     return tour.getTourPrice(false);
   }
 
-  static Future<DocumentReference<Map<String, dynamic>>> addTrip(DocumentReference guideRef, int tourId,
+  static Future<DocumentReference<Map<String, dynamic>>> addTrip(DocumentReference guideRef, String tourId,
       DateTime date, int persons, String status,
       String guideLang, String paymentMethod, String creditCardId,
       bool withTaxNumber, String taxNumber) {
     return FirebaseFirestore.instance
         .collection('trips')
         .add(<String, dynamic>{
-      'tourId': tourId,
+      'tourId': FirebaseFirestore.instance.doc('tours/$tourId'),
       'reservationId': status == 'booked' ? generateReservationId() : '',
       'clientRef': FirebaseFirestore.instance.doc('users/${FirebaseAuth.instance.currentUser!.uid}'),
       'guideRef': guideRef,
@@ -86,7 +86,7 @@ class Trip {
       'creditCardId': creditCardId,
       'withTaxNumber': withTaxNumber,
       'taxNumber': taxNumber,
-      'creationDate': DateTime.now()
+      'creationDate': FieldValue.serverTimestamp()
     });
   }
 
@@ -98,7 +98,7 @@ class Trip {
       if (currentStatus == 'pending') {
         transaction.update(sfDocRef, {"status": "booked",
             "guideRef": FirebaseFirestore.instance.doc('users/${FirebaseAuth.instance.currentUser!.uid}'),
-            "acceptedDate": DateTime.now(),
+            "acceptedDate": FieldValue.serverTimestamp(),
             "reservationId": generateReservationId()});
         return true;
       }
@@ -111,7 +111,7 @@ class Trip {
         .collection('trips')
         .doc(id)
         .update({"status": "started",
-      "startedDate": DateTime.now()});
+      "startedDate": FieldValue.serverTimestamp()});
   }
 
   void finishTour() {
@@ -119,16 +119,50 @@ class Trip {
         .collection('trips')
         .doc(id)
         .update({"status": "finished",
-      "finishedDate": DateTime.now()});
+      "finishedDate": FieldValue.serverTimestamp()});
   }
 
   static String generateReservationId()
   {
     var letters = "ABCDEFGHJKMNPQRSTUXY";
     String text = "";
-    for (var i = 0; i < 6; i++) {
+    for (var i = 0; i < 3; i++) {
       text += letters[(Random().nextDouble() * letters.length).round()];
     }
-    return text;
+
+    Random random = Random();
+    int number = 1000 + random.nextInt(9000);
+
+    return "$text$number";
+  }
+
+  Future<void>  submitReview(double ratingTour, String commentTour, double ratingGuide, String commentGuide) async {
+    DocumentReference trip = FirebaseFirestore.instance
+        .collection('trip')
+        .doc(id);
+
+    CollectionReference tourReviews = FirebaseFirestore.instance
+        .collection('tours')
+        .doc(tour.id)
+        .collection('reviews');
+
+    await tourReviews.add({
+      'tripId': trip,
+      'rating': ratingTour,
+      'comment': commentTour,
+      'timestamp': FieldValue.serverTimestamp()
+    });
+
+    CollectionReference guideReviews = FirebaseFirestore.instance
+        .collection('guides')
+        .doc(guideRef?.id)
+        .collection('reviews');
+
+    await guideReviews.add({
+      'tripId': trip,
+      'rating': ratingGuide,
+      'comment': commentGuide,
+      'timestamp': FieldValue.serverTimestamp()
+    });
   }
 }

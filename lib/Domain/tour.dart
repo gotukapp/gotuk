@@ -1,6 +1,6 @@
 import 'package:dm/Domain/review.dart';
 
-Tour tour1 = Tour(1,
+Tour tour1 = Tour("lrBbhAD64JMbq81yjUAF",
     "Lisboa Old City",
     "1h30 - 2h",
     "assets/images/tour1_img1.jpg",
@@ -10,27 +10,27 @@ Tour tour1 = Tour(1,
     "assets/images/tour1_img1.jpg",
     4.5,
     coords, starPoints, allReviews);
-Tour tour2 = Tour(2, "Lisboa New City",
+Tour tour2 = Tour("iPvTzM9QAK99KjlmWOQc", "Lisboa New City",
     "1h30",
     "assets/images/tour2_img1.jpg",
     ["assets/images/tour2_img1.jpg","assets/images/tour2_img2.jpg","assets/images/tour2_img3.jpg","assets/images/tour2_img4.jpg"],
     110, 135,
     "Terreiro do Paço",
     "assets/images/tour2_img1.jpg", 4.9, coords, starPoints2, allReviews);
-Tour tour3 = Tour(3, "Discoveries in Belém",
+Tour tour3 = Tour("iFeHZGf61ZR6RsCxZFUf", "Discoveries in Belém",
     "2h - 2h30",
     "assets/images/tour3_img1.jpg",
     ["assets/images/tour3_img1.jpg","assets/images/tour3_img2.jpg","assets/images/tour3_img3.jpg","assets/images/tour3_img4.jpg"],
     140, 180,
     "Mosteiro dos Jerónimos",
     "assets/images/tour3_img1.jpg", 4.6, coords, starPoints3, allReviews);
-Tour tour4 = Tour(4, "Cristo Rei",
+Tour tour4 = Tour("QbVWW17rwjARJLNwWQ5S", "Cristo Rei",
     "2h - 2h30",
     "assets/images/tour4_img1.jpg",
     ["assets/images/tour4_img1.jpg"],
     95, 135,
     "Lisboa", "assets/images/tour4_img1.jpg", 4.6, coords, starPoints4, allReviews);
-Tour tour5 = Tour(5,
+Tour tour5 = Tour("s8xkuv1KCEfOAvOe5V8W",
     "Three sight hills",
     "1h30 - 2h",
     "assets/images/tour5_img1.jpg",
@@ -156,7 +156,7 @@ List<Review> allReviews = [
 ];
 
 class Tour {
-  final int id;
+  final String id;
   final String name;
   final String duration;
   final String img;
@@ -176,7 +176,7 @@ class Tour {
       this.priceHigh, this.address, this.icon, this.review, this.coords, this.starPoints, this.reviews);
 
   Tour.fromJson(Map<String, dynamic> json)
-      : id = json['id'] as int,
+      : id = json['id'] as String,
         name = json['name'] as String,
         duration = json['duration'] as String,
         img = json['img'] as String,

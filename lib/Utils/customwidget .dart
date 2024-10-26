@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../Login&ExtraDesign/tourDetail.dart';
+import '../Profile/rateTour.dart';
 import 'dark_lightmode.dart';
 
 CustomAppbar(
@@ -523,25 +524,29 @@ clientTripLayout(BuildContext context, ColorNotifier notifier, Trip trip) {
                                       fontSize: 14, color: Darkblue, fontFamily: "Gilroy Bold")),
                             ],
                           ),
-                          SizedBox(width: MediaQuery.of(context).size.width * 0.10),
+                          SizedBox(width: MediaQuery.of(context).size.width * 0.06),
                           if (trip.status == 'pending' ||
                               trip.status == 'booked' ||
                               trip.status == 'finished' )
                             InkWell(
                               onTap: () {
+                                if (trip.status == 'finished') {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => RateTour(trip)));
+                                }
                               },
                               child: Container(
-                                height: 25,
-                                width: 70,
+                                height: 30,
+                                width: 80,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(50), color: LogoColor),
                                 child: Center(
                                   child: Text(
-                                    trip.status == 'pending' ? AppLocalizations.of(context)!.cancel :
-                                      (trip.status == 'booked' ? AppLocalizations.of(context)!.letsGo
-                                          : (trip.status == 'finished' ? AppLocalizations.of(context)!.rateTour : '')),
+                                    trip.status == 'pending' ? AppLocalizations.of(context)!.cancel.toUpperCase() :
+                                      (trip.status == 'booked' ? AppLocalizations.of(context)!.letsGo.toUpperCase()
+                                          : (trip.status == 'finished' ? AppLocalizations.of(context)!.rateTour.toUpperCase() : '')),
                                     style: TextStyle(
-                                        fontSize: 10, color: WhiteColor, fontFamily: "Gilroy Bold"),
+                                        fontSize: 12, color: WhiteColor, fontFamily: "Gilroy Bold"),
                                   ),
                                 ),
                               ),

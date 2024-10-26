@@ -12,7 +12,7 @@ import '../Domain/tour.dart';
 import 'fullMap.dart';
 
 class TourDetail extends StatefulWidget {
-  final int tourId;
+  final String tourId;
 
   const TourDetail(this.tourId, {super.key});
   @override
