@@ -100,7 +100,7 @@ class _messageState extends State<message> {
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         padding: EdgeInsets.zero,
-                        itemCount: allReviews.length,
+                        itemCount: chatMessages.length,
                         itemBuilder: (BuildContext context, int index) {
                           return Padding(
                               padding: const EdgeInsets.symmetric(vertical: 0),
@@ -116,12 +116,12 @@ class _messageState extends State<message> {
                                       radius: 25,
                                       backgroundColor: WhiteColor,
                                       backgroundImage: AssetImage(
-                                          allReviews[index].img),
+                                          chatMessages[index].img),
                                     ),
                                     contentPadding: const EdgeInsets.only(
                                         left: 0, right: 0),
                                     title: Text(
-                                      allReviews[index].name,
+                                      chatMessages[index].name,
                                       style: TextStyle(
                                           fontSize: 15,
                                           color: notifier.getwhiteblackcolor,
@@ -129,7 +129,7 @@ class _messageState extends State<message> {
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                     subtitle: Text(
-                                      allReviews[index].message,
+                                      chatMessages[index].message,
                                       style: TextStyle(
                                           color: notifier.getgreycolor,
                                           fontFamily: "Gilroy Medium"),

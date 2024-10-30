@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_final_fields, camel_case_types, sized_box_for_whitespace, avoid_print, avoid_unnecessary_containers
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dm/Login&ExtraDesign/review.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +9,9 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Domain/appUser.dart';
+import '../Domain/ticket.dart';
 import '../Domain/trips.dart';
+import '../Profile/supportTicket.dart';
 
 class TripDetail extends StatefulWidget {
   final String tripId;
@@ -105,7 +106,14 @@ class _TripDetailState extends State<TripDetail> {
                                       fontFamily: "Gilroy Bold"),
                                 ),
                                 const SizedBox(height: 10),
-                                Column(
+                                if (trip?.status == 'pending')
+                                  Text("The trip reservation is on hold until a guide accepts it",
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          color: notifier.getwhiteblackcolor,
+                                          fontFamily: "Gilroy Bold")),
+                                if (trip?.status != 'pending')
+                                  Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Row(
@@ -206,7 +214,7 @@ class _TripDetailState extends State<TripDetail> {
                                   color: notifier.getgreycolor,
                                 ),
                                 if (trip?.guideRef != null && !widget.guideMode)
-                                  StreamBuilder(
+                                  ...[StreamBuilder(
                                   stream: trip?.guideRef?.withConverter(
                                     fromFirestore: AppUser.fromFirestore,
                                     toFirestore: (AppUser guide, _) => guide.toFirestore(),
@@ -233,8 +241,7 @@ class _TripDetailState extends State<TripDetail> {
                                           children: [
                                             CircleAvatar(
                                               backgroundColor: WhiteColor,
-                                              backgroundImage: AssetImage(
-                                                  trip!.tour.reviews[0].img),
+                                              backgroundImage: const AssetImage('assets/images/avatar.png'),
                                               radius: 25,
                                             ),
                                             const SizedBox(width: 25),
@@ -254,12 +261,8 @@ class _TripDetailState extends State<TripDetail> {
                                                         height: 20),
                                                     InkWell(
                                                         onTap: () {
-                                                          Navigator.of(context)
-                                                              .push(MaterialPageRoute(
-                                                              builder: (context) => review(trip!.tour)));
                                                         },
-                                                        child: Text(
-                                                            trip!.tour.reviews[0].score.toString(),
+                                                        child: Text(guide.rating.toString(),
                                                             style: TextStyle(
                                                                 fontSize: 15,
                                                                 fontFamily: "Gilroy Bold",
@@ -347,6 +350,59 @@ class _TripDetailState extends State<TripDetail> {
                                       ]
                                     );
                                 }),
+                                    if(trip?.status == 'booked')
+                                     ...[
+                                       Divider(
+                                         height: 30,
+                                         color: notifier.getgreycolor,
+                                       ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          InkWell(
+                                            onTap: () {},
+                                            child: Container(
+                                              height: 50,
+                                              width: MediaQuery.of(context).size.width * 0.4,
+                                              decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(50), color: LogoColor),
+                                              child: Center(
+                                                child: Text(
+                                                  "Let's Go",
+                                                  style: TextStyle(
+                                                      color: WhiteColor,
+                                                      fontSize: 18,
+                                                      fontFamily: "Gilroy Bold"),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          InkWell(
+                                            onTap: () {
+                                              Navigator.of(context)
+                                                  .push(MaterialPageRoute(
+                                                  builder: (context) => SupportTicket(trip, 'Reservation', ticketReasons['Reservation']?[0])));
+                                            },
+                                            child: Container(
+                                              height: 50,
+                                              width: MediaQuery.of(context).size.width * 0.4,
+                                              decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(50), color: greyColor),
+                                              child: Center(
+                                                child: Text(
+                                                  "Cancel",
+                                                  style: TextStyle(
+                                                      color: WhiteColor,
+                                                      fontSize: 18,
+                                                      fontFamily: "Gilroy Bold"),
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      )
+                                    ]
+                                  ],
                                 if (widget.guideMode)
                                   StreamBuilder(
                                       stream: trip?.clientRef?.withConverter(
@@ -374,8 +430,7 @@ class _TripDetailState extends State<TripDetail> {
                                                 children: [
                                                   CircleAvatar(
                                                     backgroundColor: WhiteColor,
-                                                    backgroundImage: AssetImage(
-                                                        trip!.tour.reviews[0].img),
+                                                    backgroundImage: const AssetImage(''),
                                                     radius: 25,
                                                   ),
                                                   const SizedBox(width: 25),

@@ -16,13 +16,14 @@ class Trip {
   final String creditCardId;
   final bool withTaxNumber;
   final String taxNumber;
+  final bool rateSubmitted;
   DocumentReference? clientRef;
   DocumentReference? guideRef;
   String? reservationId;
 
   Trip(this.id, this.tourRef, this.date, this.persons, this.status, this.clientRef,
       this.guideRef, this.guideLang, this.paymentMethod, this.creditCardId,
-      this.withTaxNumber, this.taxNumber, this.reservationId);
+      this.withTaxNumber, this.taxNumber, this.reservationId, this.rateSubmitted);
 
   factory Trip.fromFirestore(
       DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -41,7 +42,8 @@ class Trip {
         data?['creditCardId'],
         data?['withTaxNumber'],
         data?['taxNumber'],
-        data?['reservationId']
+        data?['reservationId'],
+        data?['rateSubmitted']
     );
   }
 
@@ -67,7 +69,7 @@ class Trip {
     return tour.getTourPrice(false);
   }
 
-  static Future<DocumentReference<Map<String, dynamic>>> addTrip(DocumentReference guideRef, String tourId,
+  static Future<DocumentReference<Map<String, dynamic>>> addTrip(DocumentReference? guideRef, String tourId,
       DateTime date, int persons, String status,
       String guideLang, String paymentMethod, String creditCardId,
       bool withTaxNumber, String taxNumber) {
@@ -86,6 +88,7 @@ class Trip {
       'creditCardId': creditCardId,
       'withTaxNumber': withTaxNumber,
       'taxNumber': taxNumber,
+      'rateSubmitted': false,
       'creationDate': FieldValue.serverTimestamp()
     });
   }
@@ -122,6 +125,14 @@ class Trip {
       "finishedDate": FieldValue.serverTimestamp()});
   }
 
+  void cancelTour() {
+    FirebaseFirestore.instance
+        .collection('trips')
+        .doc(id)
+        .update({"status": "canceled",
+      "canceledDate": FieldValue.serverTimestamp()});
+  }
+
   static String generateReservationId()
   {
     var letters = "ABCDEFGHJKMNPQRSTUXY";
@@ -147,22 +158,28 @@ class Trip {
         .collection('reviews');
 
     await tourReviews.add({
-      'tripId': trip,
+      'tripRef': trip,
+      'name': FirebaseAuth.instance.currentUser?.displayName,
       'rating': ratingTour,
       'comment': commentTour,
-      'timestamp': FieldValue.serverTimestamp()
+      'creationDate': FieldValue.serverTimestamp()
     });
 
     CollectionReference guideReviews = FirebaseFirestore.instance
-        .collection('guides')
+        .collection('users')
         .doc(guideRef?.id)
         .collection('reviews');
 
     await guideReviews.add({
-      'tripId': trip,
+      'tripRef': trip,
       'rating': ratingGuide,
       'comment': commentGuide,
-      'timestamp': FieldValue.serverTimestamp()
+      'creationDate': FieldValue.serverTimestamp()
     });
+
+    FirebaseFirestore.instance
+        .collection('trips')
+        .doc(id)
+        .update({ "rateSubmitted": true });
   }
 }

@@ -1,9 +1,12 @@
 // ignore_for_file: file_names
 
+import 'package:dm/Profile/supportTicket.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../Utils/customwidget .dart';
 
 class Support extends StatefulWidget {
   const Support({super.key});
@@ -46,13 +49,29 @@ class _SupportState extends State<Support> {
                       fontSize: 18,
                       color: notifier.getwhitelogocolor,
                       fontFamily: "Gilroy Medium")),
-              const SizedBox(height: 10),
-              Text("Formulário de Contacto",
+              Divider(
+                height: 30,
+                color: notifier.getgreycolor,
+              ),
+              Text("Support Ticket",
                   style: TextStyle(
                       fontSize: 18,
                       color: notifier.getwhitelogocolor,
                       fontFamily: "Gilroy Medium")),
-              const SizedBox(height: 10),
+              const SizedBox(height: 25),
+              AppButton(
+                  bgColor: notifier.getwhitelogocolor,
+                  textColor: notifier.getblackwhitecolor,
+                  buttontext: "Create Support Ticket",
+                  onclick: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(
+                        builder: (context) => SupportTicket(null, null, null)));
+                  }),
+              Divider(
+                height: 30,
+                color: notifier.getgreycolor,
+              ),
               Text("Contactos",
                   style: TextStyle(
                       fontSize: 18,

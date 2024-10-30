@@ -1,4 +1,4 @@
-import 'package:dm/Domain/review.dart';
+import 'chatMessage.dart';
 
 Tour tour1 = Tour("lrBbhAD64JMbq81yjUAF",
     "Lisboa Old City",
@@ -9,34 +9,34 @@ Tour tour1 = Tour("lrBbhAD64JMbq81yjUAF",
     "Sé de Lisboa",
     "assets/images/tour1_img1.jpg",
     4.5,
-    coords, starPoints, allReviews);
+    coords, starPoints);
 Tour tour2 = Tour("iPvTzM9QAK99KjlmWOQc", "Lisboa New City",
     "1h30",
     "assets/images/tour2_img1.jpg",
     ["assets/images/tour2_img1.jpg","assets/images/tour2_img2.jpg","assets/images/tour2_img3.jpg","assets/images/tour2_img4.jpg"],
     110, 135,
     "Terreiro do Paço",
-    "assets/images/tour2_img1.jpg", 4.9, coords, starPoints2, allReviews);
+    "assets/images/tour2_img1.jpg", 4.9, coords, starPoints2);
 Tour tour3 = Tour("iFeHZGf61ZR6RsCxZFUf", "Discoveries in Belém",
     "2h - 2h30",
     "assets/images/tour3_img1.jpg",
     ["assets/images/tour3_img1.jpg","assets/images/tour3_img2.jpg","assets/images/tour3_img3.jpg","assets/images/tour3_img4.jpg"],
     140, 180,
     "Mosteiro dos Jerónimos",
-    "assets/images/tour3_img1.jpg", 4.6, coords, starPoints3, allReviews);
+    "assets/images/tour3_img1.jpg", 4.6, coords, starPoints3);
 Tour tour4 = Tour("QbVWW17rwjARJLNwWQ5S", "Cristo Rei",
     "2h - 2h30",
     "assets/images/tour4_img1.jpg",
     ["assets/images/tour4_img1.jpg"],
     95, 135,
-    "Lisboa", "assets/images/tour4_img1.jpg", 4.6, coords, starPoints4, allReviews);
+    "Lisboa", "assets/images/tour4_img1.jpg", 4.6, coords, starPoints4);
 Tour tour5 = Tour("s8xkuv1KCEfOAvOe5V8W",
     "Three sight hills",
     "1h30 - 2h",
     "assets/images/tour5_img1.jpg",
     ["assets/images/tour5_img1.jpg", "assets/images/tour5_img2.jpg","assets/images/tour5_img3.jpg"],
     105, 152,
-    "Parque Eduardo VII, Lisboa", "assets/images/tour5_img1.jpg", 4.7, coords, starPoints5, allReviews);
+    "Parque Eduardo VII, Lisboa", "assets/images/tour5_img1.jpg", 4.7, coords, starPoints5);
 
 List<Tour> tourList = [tour1, tour2, tour3, tour4, tour5];
 
@@ -148,11 +148,11 @@ List starPoints5 = [
   { "index":35, "name": "São Pedro de Alcântara", "img": "assets/images/tour1_img2.jpg" }
 ];
 
-List<Review> allReviews = [
-  Review("John kennedy","assets/images/person.jpg","Tuk Tuk is the best tour in the city",4.8),
-  Review("Alexander","assets/images/person1.jpeg","Thank you for booking our tour",4.6),
-  Review("Emanuel","assets/images/person2.jpg","50% discount on first booking",4.5),
-  Review("Jamison","assets/images/person12.jpg","You will have more fun in this tour than any other",4.4)
+List<ChatMessage> chatMessages = [
+  ChatMessage("John kennedy","assets/images/person.jpg","Tuk Tuk is the best tour in the city",4.8),
+  ChatMessage("Alexander","assets/images/person1.jpeg","Thank you for booking our tour",4.6),
+  ChatMessage("Emanuel","assets/images/person2.jpg","50% discount on first booking",4.5),
+  ChatMessage("Jamison","assets/images/person12.jpg","You will have more fun in this tour than any other",4.4)
 ];
 
 class Tour {
@@ -168,12 +168,11 @@ class Tour {
   final double review;
   final List coords;
   final List starPoints;
-  final List<Review> reviews;
   bool? favorite;
 
 
   Tour(this.id, this.name, this.duration, this.img, this.images, this.priceLow,
-      this.priceHigh, this.address, this.icon, this.review, this.coords, this.starPoints, this.reviews);
+      this.priceHigh, this.address, this.icon, this.review, this.coords, this.starPoints);
 
   Tour.fromJson(Map<String, dynamic> json)
       : id = json['id'] as String,
@@ -187,8 +186,7 @@ class Tour {
         icon = json['icon'] as String,
         review = json['review'] as double,
         coords = json['coords'] as List,
-        starPoints = json['starPoints'] as List,
-        reviews = json['reviews'] as List<Review>;
+        starPoints = json['starPoints'] as List;
 
   Map<String, dynamic> toJson() =>
       {
@@ -203,8 +201,7 @@ class Tour {
         'icon': icon,
         'review': review,
         'coords': coords,
-        'starPoints': starPoints,
-        'reviews': reviews
+        'starPoints': starPoints
       };
 
   double getTourPrice(bool smallPriceSelected) {

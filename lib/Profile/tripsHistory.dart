@@ -37,7 +37,7 @@ class _TripsHistoryState extends State<TripsHistory> {
     final Stream<QuerySnapshot<Map<String, dynamic>>> finishedTrips =
     db
         .where("clientRef", isEqualTo: userDocRef)
-        .where("status", isEqualTo: "finished")
+        .where("status", whereIn: ["finished", "canceled"])
         .orderBy("date")
         .snapshots();
 

@@ -3,7 +3,7 @@
     "language": "Idioma",
     "english": "Inglês",
     "portuguese": "Português",
-    "tripStatus": "{choice, select, pending {Pendente} booked {Reservada} started {Iniciada} finished {Terminada} other {Other}}",
+    "tripStatus": "{choice, select, pending {Pendente} booked {Reservada} started {Iniciada} finished {Terminada} canceled {Cancelado} other {Other}}",
     "@tripStatus": {
         "placeholders": {
             "choice": {}

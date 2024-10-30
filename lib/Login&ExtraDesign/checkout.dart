@@ -1138,11 +1138,11 @@ class _checkoutState extends State<checkout> {
                             selectedDate = DateTime.now();
                           }
                           Trip.addTrip(
-                              guideRef,
-                              tour!.id!,
+                              widget.goNow ? null : guideRef,
+                              tour!.id,
                               selectedDate!.copyWith(hour: hourSliderValue, minute: minutesSliderValue),
                               smallPriceSelected ? 3 : 6,
-                              'booked',
+                              widget.goNow ? 'pending' : 'booked',
                               getAllSelectedLanguages(),
                               masterCard ? 'mastercard' : 'visa',
                               '',

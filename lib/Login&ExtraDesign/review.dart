@@ -1,5 +1,6 @@
 // ignore_for_file: camel_case_types, avoid_print
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
@@ -11,8 +12,9 @@ import '../Domain/tour.dart';
 
 class review extends StatefulWidget {
   final Tour tour;
+  final List<QueryDocumentSnapshot<Map<String, dynamic>>> reviews;
 
-  const review(this.tour, {super.key});
+  const review(this.tour, this.reviews, {super.key});
 
   @override
   State<review> createState() => _reviewState();
@@ -48,7 +50,7 @@ class _reviewState extends State<review> {
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 padding: EdgeInsets.zero,
-                itemCount: widget.tour.reviews.length,
+                itemCount: widget.reviews.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Column(
                     children: [
@@ -58,8 +60,7 @@ class _reviewState extends State<review> {
                         children: [
                           CircleAvatar(
                             backgroundColor: WhiteColor,
-                            backgroundImage:
-                                AssetImage(widget.tour.reviews[index].img),
+                            backgroundImage: const AssetImage('assets/images/avatar.png'),
                             radius: 25,
                           ),
                           const SizedBox(width: 8),
@@ -77,7 +78,7 @@ class _reviewState extends State<review> {
                                       width: MediaQuery.of(context).size.width *
                                           0.55,
                                       child: Text(
-                                        widget.tour.reviews[index].name,
+                                        widget.reviews[index].get("name"),
                                         style: const TextStyle(
                                             fontSize: 15,
                                             fontFamily: "Gilroy Bold"),
@@ -89,8 +90,7 @@ class _reviewState extends State<review> {
                                           0.10),
                                   Image.asset("assets/images/star.png",
                                       height: 20),
-                                  Text(
-                                      widget.tour.reviews[index].score.toString(),
+                                  Text(widget.reviews[index].get("rating").toString(),
                                       style: const TextStyle(
                                           fontSize: 15,
                                           fontWeight: FontWeight.bold))
@@ -103,7 +103,7 @@ class _reviewState extends State<review> {
                                 height: 40,
                                 width: MediaQuery.of(context).size.width * 0.70,
                                 child: Text(
-                                  widget.tour.reviews[index].message,
+                                  widget.reviews[index].get("comment"),
                                   style:
                                       TextStyle(fontSize: 14, color: greyColor),
                                   maxLines: 2,

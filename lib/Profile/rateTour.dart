@@ -33,12 +33,12 @@ class _RateTourState extends State<RateTour> {
   final TextEditingController _commentTourController = TextEditingController();
   final TextEditingController _commentGuideController = TextEditingController();
 
-  void submitRating() {
+  Future<void> submitRating() async {
     // Handle the rating submission here (e.g., save it to a database or send to an API)
     final commentTour = _commentTourController.text;
     final commentGuide = _commentGuideController.text;
 
-    widget.trip.submitReview(_ratingTour, commentTour, _ratingGuide, commentGuide);
+    await widget.trip.submitReview(_ratingTour, commentTour, _ratingGuide, commentGuide);
 
     // Show confirmation message
     ScaffoldMessenger.of(context).showSnackBar(
@@ -51,6 +51,8 @@ class _RateTourState extends State<RateTour> {
               color: Darkblue))
       ),
     );
+
+    Navigator.of(context).pop();
   }
 
   @override
