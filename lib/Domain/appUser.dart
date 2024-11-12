@@ -47,5 +47,18 @@ Future<AppUser> getUserFirebaseInstance(bool guideMode, User user) async {
         .doc(user.uid)
         .set(appUser.toFirestore());
   }
+
+  if (guideMode) {
+    FirebaseFirestore.instance.collection("users")
+        .doc(user.uid)
+        .update({"guideMode": true});
+  }
+
+  if (!guideMode) {
+    FirebaseFirestore.instance.collection("users")
+        .doc(user.uid)
+        .update({"clientMode": true});
+  }
+
   return appUser;
 }
