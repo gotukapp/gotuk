@@ -157,7 +157,7 @@ class Trip {
         .doc(tour.id)
         .collection('reviews');
 
-    await tourReviews.add({
+    DocumentReference<Object?> tourReview = await tourReviews.add({
       'tripRef': trip,
       'name': FirebaseAuth.instance.currentUser?.displayName,
       'rating': ratingTour,
@@ -170,7 +170,7 @@ class Trip {
         .doc(guideRef?.id)
         .collection('reviews');
 
-    await guideReviews.add({
+    DocumentReference<Object?> guideReview = await guideReviews.add({
       'tripRef': trip,
       'rating': ratingGuide,
       'comment': commentGuide,
@@ -180,6 +180,8 @@ class Trip {
     FirebaseFirestore.instance
         .collection('trips')
         .doc(id)
-        .update({ "rateSubmitted": true });
+        .update({ "rateSubmitted": true,
+                  "tourReviewRef": tourReview,
+                  "guideReviewRef": guideReview });
   }
 }
