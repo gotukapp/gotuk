@@ -58,7 +58,7 @@ class _TourDetailState extends State<TourDetail> {
       bottomNavigationBar: Container(
         color: notifier.getblackwhitecolor,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          padding: const EdgeInsets.only(left: 12, right: 12, top: 10, bottom: 30),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -164,7 +164,7 @@ class _TourDetailState extends State<TourDetail> {
           pinned: _pinned,
           snap: _snap,
           floating: _floating,
-          expandedHeight: 220,
+          expandedHeight: 255,
           flexibleSpace: FlexibleSpaceBar(
             background: PageView(
               controller: _pageController,
@@ -191,12 +191,38 @@ class _TourDetailState extends State<TourDetail> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            tour!.name.toUpperCase(),
-                            style: TextStyle(
-                                fontSize: 18,
-                                color: notifier.getwhiteblackcolor,
-                                fontFamily: "Gilroy Bold"),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                tour!.name.toUpperCase(),
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    color: notifier.getwhiteblackcolor,
+                                    fontFamily: "Gilroy Bold"),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Image.asset("assets/images/star.png", height: 18),
+                                  const SizedBox(width: 1),
+                                  Text(
+                                    "4.2",
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: notifier.getdarkbluecolor,
+                                        fontFamily: "Gilroy Bold"),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    "(${reviews?.length} Reviews)",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        color: notifier.getwhiteblackcolor,
+                                        fontFamily: "Gilroy Medium"),
+                                  )
+                                ],
+                              )],
                           ),
                           const SizedBox(height: 10),
                           Row(
@@ -223,27 +249,6 @@ class _TourDetailState extends State<TourDetail> {
                                 ],
                               )
                             ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                            Image.asset("assets/images/star.png", height: 18),
-                            const SizedBox(width: 1),
-                            Text(
-                              "4.2",
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: notifier.getdarkbluecolor,
-                                  fontFamily: "Gilroy Bold"),
-                            ),
-                            const SizedBox(width: 10),
-                            Text(
-                              "(${reviews?.length} Reviews)",
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: notifier.getwhiteblackcolor,
-                                  fontFamily: "Gilroy Medium"),
-                            )],
                           ),
                           const SizedBox(height: 15),
                           Row(

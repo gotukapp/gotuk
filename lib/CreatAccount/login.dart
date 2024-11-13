@@ -38,6 +38,7 @@ class _loginscreenState extends State<loginscreen> {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
     notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
       backgroundColor: notifier.getwhitegrey,
@@ -141,8 +142,9 @@ class _loginscreenState extends State<loginscreen> {
                       onclick: () async {
                         AppUser? user = await signInWithPhoneAndPassword();
                         if(user != null) {
+                          userProvider.setUser(user);
                           Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-                              builder: (context) => homepage(user: user)),
+                              builder: (context) => homepage()),
                                   (route) => false);
                         }
                       }),
@@ -176,8 +178,9 @@ class _loginscreenState extends State<loginscreen> {
                             onTap: () async {
                               AppUser? user = await signInWithGoogle();
                               if(user != null) {
+                                userProvider.setUser(user);
                                 Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-                                    builder: (context) => homepage(user: user)),
+                                    builder: (context) => homepage()),
                                         (route) => false);
                               }
                             },
@@ -297,8 +300,10 @@ class _loginscreenState extends State<loginscreen> {
     String errorMessage = '';
     try {
       if (phoneNumberController.text.isNotEmpty && phoneNumberController.text.isNotEmpty) {
+        String userName = phoneNumberController.text.contains('@') ? phoneNumberController.text : "${phoneNumberController.text}@gotuk.pt";
+
         UserCredential credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: "${phoneNumberController.text}@gotuk.pt",
+          email: userName,
           password: passwordController.text,
         );
 

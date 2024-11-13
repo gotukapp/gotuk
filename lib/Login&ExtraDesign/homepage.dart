@@ -20,9 +20,7 @@ import '../Message/message.dart';
 int selectedIndex = 0;
 
 class homepage extends StatefulWidget {
-  final AppUser user;
-
-  const homepage({super.key, required this.user});
+  const homepage({super.key});
 
   @override
   _homepageState createState() => _homepageState();
@@ -38,14 +36,17 @@ class _homepageState extends State<homepage> {
   void initState() {
     getdarkmodepreviousstate();
     getAppModeState();
-
     super.initState();
   }
 
   late ColorNotifier notifier;
+  late UserProvider userProvider;
 
   @override
   Widget build(BuildContext context) {
+    userProvider = Provider.of<UserProvider>(context);
+    notifier = Provider.of<ColorNotifier>(context, listen: true);
+
     final pageOption = [
       const home(),
       const message(),
@@ -53,12 +54,11 @@ class _homepageState extends State<homepage> {
     ];
 
     final driverPageOption = guideMode ? [
-      Dashboard(guide: widget.user),
+      Dashboard(guide: userProvider.user!),
       const message(),
       const profile(),
     ] : [];
 
-    notifier = Provider.of<ColorNotifier>(context, listen: true);
     return
         // WillPopScope(
         // // onWillPop: _handleWillPop,
@@ -119,7 +119,7 @@ class _homepageState extends State<homepage> {
     guideMode = previousState ?? false;
 
     if (guideMode) {
-      AppUser guide = widget.user;
+      AppUser guide = userProvider.user!;
       if (guide.accountValidated) {
         addFirebaseTripsListen();
       }

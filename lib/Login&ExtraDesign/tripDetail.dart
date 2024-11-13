@@ -106,43 +106,48 @@ class _TripDetailState extends State<TripDetail> {
                                       fontFamily: "Gilroy Bold"),
                                 ),
                                 const SizedBox(height: 10),
-                                if (trip?.status == 'pending')
-                                  Text("The trip reservation is on hold until a guide accepts it",
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          color: notifier.getwhiteblackcolor,
-                                          fontFamily: "Gilroy Bold")),
-                                if (trip?.status != 'pending')
-                                  Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                Row(
                                   children: [
-                                    Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: [
-                                        Image.asset(
-                                          "assets/images/reservation-id.png",
-                                          height: 20,
-                                          width: 20,
-                                          color: LogoColor,
-                                        ),
-                                        const SizedBox(width: 5),
-                                        Text("Reservation Id",
+                                    if (trip?.status != 'pending')
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            children: [
+                                              Image.asset(
+                                                "assets/images/reservation-id.png",
+                                                height: 20,
+                                                width: 20,
+                                                color: LogoColor,
+                                              ),
+                                              const SizedBox(width: 5),
+                                              Text("Reservation Id",
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: notifier.getwhiteblackcolor,
+                                                    fontFamily: "Gilroy"),
+                                              )
+                                            ],
+                                          ),
+                                          Text(trip!.reservationId != null ? trip!.reservationId! : '',
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                color: notifier.getwhiteblackcolor,
+                                                fontFamily: "Gilroy Bold"),
+                                          )
+                                        ],
+                                      ),
+                                    if (trip?.status == 'pending')
+                                      Text("The trip reservation is on hold until a guide accepts it",
                                           style: TextStyle(
-                                              fontSize: 14,
+                                              fontSize: 18,
                                               color: notifier.getwhiteblackcolor,
-                                              fontFamily: "Gilroy"),
-                                        )
-                                      ],
-                                    ),
-                                    Text(trip!.reservationId != null ? trip!.reservationId! : '',
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          color: notifier.getwhiteblackcolor,
-                                          fontFamily: "Gilroy Bold"),
-                                    )
+                                              fontFamily: "Gilroy Bold"))
                                   ],
                                 ),
+
                                 SizedBox(
                                     height: MediaQuery.of(context).size.height * 0.03),
                                 Column(
@@ -213,7 +218,7 @@ class _TripDetailState extends State<TripDetail> {
                                   height: 30,
                                   color: notifier.getgreycolor,
                                 ),
-                                if (trip?.guideRef != null && !widget.guideMode)
+                                if (trip?.guideRef != null && !widget.guideMode && trip?.status != 'canceled')
                                   ...[StreamBuilder(
                                   stream: trip?.guideRef?.withConverter(
                                     fromFirestore: AppUser.fromFirestore,

@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
+import 'package:dm/Domain/appUser.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +32,7 @@ class _TimeTableState extends State<TimeTable> {
   }
 
   late ColorNotifier notifier;
+  late UserProvider userProvider;
   late List<TimetableItem<Slot>> items;
 
   @override
@@ -38,8 +41,8 @@ class _TimeTableState extends State<TimeTable> {
       start: DateUtils.dateOnly(DateTime.now()),
       initialColumns: 4,
       cellHeight: 100.0,
-      startHour: 8,
-      endHour: 21,
+      startHour: 9,
+      endHour: 20,
     );
 
     final now = DateTime.now();
@@ -48,6 +51,7 @@ class _TimeTableState extends State<TimeTable> {
     final userDocRef = FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser?.uid);
+
     final Stream<QuerySnapshot<Map<String, dynamic>>> bookedTrips =
     db
         .where("guideRef", isEqualTo: userDocRef)
@@ -56,13 +60,21 @@ class _TimeTableState extends State<TimeTable> {
         .orderBy("date")
         .snapshots();
 
+    final Stream<QuerySnapshot<Map<String, dynamic>>> unavailability = userDocRef
+        .collection("unavailability")
+        .where("date", isGreaterThanOrEqualTo: today)
+        .snapshots();
+
+    userProvider = Provider.of<UserProvider>(context);
     notifier = Provider.of<ColorNotifier>(context, listen: true);
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
         stream: bookedTrips,
-        builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-          if (snapshot.hasData) {
-            for (var item in snapshot.data!.docs) {
+        builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshotTrips) {
+          if (snapshotTrips.hasData) {
+            for (var item in snapshotTrips.data!.docs) {
               Trip trip = Trip.fromFirestore(item, null);
+              var slot = items.firstWhereOrNull((element) => element.start == trip.date);
+
               items.add(TimetableItem(
                   trip.date,
                   trip.date.add(const Duration(minutes: 120)),
@@ -70,105 +82,114 @@ class _TimeTableState extends State<TimeTable> {
               ));
             }
 
-            return SafeArea(
-                child: Scaffold(
-                    appBar: PreferredSize(
-                        preferredSize: const Size.fromHeight(75),
-                        child: CustomAppbar(
-                            centertext: "Calendar",
-                            ActionIcon: null,
-                            bgcolor: notifier.getbgcolor,
-                            actioniconcolor: notifier.getwhiteblackcolor,
-                            leadingiconcolor: notifier.getwhiteblackcolor,
-                            titlecolor: notifier.getwhiteblackcolor)),
-                    backgroundColor: notifier.getblackwhitecolor,
-                    body: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 18, vertical: 8),
-                      child: Timetable<Slot>(
-                        controller: controller,
-                        items: items,
-                        cellBuilder: (datetime) => Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(color: LogoColor, width: 0.2),
-                          ),
-                        ),
-                        cornerBuilder: (datetime) => Container(
-                          color: LogoColor,
-                          child: Center(child: Text("${datetime.year}", style: TextStyle(color: WhiteColor, fontFamily: "Gilroy Bold"),)),
-                        ),
-                        headerCellBuilder: (datetime) {
-                          final color = BlackColor;
-                          return Container(
-                            decoration: BoxDecoration(
-                              border: Border(bottom: BorderSide(color: color, width: 2)),
-                            ),
-                            child: Center(
-                              child: Text(
-                                DateFormat("E\nMMM d").format(datetime),
-                                style: TextStyle(
-                                  color: LogoColor,
+            return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                stream: unavailability,
+                builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                  if (snapshot.hasData) {
+                    return SafeArea(
+                      child: Scaffold(
+                          appBar: PreferredSize(
+                              preferredSize: const Size.fromHeight(75),
+                              child: CustomAppbar(
+                                  centertext: "Calendar",
+                                  ActionIcon: null,
+                                  bgcolor: notifier.getbgcolor,
+                                  actioniconcolor: notifier.getwhiteblackcolor,
+                                  leadingiconcolor: notifier.getwhiteblackcolor,
+                                  titlecolor: notifier.getwhiteblackcolor)),
+                          backgroundColor: notifier.getblackwhitecolor,
+                          body: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 18, vertical: 8),
+                            child: Timetable<Slot>(
+                              controller: controller,
+                              items: items,
+                              cellBuilder: (datetime) => Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: LogoColor, width: 0.2),
                                 ),
-                                textAlign: TextAlign.center,
                               ),
-                            ),
-                          );
-                        },
-                        hourLabelBuilder: (time) {
-                          final isCurrentHour = time.hour == DateTime.now().hour;
-                          return Text(
-                            '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: isCurrentHour ? FontWeight.bold : FontWeight.normal,
-                            ),
-                          );
-                        },
-                        itemBuilder: (item) => Padding(
-                          padding: const EdgeInsets.all(5),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white.withAlpha(220),
-                              borderRadius: BorderRadius.circular(5),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.2),
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: InkWell(
-                              onTap: () {
-                                setState(() {
-                                  if (item.data!.status == 1) {
-                                    item.data!.status = 0;
-                                  } else if (item.data!.status == 0) {
-                                    item.data!.status = 1;
-                                  }
-                                });
-                              },
-                              child: Container(
-                                  height: double.infinity,
-                                  width: double.infinity,
+                              cornerBuilder: (datetime) => Container(
+                                color: LogoColor,
+                                child: Center(child: Text("${datetime.year}", style: TextStyle(color: WhiteColor, fontFamily: "Gilroy Bold"),)),
+                              ),
+                              headerCellBuilder: (datetime) {
+                                final color = BlackColor;
+                                return Container(
                                   decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5), color: item.data!.status == 0 ? Colors.green :
-                                  (item.data!.status == 1 ? Colors.red : Colors.grey) ),
+                                    border: Border(bottom: BorderSide(color: color, width: 2)),
+                                  ),
                                   child: Center(
-                                      child: Text(item.data!.status == 2 ? item.data!.tour!.name : "Slot",
-                                          style: TextStyle(
-                                              fontSize: 10,
-                                              color: BlackColor,
-                                              fontFamily: "Gilroy Bold")))),
+                                    child: Text(
+                                      DateFormat("E\nMMM d").format(datetime),
+                                      style: TextStyle(
+                                        color: LogoColor,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                );
+                              },
+                              hourLabelBuilder: (time) {
+                                final isCurrentHour = time.hour == DateTime.now().hour;
+                                return Text(
+                                  '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: isCurrentHour ? FontWeight.bold : FontWeight.normal,
+                                  ),
+                                );
+                              },
+                              itemBuilder: (item) => Padding(
+                                padding: const EdgeInsets.all(5),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withAlpha(220),
+                                    borderRadius: BorderRadius.circular(5),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.2),
+                                        blurRadius: 4,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        userProvider.user?.updateAvailability(item.start, item.data!.status);
+                                        if (item.data!.status == 1) {
+                                          item.data!.status = 0;
+                                        } else if (item.data!.status == 0) {
+                                          item.data!.status = 1;
+                                        }
+                                      });
+                                    },
+                                    child: Container(
+                                        height: double.infinity,
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(5), color: item.data!.status == 0 ? Colors.green :
+                                        (item.data!.status == 1 ? Colors.red : Colors.grey) ),
+                                        child: Center(
+                                            child: Text(item.data!.status == 2 ? item.data!.tour!.name : "Slot",
+                                                style: TextStyle(
+                                                    fontSize: 10,
+                                                    color: BlackColor,
+                                                    fontFamily: "Gilroy Bold")))),
+                                  ),
+                                ),
+                              ),
+                              nowIndicatorColor: Colors.red,
+                              snapToDay: true,
                             ),
-                          ),
-                        ),
-                        nowIndicatorColor: Colors.red,
-                        snapToDay: true,
-                      ),
-                    )
-                )
-            );
+                          )
+                      )
+                  );
+                  } else {
+                    return const Text("Loading...");
+                  }
+                });
           } else {
             return const Text("Loading...");
           }
@@ -196,12 +217,12 @@ class _TimeTableState extends State<TimeTable> {
         items.add(TimetableItem(
           date,
           date.add(const Duration(minutes: 30)),
-          data: Slot(i == 1 ? 1 : 0, null),
+          data: Slot(date.isAfter(DateTime.now()) ? 0 : -1, null),
         ));
         items.add(TimetableItem(
           date.add(const Duration(minutes: 30)),
           date.add(const Duration(minutes: 60)),
-          data: Slot(i == 1 ? 1 : 0, null),
+          data: Slot(date.isAfter(DateTime.now()) ? 0 : -1, null),
         ));
       }
     }

@@ -384,6 +384,7 @@ class _checkoutState extends State<checkout> {
                       ),
                     ),
                   ),
+                  const SizedBox(height: 40),
                 ],
               ),
             ],
@@ -803,32 +804,29 @@ class _checkoutState extends State<checkout> {
                                 );
                               },
                             ),
+                            const SizedBox(height: 40),
+                            InkWell(
+                              onTap: () {
+                                Navigator.pop(context, true);
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50),
+                                  color: Darkblue,
+                                ),
+                                height: 60,
+                                width: MediaQuery.of(context).size.width * 0.93,
+                                child: Center(
+                                    child: Text(
+                                      "Continue",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          color: WhiteColor,
+                                          fontWeight: FontWeight.bold),
+                                    )),
+                              ),
+                            )
                           ],
-                        ),
-                      ),
-                      Positioned(
-                        // left: 100,
-                        top: MediaQuery.of(context).size.height / 2.33,
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.pop(context, true);
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50),
-                              color: Darkblue,
-                            ),
-                            height: 60,
-                            width: MediaQuery.of(context).size.width * 0.93,
-                            child: Center(
-                                child: Text(
-                                  "Continue",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      color: WhiteColor,
-                                      fontWeight: FontWeight.bold),
-                                )),
-                          ),
                         ),
                       ),
                     ],

@@ -31,15 +31,14 @@ class _onbordingState extends State<onbording> {
     getAppModeState();
     super.initState();
 
-    Future.delayed(
-        const Duration(seconds: 3),
-      () async {
-          if (FirebaseAuth.instance.currentUser != null) {
+    Future.microtask(() async {
+      if (FirebaseAuth.instance.currentUser != null) {
             try {
               AppUser user = await getUserFirebaseInstance(
                   guideMode, FirebaseAuth.instance.currentUser!);
+              Provider.of<UserProvider>(context, listen: false).setUser(user);
               Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-                  builder: (context) => homepage(user: user)),
+                  builder: (context) => const homepage()),
                       (route) => false);
             } catch (exception, stackTrace) {
                 await Sentry.captureException(

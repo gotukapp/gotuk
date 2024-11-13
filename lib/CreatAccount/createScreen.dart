@@ -1,6 +1,7 @@
 // ignore_for_file: camel_case_types
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dm/CreatAccount/termsAndConditions.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/CreatAccount/login.dart';
@@ -137,6 +138,21 @@ class _createScreenState extends State<createScreen> {
                               ),
                             ),
                             controller: passwordController),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.03,
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => TermsAndConditions()),
+                            );
+                          },
+                          child: const Text(
+                            'View Terms and Conditions',
+                            style: TextStyle(fontSize: 16, color: Colors.white),
+                          ),
+                        ),
                         SizedBox(
                           height: MediaQuery.of(context).size.height * 0.03,
                         ),
