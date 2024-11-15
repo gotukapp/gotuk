@@ -12,6 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../Domain/appUser.dart';
+
 class createScreen extends StatefulWidget {
   const createScreen({super.key});
 
@@ -20,11 +22,15 @@ class createScreen extends StatefulWidget {
 }
 
 class _createScreenState extends State<createScreen> {
-  bool isvisibal = false;
+  bool termsAndConditionsAccepted = false;
+  bool dataProtectionPolicyAccepted = false;
+
   @override
   void initState() {
     getdarkmodepreviousstate();
     getAppModeState();
+    termsAndConditionsAccepted = false;
+    dataProtectionPolicyAccepted = false;
     super.initState();
   }
 
@@ -89,19 +95,6 @@ class _createScreenState extends State<createScreen> {
                             suffix: null,
                             controller: nameController),
                         SizedBox(height: MediaQuery.of(context).size.height * 0.015),
-                        Text("Email",
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontFamily: "Gilroy Medium",
-                                color: WhiteColor)),
-                        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                        textfield(
-                            fieldColor: notifier.getfieldcolor,
-                            hintColor: notifier.gettextfieldcolor,
-                            text: 'Enter your email',
-                            controller: emailController,
-                            suffix: null),
-                        SizedBox(height: MediaQuery.of(context).size.height * 0.015),
                         Text(
                           "Phone Number",
                           style: TextStyle(
@@ -116,6 +109,19 @@ class _createScreenState extends State<createScreen> {
                             text: 'Enter your number',
                             suffix: null,
                             controller: phoneNumberController),
+                        SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+                        Text("Email",
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontFamily: "Gilroy Medium",
+                                color: WhiteColor)),
+                        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                        textfield(
+                            fieldColor: notifier.getfieldcolor,
+                            hintColor: notifier.gettextfieldcolor,
+                            text: 'Enter your email',
+                            controller: emailController,
+                            suffix: null),
                         SizedBox(height: MediaQuery.of(context).size.height * 0.015),
                         Text("Password",
                             style: TextStyle(
@@ -139,18 +145,46 @@ class _createScreenState extends State<createScreen> {
                             ),
                             controller: passwordController),
                         SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.03,
+                          height: MediaQuery.of(context).size.height * 0.01,
                         ),
                         TextButton(
-                          onPressed: () {
-                            Navigator.push(
+                          onPressed: () async {
+                            final bool accepted = await Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => TermsAndConditions()),
+                              MaterialPageRoute(builder: (context) => TermsAndConditions(title: 'Data Protection Policy', info: dataProtectionPolicy)),
                             );
+                            setState(() {
+                              dataProtectionPolicyAccepted = accepted;
+                            });
                           },
-                          child: const Text(
-                            'View Terms and Conditions',
-                            style: TextStyle(fontSize: 16, color: Colors.white),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text('Data Protection Policy',
+                                style: TextStyle(fontSize: 16, color: Colors.white)),
+                              Image.asset(dataProtectionPolicyAccepted ? "assets/images/square-check-regular.png" : "assets/images/square-regular.png",
+                                height: 20,
+                                color: Colors.white)]
+                          )
+                        ),
+                        TextButton(
+                          onPressed: () async {
+                            final bool accepted = await Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => TermsAndConditions(title: 'Terms and Conditions', info: termsAndConditions)),
+                            );
+                            setState(() {
+                              termsAndConditionsAccepted = accepted;
+                            });
+                          },
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text('Terms and Conditions',
+                                    style: TextStyle(fontSize: 16, color: Colors.white)),
+                                Image.asset(termsAndConditionsAccepted ? "assets/images/square-check-regular.png" : "assets/images/square-regular.png",
+                                    height: 20,
+                                    color: Colors.white)]
                           ),
                         ),
                         SizedBox(
@@ -160,10 +194,20 @@ class _createScreenState extends State<createScreen> {
                           bgColor: notifier.getlogowhitecolor,
                           textColor: notifier.getwhiteblackcolor,
                           onclick: () async {
-                            bool userCreated = await createUser();
-                            if (userCreated) {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => const verifyaccount()));
+                            //await createPhoneAccount(phoneNumberController.text);
+                            if (termsAndConditionsAccepted && dataProtectionPolicyAccepted) {
+                              bool userCreated = await createUser();
+                              if (userCreated) {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (
+                                        context) => const verifyaccount()));
+                              }
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("You need to accept the Terms and Conditions and the Data Protection Policy to proceed."),
+                                ),
+                              );
                             }
                           },
                           buttontext: "AGREE & CONTINUE",
@@ -179,7 +223,7 @@ class _createScreenState extends State<createScreen> {
                 height: MediaQuery.of(context).size.height * 0.02,
               ),
               Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 8),
+                  padding: const EdgeInsets.only(left: 25, right: 25, top: 8, bottom: 30),
                   child: Column(
                 children: [
                   Text("Have an account?",
@@ -210,7 +254,7 @@ class _createScreenState extends State<createScreen> {
     String errorMessage = '';
     try {
       UserCredential credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: "${phoneNumberController.text}@gotuk.pt",
+        email: emailController.text,
         password: passwordController.text,
       );
       FirebaseAuth.instance.currentUser?.updateDisplayName(nameController.text);
@@ -246,6 +290,41 @@ class _createScreenState extends State<createScreen> {
     return false;
   }
 
+  Future<void> createPhoneAccount(String phoneNumber) async {
+    await FirebaseAuth.instance.verifyPhoneNumber(
+      phoneNumber: phoneNumber,
+      verificationCompleted: (PhoneAuthCredential credential) async {
+        // This callback is triggered when verification is completed automatically
+        await FirebaseAuth.instance.signInWithCredential(credential);
+        print("User signed in automatically with phone credentials.");
+      },
+      verificationFailed: (FirebaseAuthException e) {
+        print("Phone number verification failed. Code: ${e.code}. Message: ${e.message}");
+      },
+      codeSent: (String verificationId, int? resendToken) async {
+        // Code has been sent to the phone number
+        print("Verification code sent to $phoneNumber.");
+
+        // Store the verificationId, as you will need it to complete sign-in
+        // Prompt the user to enter the code they received
+        String smsCode = await promptUserForSmsCode();
+
+        // Create a PhoneAuthCredential using the code and the verificationId
+        PhoneAuthCredential credential = PhoneAuthProvider.credential(
+          verificationId: verificationId,
+          smsCode: smsCode,
+        );
+
+        // Sign in with the credential
+        await FirebaseAuth.instance.signInWithCredential(credential);
+        print("User signed in with the provided verification code.");
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {
+        print("Auto retrieval timeout, verification ID: $verificationId");
+      },
+    );
+  }
+
   getdarkmodepreviousstate() async {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
@@ -270,5 +349,9 @@ class _createScreenState extends State<createScreen> {
     final prefs = await SharedPreferences.getInstance();
     bool? previousState = prefs.getBool("setGuideMode");
     guideMode = previousState ?? false;
+  }
+
+  promptUserForSmsCode() {
+    return '';
   }
 }

@@ -140,7 +140,8 @@ class _loginscreenState extends State<loginscreen> {
                       textColor: notifier.getwhiteblackcolor,
                       buttontext: guideMode ? "LOGIN AS A GUIDE" : "LOGIN",
                       onclick: () async {
-                        AppUser? user = await signInWithPhoneAndPassword();
+                        //await signInWithPhone(phoneNumberController.text);
+                        AppUser? user = await signInWithEmailAndPassword();
                         if(user != null) {
                           userProvider.setUser(user);
                           Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
@@ -296,7 +297,7 @@ class _loginscreenState extends State<loginscreen> {
     );
   }
 
-  Future<AppUser?> signInWithPhoneAndPassword() async {
+  Future<AppUser?> signInWithEmailAndPassword() async {
     String errorMessage = '';
     try {
       if (phoneNumberController.text.isNotEmpty && phoneNumberController.text.isNotEmpty) {
@@ -326,6 +327,41 @@ class _loginscreenState extends State<loginscreen> {
       ),
     );
     return null;
+  }
+
+  Future<void> signInWithPhone(String phoneNumber) async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+
+    await auth.verifyPhoneNumber(
+      phoneNumber: phoneNumber,
+      verificationCompleted: (PhoneAuthCredential credential) async {
+        // Automatically signs in when verification is completed
+        await auth.signInWithCredential(credential);
+      },
+      verificationFailed: (FirebaseAuthException e) {
+        if (e.code == 'invalid-phone-number') {
+          print('The provided phone number is not valid.${e.code}${e.message}');
+        } else {
+          print('${e.code}${e.message}');
+        }
+      },
+      codeSent: (String verificationId, int? resendToken) async {
+        // The code has been sent to the user, prompt for input
+        String smsCode = await getUserInputCode(); // Assume a function that prompts user for code
+
+        // Create a PhoneAuthCredential with the code
+        PhoneAuthCredential credential = PhoneAuthProvider.credential(
+          verificationId: verificationId,
+          smsCode: smsCode,
+        );
+
+        // Sign the user in with the credential
+        await auth.signInWithCredential(credential);
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {
+        // Auto-resolution timed out
+      },
+    );
   }
 
   Future<AppUser?> signInWithGoogle() async {
@@ -361,5 +397,10 @@ class _loginscreenState extends State<loginscreen> {
     final prefs = await SharedPreferences.getInstance();
     bool? previousState = prefs.getBool("setGuideMode");
     guideMode = previousState ?? false;
+  }
+
+  getUserInputCode() {
+
+    return '123456';
   }
 }
