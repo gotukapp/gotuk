@@ -210,18 +210,19 @@ class _checkoutState extends State<checkout> {
               if (widget.goNow)
                 ...[const SizedBox(height: 10),
                   selectDetail(
-                    heding: "Pickup Point",
+                    heading: "Pickup Point",
                     image: "assets/images/location.png",
                     text: pickupPointSelected ?? "Select Pickup Point",
                     icon: Icons.keyboard_arrow_down,
                     onclick: () {
                       pickupPointBottomSheet(tour!.starPoints.map((value) => value["name"].toString()).toList());
                     },
+                    notifier: notifier
                 )],
               if (!widget.goNow)
                 ...[ const SizedBox(height: 5),
                 selectDetail(
-                  heding: "Date",
+                  heading: "Date",
                   image: "assets/images/calendar.png",
                   text: selectedDate != null ? DateFormat('dd/MM/yyyy').format(selectedDate!) : "Select Dates",
                   icon: Icons.keyboard_arrow_down,
@@ -237,10 +238,11 @@ class _checkoutState extends State<checkout> {
                       });
                     });
                   },
+                  notifier: notifier
                 )],
               const SizedBox(height: 10),
               selectDetail(
-                  heding: "Time",
+                  heading: "Time",
                   image: "assets/images/timer.png",
                   text: timeSaved
                       ? "$hourSliderValue:${minutesSliderValue == 0
@@ -248,10 +250,11 @@ class _checkoutState extends State<checkout> {
                       : minutesSliderValue.toString()}"
                       : "Select Time",
                   icon: Icons.keyboard_arrow_down,
-                  onclick: timerBottomSheet),
+                  onclick: timerBottomSheet,
+                  notifier: notifier),
               const SizedBox(height: 10),
               selectDetail(
-                  heding: "Guide Features",
+                  heading: "Guide Features",
                   image: "assets/images/guest.png",
                   text: guideFeaturesSaved ? getAllSelectedLanguages() : "Select Guide Features",
                   icon: Icons.keyboard_arrow_down,
@@ -260,7 +263,8 @@ class _checkoutState extends State<checkout> {
                       setState(() => guideFeaturesSaved = value ?? false);
                       filterGuides();
                     });
-                  }),
+                  },
+                  notifier: notifier),
               const SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.only(left: 6),
@@ -494,55 +498,6 @@ class _checkoutState extends State<checkout> {
     );
   }
 
-  Widget selectDetail({heding, image, text, icon, onclick}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(heding!,
-            style: TextStyle(
-                fontSize: 16,
-                color: notifier.getwhiteblackcolor,
-                fontFamily: "Gilroy Bold")),
-        const SizedBox(height: 8),
-        InkWell(
-          onTap: onclick,
-          child: Container(
-            height: 50,
-            width: double.infinity,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: notifier.getdarkmodecolor),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Image.asset(
-                        image,
-                        height: 25,
-                        color: LogoColor,
-                      ),
-                      const SizedBox(width: 15),
-                      Text(
-                        text,
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontFamily: "Gilroy Medium",
-                            color: notifier.getwhiteblackcolor),
-                      ),
-                    ],
-                  ),
-                  Icon(icon, color: notifier.getgreycolor)
-                ],
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 
   guideBottomSheet() {
     return showModalBottomSheet(
@@ -587,11 +542,12 @@ class _checkoutState extends State<checkout> {
                     SizedBox(
                         height: MediaQuery.of(context).size.height * 0.01),
                     selectDetail(
-                        heding: "Preferred language",
+                        heading: "Preferred language",
                         image: "assets/images/Langauge.png",
                         text: guideFeaturesSaved ? getAllSelectedLanguages() : "Select Language",
                         icon: Icons.keyboard_arrow_right,
-                        onclick: languagesBottomSheet),
+                        onclick: languagesBottomSheet,
+                        notifier: notifier),
                     SizedBox(
                         height: MediaQuery.of(context).size.height * 0.025),
                     Row(

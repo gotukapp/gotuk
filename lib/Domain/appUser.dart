@@ -94,6 +94,10 @@ class AppUser {
     }
 
   }
+
+  void submitAccountData() {
+
+  }
 }
 
 Future<AppUser> getUserFirebaseInstance(bool guideMode, User user) async {

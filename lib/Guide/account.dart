@@ -6,8 +6,12 @@ import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../Domain/appUser.dart';
+import '../Login&ExtraDesign/calendar.dart';
 
 class account extends StatefulWidget {
   const account({super.key});
@@ -34,98 +38,110 @@ class Item {
 
 Color validated = const Color(0xff66dd66);
 
-List<Item> generateItems(int numberOfItems) {
-  return [ Item(
-      headerValue: 'Documento de Identificação',
-      expandedValue: 'Documento de Identificação',
-      status: 'not submitted',
-      fields: [
-        { "name": "Nº CC/Passaporte", "description": "Número do documento", "type": "String"},
-        { "name": "Validade", "description": "Data de Validade", "type": "String"},
-        { "name": "Carta de condução", "description": "Número do documento", "type": "String"},
-        { "name": "Validade", "description": "Data de Validade", "type": "String"}
-      ]
-    ),
-    Item(
-        headerValue: 'Comprovativo de Actividade',
-        expandedValue: 'Comprovativo de Actividade',
-        status: 'submitted',
-        fields: [
-          { "name": "Declaração Abertura Atividade ", "description": "", "type": "String"},
-        ]
-    ),
-    Item(
-        headerValue: 'Licença RNAAT',
-        expandedValue: 'Licença RNAAT',
-        status: 'validated',
-        fields: [
-          { "name": "Nº Registo", "description": "", "type": "String"}
-        ]
-    ),
-    Item(
-        headerValue: 'Formação',
-        expandedValue: 'Formação',
-        status: 'not valid',
-        fields: []
-    ),
-    Item(
-        headerValue: 'Apólice de Seguro de Responsabilidade Civil',
-        expandedValue: 'Apólice de Seguro de Responsabilidade Civil',
-        status: 'not submitted',
-        fields: [
-          { "name": "Companhia de Seguros", "description": "Nome", "type": "String"},
-          { "name": "Nº Apólice", "description": "Indique o Número", "type": "String"},
-          { "name": "Validade", "description": "Data de Validade", "type": "String"}
-        ]
-    ),
-    Item(
-        headerValue: 'Apólice de seguro de Acidentes de trabalho',
-        expandedValue: 'Apólice de seguro de Acidentes de trabalho',
-        status: 'not submitted',
-        fields: [
-          { "name": "Companhia de Seguros", "description": "Nome", "type": "String"},
-          { "name": "Nº Apólice", "description": "Indique o Número", "type": "String"},
-          { "name": "Validade", "description": "Data de Validade", "type": "String"}
-        ]
-    ),
-    Item(
-        headerValue: 'Apólice de Seguro de Acidentes Pessoais',
-        expandedValue: 'Apólice de Seguro de Acidentes Pessoais',
-        status: 'not submitted',
-        fields: [
-          { "name": "Companhia de Seguros", "description": "Nome", "type": "String"},
-          { "name": "Nº Apólice", "description": "Indique o Número", "type": "String"},
-          { "name": "Validade", "description": "Data de Validade", "type": "String"}
-        ]
-    ),
-    Item(
-        headerValue: 'Dados do Veículo',
-        expandedValue: 'Dados do Veículo',
-        status: 'not submitted',
-        fields: [
-          { "name": "Matrícula", "description": "", "type": "String"},
-          { "name": "Lugares", "description": "", "type": "String"},
-          { "name": "Veículo Eléctrico", "description": "", "type": "Boolean"},
-          { "name": "Companhia de Seguros", "description": "Nome", "type": "String"},
-          { "name": "Nº Apólice", "description": "Indique o Número", "type": "String"},
-          { "name": "Validade", "description": "Data de Validade", "type": "String"}
-        ]
-    )
-  ];
-}
+
+
 
 class _AccountState extends State<account> {
   bool onlyElectricVehicles = false;
+  String? identificationNumber;
+  String? drivingLicenseNumber;
+  DateTime? ccExpirationDate;
+  DateTime? licensePlateExpirationDate;
+  late List<Item> _data;
+
+  late UserProvider userProvider;
+  late ColorNotifier notifier;
 
   @override
   void initState() {
     getdarkmodepreviousstate();
+    _data = generateItems(8);
     super.initState();
   }
 
-  late ColorNotifier notifier;
+  List<Item> generateItems(int numberOfItems) {
+    return [ Item(
+        headerValue: 'Documento de Identificação',
+        expandedValue: 'Documento de Identificação',
+        status: 'not submitted',
+        fields: [
+          { "name": "Nº CC/Passaporte", "description": "Número do documento", "type": "String", "field": identificationNumber },
+          { "name": "Validade", "description": "Data de Validade", "type": "Date", "field": ccExpirationDate},
+          { "name": "Carta de condução", "description": "Número do documento", "type": "String", "field": drivingLicenseNumber },
+          { "name": "Validade", "description": "Data de Validade", "type": "Date", "field": licensePlateExpirationDate }
+        ]
+    ),
+      Item(
+          headerValue: 'Comprovativo de Actividade',
+          expandedValue: 'Comprovativo de Actividade',
+          status: 'submitted',
+          fields: [
+            { "name": "Declaração Abertura Atividade ", "description": "", "type": "String"},
+          ]
+      ),
+      Item(
+          headerValue: 'Licença RNAAT',
+          expandedValue: 'Licença RNAAT',
+          status: 'not submitted',
+          fields: [
+            { "name": "Nº Registo", "description": "", "type": "String"}
+          ]
+      ),
+      Item(
+          headerValue: 'Formação',
+          expandedValue: 'Formação',
+          status: 'not valid',
+          fields: []
+      ),
+      Item(
+          headerValue: 'Apólice de Seguro de Responsabilidade Civil',
+          expandedValue: 'Apólice de Seguro de Responsabilidade Civil',
+          status: 'not submitted',
+          fields: [
+            { "name": "Companhia de Seguros", "description": "Nome", "type": "String"},
+            { "name": "Nº Apólice", "description": "Indique o Número", "type": "String"},
+            { "name": "Data de Validade", "description": "Data de Validade", "type": "Date", "field": licensePlateExpirationDate}
+          ]
+      ),
+      Item(
+          headerValue: 'Apólice de seguro de Acidentes de trabalho',
+          expandedValue: 'Apólice de seguro de Acidentes de trabalho',
+          status: 'not submitted',
+          fields: [
+            { "name": "Companhia de Seguros", "description": "Nome", "type": "String"},
+            { "name": "Nº Apólice", "description": "Indique o Número", "type": "String"},
+            { "name": "Data de Validade", "description": "Data de Validade", "type": "Date", "field": licensePlateExpirationDate}
+          ]
+      ),
+      Item(
+          headerValue: 'Apólice de Seguro de Acidentes Pessoais',
+          expandedValue: 'Apólice de Seguro de Acidentes Pessoais',
+          status: 'not submitted',
+          fields: [
+            { "name": "Companhia de Seguros", "description": "Nome", "type": "String"},
+            { "name": "Nº Apólice", "description": "Indique o Número", "type": "String"},
+            { "name": "Data de Validade", "description": "Data de Validade", "type": "Date", "field": licensePlateExpirationDate}
+          ]
+      ),
+      Item(
+          headerValue: 'Dados do Veículo',
+          expandedValue: 'Dados do Veículo',
+          status: 'not submitted',
+          fields: [
+            { "name": "Matrícula", "description": "", "type": "String"},
+            { "name": "Lugares", "description": "", "type": "String"},
+            { "name": "Veículo Eléctrico", "description": "", "type": "Boolean"},
+            { "name": "Companhia de Seguros", "description": "Nome", "type": "String"},
+            { "name": "Nº Apólice", "description": "Indique o Número", "type": "String"},
+            { "name": "Data de Validade", "description": "Data de Validade", "type": "Date", "field": licensePlateExpirationDate}
+          ]
+      )
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
+    userProvider = Provider.of<UserProvider>(context);
     notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
       appBar: AppBar(
@@ -152,7 +168,8 @@ class _AccountState extends State<account> {
                   textColor: WhiteColor,
                   buttontext: "Submit Data",
                   onclick: () async {
-
+                    AppUser user = userProvider.user!;
+                    user.submitAccountData();
                   })
             ]
           )
@@ -160,8 +177,6 @@ class _AccountState extends State<account> {
       ),
     );
   }
-
-  final List<Item> _data = generateItems(8);
 
   Widget _buildPanel() {
     return ExpansionPanelList(
@@ -174,15 +189,16 @@ class _AccountState extends State<account> {
         return ExpansionPanel(
           backgroundColor: getBackroundColorByStatus(item),
           headerBuilder: (BuildContext context, bool isExpanded) {
-            return ListTile(
-              title: Text(
-                item.headerValue,
-                style: TextStyle(
-                    fontSize: 16,
-                    color: notifier.getwhiteblackcolor,
-                    fontFamily: "Gilroy Bold"),
-              ),
-            );
+            return
+              ListTile(
+                title: Text(
+                  item.headerValue,
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: notifier.getwhiteblackcolor,
+                      fontFamily: "Gilroy Bold"),
+                ),
+              );
           },
           body: identificationDocumentWidget(notifier, context, item.fields),
           isExpanded: item.isExpanded,
@@ -222,9 +238,24 @@ class _AccountState extends State<account> {
               if (item["type"] == 'String')
                 textfield(
                   fieldColor: notifier.getdarkmodecolor,
-                  hintColor: notifier.getgreycolor,
+                  hintColor: notifier.getdarkgreycolor,
                   text: item["description"],
                   suffix: null),
+             if (item["type"] == 'Date')
+               selectDetail(
+                   text: item["field"] != null ? DateFormat('dd/MM/yyyy').format(item["field"]!) : "Seleccionar Data",
+                   icon: Icons.keyboard_arrow_down,
+                   onclick: () {
+                     Navigator.of(context).push(MaterialPageRoute(
+                       builder: (context) => Calendar(selectedDate: item["field"]),
+                     )).then((value) {
+                       setState(() {
+                         item["field"] = value; // you receive here
+                       });
+                     });
+                   },
+                   notifier: notifier
+               ),
               if (item["type"] == 'Boolean')
                 Row(
                   children: [

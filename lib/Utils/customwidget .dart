@@ -49,6 +49,7 @@ CustomAppbar(
 
 textfield({String? text, suffix, Color? hintColor, fieldColor, TextEditingController? controller, bool password = false}) {
   return Container(
+      height: 50,
       padding: const EdgeInsets.symmetric(vertical: 1),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15), color: fieldColor),
@@ -799,6 +800,60 @@ showTripAcceptResultMessage(BuildContext context, bool result) {
           ),
         ));
   }
+}
+
+Widget selectDetail({heading, image, text, icon, onclick, notifier}) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      if (heading != null)
+        ...[Text(heading!,
+            style: TextStyle(
+                fontSize: 16,
+                color: notifier.getwhiteblackcolor,
+                fontFamily: "Gilroy Bold")),
+        const SizedBox(height: 8)],
+      InkWell(
+        onTap: onclick,
+        child: Container(
+          height: 50,
+          width: double.infinity,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              color: notifier.getdarkmodecolor),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    if (image != null)
+                      ...[Image.asset(
+                        image,
+                        height: 25,
+                        color: LogoColor,
+                      ),
+                      const SizedBox(width: 15)]
+                    else
+                      const SizedBox(width: 5),
+                    Text(
+                      text,
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontFamily: "Gilroy Medium",
+                          color: notifier.getdarkgreycolor),
+                    ),
+                  ],
+                ),
+                Icon(icon, color: notifier.getgreycolor)
+              ],
+            ),
+          ),
+        ),
+      ),
+    ],
+  );
 }
 
 List hotelList = [
