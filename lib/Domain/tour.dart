@@ -12,11 +12,11 @@ Tour tour1 = Tour("lrBbhAD64JMbq81yjUAF",
     coords, starPoints);
 Tour tour2 = Tour("iPvTzM9QAK99KjlmWOQc", "Lisboa New City",
     "1h30",
-    "assets/images/tour2_img1.jpg",
-    ["assets/images/tour2_img1.jpg","assets/images/tour2_img2.jpg","assets/images/tour2_img3.jpg","assets/images/tour2_img4.jpg"],
+    "assets/images/tour2_img4.jpg",
+    ["assets/images/tour2_img4.jpg","assets/images/tour2_img2.jpg","assets/images/tour2_img3.jpg"],
     110, 135,
-    "Terreiro do Paço",
-    "assets/images/tour2_img1.jpg", 4.9, coords, starPoints2);
+    "Chiado Garrett",
+    "assets/images/tour2_img4.jpg", 4.9, coords, starPoints2);
 Tour tour3 = Tour("iFeHZGf61ZR6RsCxZFUf", "Discoveries in Belém",
     "2h - 2h30",
     "assets/images/tour3_img1.jpg",

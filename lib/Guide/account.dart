@@ -1,9 +1,11 @@
 // ignore_for_file: file_names
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -42,11 +44,30 @@ Color validated = const Color(0xff66dd66);
 
 
 class _AccountState extends State<account> {
-  bool onlyElectricVehicles = false;
-  String? identificationNumber;
-  String? drivingLicenseNumber;
-  DateTime? ccExpirationDate;
-  DateTime? licensePlateExpirationDate;
+  bool vehicleType = false;
+  final identificationNumber = TextEditingController();
+  final drivingLicenseNumber = TextEditingController();
+  final licenseRNAAT = TextEditingController();
+  DateTime? identificationNumberExpirationDate;
+  DateTime? drivingLicenseExpirationDate;
+
+  final insuranceCompanyName = TextEditingController();
+  final insurancePolicyNumber = TextEditingController();
+  DateTime? insuranceExpirationDate;
+
+  final insuranceWorkAccidentCompanyName = TextEditingController();
+  final insuranceWorkAccidentPolicyNumber = TextEditingController();
+  DateTime? insuranceWorkAccidentExpirationDate;
+
+  final insurancePersonalAccidentCompanyName = TextEditingController();
+  final insurancePersonalAccidentPolicyNumber = TextEditingController();
+  DateTime? insurancePersonalAccidentExpirationDate;
+
+  final vehicleLicensePlate = TextEditingController();
+  final vehicleSeatsNumber = TextEditingController();
+  final vehicleInsuranceCompanyName = TextEditingController();
+  final vehicleInsurancePolicyNumber = TextEditingController();
+  DateTime? vehicleInsuranceExpirationDate;
   late List<Item> _data;
 
   late UserProvider userProvider;
@@ -65,10 +86,10 @@ class _AccountState extends State<account> {
         expandedValue: 'Documento de Identificação',
         status: 'not submitted',
         fields: [
-          { "name": "Nº CC/Passaporte", "description": "Número do documento", "type": "String", "field": identificationNumber },
-          { "name": "Validade", "description": "Data de Validade", "type": "Date", "field": ccExpirationDate},
-          { "name": "Carta de condução", "description": "Número do documento", "type": "String", "field": drivingLicenseNumber },
-          { "name": "Validade", "description": "Data de Validade", "type": "Date", "field": licensePlateExpirationDate }
+          { "name": "Nº CC/Passaporte", "description": "Número do documento", "type": "String", "fieldName":"identificationNumber", "field": identificationNumber },
+          { "name": "Validade", "description": "Data de Validade", "type": "Date", "fieldName":"identificationNumberExpirationDate", "field": identificationNumberExpirationDate},
+          { "name": "Carta de condução", "description": "Número do documento", "type": "String", "fieldName":"drivingLicenseNumber", "field": drivingLicenseNumber },
+          { "name": "Validade", "description": "Data de Validade", "type": "Date", "fieldName":"drivingLicenseExpirationDate", "field": drivingLicenseExpirationDate }
         ]
     ),
       Item(
@@ -76,7 +97,7 @@ class _AccountState extends State<account> {
           expandedValue: 'Comprovativo de Actividade',
           status: 'submitted',
           fields: [
-            { "name": "Declaração Abertura Atividade ", "description": "", "type": "String"},
+            { "name": "Declaração Abertura Atividade", "description": "", "type": "String"},
           ]
       ),
       Item(
@@ -84,7 +105,7 @@ class _AccountState extends State<account> {
           expandedValue: 'Licença RNAAT',
           status: 'not submitted',
           fields: [
-            { "name": "Nº Registo", "description": "", "type": "String"}
+            { "name": "Nº Registo", "description": "", "type": "String", "fieldName": "licenseRNAAT", "field": licenseRNAAT }
           ]
       ),
       Item(
@@ -98,9 +119,9 @@ class _AccountState extends State<account> {
           expandedValue: 'Apólice de Seguro de Responsabilidade Civil',
           status: 'not submitted',
           fields: [
-            { "name": "Companhia de Seguros", "description": "Nome", "type": "String"},
-            { "name": "Nº Apólice", "description": "Indique o Número", "type": "String"},
-            { "name": "Data de Validade", "description": "Data de Validade", "type": "Date", "field": licensePlateExpirationDate}
+            { "name": "Companhia de Seguros", "description": "Nome", "type": "String", "fieldName": "insuranceCompanyName", "field": insuranceCompanyName },
+            { "name": "Nº Apólice", "description": "Indique o Número", "type": "String", "fieldName": "insurancePolicyNumber", "field": insurancePolicyNumber },
+            { "name": "Data de Validade", "description": "Data de Validade", "type": "Date", "fieldName": "insuranceExpirationDate", "field": insuranceExpirationDate }
           ]
       ),
       Item(
@@ -108,9 +129,9 @@ class _AccountState extends State<account> {
           expandedValue: 'Apólice de seguro de Acidentes de trabalho',
           status: 'not submitted',
           fields: [
-            { "name": "Companhia de Seguros", "description": "Nome", "type": "String"},
-            { "name": "Nº Apólice", "description": "Indique o Número", "type": "String"},
-            { "name": "Data de Validade", "description": "Data de Validade", "type": "Date", "field": licensePlateExpirationDate}
+            { "name": "Companhia de Seguros", "description": "Nome", "type": "String", "fieldName": "insuranceWorkAccidentCompanyName", "field": insuranceWorkAccidentCompanyName},
+            { "name": "Nº Apólice", "description": "Indique o Número", "type": "String", "fieldName": "insuranceWorkAccidentPolicyNumber", "field": insuranceWorkAccidentPolicyNumber},
+            { "name": "Data de Validade", "description": "Data de Validade", "type": "Date", "fieldName": "insuranceWorkAccidentExpirationDate", "field": insuranceWorkAccidentExpirationDate }
           ]
       ),
       Item(
@@ -118,9 +139,9 @@ class _AccountState extends State<account> {
           expandedValue: 'Apólice de Seguro de Acidentes Pessoais',
           status: 'not submitted',
           fields: [
-            { "name": "Companhia de Seguros", "description": "Nome", "type": "String"},
-            { "name": "Nº Apólice", "description": "Indique o Número", "type": "String"},
-            { "name": "Data de Validade", "description": "Data de Validade", "type": "Date", "field": licensePlateExpirationDate}
+            { "name": "Companhia de Seguros", "description": "Nome", "type": "String", "fieldName": "insurancePersonalAccidentCompanyName", "field": insurancePersonalAccidentCompanyName},
+            { "name": "Nº Apólice", "description": "Indique o Número", "type": "String", "fieldName": "insurancePersonalAccidentPolicyNumber", "field": insurancePersonalAccidentPolicyNumber},
+            { "name": "Data de Validade", "description": "Data de Validade", "type": "Date", "fieldName": "insurancePersonalAccidentExpirationDate", "field": insurancePersonalAccidentExpirationDate }
           ]
       ),
       Item(
@@ -128,15 +149,37 @@ class _AccountState extends State<account> {
           expandedValue: 'Dados do Veículo',
           status: 'not submitted',
           fields: [
-            { "name": "Matrícula", "description": "", "type": "String"},
-            { "name": "Lugares", "description": "", "type": "String"},
-            { "name": "Veículo Eléctrico", "description": "", "type": "Boolean"},
-            { "name": "Companhia de Seguros", "description": "Nome", "type": "String"},
-            { "name": "Nº Apólice", "description": "Indique o Número", "type": "String"},
-            { "name": "Data de Validade", "description": "Data de Validade", "type": "Date", "field": licensePlateExpirationDate}
+            { "name": "Matrícula", "description": "", "type": "String", "fieldName": "vehicleLicensePlate", "field": vehicleLicensePlate },
+            { "name": "Lugares", "description": "", "type": "String", "fieldName": "vehicleSeatsNumber", "field": vehicleSeatsNumber },
+            { "name": "Veículo Eléctrico", "description": "", "type": "Boolean", "fieldName": "vehicleType", "field": vehicleType },
+            { "name": "Companhia de Seguros", "description": "Nome", "type": "String", "fieldName": "vehicleInsuranceCompanyName", "field": vehicleInsuranceCompanyName },
+            { "name": "Nº Apólice", "description": "Indique o Número", "type": "String", "fieldName": "vehicleInsurancePolicyNumber", "field": vehicleInsurancePolicyNumber },
+            { "name": "Data de Validade", "description": "Data de Validade", "type": "Date", "fieldName": "vehicleInsuranceExpirationDate", "field": vehicleInsuranceExpirationDate }
           ]
       )
     ];
+  }
+
+  // Function to fetch the most recent document
+  Future<Map<String, dynamic>?> getMostRecentDocument() async {
+    try {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .collection('documents')
+          .orderBy('submitDate', descending: true) // Sort by 'datetime' in descending order
+          .limit(1) // Limit to 1 document
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        return querySnapshot.docs.first.data();
+      } else {
+        return null; // No documents found
+      }
+    } catch (e) {
+      print('Error fetching document: $e');
+      return null; // Return null if an error occurs
+    }
   }
 
   @override
@@ -156,25 +199,51 @@ class _AccountState extends State<account> {
         ),
       ),
       backgroundColor: notifier.getblackwhitecolor,
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-          child: Column(
-            children: [
-              _buildPanel(),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.06),
-              AppButton(
-                  bgColor: notifier.getlogobgcolor,
-                  textColor: WhiteColor,
-                  buttontext: "Submit Data",
-                  onclick: () async {
-                    AppUser user = userProvider.user!;
-                    user.submitAccountData();
-                  })
-            ]
-          )
-        ),
-      ),
+      body: FutureBuilder<Map<String, dynamic>?>(
+          future: getMostRecentDocument(),
+          builder: (context, snapshot) {
+            final Map<String, dynamic> data;
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasData && snapshot.data != null) {
+              data = snapshot.data!;
+              for(Item item in _data) {
+                for(dynamic field in item.fields) {
+                  if(field["field"] != null) {
+                    if (data.containsKey(field["fieldName"])) {
+                      if (field["type"] == 'String') {
+                        field["field"].text = data[field["fieldName"]];
+                      } else if (field["type"] == 'Date') {
+                        field["field"] = data[field["fieldName"]].toDate();
+                      } else {
+                        field["field"] = data[field["fieldName"]];
+                      }
+                    }
+                  }
+                }
+              }
+            }
+
+            return SingleChildScrollView(
+              child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                  child: Column(
+                      children: [
+                        _buildPanel(),
+                        SizedBox(height: MediaQuery.of(context).size.height * 0.06),
+                        AppButton(
+                            bgColor: notifier.getlogobgcolor,
+                            textColor: WhiteColor,
+                            buttontext: "Submit Data",
+                            onclick: () async {
+                              AppUser user = userProvider.user!;
+                              user.submitAccountData(_data);
+                            })
+                      ]
+                  )
+              ),
+            );
+          })
     );
   }
 
@@ -239,6 +308,7 @@ class _AccountState extends State<account> {
                 textfield(
                   fieldColor: notifier.getdarkmodecolor,
                   hintColor: notifier.getdarkgreycolor,
+                  controller: item["field"],
                   text: item["description"],
                   suffix: null),
              if (item["type"] == 'Date')
@@ -267,13 +337,13 @@ class _AccountState extends State<account> {
                           fontFamily: "Gilroy Medium"),
                     ),
                     CupertinoSwitch(
-                      value: onlyElectricVehicles,
+                      value: item["field"],
                       thumbColor: notifier.getdarkwhitecolor,
                       trackColor: notifier.getbuttoncolor,
                       activeColor: notifier.getdarkbluecolor,
                       onChanged: (value) {
                         setState(() {
-                          onlyElectricVehicles = value;
+                          item["field"] = value;
                         });
                       },
                     ),

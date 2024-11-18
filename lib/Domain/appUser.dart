@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 
+import '../Guide/account.dart';
+
 class AppUser {
 
   final String id;
@@ -95,8 +97,26 @@ class AppUser {
 
   }
 
-  void submitAccountData() {
+  void submitAccountData(List<Item> data) {
+    Map<String, dynamic> documents = {};
+    for(Item item in data) {
+      for(dynamic field in item.fields) {
+        if(field["field"] != null) {
+          if (field["type"] == 'String'){
+            documents[field["fieldName"]] = field["field"].text;
+          } else {
+            documents[field["fieldName"]] = field["field"];
+          }
+        }
+      }
+    }
 
+    documents["submitDate"] = DateTime.now();
+
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection('documents').add(documents);
   }
 }
 
