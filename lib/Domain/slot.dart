@@ -1,8 +1,10 @@
-import 'package:dm/Domain/tour.dart';
+import 'package:dm/Domain/trips.dart';
 
 class Slot {
-  final Tour? tour;
+  DateTime start;
+  DateTime end;
+  final Trip? trip;
   int status;
 
-  Slot(this.status, this.tour);
+  Slot(this.start, this.end, this.status, this.trip);
 }

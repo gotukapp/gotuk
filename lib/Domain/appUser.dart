@@ -35,13 +35,19 @@ class AppUser {
   }
 
   Future<void> updateAvailability(DateTime date,int status) async {
+    String day = DateFormat('yyyy-MM-dd').format(date);
+    String hour = DateFormat('HH:mm').format(date);
+    print('Update $day $hour');
+    await updateUserCollection(day, hour, status);
+    await updateUnavailabilityCollection(day, hour, status);
+  }
+
+  Future<void> updateUserCollection(String day, String hour, int status) async {
     CollectionReference userUnavailability = FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser?.uid)
         .collection('unavailability');
 
-    String day = DateFormat('yyyy-MM-dd').format(date);
-    String hour = DateFormat('HH:mm').format(date);
     DocumentSnapshot dayUnavailability = await userUnavailability.doc(day).get();
     List<dynamic> slots = [];
     if (dayUnavailability.exists) {
@@ -56,6 +62,37 @@ class AppUser {
       "date": DateTime.parse(day),
       "slots": slots
     });
+  }
+
+  Future<void> updateUnavailabilityCollection(String day, String hour, int status) async {
+    CollectionReference unavailability = FirebaseFirestore.instance
+        .collection('unavailability');
+
+    DocumentSnapshot dayUnavailability = await unavailability.doc(day).get();
+    List<dynamic> guides = [];
+    if (dayUnavailability.exists) {
+      final data = dayUnavailability.data() as Map<String, dynamic>?;
+      if(data != null && data.containsKey(hour)) {
+        guides = dayUnavailability.get(hour);
+      }
+    }
+
+    if (status == 1) {
+      guides.remove(FirebaseAuth.instance.currentUser?.uid);
+    } else {
+      guides.add(FirebaseAuth.instance.currentUser?.uid);
+    }
+
+    if (dayUnavailability.exists) {
+      unavailability.doc(day).update({
+        hour: guides
+      });
+    } else {
+      unavailability.doc(day).set({
+        hour: guides
+      });
+    }
+
   }
 }
 

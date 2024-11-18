@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -39,10 +40,10 @@ List<Item> generateItems(int numberOfItems) {
       expandedValue: 'Documento de Identificação',
       status: 'not submitted',
       fields: [
-        { "name": "Nº CC/Passaporte", "description": "Número do documento"},
-        { "name": "Validade", "description": "Data de Validade"},
-        { "name": "Carta de condução", "description": "Número do documento"},
-        { "name": "Validade", "description": "Data de Validade"}
+        { "name": "Nº CC/Passaporte", "description": "Número do documento", "type": "String"},
+        { "name": "Validade", "description": "Data de Validade", "type": "String"},
+        { "name": "Carta de condução", "description": "Número do documento", "type": "String"},
+        { "name": "Validade", "description": "Data de Validade", "type": "String"}
       ]
     ),
     Item(
@@ -50,7 +51,7 @@ List<Item> generateItems(int numberOfItems) {
         expandedValue: 'Comprovativo de Actividade',
         status: 'submitted',
         fields: [
-          { "name": "Declaração Abertura Atividade ", "description": ""},
+          { "name": "Declaração Abertura Atividade ", "description": "", "type": "String"},
         ]
     ),
     Item(
@@ -58,7 +59,7 @@ List<Item> generateItems(int numberOfItems) {
         expandedValue: 'Licença RNAAT',
         status: 'validated',
         fields: [
-          { "name": "Nº Registo", "description": ""}
+          { "name": "Nº Registo", "description": "", "type": "String"}
         ]
     ),
     Item(
@@ -72,9 +73,9 @@ List<Item> generateItems(int numberOfItems) {
         expandedValue: 'Apólice de Seguro de Responsabilidade Civil',
         status: 'not submitted',
         fields: [
-          { "name": "Companhia de Seguros", "description": "Nome"},
-          { "name": "Nº Apólice", "description": "Indique o Número"},
-          { "name": "Validade", "description": "Data de Validade"}
+          { "name": "Companhia de Seguros", "description": "Nome", "type": "String"},
+          { "name": "Nº Apólice", "description": "Indique o Número", "type": "String"},
+          { "name": "Validade", "description": "Data de Validade", "type": "String"}
         ]
     ),
     Item(
@@ -82,9 +83,9 @@ List<Item> generateItems(int numberOfItems) {
         expandedValue: 'Apólice de seguro de Acidentes de trabalho',
         status: 'not submitted',
         fields: [
-          { "name": "Companhia de Seguros", "description": "Nome"},
-          { "name": "Nº Apólice", "description": "Indique o Número"},
-          { "name": "Validade", "description": "Data de Validade"}
+          { "name": "Companhia de Seguros", "description": "Nome", "type": "String"},
+          { "name": "Nº Apólice", "description": "Indique o Número", "type": "String"},
+          { "name": "Validade", "description": "Data de Validade", "type": "String"}
         ]
     ),
     Item(
@@ -92,9 +93,9 @@ List<Item> generateItems(int numberOfItems) {
         expandedValue: 'Apólice de Seguro de Acidentes Pessoais',
         status: 'not submitted',
         fields: [
-          { "name": "Companhia de Seguros", "description": "Nome"},
-          { "name": "Nº Apólice", "description": "Indique o Número"},
-          { "name": "Validade", "description": "Data de Validade"}
+          { "name": "Companhia de Seguros", "description": "Nome", "type": "String"},
+          { "name": "Nº Apólice", "description": "Indique o Número", "type": "String"},
+          { "name": "Validade", "description": "Data de Validade", "type": "String"}
         ]
     ),
     Item(
@@ -102,18 +103,20 @@ List<Item> generateItems(int numberOfItems) {
         expandedValue: 'Dados do Veículo',
         status: 'not submitted',
         fields: [
-          { "name": "Matrícula", "description": ""},
-          { "name": "Lugares", "description": ""},
-          { "name": "Tipo de Veículo", "description": ""},
-          { "name": "Companhia de Seguros", "description": "Nome"},
-          { "name": "Nº Apólice", "description": "Indique o Número"},
-          { "name": "Validade", "description": "Data de Validade"}
+          { "name": "Matrícula", "description": "", "type": "String"},
+          { "name": "Lugares", "description": "", "type": "String"},
+          { "name": "Veículo Eléctrico", "description": "", "type": "Boolean"},
+          { "name": "Companhia de Seguros", "description": "Nome", "type": "String"},
+          { "name": "Nº Apólice", "description": "Indique o Número", "type": "String"},
+          { "name": "Validade", "description": "Data de Validade", "type": "String"}
         ]
     )
   ];
 }
 
 class _AccountState extends State<account> {
+  bool onlyElectricVehicles = false;
+
   @override
   void initState() {
     getdarkmodepreviousstate();
@@ -208,7 +211,6 @@ class _AccountState extends State<account> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [ ...fields.map((item) {
-
              return [const SizedBox(height: 10),
                Text(item["name"],
                 style: TextStyle(
@@ -217,11 +219,35 @@ class _AccountState extends State<account> {
                     fontFamily: "Gilroy Bold"),
               ),
               const SizedBox(height: 10),
-              textfield(
-                fieldColor: notifier.getdarkmodecolor,
-                hintColor: notifier.getgreycolor,
-                text: item["description"],
-                suffix: null),
+              if (item["type"] == 'String')
+                textfield(
+                  fieldColor: notifier.getdarkmodecolor,
+                  hintColor: notifier.getgreycolor,
+                  text: item["description"],
+                  suffix: null),
+              if (item["type"] == 'Boolean')
+                Row(
+                  children: [
+                    Text(
+                      item["description"],
+                      style: TextStyle(
+                          fontSize: 13,
+                          color: greyColor,
+                          fontFamily: "Gilroy Medium"),
+                    ),
+                    CupertinoSwitch(
+                      value: onlyElectricVehicles,
+                      thumbColor: notifier.getdarkwhitecolor,
+                      trackColor: notifier.getbuttoncolor,
+                      activeColor: notifier.getdarkbluecolor,
+                      onChanged: (value) {
+                        setState(() {
+                          onlyElectricVehicles = value;
+                        });
+                      },
+                    ),
+                  ],
+                ),
               const SizedBox(height: 10)
              ];
             }).flattened,

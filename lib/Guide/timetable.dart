@@ -28,12 +28,13 @@ class _TimeTableState extends State<TimeTable> {
   void initState() {
     getdarkmodepreviousstate();
     super.initState();
-    items = generateItems();
+    slots = generateItems();
   }
 
   late ColorNotifier notifier;
   late UserProvider userProvider;
-  late List<TimetableItem<Slot>> items;
+  late Map<DateTime,List<Slot>> slots;
+  List<TimetableItem<Slot>> items = [];
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +66,8 @@ class _TimeTableState extends State<TimeTable> {
         .where("date", isGreaterThanOrEqualTo: today)
         .snapshots();
 
+    items.clear();
+
     userProvider = Provider.of<UserProvider>(context);
     notifier = Provider.of<ColorNotifier>(context, listen: true);
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
@@ -73,19 +76,36 @@ class _TimeTableState extends State<TimeTable> {
           if (snapshotTrips.hasData) {
             for (var item in snapshotTrips.data!.docs) {
               Trip trip = Trip.fromFirestore(item, null);
-              var slot = items.firstWhereOrNull((element) => element.start == trip.date);
 
-              items.add(TimetableItem(
-                  trip.date,
-                  trip.date.add(const Duration(minutes: 120)),
-                  data: Slot(2, trip.tour)
-              ));
+              final date = DateUtils.dateOnly(trip.date);
+              final slotIndex = slots[date]!.indexOf(slots[date]!.firstWhere((s) => s.start == trip.date));
+              slots[date]?.removeRange(slotIndex, slotIndex+3);
+              slots[date]?.insert(slotIndex, Slot(trip.date, trip.date.add(const Duration(minutes: 120)), 2, trip));
             }
 
             return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                 stream: unavailability,
                 builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                   if (snapshot.hasData) {
+                    for (var item in snapshot.data!.docs) {
+                      final date = DateUtils.dateOnly(item.get("date").toDate());
+                      List<dynamic> unavailabilitySlots = item.get("slots").toList();
+                      for(String time in unavailabilitySlots) {
+                        if (slots.containsKey(date)) {
+                          int hours = int.parse(time.split(":")[0]);
+                          int minutes = int.parse(time.split(":")[1]);
+                          DateTime slotStart = date.add(Duration(hours: hours, minutes: minutes));
+                          final slot = slots[date]!.firstWhereOrNull((s) => s.start == slotStart);
+                          slot?.status = 1;
+                        }
+                      }
+                    }
+
+                    for(List<Slot> daySlots in slots.values) {
+                      for(Slot slot in daySlots) {
+                        items.add(TimetableItem(slot.start, slot.end, data:slot));
+                      }
+                    }
                     return SafeArea(
                       child: Scaffold(
                           appBar: PreferredSize(
@@ -155,9 +175,9 @@ class _TimeTableState extends State<TimeTable> {
                                     ],
                                   ),
                                   child: InkWell(
-                                    onTap: () {
+                                    onTap: () async {
+                                      await userProvider.user?.updateAvailability(item.start, item.data!.status);
                                       setState(() {
-                                        userProvider.user?.updateAvailability(item.start, item.data!.status);
                                         if (item.data!.status == 1) {
                                           item.data!.status = 0;
                                         } else if (item.data!.status == 0) {
@@ -172,7 +192,7 @@ class _TimeTableState extends State<TimeTable> {
                                             borderRadius: BorderRadius.circular(5), color: item.data!.status == 0 ? Colors.green :
                                         (item.data!.status == 1 ? Colors.red : Colors.grey) ),
                                         child: Center(
-                                            child: Text(item.data!.status == 2 ? item.data!.tour!.name : "Slot",
+                                            child: Text(item.data!.status == 2 ? item.data!.trip!.tour.name : "Slot",
                                                 style: TextStyle(
                                                     fontSize: 10,
                                                     color: BlackColor,
@@ -207,24 +227,20 @@ class _TimeTableState extends State<TimeTable> {
     }
   }
 
-  /// Generates some random items for the timetable.
-  List<TimetableItem<Slot>> generateItems() {
-    final items = <TimetableItem<Slot>>[];
+  Map<DateTime,List<Slot>> generateItems() {
+    final items = <DateTime,List<Slot>>{};
     final today = DateUtils.dateOnly(DateTime.now());
     for (int i = 0; i < 30; i++) {
+      List<Slot> slots = [];
+      final current = today.add(Duration(hours: (i * 24)));
       for (int h = 8; h < 22; h++) {
-        final date = today.add(Duration(hours: (i * 24) + h));
-        items.add(TimetableItem(
-          date,
-          date.add(const Duration(minutes: 30)),
-          data: Slot(date.isAfter(DateTime.now()) ? 0 : -1, null),
-        ));
-        items.add(TimetableItem(
-          date.add(const Duration(minutes: 30)),
-          date.add(const Duration(minutes: 60)),
-          data: Slot(date.isAfter(DateTime.now()) ? 0 : -1, null),
-        ));
+        final date = current.add(Duration(hours: h));
+        slots.add(Slot(date, date.add(const Duration(minutes: 30)),date.isAfter(DateTime.now()) ? 0 : -1, null));
+        slots.add(Slot(date.add(const Duration(minutes: 30)),
+            date.add(const Duration(minutes: 60)),
+            date.isAfter(DateTime.now()) ? 0 : -1, null));
       }
+      items[current] = slots;
     }
     return items;
   }
