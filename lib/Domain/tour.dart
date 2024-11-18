@@ -38,7 +38,7 @@ Tour tour5 = Tour("s8xkuv1KCEfOAvOe5V8W",
     105, 152,
     "Parque Eduardo VII, Lisboa", "assets/images/tour5_img1.jpg", 4.7, coords, starPoints5);
 
-List<Tour> tourList = [tour1, tour2, tour3, tour4, tour5];
+List<Tour> tourList = [tour1, tour2, tour3, tour5];
 
 List<Tour> nearbyTours = [tour1, tour2, tour3];
 

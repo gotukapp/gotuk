@@ -102,7 +102,7 @@ class _checkoutState extends State<checkout> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (widget.goNow)
-                ...[Text(" ....  The GoNow solution allows you to make a reservation for today/tomorrow ....",
+                ...[Text("The GoNow solution allows you to make a reservation for today",
                       style: TextStyle(
                           fontSize: 14,
                           color: notifier.getwhiteblackcolor,
@@ -118,7 +118,7 @@ class _checkoutState extends State<checkout> {
                     onPageChanged: (index, reason) {
                       setState(() {
                         pickupPointSelected = null;
-                        tour = tourList[index%5];
+                        tour = tourList[index%4];
                       });
                     }),
                 items: tours.map((t) {
