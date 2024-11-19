@@ -24,6 +24,7 @@ class account extends StatefulWidget {
 
 class Item {
   Item({
+    required this.itemName,
     required this.expandedValue,
     required this.headerValue,
     required this.status,
@@ -31,6 +32,7 @@ class Item {
     this.isExpanded = false,
   });
 
+  String itemName;
   String expandedValue;
   String headerValue;
   String status;
@@ -38,16 +40,17 @@ class Item {
   List<dynamic> fields;
 }
 
-Color validated = const Color(0xff66dd66);
-
-
-
+Color approved = const Color(0xff66dd66);
 
 class _AccountState extends State<account> {
+
+  bool _isLoading = true;
+  String? _error;
+
   bool vehicleType = false;
   final identificationNumber = TextEditingController();
   final drivingLicenseNumber = TextEditingController();
-  final licenseRNAAT = TextEditingController();
+  final licenseRNAATNumber = TextEditingController();
   DateTime? identificationNumberExpirationDate;
   DateTime? drivingLicenseExpirationDate;
 
@@ -77,14 +80,16 @@ class _AccountState extends State<account> {
   void initState() {
     getdarkmodepreviousstate();
     _data = generateItems(8);
+    _loadDocument();
     super.initState();
   }
 
   List<Item> generateItems(int numberOfItems) {
     return [ Item(
+        itemName: 'identificationDocuments',
         headerValue: 'Documento de Identificação',
         expandedValue: 'Documento de Identificação',
-        status: 'not submitted',
+        status: 'not approved',
         fields: [
           { "name": "Nº CC/Passaporte", "description": "Número do documento", "type": "String", "fieldName":"identificationNumber", "field": identificationNumber },
           { "name": "Validade", "description": "Data de Validade", "type": "Date", "fieldName":"identificationNumberExpirationDate", "field": identificationNumberExpirationDate},
@@ -93,31 +98,35 @@ class _AccountState extends State<account> {
         ]
     ),
       Item(
+          itemName: 'activity',
           headerValue: 'Comprovativo de Actividade',
           expandedValue: 'Comprovativo de Actividade',
-          status: 'submitted',
+          status: 'not approved',
           fields: [
             { "name": "Declaração Abertura Atividade", "description": "", "type": "String"},
           ]
       ),
       Item(
+          itemName: 'licenseRNAAT',
           headerValue: 'Licença RNAAT',
           expandedValue: 'Licença RNAAT',
-          status: 'not submitted',
+          status: 'not approved',
           fields: [
-            { "name": "Nº Registo", "description": "", "type": "String", "fieldName": "licenseRNAAT", "field": licenseRNAAT }
+            { "name": "Nº Registo", "description": "", "type": "String", "fieldName": "licenseRNAATNumber", "field": licenseRNAATNumber }
           ]
       ),
       Item(
+          itemName: 'training',
           headerValue: 'Formação',
           expandedValue: 'Formação',
-          status: 'not valid',
+          status: 'not approved',
           fields: []
       ),
       Item(
+          itemName: 'civilLiabilityInsurancePolicy',
           headerValue: 'Apólice de Seguro de Responsabilidade Civil',
           expandedValue: 'Apólice de Seguro de Responsabilidade Civil',
-          status: 'not submitted',
+          status: 'not approved',
           fields: [
             { "name": "Companhia de Seguros", "description": "Nome", "type": "String", "fieldName": "insuranceCompanyName", "field": insuranceCompanyName },
             { "name": "Nº Apólice", "description": "Indique o Número", "type": "String", "fieldName": "insurancePolicyNumber", "field": insurancePolicyNumber },
@@ -125,9 +134,10 @@ class _AccountState extends State<account> {
           ]
       ),
       Item(
+          itemName: 'workAccidentInsurancePolicy',
           headerValue: 'Apólice de seguro de Acidentes de trabalho',
           expandedValue: 'Apólice de seguro de Acidentes de trabalho',
-          status: 'not submitted',
+          status: 'not approved',
           fields: [
             { "name": "Companhia de Seguros", "description": "Nome", "type": "String", "fieldName": "insuranceWorkAccidentCompanyName", "field": insuranceWorkAccidentCompanyName},
             { "name": "Nº Apólice", "description": "Indique o Número", "type": "String", "fieldName": "insuranceWorkAccidentPolicyNumber", "field": insuranceWorkAccidentPolicyNumber},
@@ -135,9 +145,10 @@ class _AccountState extends State<account> {
           ]
       ),
       Item(
+          itemName: 'personalAccidentInsurancePolicy',
           headerValue: 'Apólice de Seguro de Acidentes Pessoais',
           expandedValue: 'Apólice de Seguro de Acidentes Pessoais',
-          status: 'not submitted',
+          status: 'not approved',
           fields: [
             { "name": "Companhia de Seguros", "description": "Nome", "type": "String", "fieldName": "insurancePersonalAccidentCompanyName", "field": insurancePersonalAccidentCompanyName},
             { "name": "Nº Apólice", "description": "Indique o Número", "type": "String", "fieldName": "insurancePersonalAccidentPolicyNumber", "field": insurancePersonalAccidentPolicyNumber},
@@ -145,9 +156,10 @@ class _AccountState extends State<account> {
           ]
       ),
       Item(
+          itemName: 'vehicleData',
           headerValue: 'Dados do Veículo',
           expandedValue: 'Dados do Veículo',
-          status: 'not submitted',
+          status: 'not approved',
           fields: [
             { "name": "Matrícula", "description": "", "type": "String", "fieldName": "vehicleLicensePlate", "field": vehicleLicensePlate },
             { "name": "Lugares", "description": "", "type": "String", "fieldName": "vehicleSeatsNumber", "field": vehicleSeatsNumber },
@@ -160,8 +172,7 @@ class _AccountState extends State<account> {
     ];
   }
 
-  // Function to fetch the most recent document
-  Future<Map<String, dynamic>?> getMostRecentDocument() async {
+  Future<void> _loadDocument() async {
     try {
       final querySnapshot = await FirebaseFirestore.instance
           .collection('users')
@@ -172,15 +183,37 @@ class _AccountState extends State<account> {
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
-        return querySnapshot.docs.first.data();
+        setState(() {
+          Map<String, dynamic>? data = querySnapshot.docs.first.data();
+          for(Item item in _data) {
+            item.status = data.containsKey(item.itemName) ? data[item.itemName] : "not approved";
+            for(dynamic field in item.fields) {
+              if (data.containsKey(field["fieldName"])) {
+                if (field["type"] == 'String') {
+                  field["field"].text = data[field["fieldName"]];
+                } else if (field["type"] == 'Date') {
+                  field["field"] = data[field["fieldName"]].toDate();
+                } else {
+                  field["field"] = data[field["fieldName"]];
+                }
+              }
+            }
+          }
+          _isLoading = false;
+        });
       } else {
-        return null; // No documents found
+        setState(() {
+          _isLoading = false;
+        });
       }
     } catch (e) {
-      print('Error fetching document: $e');
-      return null; // Return null if an error occurs
+      setState(() {
+        _error = 'Error: $e';
+        _isLoading = false;
+      });
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -199,33 +232,12 @@ class _AccountState extends State<account> {
         ),
       ),
       backgroundColor: notifier.getblackwhitecolor,
-      body: FutureBuilder<Map<String, dynamic>?>(
-          future: getMostRecentDocument(),
-          builder: (context, snapshot) {
-            final Map<String, dynamic> data;
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasData && snapshot.data != null) {
-              data = snapshot.data!;
-              for(Item item in _data) {
-                for(dynamic field in item.fields) {
-                  if(field["field"] != null) {
-                    if (data.containsKey(field["fieldName"])) {
-                      if (field["type"] == 'String') {
-                        field["field"].text = data[field["fieldName"]];
-                      } else if (field["type"] == 'Date') {
-                        field["field"] = data[field["fieldName"]].toDate();
-                      } else {
-                        field["field"] = data[field["fieldName"]];
-                      }
-                    }
-                  }
-                }
-              }
-            }
-
-            return SingleChildScrollView(
-              child: Padding(
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator()) // Show loading spinner
+            : _error != null
+              ? Center(child: Text(_error!)) // Show error message
+              : SingleChildScrollView(
+                child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                   child: Column(
                       children: [
@@ -238,12 +250,17 @@ class _AccountState extends State<account> {
                             onclick: () async {
                               AppUser user = userProvider.user!;
                               user.submitAccountData(_data);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Account information submitted successfully!"),
+                                ),
+                              );
+                              Navigator.of(context).pop();
                             })
                       ]
                   )
               ),
-            );
-          })
+            )
     );
   }
 
@@ -377,8 +394,8 @@ class _AccountState extends State<account> {
   }
 
   getBackroundColorByStatus(Item item) {
-    if (item.status == 'validated') {
-      return validated;
+    if (item.status == 'approved') {
+      return approved;
     }
 
     return lightGrey;
