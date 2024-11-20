@@ -81,8 +81,8 @@ class _showAllToursState extends State<showAllTours> {
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Container(
-                                  height: 30,
-                                  width: 70,
+                                  height: 50,
+                                  width: 100,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(50),
                                       color: lightBlack),
