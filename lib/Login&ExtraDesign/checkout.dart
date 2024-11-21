@@ -16,6 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
+import '../Domain/appUser.dart';
 import '../Domain/tour.dart';
 
 class checkout extends StatefulWidget {
@@ -29,6 +30,9 @@ class checkout extends StatefulWidget {
 }
 
 class _checkoutState extends State<checkout> {
+  late ColorNotifier notifier;
+  late UserProvider userProvider;
+
   bool masterCard = false;
   bool visa = false;
   bool withTaxNumber = false;
@@ -59,6 +63,8 @@ class _checkoutState extends State<checkout> {
   Query<Map<String, dynamic>> guides = FirebaseFirestore.instance.collection("users")
       .where("accountValidated", isEqualTo: true);
 
+  CollectionReference<Map<String, dynamic>> unavailability = FirebaseFirestore.instance.collection("unavailability");
+
   @override
   void initState() {
     guidesAvailable = 0;
@@ -75,7 +81,6 @@ class _checkoutState extends State<checkout> {
     });
   }
 
-  late ColorNotifier notifier;
   @override
   Widget build(BuildContext context) {
     if(widget.goNow){
@@ -83,6 +88,7 @@ class _checkoutState extends State<checkout> {
       carrosselDefaultPage = tourList.indexOf(tour!);
     }
 
+    userProvider = Provider.of<UserProvider>(context);
     notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
       backgroundColor: notifier.getbgcolor,
@@ -148,7 +154,7 @@ class _checkoutState extends State<checkout> {
                   InkWell(
                     onTap: () {
                       changeButtonColor();
-                      filterGuides();
+                      checkGuidesAvailability();
                     },
                     child: Container(
                       height: 50,
@@ -178,7 +184,7 @@ class _checkoutState extends State<checkout> {
                   InkWell(
                     onTap: () {
                       changeButtonColor();
-                      filterGuides();
+                      checkGuidesAvailability();
                     },
                     child: Container(
                       height: 50,
@@ -224,7 +230,7 @@ class _checkoutState extends State<checkout> {
                 selectDetail(
                   heading: "Date",
                   image: "assets/images/calendar.png",
-                  text: selectedDate != null ? DateFormat('dd/MM/yyyy').format(selectedDate!) : "Select Dates",
+                  text: selectedDate != null ? DateFormat('yyyy-MM-dd').format(selectedDate!) : "Select Dates",
                   icon: Icons.keyboard_arrow_down,
                   onclick: () {
                     Navigator.of(context).push(MaterialPageRoute(
@@ -232,7 +238,7 @@ class _checkoutState extends State<checkout> {
                               minDate: DateTime.now().add(const Duration(days: 1)),
                               maxDate: DateTime.now().add(const Duration(days: 32))),
                     )).then((value) {
-                      filterGuides();
+                      checkGuidesAvailability();
                       setState(() {
                         selectedDate = value; // you receive here
                       });
@@ -261,7 +267,7 @@ class _checkoutState extends State<checkout> {
                   onclick: () {
                     guideBottomSheet().then((value) {
                       setState(() => guideFeaturesSaved = value ?? false);
-                      filterGuides();
+                      checkGuidesAvailability();
                     });
                   },
                   notifier: notifier),
@@ -398,7 +404,34 @@ class _checkoutState extends State<checkout> {
     );
   }
 
-  void filterGuides() {
+  void checkGuidesAvailability() {
+    if(selectedDate != null) {
+      String date = DateFormat('yyyy-MM-dd').format(selectedDate!);
+      final data = unavailability.doc(date);
+      data.get().then((querySnapshot) {
+        Set<String> guidesUnavailable = {};
+        for(int i = 0; i < tour!.durationSlots; i++) {
+          // Calculate total minutes from the starting point
+          int totalMinutes = (hourSliderValue * 60) + minutesSliderValue + (i * 30);
+          int newHour = totalMinutes ~/ 60; // Integer division to get hours
+          int newMinutes = totalMinutes % 60; // Remainder to get minutes
+          String hour = '${newHour.toString().padLeft(2, '0')}:${newMinutes.toString().padLeft(2, '0')}';
+          final fieldData = querySnapshot.data()?[hour];
+          if (fieldData != null && fieldData is List) {
+            for (var doc in fieldData) {
+              guidesUnavailable.add(doc);
+            }
+          }
+        }
+        filterGuides(guidesUnavailable.toList());
+      });
+    }
+    else {
+      filterGuides([]);
+    }
+  }
+
+  void filterGuides(List<String> guidesUnavailable) {
     List<String?> currentSelectedLanguages = checkedLanguages.map((item) => item["value"] ? item["code"].toString().toLowerCase() : null)
         .where((item) => item != null)
         .toList();
@@ -409,8 +442,12 @@ class _checkoutState extends State<checkout> {
         .where("language", arrayContainsAny: currentSelectedLanguages.isNotEmpty ? currentSelectedLanguages : checkedLanguages.map((item) => item["code"].toString().toLowerCase()).toList())
         .orderBy("rating", descending: true).get().then((querySnapshot) {
       setState(() {
-        guideRef = querySnapshot.docs.isNotEmpty ? querySnapshot.docs[0].reference : null;
-        guidesAvailable = querySnapshot.docs.length;
+        List<QueryDocumentSnapshot> filteredGuides = querySnapshot.docs.where((doc) {
+          return !guidesUnavailable.contains(doc.id);
+        }).toList();
+
+        guideRef = filteredGuides.isNotEmpty ? filteredGuides[0].reference : null;
+        guidesAvailable = filteredGuides.length;
       });
     });
   }
@@ -669,6 +706,7 @@ class _checkoutState extends State<checkout> {
                         // left: 100,
                         children: [InkWell(
                           onTap: () {
+                            checkGuidesAvailability();
                             Navigator.pop(context, true);
                           },
                           child: Container(
@@ -1006,8 +1044,11 @@ class _checkoutState extends State<checkout> {
                                       height: MediaQuery.of(context).size.height * 0.12),
                                   AppButton(
                                       buttontext: "Confirm and Pay",
-                                      onclick: () {
-                                        return bookingSuccessfully(guideRef);
+                                      onclick: () async {
+                                        bool resultOk = await bookTour();
+                                        if (resultOk) {
+                                          return bookingSuccessfully(guideRef);
+                                        }
                                       })
                                 ],
                               ),
@@ -1074,7 +1115,7 @@ class _checkoutState extends State<checkout> {
                             SizedBox(
                               width: MediaQuery.of(context).size.width * 1,
                               child: Text(
-                                "Congratulations! Please check in on the appropriate date. Enjoy your trip!",
+                                "Congratulations! Enjoy your trip!",
                                 style: TextStyle(
                                     fontSize: 14,
                                     color: notifier.getgreycolor,
@@ -1087,24 +1128,7 @@ class _checkoutState extends State<checkout> {
                       ),
                       InkWell(
                         onTap: () {
-                          selectedIndex = 0;
-                          if (widget.goNow) {
-                            selectedDate = DateTime.now();
-                          }
-                          Trip.addTrip(
-                              widget.goNow ? null : guideRef,
-                              tour!.id,
-                              selectedDate!.copyWith(hour: hourSliderValue, minute: minutesSliderValue),
-                              smallPriceSelected ? 3 : 6,
-                              widget.goNow ? 'pending' : 'booked',
-                              getAllSelectedLanguages(),
-                              masterCard ? 'mastercard' : 'visa',
-                              '',
-                              withTaxNumber,
-                              taxNumberController.text).then((docRef) {
-                            Navigator.of(context)..pop()..pop()..pop()..push(MaterialPageRoute(
-                                builder: (context) => TripDetail(docRef.id, false)));
-                          });
+                          Navigator.of(context).pop();
                         },
                         child: Container(
                           margin: const EdgeInsets.only(
@@ -1214,5 +1238,42 @@ class _checkoutState extends State<checkout> {
       }
     }
     return selectedLanguages;
+  }
+
+  Future<bool> bookTour() async {
+    try {
+      selectedIndex = 0;
+      if (widget.goNow) {
+        selectedDate = DateTime.now();
+      }
+      await Trip.addTrip(
+          widget.goNow ? null : guideRef,
+          tour!.id,
+          selectedDate!.copyWith(
+              hour: hourSliderValue, minute: minutesSliderValue, second: 0, millisecond: 0, microsecond: 0),
+          smallPriceSelected ? 3 : 6,
+          widget.goNow ? 'pending' : 'booked',
+          getAllSelectedLanguages(),
+          masterCard ? 'mastercard' : 'visa',
+          '',
+          withTaxNumber,
+          taxNumberController.text).then((docRef) {
+        Navigator.of(context)
+          ..pop()..pop()..pop()
+          ..push(MaterialPageRoute(
+              builder: (context) => TripDetail(docRef.id, false)));
+      });
+
+      if (!widget.goNow) {
+        await AppUser.updateTripUnavailability(guideRef!.id, tour!, selectedDate!, hourSliderValue, minutesSliderValue);
+      }
+
+      return true;
+    } on Exception catch (_, e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+      return false;
+    }
   }
 }

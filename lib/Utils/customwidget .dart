@@ -6,10 +6,12 @@ import 'package:dm/Login&ExtraDesign/tripDetail.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Domain/tour.dart';
 import 'package:dm/Domain/trips.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../Domain/appUser.dart';
 import '../Login&ExtraDesign/tourDetail.dart';
 import '../Profile/rateTour.dart';
 import 'dark_lightmode.dart';
@@ -673,11 +675,14 @@ newTripNotification(BuildContext context, ColorNotifier notifier, Trip trip) {
                             "Accept Tour",
                             "Are you sure you want to accept this tour?",
                               () async {
-                                bool result = await trip.acceptTour();
+                                bool resultOk = await trip.acceptTour();
+                                if (resultOk) {
+                                  await AppUser.updateTripUnavailability(FirebaseAuth.instance.currentUser!.uid, trip.tour, trip.date, trip.date.hour, trip.date.minute);
+                                }
                                 if (context.mounted) {
                                   ScaffoldMessenger.of(context)
                                       .hideCurrentSnackBar();
-                                  showTripAcceptResultMessage(context, result);
+                                  showTripAcceptResultMessage(context, resultOk);
                                 }
                               },
                               () {});

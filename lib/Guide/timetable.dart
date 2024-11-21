@@ -76,11 +76,21 @@ class _TimeTableState extends State<TimeTable> {
           if (snapshotTrips.hasData) {
             for (var item in snapshotTrips.data!.docs) {
               Trip trip = Trip.fromFirestore(item, null);
-
               final date = DateUtils.dateOnly(trip.date);
-              final slotIndex = slots[date]!.indexOf(slots[date]!.firstWhere((s) => s.start == trip.date));
-              slots[date]?.removeRange(slotIndex, slotIndex+3);
-              slots[date]?.insert(slotIndex, Slot(trip.date, trip.date.add(const Duration(minutes: 120)), 2, trip));
+              DateTime tripDate = DateTime(
+                  trip.date.year,
+                  trip.date.month,
+                  trip.date.day,
+                  trip.date.hour,
+                  trip.date.minute,
+                  0, 0, 0 );
+
+              final slotIndex = slots[date]!.indexOf(slots[date]!.firstWhere((s) => s.start == tripDate));
+              final slot =  slots[date]?[slotIndex];
+              if (slot?.status != 2) {
+                slots[date]?.removeRange(slotIndex, slotIndex + trip.tour.durationSlots);
+                slots[date]?.insert(slotIndex, Slot(tripDate, tripDate.add(Duration(minutes: 30 * (trip.tour.durationSlots-1))), 2, trip));
+              }
             }
 
             return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
@@ -176,14 +186,17 @@ class _TimeTableState extends State<TimeTable> {
                                   ),
                                   child: InkWell(
                                     onTap: () async {
-                                      await userProvider.user?.updateAvailability(item.start, item.data!.status);
-                                      setState(() {
-                                        if (item.data!.status == 1) {
-                                          item.data!.status = 0;
-                                        } else if (item.data!.status == 0) {
-                                          item.data!.status = 1;
-                                        }
-                                      });
+                                      if (item.data!.status != 2) {
+                                        await AppUser.updateUnavailability(
+                                            item.start, item.data!.status);
+                                        setState(() {
+                                          if (item.data!.status == 1) {
+                                            item.data!.status = 0;
+                                          } else if (item.data!.status == 0) {
+                                            item.data!.status = 1;
+                                          }
+                                        });
+                                      }
                                     },
                                     child: Container(
                                         height: double.infinity,

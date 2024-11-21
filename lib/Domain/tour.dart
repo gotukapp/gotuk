@@ -3,6 +3,7 @@ import 'chatMessage.dart';
 Tour tour1 = Tour("lrBbhAD64JMbq81yjUAF",
     "Lisboa Old City",
     "1h30 - 2h",
+    5,
     "assets/images/tour1_img1.jpg",
     ["assets/images/tour1_img1.jpg","assets/images/tour1_img2.jpg","assets/images/tour1_img3.jpg","assets/images/tour1_img4.jpg"],
     115, 148,
@@ -12,6 +13,7 @@ Tour tour1 = Tour("lrBbhAD64JMbq81yjUAF",
     coords, starPoints);
 Tour tour2 = Tour("iPvTzM9QAK99KjlmWOQc", "Lisboa New City",
     "1h30",
+    4,
     "assets/images/tour2_img4.jpg",
     ["assets/images/tour2_img4.jpg","assets/images/tour2_img2.jpg","assets/images/tour2_img3.jpg"],
     110, 135,
@@ -19,6 +21,7 @@ Tour tour2 = Tour("iPvTzM9QAK99KjlmWOQc", "Lisboa New City",
     "assets/images/tour2_img4.jpg", 4.9, coords, starPoints2);
 Tour tour3 = Tour("iFeHZGf61ZR6RsCxZFUf", "Discoveries in Belém",
     "2h - 2h30",
+    6,
     "assets/images/tour3_img1.jpg",
     ["assets/images/tour3_img1.jpg","assets/images/tour3_img2.jpg","assets/images/tour3_img3.jpg","assets/images/tour3_img4.jpg"],
     140, 180,
@@ -26,6 +29,7 @@ Tour tour3 = Tour("iFeHZGf61ZR6RsCxZFUf", "Discoveries in Belém",
     "assets/images/tour3_img1.jpg", 4.6, coords, starPoints3);
 Tour tour4 = Tour("QbVWW17rwjARJLNwWQ5S", "Cristo Rei",
     "2h - 2h30",
+    6,
     "assets/images/tour4_img1.jpg",
     ["assets/images/tour4_img1.jpg"],
     95, 135,
@@ -33,6 +37,7 @@ Tour tour4 = Tour("QbVWW17rwjARJLNwWQ5S", "Cristo Rei",
 Tour tour5 = Tour("s8xkuv1KCEfOAvOe5V8W",
     "Three sight hills",
     "1h30 - 2h",
+    5,
     "assets/images/tour5_img1.jpg",
     ["assets/images/tour5_img1.jpg", "assets/images/tour5_img2.jpg","assets/images/tour5_img3.jpg"],
     105, 152,
@@ -159,6 +164,7 @@ class Tour {
   final String id;
   final String name;
   final String duration;
+  final int durationSlots;
   final String img;
   final List<String> images;
   final double priceLow;
@@ -171,13 +177,14 @@ class Tour {
   bool? favorite;
 
 
-  Tour(this.id, this.name, this.duration, this.img, this.images, this.priceLow,
+  Tour(this.id, this.name, this.duration, this.durationSlots, this.img, this.images, this.priceLow,
       this.priceHigh, this.address, this.icon, this.review, this.coords, this.starPoints);
 
   Tour.fromJson(Map<String, dynamic> json)
       : id = json['id'] as String,
         name = json['name'] as String,
         duration = json['duration'] as String,
+        durationSlots = json['durationSlots'] as int,
         img = json['img'] as String,
         images = json['images'] as List<String>,
         priceLow = json['priceLow'] as double,
@@ -193,6 +200,7 @@ class Tour {
         'id': id,
         'title': name,
         'duration': duration,
+        'durationSlots': durationSlots,
         'img': img,
         'images': images,
         'priceLow': priceLow,

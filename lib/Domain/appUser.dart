@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dm/Domain/tour.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
@@ -36,15 +37,28 @@ class AppUser {
     };
   }
 
-  Future<void> updateAvailability(DateTime date,int status) async {
-    String day = DateFormat('yyyy-MM-dd').format(date);
-    String hour = DateFormat('HH:mm').format(date);
-    print('Update $day $hour');
-    await updateUserCollection(day, hour, status);
-    await updateUnavailabilityCollection(day, hour, status);
+  static Future<void> updateTripUnavailability(String guideId, Tour tour, DateTime tripDate, int hours, int minutes) async {
+    for (int i = 0; i < tour.durationSlots; i++) {
+      // Calculate total minutes from the starting point
+      int totalMinutes = (hours * 60) + minutes +
+          (i * 30);
+      int newHour = totalMinutes ~/ 60; // Integer division to get hours
+      int newMinutes = totalMinutes % 60; // Remainder to get minutes
+      String hour = '${newHour.toString().padLeft(2, '0')}:${newMinutes
+          .toString().padLeft(2, '0')}';
+      String date = DateFormat('yyyy-MM-dd').format(tripDate);
+      await AppUser.updateUnavailabilityCollection(guideId, date, hour, 0);
+    }
   }
 
-  Future<void> updateUserCollection(String day, String hour, int status) async {
+  static Future<void> updateUnavailability(DateTime date,int status) async {
+    String day = DateFormat('yyyy-MM-dd').format(date);
+    String hour = DateFormat('HH:mm').format(date);
+    await updateUserCollection(day, hour, status);
+    await updateUnavailabilityCollection(FirebaseAuth.instance.currentUser!.uid, day, hour, status);
+  }
+
+  static Future<void> updateUserCollection(String day, String hour, int status) async {
     CollectionReference userUnavailability = FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser?.uid)
@@ -66,7 +80,7 @@ class AppUser {
     });
   }
 
-  Future<void> updateUnavailabilityCollection(String day, String hour, int status) async {
+  static Future<void> updateUnavailabilityCollection(String guideId, String day, String hour, int currentStatus) async {
     CollectionReference unavailability = FirebaseFirestore.instance
         .collection('unavailability');
 
@@ -79,10 +93,10 @@ class AppUser {
       }
     }
 
-    if (status == 1) {
-      guides.remove(FirebaseAuth.instance.currentUser?.uid);
+    if (currentStatus == 1) {
+      guides.remove(guideId);
     } else {
-      guides.add(FirebaseAuth.instance.currentUser?.uid);
+      guides.add(guideId);
     }
 
     if (dayUnavailability.exists) {
