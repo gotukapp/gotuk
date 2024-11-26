@@ -980,7 +980,7 @@ List notificationList = [
   }
 ];
 
-List languages = [
+List guideLanguages = [
   {
     "code": "EN",
     "name": "English"
@@ -994,7 +994,7 @@ List languages = [
     "name": "German"
   },
   {
-    "code": "EN",
+    "code": "JP",
     "name": "Japanese"
   },
   {

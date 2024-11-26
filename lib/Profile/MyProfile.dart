@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../Domain/appUser.dart';
+
 class MyProfile extends StatefulWidget {
   const MyProfile({super.key});
 
@@ -16,6 +18,8 @@ class MyProfile extends StatefulWidget {
 }
 
 class _MyProfileState extends State<MyProfile> {
+  final nameController = TextEditingController();
+
   @override
   void initState() {
     getdarkmodepreviousstate();
@@ -23,9 +27,15 @@ class _MyProfileState extends State<MyProfile> {
   }
 
   late ColorNotifier notifier;
+  late UserProvider userProvider;
+
   @override
   Widget build(BuildContext context) {
     notifier = Provider.of<ColorNotifier>(context, listen: true);
+    userProvider = Provider.of<UserProvider>(context);
+
+    nameController.text = userProvider.user!.name!;
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -41,7 +51,7 @@ class _MyProfileState extends State<MyProfile> {
       backgroundColor: notifier.getbgcolor,
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -57,7 +67,7 @@ class _MyProfileState extends State<MyProfile> {
                       child: CircleAvatar(
                         radius: 68,
                         backgroundImage:
-                            AssetImage("assets/images/person5.jpg"),
+                            AssetImage("assets/images/avatar.png"),
                         // child: Image.asset("assets/images/person1.jpeg"),
                       ),
                     ),
@@ -81,7 +91,6 @@ class _MyProfileState extends State<MyProfile> {
                   ],
                 ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.04),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -97,8 +106,25 @@ class _MyProfileState extends State<MyProfile> {
                       fieldColor: notifier.getdarkmodecolor,
                       hintColor: notifier.getgreycolor,
                       text: 'Enter your Name',
+                      controller: nameController,
                       suffix: null),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+                  const SizedBox(height: 20),
+                  Text(
+                    "Email",
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: notifier.getwhiteblackcolor,
+                        fontFamily: "Gilroy Bold"),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                  Text(
+                    userProvider.user!.email!,
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: notifier.getwhiteblackcolor,
+                        fontFamily: "Gilroy"),
+                  ),
+                  const SizedBox(height: 20),
                   Text(
                     "Phone Number",
                     style: TextStyle(
@@ -107,19 +133,24 @@ class _MyProfileState extends State<MyProfile> {
                         fontFamily: "Gilroy Bold"),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                  textfield(
-                      fieldColor: notifier.getdarkmodecolor,
-                      hintColor: notifier.getgreycolor,
-                      text: 'Enter your Number',
-                      suffix: null),
+                  Text(
+                    userProvider.user!.phone!,
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: notifier.getwhiteblackcolor,
+                        fontFamily: "Gilroy"),
+                  ),
                 ],
               ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.22),
+              SizedBox(height: 40),
               AppButton(
                   buttontext: "Save Changes",
                   onclick: () {
-                    // Navigator.of(context)
-                    //     .push(MaterialPageRoute(builder: (context) => home()));
+                     userProvider.user!.update(nameController.text);
+                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                         content: Text("Profile changes saved successfully!"),
+                       ),
+                     );
                   }),
               SizedBox(height: MediaQuery.of(context).size.height * 0.02),
               Center(

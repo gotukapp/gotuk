@@ -39,7 +39,7 @@ class _checkoutState extends State<checkout> {
   bool onlyElectricVehicles = false;
   bool smallPriceSelected = true;
   bool guideFeaturesSaved = false;
-  List checkedLanguages = List<Object>.generate(languages.length, (i) => { ...languages[i], "value": false });
+  List checkedLanguages = List<Object>.generate(guideLanguages.length, (i) => { ...guideLanguages[i], "value": false });
   final taxNumberController = TextEditingController();
   String? pickupPointSelected;
 
@@ -580,7 +580,7 @@ class _checkoutState extends State<checkout> {
                         height: MediaQuery.of(context).size.height * 0.01),
                     selectDetail(
                         heading: "Preferred language",
-                        image: "assets/images/Langauge.png",
+                        image: "assets/images/language.png",
                         text: guideFeaturesSaved ? getAllSelectedLanguages() : "Select Language",
                         icon: Icons.keyboard_arrow_right,
                         onclick: languagesBottomSheet,

@@ -1,5 +1,4 @@
 // ignore_for_file: file_names
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:dm/Utils/Colors.dart';
@@ -14,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Domain/appUser.dart';
 import '../Login&ExtraDesign/calendar.dart';
+import '../Profile/Language.dart';
 
 class account extends StatefulWidget {
   const account({super.key});
@@ -48,6 +48,7 @@ class _AccountState extends State<account> {
   String? _error;
 
   bool vehicleType = false;
+  List<String> language = [];
   final identificationNumber = TextEditingController();
   final drivingLicenseNumber = TextEditingController();
   final licenseRNAATNumber = TextEditingController();
@@ -86,11 +87,12 @@ class _AccountState extends State<account> {
 
   List<Item> generateItems(int numberOfItems) {
     return [ Item(
-        itemName: 'identificationDocuments',
-        headerValue: 'Documento de Identificação',
-        expandedValue: 'Documento de Identificação',
+        itemName: 'personalData',
+        headerValue: 'Dados Pessoais',
+        expandedValue: 'Dados Pessoais',
         status: 'not approved',
         fields: [
+          { "name": "Linguas Faladas", "description": getSelectedLanguagesDescription, "type": "Array", "fieldName":"language", "field": language, "function": onLanguageClick },
           { "name": "Nº CC/Passaporte", "description": "Número do documento", "type": "String", "fieldName":"identificationNumber", "field": identificationNumber },
           { "name": "Validade", "description": "Data de Validade", "type": "Date", "fieldName":"identificationNumberExpirationDate", "field": identificationNumberExpirationDate},
           { "name": "Carta de condução", "description": "Número do documento", "type": "String", "fieldName":"drivingLicenseNumber", "field": drivingLicenseNumber },
@@ -193,6 +195,9 @@ class _AccountState extends State<account> {
                   field["field"].text = data[field["fieldName"]];
                 } else if (field["type"] == 'Date') {
                   field["field"] = data[field["fieldName"]].toDate();
+                } else if (field["type"] == 'Array') {
+                  field["field"] = data[field["fieldName"]].whereType<String>().toList();
+                  language = data[field["fieldName"]].whereType<String>().toList();
                 } else {
                   field["field"] = data[field["fieldName"]];
                 }
@@ -212,6 +217,18 @@ class _AccountState extends State<account> {
         _isLoading = false;
       });
     }
+  }
+
+  onLanguageClick() async {
+    final selectedValues = await Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => Language(languages: guideLanguages, multiple: true, currentLanguages: language,)));
+    setState(() {
+      language = selectedValues;
+    });
+  }
+
+  String getSelectedLanguagesDescription() {
+    return language.isEmpty ? "Selecionar línguas faladas" : language.map((s) => s.toUpperCase()).join(', ');
   }
 
 
@@ -249,7 +266,7 @@ class _AccountState extends State<account> {
                             buttontext: "Submit Data",
                             onclick: () async {
                               AppUser user = userProvider.user!;
-                              user.submitAccountData(_data);
+                              await user.submitAccountData(_data);
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text("Account information submitted successfully!"),
@@ -321,6 +338,13 @@ class _AccountState extends State<account> {
                     fontFamily: "Gilroy Bold"),
               ),
               const SizedBox(height: 10),
+              if (item["type"] == 'Array')
+                selectDetail(
+                    text: item["description"](),
+                    onclick: () {
+                      item["function"]();
+                    },
+                    notifier: notifier),
               if (item["type"] == 'String')
                 textfield(
                   fieldColor: notifier.getdarkmodecolor,

@@ -10,6 +10,7 @@ import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:dm/Domain/trips.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Domain/appUser.dart';
@@ -32,10 +33,14 @@ class _homepageState extends State<homepage> {
   bool guideMode = false;
   StreamSubscription<QuerySnapshot<Object?>>? listener;
 
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
+
   @override
   void initState() {
     getdarkmodepreviousstate();
     getAppModeState();
+    initializeNotifications();
     super.initState();
   }
 
@@ -147,6 +152,7 @@ class _homepageState extends State<homepage> {
           if (change.type == DocumentChangeType.added) {
             Trip t = Trip.fromFirestore(change.doc, null);
             int duration = t.status == 'booked' ? 10 : 60;
+            showNotification("New Trip", t.tour.name);
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 duration: Duration(seconds: duration),
@@ -158,5 +164,55 @@ class _homepageState extends State<homepage> {
       }
       isFirstTime = false;
     });
+  }
+
+  void initializeNotifications() {
+    const AndroidInitializationSettings initializationSettingsAndroid =
+    AndroidInitializationSettings('@mipmap/ic_launcher'); // Ícone padrão
+
+    final DarwinInitializationSettings initializationSettingsIOS =
+    DarwinInitializationSettings();
+
+    final InitializationSettings initializationSettings =
+    InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
+    );
+
+    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  }
+
+  // Método para exibir a notificação com som do dispositivo
+  Future<void> showNotification(String title, String body) async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+    AndroidNotificationDetails(
+      'your_channel_id',
+      'your_channel_name',
+      channelDescription: 'your_channel_description',
+      importance: Importance.max,
+      priority: Priority.high,
+      playSound: true, // Sons padrão ativados
+    );
+
+    const DarwinNotificationDetails iOSPlatformChannelSpecifics =
+    DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true, // Sons padrão ativados
+    );
+
+    const NotificationDetails platformChannelSpecifics =
+    NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+      iOS: iOSPlatformChannelSpecifics,
+    );
+
+    print("show notification");
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      title,
+      body,
+      platformChannelSpecifics,
+    );
   }
 }

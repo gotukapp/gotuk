@@ -103,12 +103,12 @@ class _SettingsState extends State<Settings> {
                       fontWeight: FontWeight.bold)),
               const SizedBox(height: 10),
               AccountSetting(
-                  image: "assets/images/Langauge.png",
+                  image: "assets/images/language.png",
                   text: "Language",
                   icon: Icons.keyboard_arrow_right,
                   onclick: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const Language()));
+                        builder: (context) => Language(languages: appLanguages)));
                   },
                   boxcolor: notifier.getdarkmodecolor,
                   iconcolor: notifier.getwhiteblackcolor,

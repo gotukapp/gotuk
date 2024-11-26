@@ -9,7 +9,7 @@ import '../Guide/account.dart';
 class AppUser {
 
   final String id;
-  final String? name;
+  late String? name;
   final String? email;
   final String? phone;
   final bool accountValidated;
@@ -111,13 +111,17 @@ class AppUser {
 
   }
 
-  void submitAccountData(List<Item> data) {
+  Future<void> submitAccountData(List<Item> data) async {
     Map<String, dynamic> documents = {};
     for(Item item in data) {
       for(dynamic field in item.fields) {
-        if(field["field"] != null) {
+        if(field["field"] != null ) {
           if (field["type"] == 'String'){
             documents[field["fieldName"]] = field["field"].text;
+          } else if (field["type"] == 'Array'){
+            if (field["field"].length > 0) {
+              documents[field["fieldName"]] = field["field"];
+            }
           } else {
             documents[field["fieldName"]] = field["field"];
           }
@@ -127,10 +131,52 @@ class AppUser {
 
     documents["submitDate"] = DateTime.now();
 
-    FirebaseFirestore.instance
+    await FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser?.uid)
         .collection('documents').add(documents);
+
+    Item item = data.firstWhere((i) => i.itemName == "personalData");
+    dynamic field = item.fields.firstWhere((i) => i["fieldName"] == "language");
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .update({
+      "language": field["field"]
+    });
+
+    Item vehicleData = data.firstWhere((i) => i.itemName == "vehicleData");
+    dynamic fieldLicensePlate = vehicleData.fields.firstWhere((i) => i["fieldName"] == "vehicleLicensePlate");
+    dynamic fieldSeatsNumber = vehicleData.fields.firstWhere((i) => i["fieldName"] == "vehicleSeatsNumber");
+    dynamic fieldVehicleType = vehicleData.fields.firstWhere((i) => i["fieldName"] == "vehicleType");
+
+    await FirebaseFirestore.instance
+        .collection('tuktuks')
+        .doc(fieldLicensePlate["field"].text).set({
+      "electric": fieldVehicleType["field"],
+      "licensePlate": fieldLicensePlate["field"].text,
+      "seats": int.parse(fieldSeatsNumber["field"].text)
+    });
+
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .update({
+      "tuktukElectric": fieldVehicleType["field"],
+      "tuktukSeats": int.parse(fieldSeatsNumber["field"].text),
+      "tuktuk": FirebaseFirestore.instance.doc('tuktuks/${fieldLicensePlate["field"].text}')
+    });
+  }
+
+  void update(String name) {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .update({
+      "name": name
+    });
+
+    this.name = name;
   }
 }
 

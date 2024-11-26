@@ -11,7 +11,11 @@ import '../Utils/LocaleModel.dart';
 import '../Utils/customwidget .dart';
 
 class Language extends StatefulWidget {
-  const Language({super.key});
+  final List languages;
+  final bool multiple;
+  final List<String> currentLanguages;
+
+  const Language({super.key, required this.languages, this.multiple = false, this.currentLanguages = const []});
 
   @override
   State<Language> createState() => _LanguageState();
@@ -21,22 +25,30 @@ class _LanguageState extends State<Language> {
   @override
   void initState() {
     getdarkmodepreviousstate();
+    selectedLanguages = widget.currentLanguages;
     super.initState();
   }
 
   late ColorNotifier notifier;
   late String language = Localizations.localeOf(context).toString();
+  late List<String> selectedLanguages;
 
   @override
   Widget build(BuildContext context) {
     notifier = Provider.of<ColorNotifier>(context, listen: true);
+
     return Scaffold(
       backgroundColor: notifier.getbgcolor,
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
         backgroundColor: notifier.getbgcolor,
-        leading: BackButton(color: notifier.getwhiteblackcolor),
+        leading: BackButton(
+            color: notifier.getwhiteblackcolor,
+            onPressed: () {
+              // Return the selected values when back button is pressed
+              Navigator.pop(context, selectedLanguages);
+            }),
         title: Text(
           AppLocalizations.of(context)!.language,
           style: TextStyle(
@@ -55,13 +67,21 @@ class _LanguageState extends State<Language> {
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       padding: EdgeInsets.zero,
-                      itemCount: appLanguages.length,
+                      itemCount: widget.languages.length,
                       itemBuilder: (BuildContext context, int index) {
                         return InkWell(
                             onTap: () {
                               setState(() {
-                                language = appLanguages[index]["code"].toLowerCase();
-                                localeModel.set(Locale(appLanguages[index]["code"].toLowerCase()));
+                                if (widget.multiple) {
+                                  if (selectedLanguages.contains(widget.languages[index]["code"].toLowerCase())) {
+                                    selectedLanguages.remove(widget.languages[index]["code"].toLowerCase());
+                                  } else {
+                                    selectedLanguages.add(widget.languages[index]["code"].toLowerCase());
+                                  }
+                                } else {
+                                  language = widget.languages[index]["code"].toLowerCase();
+                                  localeModel.set(Locale(appLanguages[index]["code"].toLowerCase()));
+                                }
                               });
                             },
                             child: Padding(
@@ -73,15 +93,19 @@ class _LanguageState extends State<Language> {
                                       color: notifier.getdarkmodecolor),
                                   child: ListTile(
                                     leading: Image.asset(
-                                      "assets/images/Flag_${appLanguages[index]["code"]}.png",
+                                      "assets/images/Flag_${widget.languages[index]["code"]}.png",
                                       height: 25,
                                     ),
-                                    title: Text(getTranslation(appLanguages[index]["name"]),
+                                    title: Text(getTranslation(widget.languages[index]["name"]),
                                         style: TextStyle(
                                             fontSize: 16,
                                             color: notifier.getwhiteblackcolor,
                                             fontFamily: "Gilroy Medium")),
-                                    trailing: language == appLanguages[index]["code"].toLowerCase() ? Icon(Icons.check, color: Darkblue) : const Text(''),
+                                    trailing:
+                                      widget.multiple ?
+                                        (selectedLanguages.contains(widget.languages[index]["code"].toLowerCase()) ? Icon(Icons.check, color: Darkblue) : const Text(''))
+                                        : (language == widget.languages[index]["code"].toLowerCase() ? Icon(Icons.check, color: Darkblue) : const Text(''))
+                                    ,
                                   ),
                                 ))
                         );
