@@ -3,12 +3,14 @@
 
 import 'dart:async';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dm/Profile/profile.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:dm/Domain/trips.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
@@ -35,6 +37,18 @@ class _homepageState extends State<homepage> {
 
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
+
+  final AudioPlayer _audioPlayer = AudioPlayer();
+
+  Future<void> playNotificationSound() async {
+    try {
+      await _audioPlayer.play(
+        AssetSource('sounds/notification.mp3'), // Caminho do som
+      );
+    } catch (e) {
+      print("Erro ao reproduzir som: $e");
+    }
+  }
 
   @override
   void initState() {
@@ -151,14 +165,18 @@ class _homepageState extends State<homepage> {
         for (var change in onData.docChanges) {
           if (change.type == DocumentChangeType.added) {
             Trip t = Trip.fromFirestore(change.doc, null);
-            int duration = t.status == 'booked' ? 10 : 60;
-            showNotification("New Trip", t.tour.name);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                duration: Duration(seconds: duration),
-                content: newTripNotification(context, notifier, t),
-              ),
-            );
+            if (t.status == 'pending' ||
+                (t.status == 'booked' && t.guideRef?.id == FirebaseAuth.instance.currentUser?.uid)) {
+              int duration = t.status == 'booked' ? 10 : 60;
+              showNotification("New Trip", t.tour.name);
+              playNotificationSound();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  duration: Duration(seconds: duration),
+                  content: newTripNotification(context, notifier, t),
+                ),
+              );
+            }
           }
         }
       }

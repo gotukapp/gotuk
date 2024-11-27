@@ -66,6 +66,7 @@ dependencies:
   sentry_flutter: ^8.9.0
   flutter_rating_bar: ^4.0.0
   flutter_local_notifications: ^14.0.0
+  audioplayers: ^6.1.0
 
   # percent_indicator: ^4.2.2
   #  google_maps_flutter: ^2.1.9
@@ -101,6 +102,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
+    - assets/sounds/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
