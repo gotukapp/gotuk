@@ -12,6 +12,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../Domain/trips.dart';
 import '../Utils/customwidget .dart';
 import 'checkout.dart';
 import 'tourDetail.dart';
@@ -25,18 +26,38 @@ class home extends StatefulWidget {
 }
 
 class _homeState extends State<home> {
+  List<Trip>? bookedTrips = [];
+
   @override
   void initState() {
     getdarkmodepreviousstate();
     Firebase.initializeApp().whenComplete(() {
-      setState(() {
-        FirebaseFirestore.instance.collection("tours").get().then(
-              (querySnapshot) {
-            for (var docSnapshot in querySnapshot.docs) {
-              print('${docSnapshot.id} => ${docSnapshot.data()}');
-            }
+      final db = FirebaseFirestore.instance.collection("trips");
+      final userDocRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser?.uid);
+
+      final Query<Map<String, dynamic>> pendingTrips =
+      db
+          .where("clientRef", isEqualTo: userDocRef)
+          .where("status", whereIn: ["pending", "booked", 'started'])
+          .orderBy("date");
+
+
+      FirebaseFirestore.instance.collection("tours").get().then(
+            (querySnapshot) {
+          for (var docSnapshot in querySnapshot.docs) {
+            print('${docSnapshot.id} => ${docSnapshot.data()}');
           }
-        );
+        }
+      );
+
+      pendingTrips.get().then( (querySnapshot) {
+          setState(() {
+            for (var docSnapshot in querySnapshot.docs) {
+              bookedTrips!.add(Trip.fromFirestore(docSnapshot, null));
+            }
+          });
       });
     });
     super.initState();
@@ -45,18 +66,6 @@ class _homeState extends State<home> {
   late ColorNotifier notifier;
   @override
   Widget build(BuildContext context) {
-    final db = FirebaseFirestore.instance.collection("trips");
-    final userDocRef = FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser?.uid);
-
-    final Stream<QuerySnapshot<Map<String, dynamic>>> pendingTrips =
-    db
-        .where("clientRef", isEqualTo: userDocRef)
-        .where("status", whereIn: ["pending", "booked", 'started'])
-        .orderBy("date")
-        .snapshots();
-
     notifier = Provider.of<ColorNotifier>(context, listen: true);
     return SafeArea(
       child: Scaffold(
@@ -94,27 +103,19 @@ class _homeState extends State<home> {
                       ),
                       Row(
                         children: [
-                          StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                              stream: pendingTrips,
-                              builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                                if (snapshot.data != null && snapshot.data!.docs.isNotEmpty) {
-                                  return InkWell(
-                                      onTap: () {
-                                        Navigator.of(context).push(MaterialPageRoute(
-                                            builder: (context) => const TripsBooked()));
-                                      },
-                                      child: CircleAvatar(
-                                          backgroundColor: notifier.getdarkmodecolor,
-                                          child: Image.asset(
-                                            "assets/images/newTripCalendar.png",
-                                            height: 25,
-                                            color: LogoColor,
-                                          ))
-                                  );
-                                } else {
-                                  return const SizedBox();
-                                }
-                              }
+                          if (bookedTrips!.isNotEmpty)
+                            InkWell(
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => const TripsBooked()));
+                              },
+                              child: CircleAvatar(
+                                  backgroundColor: notifier.getdarkmodecolor,
+                                  child: Image.asset(
+                                    "assets/images/newTripCalendar.png",
+                                    height: 25,
+                                    color: LogoColor,
+                                  ))
                           ),
                           InkWell(
                               onTap: () {
@@ -190,6 +191,46 @@ class _homeState extends State<home> {
                               ),
                             ),
                           ),
+                          if (bookedTrips!.isNotEmpty)
+                            ...[SizedBox( height: MediaQuery.of(context).size.height * 0.025),
+                                Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Booked Tours",
+                                  style: TextStyle(
+                                      fontFamily: "Gilroy Bold",
+                                      color: notifier.getwhiteblackcolor),
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => const TripsBooked(),
+                                    ));
+                                  },
+                                  child: Text(
+                                    "See All",
+                                    style: TextStyle(
+                                        color: notifier.getdarkbluecolor,
+                                        fontFamily: "Gilroy Medium"),
+                                  ),
+                                ),
+                              ],
+                            ),
+                                SizedBox(height: MediaQuery.of(context).size.height * 0.018),
+                              // const SizedBox(height: 10),
+                              SizedBox(
+                                  height: 160,
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: bookedTrips!.length,
+                                    itemBuilder: (BuildContext context, int index) {
+                                      return Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                                          child: clientTripLayout(context, notifier, bookedTrips![index])
+                                      );
+                                    },
+                                  )),],
                           SizedBox(
                               height: MediaQuery.of(context).size.height * 0.025),
                           Row(
@@ -231,7 +272,7 @@ class _homeState extends State<home> {
                                         onTap: () {
                                           Navigator.of(context).push(MaterialPageRoute(
                                               builder: (context) =>
-                                                  TourDetail(tourList[index].id!)));
+                                                  TourDetail(tourList[index].id)));
                                         },
                                         child: Stack(
                                             children: [

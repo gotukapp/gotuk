@@ -451,7 +451,7 @@ clientTripLayout(BuildContext context, ColorNotifier notifier, Trip trip) {
                         Padding(
                             padding: const EdgeInsets.symmetric(
                                 vertical: 10),
-                            child: Container(
+                            child: SizedBox(
                               height: 110,
                               width: 130,
                               child: ClipRRect(
@@ -464,12 +464,12 @@ clientTripLayout(BuildContext context, ColorNotifier notifier, Trip trip) {
                             )
                         ),
                         Positioned(
-                          left: 30,
-                          width: 70,
+                          left: 20,
+                          width: 85,
                           height: 25,
                           child: Container(
                             height: 25,
-                            width: 70,
+                            width: 85,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(50),
                                 color: WhiteColor),
