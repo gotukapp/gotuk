@@ -18,6 +18,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 
 import '../Domain/appUser.dart';
 import '../Domain/tour.dart';
+import '../Providers/userProvider.dart';
 
 class checkout extends StatefulWidget {
   final String tourId;

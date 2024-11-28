@@ -14,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Domain/appUser.dart';
 import '../Utils/Colors.dart';
+import '../Providers/userProvider.dart';
 
 class loginscreen extends StatefulWidget {
   const loginscreen({super.key});

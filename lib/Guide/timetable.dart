@@ -14,6 +14,7 @@ import '../Utils/Colors.dart';
 import '../Utils/customwidget .dart';
 import '../Utils/dark_lightmode.dart';
 import '../Domain/slot.dart';
+import '../Providers/userProvider.dart';
 
 class TimeTable extends StatefulWidget {
   const TimeTable({super.key});

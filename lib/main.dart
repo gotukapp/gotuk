@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'Domain/appUser.dart';
+import '../Providers/userProvider.dart';
 import 'Utils/LocaleModel.dart';
 import 'Utils/dark_lightmode.dart';
 import 'firebase_options.dart';
@@ -28,6 +28,7 @@ void main() async {
       MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => ColorNotifier()),
+          ChangeNotifierProvider(create: (_) => UserProvider()),
           ChangeNotifierProvider(create: (_) => UserProvider()),
         ],
         child: BoardingScreen(),
