@@ -20,6 +20,8 @@ class Trip {
   DocumentReference? clientRef;
   DocumentReference? guideRef;
   String? reservationId;
+  bool? showStartButton;
+  bool? showEndButton;
 
   Trip(this.id, this.tourRef, this.date, this.persons, this.status, this.clientRef,
       this.guideRef, this.guideLang, this.paymentMethod, this.creditCardId,
@@ -30,7 +32,7 @@ class Trip {
       SnapshotOptions? options,
       ) {
     final data = snapshot.data();
-    return Trip(snapshot.id,
+    Trip t = Trip(snapshot.id,
         data?['tourId'],
         data?['date'].toDate(),
         data?['persons'],
@@ -45,6 +47,9 @@ class Trip {
         data?['reservationId'],
         data?['rateSubmitted']
     );
+    t.showStartButton = t.allowShowStart();
+    t.showEndButton = t.allowShowEnd();
+    return t;
   }
 
   Map<String, dynamic> toFirestore() {
@@ -183,5 +188,15 @@ class Trip {
         .update({ "rateSubmitted": true,
                   "tourReviewRef": tourReview,
                   "guideReviewRef": guideReview });
+  }
+
+  bool allowShowStart() {
+    int differenceInMinutes = date.difference(DateTime.now()).inMinutes;
+    return status == 'booked' && differenceInMinutes <= 15;
+  }
+
+  bool allowShowEnd() {
+    int differenceInMinutes = date.add(Duration(minutes: tour.durationSlots - 1 * 30)).difference(DateTime.now()).inMinutes;
+    return status == 'started' && differenceInMinutes <= 15;
   }
 }

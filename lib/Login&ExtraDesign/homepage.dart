@@ -168,7 +168,6 @@ class _homepageState extends State<homepage> {
             if (t.status == 'pending' ||
                 (t.status == 'booked' && t.guideRef?.id == FirebaseAuth.instance.currentUser?.uid)) {
               int duration = t.status == 'booked' ? 10 : 60;
-              showNotification("New Trip", t.tour.name);
               playNotificationSound();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(

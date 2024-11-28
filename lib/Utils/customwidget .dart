@@ -374,7 +374,8 @@ guideTripLayout(BuildContext context, ColorNotifier notifier, Trip trip) {
                             fontSize: 16, color: Darkblue, fontFamily: "Gilroy Bold")),
                   ],
                 ),
-                InkWell(
+                if (trip.status == "pending" || trip.showStartButton! || trip.showEndButton!)
+                  InkWell(
                     onTap: () {
                       if (trip.status == "booked") {
                         showConfirmationMessage(context,

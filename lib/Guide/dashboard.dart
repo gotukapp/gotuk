@@ -1,8 +1,9 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dm/Domain/appUser.dart';
-import 'package:dm/Guide/tripsPending.dart';
+import 'package:dm/Guide/tripsList.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,11 +23,34 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  bool showButton = false;
+  Timer? timer;
+  late List<Trip>? todayTrips;
 
   @override
   void initState() {
     getdarkmodepreviousstate();
+    startMonitoring();
     super.initState();
+  }
+
+  void startMonitoring() {
+    timer = Timer.periodic(const Duration(minutes: 1), (timer) {
+      if (todayTrips != null) {
+        for (var t in todayTrips!) {
+          if (t.allowShowStart() && t.showStartButton == false) {
+            setState(() {
+              t.showStartButton = true;
+            });
+          }
+          if (t.allowShowEnd() && t.showEndButton == false) {
+            setState(() {
+              t.showEndButton = true;
+            });
+          }
+        }
+      }
+    });
   }
 
   late ColorNotifier notifier;
@@ -46,7 +70,7 @@ class _DashboardState extends State<Dashboard> {
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser?.uid);
 
-    final Stream<QuerySnapshot<Map<String, dynamic>>> finishedTrips =
+    final Stream<QuerySnapshot<Map<String, dynamic>>> queryFinishedTrips =
     db
         .where("guideRef", isEqualTo: userDocRef)
         .where("status", isEqualTo: "finished")
@@ -54,7 +78,7 @@ class _DashboardState extends State<Dashboard> {
         .orderBy("date")
         .snapshots();
 
-    final Stream<QuerySnapshot<Map<String, dynamic>>> bookedTrips =
+    final Stream<QuerySnapshot<Map<String, dynamic>>> queryBookedTrips =
     db
         .where("guideRef", isEqualTo: userDocRef)
         .where("status", isEqualTo: "booked")
@@ -63,13 +87,13 @@ class _DashboardState extends State<Dashboard> {
         .orderBy("date")
         .snapshots();
 
-    final Stream<QuerySnapshot<Map<String, dynamic>>> currentTrips =
+    final Stream<QuerySnapshot<Map<String, dynamic>>> queryCurrentTrips =
     db
         .where("guideRef", isEqualTo: userDocRef)
         .where("status", isEqualTo: "started")
         .snapshots();
 
-    final Stream<QuerySnapshot<Map<String, dynamic>>> pendingTrips =
+    final Stream<QuerySnapshot<Map<String, dynamic>>> queryPendingTrips =
     db
         .where("date", isGreaterThan:  today)
         .where("status", isEqualTo: "pending")
@@ -121,13 +145,15 @@ class _DashboardState extends State<Dashboard> {
                           Row(
                             children: [
                                 StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                                stream: pendingTrips,
+                                stream: queryPendingTrips,
                                 builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                                     if (snapshot.data != null && snapshot.data!.docs.isNotEmpty) {
+                                      List<DocumentSnapshot<Map<String, dynamic>>> pendingTripsSnap = snapshot.data!.docs.toList();
+                                      var pendingTrips = pendingTripsSnap.map<Trip>((d) => Trip.fromFirestore(d, null)).toList();
                                       return InkWell(
                                         onTap: () {
                                           Navigator.of(context).push(MaterialPageRoute(
-                                              builder: (context) => const TripsPending()));
+                                              builder: (context) => TripsList(title:"Pending Tours", trips:pendingTrips)));
                                         },
                                         child: CircleAvatar(
                                             backgroundColor: notifier.getdarkmodecolor,
@@ -189,15 +215,16 @@ class _DashboardState extends State<Dashboard> {
                               .size
                               .height * 0.001),
                           StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                            stream: finishedTrips,
+                            stream: queryFinishedTrips,
                             builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                                int finishedTripsToday = 0;
-                                int finishedTripsThisWeek = 0;
-                                int finishedTripsThisMonth = 0;
+                                List<Trip> finishedTripsToday = [];
+                                List<Trip> finishedTripsThisWeek = [];
+                                List<Trip> finishedTripsThisMonth = [];
                                 if(snapshot.hasData) {
-                                  finishedTripsToday = snapshot.data!.docs.where((d) => d['date'].toDate().compareTo(today) > 0).length;
-                                  finishedTripsThisWeek = snapshot.data!.docs.where((d) => d['date'].toDate().compareTo(lastWeek) > 0).length;
-                                  finishedTripsThisMonth = snapshot.data!.docs.length;
+                                  List<DocumentSnapshot<Map<String, dynamic>>> finishedTripsSnap = snapshot.data!.docs.toList();
+                                  finishedTripsThisMonth = finishedTripsSnap.map<Trip>((d) => Trip.fromFirestore(d, null)).toList();
+                                  finishedTripsToday = finishedTripsThisMonth.where((d) => d.date.compareTo(today) > 0).toList();
+                                  finishedTripsThisWeek = finishedTripsThisMonth.where((d) => d.date.compareTo(lastWeek) > 0).toList();
                                 }
                                 return Container(
                                   decoration: BoxDecoration(
@@ -212,9 +239,9 @@ class _DashboardState extends State<Dashboard> {
                                           Row(
                                           mainAxisAlignment: MainAxisAlignment .spaceBetween,
                                           children: [
-                                            Transaction(text1: finishedTripsToday.toString(), text2: "Today"),
-                                            Transaction(text1: finishedTripsThisWeek.toString(), text2: "Last 7 days"),
-                                            Transaction(text1: finishedTripsThisMonth.toString(), text2: "Last 30 days"),
+                                            dashboardValue(title: "Today", trips:finishedTripsToday),
+                                            dashboardValue(title: "Last 7 days", trips:finishedTripsThisWeek),
+                                            dashboardValue(title: "Last 30 days", trips:finishedTripsThisMonth),
                                           ],
                                         ),
                                     ]
@@ -240,15 +267,16 @@ class _DashboardState extends State<Dashboard> {
                               .size
                               .height * 0.001),
                           StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                          stream: bookedTrips,
+                          stream: queryBookedTrips,
                           builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                            int bookedTripsToday = 0;
-                            int bookedTripsThisWeek = 0;
-                            int bookedTripsThisMonth = 0;
+                            List<Trip> bookedTripsToday = [];
+                            List<Trip> bookedTripsThisWeek = [];
+                            List<Trip> bookedTripsThisMonth = [];
                             if(snapshot.hasData) {
-                              bookedTripsToday = snapshot.data!.docs.where((d) => d['date'].toDate().compareTo(tomorrow) < 0).length;
-                              bookedTripsThisWeek = snapshot.data!.docs.where((d) => d['date'].toDate().compareTo(nextWeek) < 0).length;
-                              bookedTripsThisMonth = snapshot.data!.docs.length;
+                              List<DocumentSnapshot<Map<String, dynamic>>> bookedTripsSnap = snapshot.data!.docs.toList();
+                              bookedTripsThisMonth = bookedTripsSnap.map<Trip>((d) => Trip.fromFirestore(d, null)).toList();
+                              bookedTripsToday = bookedTripsThisMonth.where((d) => d.date.compareTo(tomorrow) < 0).toList();
+                              bookedTripsThisWeek = bookedTripsThisMonth.where((d) => d.date.compareTo(nextWeek) < 0).toList();
                             }
                             return Container(
                               decoration: BoxDecoration(
@@ -265,9 +293,9 @@ class _DashboardState extends State<Dashboard> {
                                         mainAxisAlignment: MainAxisAlignment
                                             .spaceBetween,
                                         children: [
-                                          Transaction(text1: bookedTripsToday.toString(), text2: "Today"),
-                                          Transaction(text1: bookedTripsThisWeek.toString(), text2: "Next 7 days"),
-                                          Transaction(text1: bookedTripsThisMonth.toString(), text2: "Next 30 days"),
+                                          dashboardValue(title: "Today", trips:bookedTripsToday),
+                                          dashboardValue(title: "Next 7 days", trips:bookedTripsThisWeek),
+                                          dashboardValue(title: "Next 30 days", trips:bookedTripsThisMonth),
                                         ],
                                       ),
                                     ]
@@ -283,7 +311,7 @@ class _DashboardState extends State<Dashboard> {
                                   fontFamily: "Gilroy Bold")),
                           const SizedBox(height: 8),
                           StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                          stream: currentTrips,
+                          stream: queryCurrentTrips,
                           builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                             if (snapshot.data != null && snapshot.data!.docs.isNotEmpty) {
                               return Padding(
@@ -303,22 +331,22 @@ class _DashboardState extends State<Dashboard> {
                                   fontFamily: "Gilroy Bold")),
                           const SizedBox(height: 8),
                           StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                            stream: bookedTrips,
+                            stream: queryBookedTrips,
                             builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot)
                             {
-                              List<DocumentSnapshot<Map<String, dynamic>>> todayTrips = snapshot.data != null
+                              List<DocumentSnapshot<Map<String, dynamic>>> todayTripsSnap = snapshot.data != null
                                   ? snapshot.data!.docs.where((d) => d['date'].toDate().compareTo(tomorrow) < 0).toList()
                                   : [];
+                              todayTrips = todayTripsSnap.map<Trip>((t) =>  Trip.fromFirestore(t, null)).toList();
                               return SizedBox(
                                 child: ListView.builder(
                                   physics: const NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,
                                   padding: EdgeInsets.zero,
-                                  itemCount: todayTrips.length,
+                                  itemCount: todayTrips?.length,
                                   itemBuilder: (BuildContext context,
                                       int index) {
-                                    return guideTripLayout(context, notifier,
-                                        Trip.fromFirestore(todayTrips[index], null));
+                                    return guideTripLayout(context, notifier, todayTrips![index]);
                                   },
                                 ),
                               );
@@ -331,25 +359,31 @@ class _DashboardState extends State<Dashboard> {
     ));
   }
 
-  Transaction({text1, text2}) {
-    return Column(
-      children: [
-        Text(
-          text2,
-          style: TextStyle(
-              fontSize: 14,
-              color: notifier.getwhiteblackcolor,
-              fontFamily: "Gilroy Medium"),
-        ),
-        const SizedBox(height: 1),
-        Text(
-          text1,
-          style: TextStyle(
-              fontSize: 18,
-              color: LogoColor,
-              fontFamily: "Gilroy Bold"),
+  dashboardValue({title, trips}) {
+    return InkWell(
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => TripsList(title:title, trips:trips)));
+        },
+        child: Column(
+          children: [
+            Text(
+              title,
+              style: TextStyle(
+                  fontSize: 14,
+                  color: notifier.getwhiteblackcolor,
+                  fontFamily: "Gilroy Medium"),
+            ),
+            const SizedBox(height: 1),
+            Text(
+              trips.length.toString(),
+              style: TextStyle(
+                  fontSize: 18,
+                  color: LogoColor,
+                  fontFamily: "Gilroy Bold"),
+            )
+          ],
         )
-      ],
     );
   }
 
@@ -363,7 +397,9 @@ class _DashboardState extends State<Dashboard> {
     }
   }
 
-  getTrips(AsyncSnapshot<QuerySnapshot<Object?>> snapshot) {
-
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
   }
 }
