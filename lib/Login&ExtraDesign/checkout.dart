@@ -678,7 +678,7 @@ class _checkoutState extends State<checkout> {
                                 NumberPicker(
                                   value: hourSliderValue,
                                   minValue: 8,
-                                  maxValue: 20,
+                                  maxValue: 19,
                                   onChanged: (value) => setState(() => hourSliderValue = value),
                                 )
                               ]
@@ -1258,10 +1258,11 @@ class _checkoutState extends State<checkout> {
           '',
           withTaxNumber,
           taxNumberController.text).then((docRef) {
-        Navigator.of(context)
-          ..pop()..pop()..pop()
-          ..push(MaterialPageRoute(
-              builder: (context) => TripDetail(docRef.id, false)));
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => TripDetail(docRef.id, false)),
+            (Route<dynamic> route) => route.isFirst, // Keep only the homepage
+          );
       });
 
       if (!widget.goNow) {
