@@ -13,6 +13,7 @@ import 'package:dm/Domain/trips.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Domain/appUser.dart';
@@ -161,13 +162,13 @@ class _homepageState extends State<homepage> {
     FirebaseFirestore.instance.collection('trips').snapshots();
 
     bool isFirstTime = true;
-    listener = usersStream.listen((onData) {
+    listener = usersStream.listen((onData) async {
       if (!isFirstTime) {
         for (var change in onData.docChanges) {
           if (change.type == DocumentChangeType.added) {
             Trip t = Trip.fromFirestore(change.doc, null);
-            if (t.status == 'pending' ||
-                (t.status == 'booked' && t.guideRef?.id == FirebaseAuth.instance.currentUser?.uid)) {
+            if ((t.status == 'pending' && await checkGuideRequirements(t) && await isGuideAvailable(t) )
+                || (t.status == 'booked' && t.guideRef?.id == FirebaseAuth.instance.currentUser?.uid)) {
               int duration = t.status == 'booked' ? 10 : 60;
               playNotificationSound();
               ScaffoldMessenger.of(context).showSnackBar(
@@ -200,7 +201,6 @@ class _homepageState extends State<homepage> {
     flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
-  // Método para exibir a notificação com som do dispositivo
   Future<void> showNotification(String title, String body) async {
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
     AndroidNotificationDetails(
@@ -232,5 +232,63 @@ class _homepageState extends State<homepage> {
       body,
       platformChannelSpecifics,
     );
+  }
+
+  Future<bool> isGuideAvailable(Trip t) async {
+    String date = DateFormat('yyyy-MM-dd').format(t.date);
+    DocumentSnapshot<Map<String, dynamic>> dayUnavailability = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection('unavailability')
+        .doc(date).get();
+
+    List<dynamic> slots = [];
+    if (dayUnavailability.exists) {
+      slots = dayUnavailability.get("slots");
+    }
+
+    for(int i = 0; i < t.tour.durationSlots; i++) {
+      // Calculate total minutes from the starting point
+      int totalMinutes = (t.date.hour * 60) + t.date.minute + (i * 30);
+      int newHour = totalMinutes ~/ 60; // Integer division to get hours
+      int newMinutes = totalMinutes % 60; // Remainder to get minutes
+      String hour = '${newHour.toString().padLeft(2, '0')}:${newMinutes.toString().padLeft(2, '0')}';
+      var result = slots.contains(hour);
+      if (result) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  Future<bool> checkGuideRequirements(Trip t) async {
+    AppUser user = userProvider.user!;
+    DocumentSnapshot otherUserData = await FirebaseFirestore.instance.collection("users")
+        .doc(user.id).get();
+
+
+    List<String> requiredLanguages = t.guideLang.split(" ");
+    if (requiredLanguages.isNotEmpty && user.languages != null) {
+      bool hasRequiredLanguage = requiredLanguages.any((lang) =>
+          user.languages!.contains(lang));
+      if (!hasRequiredLanguage) {
+        return false;
+      }
+    }
+
+    // TukTuk Seats
+    if (t.persons > otherUserData.get("tuktukSeats")) {
+      return false;
+    }
+
+    //TukTuk Electric
+    if (t.onlyElectricVehicles != null
+        && t.onlyElectricVehicles!
+        && !otherUserData.get("tuktukElectric")) {
+      return false;
+    }
+
+    return true;
   }
 }

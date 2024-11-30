@@ -435,7 +435,7 @@ class _TripDetailState extends State<TripDetail> {
                                                 children: [
                                                   CircleAvatar(
                                                     backgroundColor: WhiteColor,
-                                                    backgroundImage: const AssetImage(''),
+                                                    backgroundImage: const AssetImage('assets/images/avatar.png'),
                                                     radius: 25,
                                                   ),
                                                   const SizedBox(width: 25),

@@ -1,5 +1,7 @@
 // ignore_for_file: camel_case_types
 
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dm/Login&ExtraDesign/nearbyAllTours.dart';
 import 'package:dm/Login&ExtraDesign/showAllTours.dart';
@@ -27,6 +29,7 @@ class home extends StatefulWidget {
 
 class _homeState extends State<home> {
   List<Trip>? bookedTrips = [];
+  StreamSubscription<QuerySnapshot<Object?>>? listener;
 
   @override
   void initState() {
@@ -54,10 +57,24 @@ class _homeState extends State<home> {
 
       pendingTrips.get().then( (querySnapshot) {
           setState(() {
+            bookedTrips?.clear();
             for (var docSnapshot in querySnapshot.docs) {
               bookedTrips!.add(Trip.fromFirestore(docSnapshot, null));
             }
           });
+      });
+
+      listener = pendingTrips.snapshots().listen((querySnapshot) {
+        for (var doc in querySnapshot.docs) {
+          setState(() {
+            try {
+              Trip? trip = bookedTrips!.firstWhere((t) => t.id == doc.id);
+              trip.status = doc.get("status");
+            } catch (e) {
+              bookedTrips?.add(Trip.fromFirestore(doc, null));
+            }
+          });
+        }
       });
     });
     super.initState();
@@ -432,6 +449,14 @@ class _homeState extends State<home> {
         )
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    if (listener != null) {
+      listener?.cancel();
+    }
+    super.dispose();
   }
 
   getdarkmodepreviousstate() async {

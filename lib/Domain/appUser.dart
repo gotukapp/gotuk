@@ -1,10 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dm/Domain/tour.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 
 import '../Guide/account.dart';
+
+const int availableStatus = 0;
+const int unavailableStatus = 1;
+const int tripStatus = 2;
 
 class AppUser {
 
@@ -47,7 +50,8 @@ class AppUser {
       String hour = '${newHour.toString().padLeft(2, '0')}:${newMinutes
           .toString().padLeft(2, '0')}';
       String date = DateFormat('yyyy-MM-dd').format(tripDate);
-      await AppUser.updateUnavailabilityCollection(guideId, date, hour, 0);
+      await updateUserCollection(date, hour, unavailableStatus);
+      await updateUnavailabilityCollection(guideId, date, hour, unavailableStatus);
     }
   }
 
@@ -69,18 +73,18 @@ class AppUser {
     if (dayUnavailability.exists) {
       slots = dayUnavailability.get("slots");
     }
-    if (status == 1) {
+    if (status == availableStatus) {
       slots.remove(hour);
     } else {
       slots.add(hour);
     }
-    userUnavailability.doc(day).set({
+    await userUnavailability.doc(day).set({
       "date": DateTime.parse(day),
       "slots": slots
     });
   }
 
-  static Future<void> updateUnavailabilityCollection(String guideId, String day, String hour, int currentStatus) async {
+  static Future<void> updateUnavailabilityCollection(String guideId, String day, String hour, int status) async {
     CollectionReference unavailability = FirebaseFirestore.instance
         .collection('unavailability');
 
@@ -93,7 +97,7 @@ class AppUser {
       }
     }
 
-    if (currentStatus == 1) {
+    if (status == availableStatus) {
       guides.remove(guideId);
     } else {
       guides.add(guideId);

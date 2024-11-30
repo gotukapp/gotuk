@@ -28,8 +28,7 @@ void main() async {
       MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => ColorNotifier()),
-          ChangeNotifierProvider(create: (_) => UserProvider()),
-          ChangeNotifierProvider(create: (_) => UserProvider()),
+          ChangeNotifierProvider(create: (_) => UserProvider())
         ],
         child: BoardingScreen(),
       ),

@@ -10,7 +10,7 @@ class Trip {
   final DocumentReference tourRef;
   final DateTime date;
   final int persons;
-  final String status;
+  String status;
   final String guideLang;
   final String paymentMethod;
   final String creditCardId;
@@ -22,10 +22,11 @@ class Trip {
   String? reservationId;
   bool? showStartButton;
   bool? showEndButton;
+  bool? onlyElectricVehicles;
 
   Trip(this.id, this.tourRef, this.date, this.persons, this.status, this.clientRef,
       this.guideRef, this.guideLang, this.paymentMethod, this.creditCardId,
-      this.withTaxNumber, this.taxNumber, this.reservationId, this.rateSubmitted);
+      this.withTaxNumber, this.taxNumber, this.reservationId, this.rateSubmitted, this.onlyElectricVehicles);
 
   factory Trip.fromFirestore(
       DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -45,7 +46,8 @@ class Trip {
         data?['withTaxNumber'],
         data?['taxNumber'],
         data?['reservationId'],
-        data?['rateSubmitted']
+        data?['rateSubmitted'],
+        data?['onlyElectricVehicles']
     );
     t.showStartButton = t.allowShowStart();
     t.showEndButton = t.allowShowEnd();
@@ -77,7 +79,7 @@ class Trip {
   static Future<DocumentReference<Map<String, dynamic>>> addTrip(DocumentReference? guideRef, String tourId,
       DateTime date, int persons, String status,
       String guideLang, String paymentMethod, String creditCardId,
-      bool withTaxNumber, String taxNumber) {
+      bool withTaxNumber, String taxNumber, bool onlyElectricVehicles) {
     return FirebaseFirestore.instance
         .collection('trips')
         .add(<String, dynamic>{
@@ -94,7 +96,8 @@ class Trip {
       'withTaxNumber': withTaxNumber,
       'taxNumber': taxNumber,
       'rateSubmitted': false,
-      'creationDate': FieldValue.serverTimestamp()
+      'creationDate': FieldValue.serverTimestamp(),
+      'onlyElectricVehicles': onlyElectricVehicles
     });
   }
 

@@ -54,10 +54,10 @@ class _TimeTableState extends State<TimeTable> {
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser?.uid);
 
-    final Stream<QuerySnapshot<Map<String, dynamic>>> bookedTrips =
+    final Stream<QuerySnapshot<Map<String, dynamic>>> guideTrips =
     db
         .where("guideRef", isEqualTo: userDocRef)
-        .where("status", isEqualTo: "booked")
+        .where("status", whereIn: ["booked", 'started', 'finished'])
         .where("date", isGreaterThan:  today)
         .orderBy("date")
         .snapshots();
@@ -72,7 +72,7 @@ class _TimeTableState extends State<TimeTable> {
     userProvider = Provider.of<UserProvider>(context);
     notifier = Provider.of<ColorNotifier>(context, listen: true);
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        stream: bookedTrips,
+        stream: guideTrips,
         builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshotTrips) {
           if (snapshotTrips.hasData) {
             for (var item in snapshotTrips.data!.docs) {
@@ -107,7 +107,9 @@ class _TimeTableState extends State<TimeTable> {
                           int minutes = int.parse(time.split(":")[1]);
                           DateTime slotStart = date.add(Duration(hours: hours, minutes: minutes));
                           final slot = slots[date]!.firstWhereOrNull((s) => s.start == slotStart);
-                          slot?.status = 1;
+                          if (slot != null && slot.status != tripStatus) {
+                            slot.status = unavailableStatus;
+                          }
                         }
                       }
                     }
@@ -187,15 +189,10 @@ class _TimeTableState extends State<TimeTable> {
                                   ),
                                   child: InkWell(
                                     onTap: () async {
-                                      if (item.data!.status != 2) {
-                                        await AppUser.updateUnavailability(
-                                            item.start, item.data!.status);
+                                      if (item.data!.status != tripStatus) {
+                                        await AppUser.updateUnavailability(item.start, item.data!.status == availableStatus ? unavailableStatus : availableStatus);
                                         setState(() {
-                                          if (item.data!.status == 1) {
-                                            item.data!.status = 0;
-                                          } else if (item.data!.status == 0) {
-                                            item.data!.status = 1;
-                                          }
+                                          item.data!.status == availableStatus ? unavailableStatus : availableStatus;
                                         });
                                       }
                                     },
@@ -203,10 +200,10 @@ class _TimeTableState extends State<TimeTable> {
                                         height: double.infinity,
                                         width: double.infinity,
                                         decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(5), color: item.data!.status == 0 ? Colors.green :
-                                        (item.data!.status == 1 ? Colors.red : Colors.grey) ),
+                                            borderRadius: BorderRadius.circular(5), color: item.data!.status == availableStatus ? Colors.green :
+                                        (item.data!.status == unavailableStatus ? Colors.red : Colors.grey) ),
                                         child: Center(
-                                            child: Text(item.data!.status == 2 ? item.data!.trip!.tour.name : "Slot",
+                                            child: Text(item.data!.status == tripStatus ? item.data!.trip!.tour.name : "Slot",
                                                 style: TextStyle(
                                                     fontSize: 10,
                                                     color: BlackColor,
@@ -221,11 +218,19 @@ class _TimeTableState extends State<TimeTable> {
                       )
                   );
                   } else {
-                    return const Text("Loading...");
+                    return Text("Loading...",
+                        style: TextStyle(
+                            fontSize: 10,
+                            color: BlackColor,
+                            fontFamily: "Gilroy Bold"));
                   }
                 });
           } else {
-            return const Text("Loading...");
+            return Text("Loading...",
+                style: TextStyle(
+                    fontSize: 10,
+                    color: BlackColor,
+                    fontFamily: "Gilroy Bold"));
           }
         }
     );

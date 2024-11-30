@@ -1258,7 +1258,9 @@ class _checkoutState extends State<checkout> {
           masterCard ? 'mastercard' : 'visa',
           '',
           withTaxNumber,
-          taxNumberController.text).then((docRef) {
+          taxNumberController.text,
+          onlyElectricVehicles
+          ).then((docRef) {
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => TripDetail(docRef.id, false)),
