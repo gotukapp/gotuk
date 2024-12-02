@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dm/Domain/tour.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:intl/intl.dart';
 
 import '../Guide/account.dart';
@@ -15,18 +16,19 @@ class AppUser {
   late String? name;
   final String? email;
   final String? phone;
+  final String? firebaseToken;
   final bool accountValidated;
   num? rating;
   List<String>? languages;
 
-  AppUser(this.id, this.name, this.email, this.phone, this.accountValidated, this.rating, this.languages);
+  AppUser(this.id, this.name, this.email, this.phone, this.accountValidated, this.rating, this.languages, this.firebaseToken);
 
   factory AppUser.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot,
       SnapshotOptions? options,) {
     final data = snapshot.data();
     return AppUser(snapshot.id, data?['name'], data?['email'],
         data?['phone'], data?['accountValidated'],
-        data?['rating'], data?['languages']);
+        data?['rating'], data?['languages'], data?['firebaseToken']);
   }
 
   Map<String, dynamic> toFirestore() {
@@ -36,7 +38,8 @@ class AppUser {
       "phone": phone,
       "accountValidated": accountValidated,
       "rating": rating,
-      "languages": languages
+      "languages": languages,
+      "firebaseToken": firebaseToken
     };
   }
 
@@ -182,6 +185,21 @@ class AppUser {
 
     this.name = name;
   }
+
+  void setFirebaseToken() async {
+    try {
+      String? token = await FirebaseMessaging.instance.getToken();
+      print('FCM Token: $token');
+      if (token != null) {
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser?.uid)
+            .update({ "firebaseToken": token});
+      }
+    } on Exception catch (_, e) {
+      print(e);
+    }
+  }
 }
 
 Future<AppUser> getUserFirebaseInstance(bool guideMode, User user) async {
@@ -193,7 +211,7 @@ Future<AppUser> getUserFirebaseInstance(bool guideMode, User user) async {
   final docSnap = await ref.get();
   AppUser? appUser = docSnap.data();
   if (appUser == null) {
-    appUser = AppUser(user.uid, user.displayName, user.email, user.phoneNumber, false, 0.0, null);
+    appUser = AppUser(user.uid, user.displayName, user.email, user.phoneNumber, false, 0.0, null, null);
     FirebaseFirestore.instance.collection("users")
         .doc(user.uid)
         .set(appUser.toFirestore());

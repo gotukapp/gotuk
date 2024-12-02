@@ -145,6 +145,7 @@ class _loginscreenState extends State<loginscreen> {
                         AppUser? user = await signInWithEmailAndPassword();
                         if(user != null) {
                           userProvider.setUser(user);
+                          user.setFirebaseToken();
                           Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
                               builder: (context) => homepage()),
                                   (route) => false);
