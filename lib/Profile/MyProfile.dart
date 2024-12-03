@@ -118,7 +118,7 @@ class _MyProfileState extends State<MyProfile> {
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                   Text(
-                    userProvider.user!.email!,
+                    userProvider.user!.email ?? '',
                     style: TextStyle(
                         fontSize: 14,
                         color: notifier.getwhiteblackcolor,
@@ -134,7 +134,7 @@ class _MyProfileState extends State<MyProfile> {
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                   Text(
-                    userProvider.user!.phone!,
+                    userProvider.user!.phone ?? '',
                     style: TextStyle(
                         fontSize: 14,
                         color: notifier.getwhiteblackcolor,

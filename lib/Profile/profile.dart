@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Guide/account.dart';
 import '../Guide/timetable.dart';
+import '../Providers/userProvider.dart';
 import '../Utils/Colors.dart';
 import '../Utils/customwidget .dart';
 
@@ -32,11 +33,13 @@ class _profileState extends State<profile> {
   }
 
   late ColorNotifier notifier;
+  late UserProvider userProvider;
   late bool guideMode = false;
 
   @override
   Widget build(BuildContext context) {
     notifier = Provider.of<ColorNotifier>(context, listen: true);
+    userProvider = Provider.of<UserProvider>(context);
     return SafeArea(
       child: Scaffold(
           backgroundColor: notifier.getblackwhitecolor,
@@ -77,11 +80,11 @@ class _profileState extends State<profile> {
                           radius: 60,
                           backgroundColor: notifier.getwhiteblackcolor,
                           backgroundImage:
-                              const AssetImage("assets/images/person.jpg"),
+                              const AssetImage("assets/images/avatar.png"),
                         ),
                         const SizedBox(height: 20),
                         Text(
-                          "${FirebaseAuth.instance.currentUser?.displayName}",
+                          "${userProvider.user!.name}",
                           style: TextStyle(
                               fontSize: 18,
                               color: LogoColor,
@@ -99,24 +102,27 @@ class _profileState extends State<profile> {
                     ),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-                  Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        color: notifier.getdarklightgreycolor),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Transaction(text1: "26", text2: "History"),
-                          Transaction(text1: "12", text2: "Reviews"),
-                          Transaction(text1: "4", text2: "Bookings"),
-                        ],
+                  if (!guideMode)
+                    ...[
+                      Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: notifier.getdarklightgreycolor),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Transaction(text1: "26", text2: "History"),
+                              Transaction(text1: "12", text2: "Reviews"),
+                              Transaction(text1: "4", text2: "Bookings"),
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.03)
+                    ],
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -132,7 +138,8 @@ class _profileState extends State<profile> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          ProfileSetting(
+                          if (!guideMode)
+                            ProfileSetting(
                               image: "assets/images/heart.png",
                               text: "Favorites",
                               icon: Icons.keyboard_arrow_right,
@@ -143,7 +150,10 @@ class _profileState extends State<profile> {
                               boxcolor: notifier.getdarklightgreycolor,
                               iconcolor: notifier.getwhiteblackcolor,
                               ImageColor: notifier.getwhiteblackcolor,
-                              TextColor: notifier.getwhiteblackcolor),
+                              TextColor: notifier.getwhiteblackcolor)
+                          else
+                            const SizedBox(width: 15)
+                          ,
                           ProfileSetting(
                               image: "assets/images/clock.png",
                               text: guideMode ? "Calendar" : "History",
@@ -158,7 +168,8 @@ class _profileState extends State<profile> {
                               ImageColor: notifier.getwhiteblackcolor,
                               TextColor: notifier.getwhiteblackcolor),
                           if (guideMode)
-                            ProfileSetting(
+                            ...[
+                              ProfileSetting(
                                 image: "assets/images/profile.png",
                                 text: "Account",
                                 icon: Icons.keyboard_arrow_right,
@@ -170,7 +181,9 @@ class _profileState extends State<profile> {
                                 boxcolor: notifier.getdarkmodecolor,
                                 iconcolor: notifier.getwhiteblackcolor,
                                 ImageColor: notifier.getwhiteblackcolor,
-                                TextColor: notifier.getwhiteblackcolor)
+                                TextColor: notifier.getwhiteblackcolor),
+                              const SizedBox(width: 15)
+                            ]
                           else
                             ProfileSetting(
                                 image: "assets/images/discount.png",
