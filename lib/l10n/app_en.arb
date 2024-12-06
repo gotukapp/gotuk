@@ -11,5 +11,19 @@
     },
     "rateTour": "Rate Tour",
     "letsGo": "Let's Go",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "hello": "Hello",
+    "letsFindTour": "Let’s find you a tour",
+    "welcomeGotuk": "Welcome to Gotuk",
+    "pleaseLogin": "Please login to your account",
+    "phoneNumber": "Phone Number",
+    "loginAsGuide": "LOGIN AS A GUIDE",
+    "orLoginWith": "Or login with",
+    "profile": "Profile",
+    "options": "Options",
+    "favorites": "Favorites",
+    "calendar": "Calendar",
+    "history": "History",
+    "account": "Account",
+    "promotions": "Promotions"
 }

@@ -34,7 +34,7 @@ class _MyProfileState extends State<MyProfile> {
     notifier = Provider.of<ColorNotifier>(context, listen: true);
     userProvider = Provider.of<UserProvider>(context);
 
-    nameController.text = userProvider.user!.name!;
+    nameController.text = userProvider.user!.name != null ? userProvider.user!.name! : '';
 
     return Scaffold(
       appBar: AppBar(

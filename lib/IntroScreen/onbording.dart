@@ -35,7 +35,7 @@ class _onbordingState extends State<onbording> {
     Future.microtask(() async {
       if (FirebaseAuth.instance.currentUser != null) {
             try {
-              AppUser user = await getUserFirebaseInstance(
+              AppUser? user = await getUserFirebaseInstance(
                   guideMode, FirebaseAuth.instance.currentUser!);
               Provider.of<UserProvider>(context, listen: false).setUser(user);
               Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(

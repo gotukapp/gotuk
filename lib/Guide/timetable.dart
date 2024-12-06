@@ -86,11 +86,19 @@ class _TimeTableState extends State<TimeTable> {
                   trip.date.minute,
                   0, 0, 0 );
 
-              final slotIndex = slots[date]!.indexOf(slots[date]!.firstWhere((s) => s.start == tripDate));
-              final slot =  slots[date]?[slotIndex];
-              if (slot?.status != 2) {
-                slots[date]?.removeRange(slotIndex, ((slotIndex + trip.tour.durationSlots) > slots[date]!.length ? slots[date]!.length : slotIndex + trip.tour.durationSlots));
-                slots[date]?.insert(slotIndex, Slot(tripDate, tripDate.add(Duration(minutes: 30 * (trip.tour.durationSlots-1))), 2, trip));
+              try {
+                final slotIndex = slots[date]!.indexOf(slots[date]!.firstWhere((s) => s.start == tripDate));
+                final slot =  slots[date]?[slotIndex];
+                if (slot?.status != 2) {
+                  slots[date]?.removeRange(slotIndex,
+                      ((slotIndex + trip.tour.durationSlots) > slots[date]!.length
+                          ? slots[date]!.length
+                          : slotIndex + trip.tour.durationSlots));
+                  slots[date]?.insert(slotIndex,
+                      Slot(tripDate, tripDate.add(Duration(minutes: 30 * (trip.tour.durationSlots-1))), 2, trip));
+                }
+              }
+              on Exception catch (_, e) {
               }
             }
 

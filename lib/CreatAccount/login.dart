@@ -3,18 +3,20 @@
 import 'package:dm/CreatAccount/createScreen.dart';
 import 'package:dm/Login&ExtraDesign/homepage.dart';
 import 'package:dm/Utils/customwidget%20.dart';
-import 'package:dm/CreatAccount/forgotpassword.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../Domain/appUser.dart';
 import '../Utils/Colors.dart';
 import '../Providers/userProvider.dart';
+import '../Utils/authentication.dart';
 
 class loginscreen extends StatefulWidget {
   const loginscreen({super.key});
@@ -25,10 +27,11 @@ class loginscreen extends StatefulWidget {
 
 class _loginscreenState extends State<loginscreen> {
   late ColorNotifier notifier;
+  late UserProvider userProvider;
   late bool guideMode = false;
   final phoneNumberController = TextEditingController();
-  final passwordController = TextEditingController();
-  bool showPassword = false;
+  String countryCode = '351';
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -39,7 +42,7 @@ class _loginscreenState extends State<loginscreen> {
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context);
+    userProvider = Provider.of<UserProvider>(context);
     notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
       backgroundColor: notifier.getwhitegrey,
@@ -65,7 +68,7 @@ class _loginscreenState extends State<loginscreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Welcome to GoTuk${guideMode ? " Guide" : ""}",
+                        "${AppLocalizations.of(context)!.welcomeGotuk}${guideMode ? " Guide" : ""}",
                         style: TextStyle(
                           fontSize: 24,
                           fontFamily: "Gilroy Bold",
@@ -73,94 +76,64 @@ class _loginscreenState extends State<loginscreen> {
                         ),
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height * 0.005),
-                      Text("Please login to your account",
+                      Text(AppLocalizations.of(context)!.pleaseLogin,
                           style: TextStyle(
                             fontSize: 16,
                             color: WhiteColor,
                             fontFamily: "Gilroy Medium",
                           )),
                       SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-                      Text("Phone Number",
-                          style: TextStyle(
-                              fontSize: 15,
-                              fontFamily: "Gilroy Medium",
-                              color: WhiteColor)),
-                      SizedBox(height: MediaQuery.of(context).size.height * 0.005),
-                      textfield(
-                          fieldColor: notifier.getfieldcolor,
-                          hintColor: notifier.gettextfieldcolor,
-                          text: 'Enter your number',
-                          suffix: null,
-                          controller: phoneNumberController),
-                      SizedBox(height: MediaQuery.of(context).size.height * 0.015),
-                      Text(
-                        "Password",
+                      Text(AppLocalizations.of(context)!.phoneNumber,
                         style: TextStyle(
-                            fontSize: 15,
                             fontFamily: "Gilroy Medium",
+                            fontSize: 16,
                             color: WhiteColor),
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height * 0.005),
-                      textfield(
-                          password: !showPassword,
-                          fieldColor: notifier.getfieldcolor,
-                          hintColor: notifier.gettextfieldcolor,
-                          text: 'Enter your password',
-                          suffix: InkWell(
-                            onTap: () {
-                              setState(() { showPassword = !showPassword; });
-                            },
-                            child: Icon(
-                              Icons.visibility_off,
-                              color: notifier.getgreycolor,
-                            ),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                      IntlPhoneField(
+                          decoration: InputDecoration(
+                              hintText: AppLocalizations.of(context)!.phoneNumber,
+                              labelStyle: const TextStyle(fontSize: 16, color: Colors.white),
+                              hintStyle: TextStyle(fontSize: 16, color: notifier.gettextfieldcolor, fontFamily: "Gilroy Medium"),
+                              filled: true,
+                              fillColor: WhiteColor,
+                              contentPadding: const EdgeInsets.symmetric(vertical: 15.0),
+                              border: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(15))),
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: fieldColor,
+                                  ),
+                                  borderRadius: BorderRadius.circular(15))
                           ),
-                          controller: passwordController),
+                          initialCountryCode: "PT",
+                          languageCode: "pt_BR",
+                          controller: phoneNumberController,
+                          onCountryChanged: (country) {
+                            countryCode = country.dialCode;
+                          }
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.height * 0.015),
                     ],
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Padding(
-                        padding: const EdgeInsets.only(right: 6),
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const forgotpassword()));
-                          },
-                          child: Text("Forgot Password?",
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  color: WhiteColor,
-                                  fontFamily: "Gilroy Medium")),
-                        )),
-                  ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-                  AppButton(
-                      bgColor: notifier.getlogowhitecolor,
-                      textColor: notifier.getwhiteblackcolor,
-                      buttontext: guideMode ? "LOGIN AS A GUIDE" : "LOGIN",
-                      onclick: () async {
-                        //await signInWithPhone(phoneNumberController.text);
-                        AppUser? user = await signInWithEmailAndPassword();
-                        if(user != null) {
-                          userProvider.setUser(user);
-                          user.setFirebaseToken();
-                          Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-                              builder: (context) => homepage()),
-                                  (route) => false);
-                        }
-                      }),
+                  _isLoading
+                      ? Center(child: CircularProgressIndicator(color: WhiteColor)) // Show spinner when loading
+                      : AppButton(
+                          bgColor: notifier.getlogowhitecolor,
+                          textColor: notifier.getwhiteblackcolor,
+                          buttontext: guideMode ? AppLocalizations.of(context)!.loginAsGuide : "LOGIN",
+                          onclick: signIn
+                      ),
                   const SizedBox(height: 10),
                   Center(
                     child: Column(
                       children: [
-                        Text(
-                          "Or login with",
+                        Text(AppLocalizations.of(context)!.orLoginWith,
                           style: TextStyle(
                               fontSize: 15,
                               color: WhiteColor,
-                              fontFamily: "c"),
+                              fontFamily: "Gilroy Medium"),
                         )
                       ],
                     ),
@@ -299,71 +272,51 @@ class _loginscreenState extends State<loginscreen> {
     );
   }
 
-  Future<AppUser?> signInWithEmailAndPassword() async {
-    String errorMessage = '';
+  Future<void> signIn() async {
     try {
-      if (phoneNumberController.text.isNotEmpty && phoneNumberController.text.isNotEmpty) {
-        String userName = phoneNumberController.text.contains('@') ? phoneNumberController.text : "${phoneNumberController.text}@gotuk.pt";
-
-        UserCredential credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: userName,
-          password: passwordController.text,
-        );
-
-        return await getUserFirebaseInstance(guideMode, credential.user!);
-      } else {
-        errorMessage = 'You must fill in the username and password.';
-      }
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'invalid-credential' || e.code == 'invalid-email') {
-        errorMessage = 'Invalid credentials.';
-      } else {
-        errorMessage = 'Unable to login.';
-      }
-    } on Exception {
-      errorMessage = 'Unable to login.';
-    }
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(errorMessage),
-      ),
-    );
-    return null;
-  }
-
-  Future<void> signInWithPhone(String phoneNumber) async {
-    FirebaseAuth auth = FirebaseAuth.instance;
-
-    await auth.verifyPhoneNumber(
-      phoneNumber: phoneNumber,
-      verificationCompleted: (PhoneAuthCredential credential) async {
-        // Automatically signs in when verification is completed
-        await auth.signInWithCredential(credential);
-      },
-      verificationFailed: (FirebaseAuthException e) {
-        if (e.code == 'invalid-phone-number') {
-          print('The provided phone number is not valid.${e.code}${e.message}');
+      if (phoneNumberController.text.isNotEmpty) {
+        setState(() {
+          _isLoading = true;
+        });
+        String phoneNumber = "+$countryCode${phoneNumberController.text}";
+        if (await userExists(phoneNumber)) {
+          await signInWithPhoneNumber(
+              context, phoneNumber, (UserCredential credential) async {
+            AppUser user = await getUserFirebaseInstance(
+                guideMode, credential.user!);
+            userProvider.setUser(user);
+            user.setFirebaseToken();
+            Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                builder: (context) => const homepage()),
+                    (route) => false);
+            setState(() {
+              _isLoading = false;
+            });
+          });
         } else {
-          print('${e.code}${e.message}');
+          setState(() {
+            _isLoading = false;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                  'This phone number is not associated with any account..'),
+            ),
+          );
         }
-      },
-      codeSent: (String verificationId, int? resendToken) async {
-        // The code has been sent to the user, prompt for input
-        String smsCode = await getUserInputCode(); // Assume a function that prompts user for code
-
-        // Create a PhoneAuthCredential with the code
-        PhoneAuthCredential credential = PhoneAuthProvider.credential(
-          verificationId: verificationId,
-          smsCode: smsCode,
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('You must fill in the phone number.'),
+          ),
         );
-
-        // Sign the user in with the credential
-        await auth.signInWithCredential(credential);
-      },
-      codeAutoRetrievalTimeout: (String verificationId) {
-        // Auto-resolution timed out
-      },
-    );
+      }
+    }
+    on Exception catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   Future<AppUser?> signInWithGoogle() async {

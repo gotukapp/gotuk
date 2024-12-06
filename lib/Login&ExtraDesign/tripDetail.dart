@@ -373,7 +373,7 @@ class _TripDetailState extends State<TripDetail> {
                                                   borderRadius: BorderRadius.circular(50), color: LogoColor),
                                               child: Center(
                                                 child: Text(
-                                                  "Let's Go",
+                                                  "I’m Ready",
                                                   style: TextStyle(
                                                       color: WhiteColor,
                                                       fontSize: 18,
@@ -395,7 +395,7 @@ class _TripDetailState extends State<TripDetail> {
                                                   borderRadius: BorderRadius.circular(50), color: greyColor),
                                               child: Center(
                                                 child: Text(
-                                                  "Cancel",
+                                                  "Reschedule",
                                                   style: TextStyle(
                                                       color: WhiteColor,
                                                       fontSize: 18,

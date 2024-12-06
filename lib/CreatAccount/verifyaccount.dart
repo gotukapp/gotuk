@@ -18,6 +18,8 @@ class verifyaccount extends StatefulWidget {
 }
 
 class _verifyaccountState extends State<verifyaccount> {
+  final codeController = TextEditingController();
+
   @override
   void initState() {
     startTimer();
@@ -84,16 +86,7 @@ class _verifyaccountState extends State<verifyaccount> {
                 fieldColor: notifier.getdarkmodecolor,
                 hintColor: notifier.getgreycolor,
                 text: 'Verification Code',
-                suffix: Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Text(
-                    "Resend in  " + formatedTime(_start).toString(),
-                    style: TextStyle(
-                        color: notifier.getgreycolor,
-                        fontFamily: "Gilroy Medium"),
-                  ),
-                ),
-              ),
+                controller: codeController),
               SizedBox(
                 height: MediaQuery.of(context).size.height *0.05,
               ),
@@ -101,7 +94,9 @@ class _verifyaccountState extends State<verifyaccount> {
                 bgColor: notifier.getblackwhitecolor,
                 textColor: notifier.getwhitelogocolor,
                 buttontext: "VERIFY ACCOUNT",
-                onclick: bottomsheet,
+                onclick: () => {
+                  Navigator.pop(context, codeController.text)
+                },
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.3),
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [

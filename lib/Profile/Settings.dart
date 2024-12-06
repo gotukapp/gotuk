@@ -7,6 +7,7 @@ import 'package:dm/Profile/NotificationSetting.dart';
 import 'package:dm/Profile/support.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -165,18 +166,6 @@ class _SettingsState extends State<Settings> {
                   ImageColor: notifier.getwhiteblackcolor,
                   iconcolor: notifier.getwhiteblackcolor,
                   TextColor: notifier.getwhiteblackcolor),
-              AccountSetting(
-                  image: "assets/images/logout.png",
-                  text: "Log Out",
-                  icon: null,
-                  onclick: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const loginscreen()));
-                  },
-                  boxcolor: notifier.getdarkmodecolor,
-                  iconcolor: notifier.getwhiteblackcolor,
-                  ImageColor: RedColor,
-                  TextColor: RedColor),
               const SizedBox(height: 10),
               Text("Support",
                   style: TextStyle(
@@ -196,6 +185,21 @@ class _SettingsState extends State<Settings> {
                   iconcolor: notifier.getwhiteblackcolor,
                   ImageColor: notifier.getwhiteblackcolor,
                   TextColor: notifier.getwhiteblackcolor),
+              const SizedBox(height: 10),
+              AccountSetting(
+                  image: "assets/images/logout.png",
+                  text: "Log Out",
+                  icon: null,
+                  onclick: () async {
+                    await FirebaseAuth.instance.signOut();
+                    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                        builder: (context) => const loginscreen()),
+                            (route) => false);
+                  },
+                  boxcolor: notifier.getdarkmodecolor,
+                  iconcolor: notifier.getwhiteblackcolor,
+                  ImageColor: RedColor,
+                  TextColor: RedColor)
             ],
           ),
         ),

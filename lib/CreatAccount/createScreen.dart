@@ -5,14 +5,15 @@ import 'package:dm/CreatAccount/termsAndConditions.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/CreatAccount/login.dart';
-import 'package:dm/CreatAccount/verifyaccount.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Domain/appUser.dart';
+import '../Utils/authentication.dart';
 
 class createScreen extends StatefulWidget {
   const createScreen({super.key});
@@ -41,6 +42,7 @@ class _createScreenState extends State<createScreen> {
   final emailController = TextEditingController();
   final phoneNumberController = TextEditingController();
   final passwordController = TextEditingController();
+  String countryCode = '351';
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +96,7 @@ class _createScreenState extends State<createScreen> {
                             text: 'Enter your name',
                             suffix: null,
                             controller: nameController),
-                        SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+                        const SizedBox(height: 25),
                         Text(
                           "Phone Number",
                           style: TextStyle(
@@ -103,13 +105,30 @@ class _createScreenState extends State<createScreen> {
                               color: WhiteColor),
                         ),
                         SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                        textfield(
-                            fieldColor: notifier.getfieldcolor,
-                            hintColor: notifier.gettextfieldcolor,
-                            text: 'Enter your number',
-                            suffix: null,
-                            controller: phoneNumberController),
-                        SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+                        IntlPhoneField(
+                          decoration: InputDecoration(
+                              hintText: "Phone Number",
+                              labelStyle: const TextStyle(fontSize: 16, color: Colors.white),
+                              hintStyle: TextStyle(fontSize: 16, color: notifier.gettextfieldcolor, fontFamily: "Gilroy Medium"),
+                              filled: true,
+                              fillColor: notifier.getfieldcolor,
+                              contentPadding: const EdgeInsets.symmetric(vertical: 15.0),
+                              border: const OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(15))),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: fieldColor,
+                                ),
+                                borderRadius: BorderRadius.circular(15))
+                          ),
+                          initialCountryCode: "PT",
+                          languageCode: "pt_BR",
+                          controller: phoneNumberController,
+                          onCountryChanged: (country) {
+                            countryCode = country.dialCode;
+                            print('Country changed to: ' + country.name);
+                          }
+                        ),
                         Text("Email",
                             style: TextStyle(
                                 fontSize: 16,
@@ -122,28 +141,6 @@ class _createScreenState extends State<createScreen> {
                             text: 'Enter your email',
                             controller: emailController,
                             suffix: null),
-                        SizedBox(height: MediaQuery.of(context).size.height * 0.015),
-                        Text("Password",
-                            style: TextStyle(
-                                fontFamily: "Gilroy Medium",
-                                fontSize: 16,
-                                color: WhiteColor)),
-                        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                        textfield(
-                            password: !showPassword,
-                            fieldColor: notifier.getfieldcolor,
-                            hintColor: notifier.gettextfieldcolor,
-                            text: 'Enter your password',
-                            suffix: InkWell(
-                              onTap: () {
-                                setState(() { showPassword = !showPassword; });
-                              },
-                              child: Icon(
-                                Icons.visibility_off,
-                                color: notifier.getgreycolor,
-                              ),
-                            ),
-                            controller: passwordController),
                         SizedBox(
                           height: MediaQuery.of(context).size.height * 0.01,
                         ),
@@ -194,20 +191,20 @@ class _createScreenState extends State<createScreen> {
                           bgColor: notifier.getlogowhitecolor,
                           textColor: notifier.getwhiteblackcolor,
                           onclick: () async {
-                            //await createPhoneAccount(phoneNumberController.text);
-                            if (termsAndConditionsAccepted && dataProtectionPolicyAccepted) {
-                              bool userCreated = await createUser();
-                              if (userCreated) {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (
-                                        context) => const verifyaccount()));
-                              }
-                            } else {
+                            if (phoneNumberController.text.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Phone number is required."),
+                                ),
+                              );
+                            } else if (!termsAndConditionsAccepted || !dataProtectionPolicyAccepted) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text("You need to accept the Terms and Conditions and the Data Protection Policy to proceed."),
                                 ),
                               );
+                            } else {
+                              createUser();
                             }
                           },
                           buttontext: "AGREE & CONTINUE",
@@ -250,80 +247,38 @@ class _createScreenState extends State<createScreen> {
     );
   }
 
-  Future<bool> createUser() async {
-    String errorMessage = '';
+  Future<void> createUser() async {
     try {
-      UserCredential credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: emailController.text,
-        password: passwordController.text,
-      );
-      FirebaseAuth.instance.currentUser?.updateDisplayName(nameController.text);
+      String phoneNumber = "+$countryCode${phoneNumberController.text}";
+      await signInWithPhoneNumber(context, phoneNumber, (UserCredential credential) {
+        FirebaseFirestore.instance
+            .collection("users")
+            .doc(credential.user?.uid)
+            .set({
+          "email": emailController.text,
+          "name": nameController.text,
+          "phone": phoneNumberController.text
+        });
 
-      FirebaseFirestore.instance
-          .collection("users")
-          .doc(credential.user?.uid)
-          .set({
-        "email": emailController.text,
-        "name": nameController.text,
-        "phone": phoneNumberController.text
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (
+                context) => const loginscreen()));
       });
-
-      return true;
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        errorMessage = 'The password provided is too weak.';
-      } else if (e.code == 'email-already-in-use') {
-        errorMessage = 'The account already exists for that email.';
-      } else if (e.code == 'invalid-email') {
-        errorMessage = 'The email provided is invalid.';
-      } else {
-        errorMessage = 'Unable to create user.';
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Unable to create user.'),
+        ),
+      );
     } on Exception {
-      errorMessage = 'Unable to create user.';
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Unable to create user.'),
+        ),
+      );
     }
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(errorMessage),
-      ),
-    );
-    return false;
   }
 
-  Future<void> createPhoneAccount(String phoneNumber) async {
-    await FirebaseAuth.instance.verifyPhoneNumber(
-      phoneNumber: phoneNumber,
-      verificationCompleted: (PhoneAuthCredential credential) async {
-        // This callback is triggered when verification is completed automatically
-        await FirebaseAuth.instance.signInWithCredential(credential);
-        print("User signed in automatically with phone credentials.");
-      },
-      verificationFailed: (FirebaseAuthException e) {
-        print("Phone number verification failed. Code: ${e.code}. Message: ${e.message}");
-      },
-      codeSent: (String verificationId, int? resendToken) async {
-        // Code has been sent to the phone number
-        print("Verification code sent to $phoneNumber.");
-
-        // Store the verificationId, as you will need it to complete sign-in
-        // Prompt the user to enter the code they received
-        String smsCode = await promptUserForSmsCode();
-
-        // Create a PhoneAuthCredential using the code and the verificationId
-        PhoneAuthCredential credential = PhoneAuthProvider.credential(
-          verificationId: verificationId,
-          smsCode: smsCode,
-        );
-
-        // Sign in with the credential
-        await FirebaseAuth.instance.signInWithCredential(credential);
-        print("User signed in with the provided verification code.");
-      },
-      codeAutoRetrievalTimeout: (String verificationId) {
-        print("Auto retrieval timeout, verification ID: $verificationId");
-      },
-    );
-  }
 
   getdarkmodepreviousstate() async {
     final prefs = await SharedPreferences.getInstance();
@@ -349,9 +304,5 @@ class _createScreenState extends State<createScreen> {
     final prefs = await SharedPreferences.getInstance();
     bool? previousState = prefs.getBool("setGuideMode");
     guideMode = previousState ?? false;
-  }
-
-  promptUserForSmsCode() {
-    return '';
   }
 }

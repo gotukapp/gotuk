@@ -202,6 +202,12 @@ class AppUser {
   }
 }
 
+Future<bool> userExists(String phone) async {
+  CollectionReference users = FirebaseFirestore.instance.collection("users");
+  QuerySnapshot<Object?> snapshot = await users.where("phone", isEqualTo: phone).get();
+  return snapshot.docs.isNotEmpty;
+}
+
 Future<AppUser> getUserFirebaseInstance(bool guideMode, User user) async {
   final ref = FirebaseFirestore.instance.collection("users").doc(user.uid)
       .withConverter(

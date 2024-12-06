@@ -11,5 +11,19 @@
     },
     "rateTour": "Avaliar",
     "letsGo": "Vamos",
-    "cancel": "Cacelar"
+    "cancel": "Cacelar",
+    "hello": "Olá",
+    "letsFindTour": "Vamos procurar uma viagem para ti",
+    "welcomeGotuk": "Bem-vindo à Gotuk",
+    "pleaseLogin": "Por favor faça login na sua conta",
+    "phoneNumber": "Telemóvel",
+    "loginAsGuide": "LOGIN COMO GUIA",
+    "orLoginWith": "ou login com",
+    "profile": "Perfil",
+    "options": "Opções",
+    "favorites": "Favoritos",
+    "calendar": "Calendário",
+    "history": "Histórico",
+    "account": "Conta",
+    "promotions": "Promoções"
 }

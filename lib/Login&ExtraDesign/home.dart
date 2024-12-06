@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dm/Login&ExtraDesign/nearbyAllTours.dart';
 import 'package:dm/Login&ExtraDesign/showAllTours.dart';
 import 'package:dm/Login&ExtraDesign/tripsBooked.dart';
+import 'package:dm/Providers/userProvider.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:dm/Domain/tour.dart';
@@ -14,6 +15,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../Domain/trips.dart';
 import '../Utils/customwidget .dart';
 import 'checkout.dart';
@@ -80,9 +82,11 @@ class _homeState extends State<home> {
     super.initState();
   }
 
+  late UserProvider userProvider;
   late ColorNotifier notifier;
   @override
   Widget build(BuildContext context) {
+    userProvider = Provider.of<UserProvider>(context);
     notifier = Provider.of<ColorNotifier>(context, listen: true);
     return SafeArea(
       child: Scaffold(
@@ -101,7 +105,7 @@ class _homeState extends State<home> {
                           SizedBox(
                               height: MediaQuery.of(context).size.height * 0.01),
                           Text(
-                            "Hello, ${FirebaseAuth.instance.currentUser?.displayName}! 👋",
+                            "${AppLocalizations.of(context)!.hello}, ${userProvider.user!.name}! 👋",
                             style: TextStyle(
                                 color: notifier.getwhiteblackcolor,
                                 fontSize: 16,
@@ -110,7 +114,7 @@ class _homeState extends State<home> {
                           SizedBox(
                               height: MediaQuery.of(context).size.height * 0.0001),
                           Text(
-                            "Let’s find you a tour",
+                            AppLocalizations.of(context)!.letsFindTour,
                             style: TextStyle(
                                 fontSize: 16,
                                 color: LogoColor,

@@ -1,12 +1,11 @@
 // ignore_for_file: camel_case_types, non_constant_identifier_names
 
-import 'package:dm/CreatAccount/login.dart';
 import 'package:dm/Profile/Favourite.dart';
 import 'package:dm/Profile/MyCupon.dart';
 import 'package:dm/Profile/Settings.dart';
 import 'package:dm/Profile/tripsHistory.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -52,8 +51,7 @@ class _profileState extends State<profile> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        "Profile",
+                      Text(AppLocalizations.of(context)!.profile,
                         style: TextStyle(
                             fontSize: 18,
                             color: Darkblue,
@@ -127,7 +125,7 @@ class _profileState extends State<profile> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Options",
+                        AppLocalizations.of(context)!.options,
                         style: TextStyle(
                             fontSize: 18,
                             color: Darkblue,
@@ -141,7 +139,7 @@ class _profileState extends State<profile> {
                           if (!guideMode)
                             ProfileSetting(
                               image: "assets/images/heart.png",
-                              text: "Favorites",
+                              text: AppLocalizations.of(context)!.favorites,
                               icon: Icons.keyboard_arrow_right,
                               onclick: () {
                                 Navigator.of(context).push(MaterialPageRoute(
@@ -156,7 +154,7 @@ class _profileState extends State<profile> {
                           ,
                           ProfileSetting(
                               image: "assets/images/clock.png",
-                              text: guideMode ? "Calendar" : "History",
+                              text: guideMode ? AppLocalizations.of(context)!.calendar : AppLocalizations.of(context)!.history,
                               icon: Icons.keyboard_arrow_right,
                               onclick: () {
                                 Navigator.of(context).push(MaterialPageRoute(
@@ -171,7 +169,7 @@ class _profileState extends State<profile> {
                             ...[
                               ProfileSetting(
                                 image: "assets/images/profile.png",
-                                text: "Account",
+                                text: AppLocalizations.of(context)!.account,
                                 icon: Icons.keyboard_arrow_right,
                                 onclick: () {
                                   Navigator.of(context).push(MaterialPageRoute(
@@ -187,7 +185,7 @@ class _profileState extends State<profile> {
                           else
                             ProfileSetting(
                                 image: "assets/images/discount.png",
-                                text: "Promotions",
+                                text: AppLocalizations.of(context)!.promotions,
                                 icon: Icons.keyboard_arrow_right,
                                 onclick: () {
                                   Navigator.of(context).push(MaterialPageRoute(
@@ -198,17 +196,7 @@ class _profileState extends State<profile> {
                                 ImageColor: notifier.getwhiteblackcolor,
                                 TextColor: notifier.getwhiteblackcolor)
                         ],
-                      ),
-                      SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.1),
-                      AppButton(
-                          buttontext: "LOGOUT",
-                          onclick: () async {
-                            await FirebaseAuth.instance.signOut();
-                            Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-                                builder: (context) => const loginscreen()),
-                                    (route) => false);
-                          }),
+                      )
                     ],
                   )
                 ],
