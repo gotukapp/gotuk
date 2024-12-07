@@ -3,6 +3,7 @@ import 'package:dm/Domain/tour.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:intl/intl.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../Guide/account.dart';
 
@@ -196,8 +197,10 @@ class AppUser {
             .doc(FirebaseAuth.instance.currentUser?.uid)
             .update({ "firebaseToken": token});
       }
-    } on Exception catch (_, e) {
-      print(e);
+    } catch (e, stackTrace) {
+      await Sentry.captureException(e,
+        stackTrace: stackTrace,
+      );
     }
   }
 }
