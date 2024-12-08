@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dm/Domain/tour.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -189,7 +191,8 @@ class AppUser {
 
   void setFirebaseToken() async {
     try {
-      String? token = await FirebaseMessaging.instance.getToken();
+      String? token = Platform.isIOS ? await FirebaseMessaging.instance.getAPNSToken()
+          : await FirebaseMessaging.instance.getToken();
       print('FCM Token: $token');
       if (token != null) {
         FirebaseFirestore.instance
