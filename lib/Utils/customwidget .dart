@@ -959,21 +959,21 @@ List hotelList2 = [
 
 List notificationList = [
   {
-    "img": "assets/images/person9.jpg",
+    "img": "assets/images/person.jpg",
     "title": "Kim Hayo Send You a Message",
     "subtitle":
     "Hi mariana, are you looking for Tuk Tuk in Lisbon?",
     "massagetime": "1:m Ago"
   },
   {
-    "img": "assets/images/person8.jpg",
+    "img": "assets/images/person.jpg",
     "title": "John  Send You a Message",
     "subtitle":
     "The service is on point, and I really like the tour. Good job!",
     "massagetime": "2:m Ago"
   },
   {
-    "img": "assets/images/person6.jpg",
+    "img": "assets/images/person.jpg",
     "title": "Alexander Send You a Message",
     "subtitle":
     "The hotels give me amazing view, I really like it!. All people must try this Tuk Tuk.",

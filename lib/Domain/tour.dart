@@ -155,9 +155,9 @@ List starPoints5 = [
 
 List<ChatMessage> chatMessages = [
   ChatMessage("John kennedy","assets/images/person.jpg","Tuk Tuk is the best tour in the city",4.8),
-  ChatMessage("Alexander","assets/images/person1.jpeg","Thank you for booking our tour",4.6),
-  ChatMessage("Emanuel","assets/images/person2.jpg","50% discount on first booking",4.5),
-  ChatMessage("Jamison","assets/images/person12.jpg","You will have more fun in this tour than any other",4.4)
+  ChatMessage("Alexander","assets/images/person.jpg","Thank you for booking our tour",4.6),
+  ChatMessage("Emanuel","assets/images/person.jpg","50% discount on first booking",4.5),
+  ChatMessage("Jamison","assets/images/person.jpg","You will have more fun in this tour than any other",4.4)
 ];
 
 class Tour {
