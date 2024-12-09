@@ -19,6 +19,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import '../Domain/appUser.dart';
 import '../Domain/tour.dart';
 import '../Providers/userProvider.dart';
+import '../Utils/notification.dart';
 
 class checkout extends StatefulWidget {
   final String tourId;
@@ -48,7 +49,7 @@ class _checkoutState extends State<checkout> {
   Color highPriceColor = greyColor;
 
   DateTime? selectedDate;
-  int hourSliderValue = DateTime.now().hour < 9 ? 9 : (DateTime.now().hour > 20 ? 20 : DateTime.now().hour);
+  int hourSliderValue = 9;
   int minutesSliderValue = 0;
 
 
@@ -257,7 +258,11 @@ class _checkoutState extends State<checkout> {
                       : minutesSliderValue.toString()}"
                       : "Select Time",
                   icon: Icons.keyboard_arrow_down,
-                  onclick: timerBottomSheet,
+                  onclick: () {
+                    if (selectedDate != null) {
+                      timerBottomSheet();
+                    }
+                  },
                   notifier: notifier),
               const SizedBox(height: 10),
               selectDetail(
@@ -379,7 +384,17 @@ class _checkoutState extends State<checkout> {
                   ),
                   const SizedBox(height: 25),
                   InkWell(
-                    onTap: () => { paymentModelBottomSheet(guideRef!) },
+                    onTap: () => {
+                      if (selectedDate == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Please select a date to proceed.'),
+                          )
+                        )
+                      } else {
+                        paymentModelBottomSheet(guideRef!)
+                      }
+                    },
                     child: Container(
                       height: 50,
                       width: double.infinity,

@@ -5,6 +5,7 @@ import 'package:dm/CreatAccount/login.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -323,6 +324,7 @@ class _loginpageState extends State<loginpage> {
   void initState() {
     getdarkmodepreviousstate();
     getAppModeState();
+    requestPermission();
     super.initState();
   }
 
@@ -463,6 +465,23 @@ class _loginpageState extends State<loginpage> {
     final prefs = await SharedPreferences.getInstance();
     bool? previousState = prefs.getBool("setGuideMode");
     guideMode = previousState ?? false;
+  }
+
+  void requestPermission() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print("Permissões de notificações concedidas");
+    } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+      print("Permissões provisórias concedidas");
+    } else {
+      print("Permissões de notificações negadas");
+    }
   }
 }
 

@@ -191,8 +191,11 @@ class AppUser {
 
   void setFirebaseToken() async {
     try {
-      String? token = Platform.isIOS ? await FirebaseMessaging.instance.getAPNSToken()
-          : await FirebaseMessaging.instance.getToken();
+      if (Platform.isIOS) {
+        await FirebaseMessaging.instance.getAPNSToken();
+      }
+
+      String? token = await FirebaseMessaging.instance.getToken();
       print('FCM Token: $token');
       if (token != null) {
         FirebaseFirestore.instance

@@ -257,7 +257,8 @@ class _createScreenState extends State<createScreen> {
             .set({
           "email": emailController.text,
           "name": nameController.text,
-          "phone": phoneNumberController.text
+          "phone": phoneNumber,
+          "accountValidated": false
         });
 
         Navigator.of(context).push(MaterialPageRoute(

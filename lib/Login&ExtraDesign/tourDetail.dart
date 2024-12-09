@@ -70,7 +70,7 @@ class _TourDetailState extends State<TourDetail> {
                       .then((value) => print('ok Navigat'));
                 },
                 child: Container(
-                  height: 60,
+                  height: 50,
                   width: MediaQuery.of(context).size.width * 0.4,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(50), color: LogoColor),
@@ -93,7 +93,7 @@ class _TourDetailState extends State<TourDetail> {
                       .then((value) => print('ok Navigat'));
                 },
                 child: Container(
-                  height: 60,
+                  height: 50,
                   width: MediaQuery.of(context).size.width * 0.4,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(50), color: LogoColor),
