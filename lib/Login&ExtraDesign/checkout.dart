@@ -19,7 +19,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import '../Domain/appUser.dart';
 import '../Domain/tour.dart';
 import '../Providers/userProvider.dart';
-import '../Utils/notification.dart';
 
 class checkout extends StatefulWidget {
   final String tourId;
@@ -893,6 +892,9 @@ class _checkoutState extends State<checkout> {
   }
 
   paymentModelBottomSheet(DocumentReference guideRef) {
+
+    //sendNotification(targetToken: "dm9JXKnVdE76hQ8gPfKn_0:APA91bGPa-KUwwJIG41bdd2OVUZ2YURlN7UMFeM6rHv1UiIF34znvA4xwCaT005P2uacwHfwcsGWkY6OnP4gpjDK7iUcxMG-91ZUIez-gAAtKBHwEefh3IA", title:"teste", body:"teste body");
+
     return showModalBottomSheet(
         isScrollControlled: true,
         backgroundColor: notifier.getbgcolor,
