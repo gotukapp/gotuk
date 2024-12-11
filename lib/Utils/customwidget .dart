@@ -381,13 +381,13 @@ guideTripLayout(BuildContext context, ColorNotifier notifier, Trip trip) {
                         showConfirmationMessage(context,
                             "Start Tour",
                             "Are you sure you want to start this tour?",
-                            () => trip.startTour(),
+                            () async => await trip.startTour(),
                             () {});
                       } else if (trip.status == "started") {
                         showConfirmationMessage(context,
                             "Finish Tour",
                             "Are you sure you want to finish this tour?",
-                                () => trip.finishTour(),
+                                () async => await trip.finishTour(),
                                 () {});
                       } else if (trip.status == "pending") {
                         showConfirmationMessage(context,
