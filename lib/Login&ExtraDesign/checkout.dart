@@ -19,6 +19,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import '../Domain/appUser.dart';
 import '../Domain/tour.dart';
 import '../Providers/userProvider.dart';
+import '../Utils/notification.dart';
 
 class checkout extends StatefulWidget {
   final String tourId;
@@ -258,7 +259,7 @@ class _checkoutState extends State<checkout> {
                       : "Select Time",
                   icon: Icons.keyboard_arrow_down,
                   onclick: () {
-                    if (selectedDate != null) {
+                    if (selectedDate != null || widget.goNow) {
                       timerBottomSheet();
                     }
                   },
@@ -892,9 +893,6 @@ class _checkoutState extends State<checkout> {
   }
 
   paymentModelBottomSheet(DocumentReference guideRef) {
-
-    //sendNotification(targetToken: "dm9JXKnVdE76hQ8gPfKn_0:APA91bGPa-KUwwJIG41bdd2OVUZ2YURlN7UMFeM6rHv1UiIF34znvA4xwCaT005P2uacwHfwcsGWkY6OnP4gpjDK7iUcxMG-91ZUIez-gAAtKBHwEefh3IA", title:"teste", body:"teste body");
-
     return showModalBottomSheet(
         isScrollControlled: true,
         backgroundColor: notifier.getbgcolor,
@@ -1264,11 +1262,14 @@ class _checkoutState extends State<checkout> {
       if (widget.goNow) {
         selectedDate = DateTime.now();
       }
+
+      DateTime tripDate = selectedDate!.copyWith(
+          hour: hourSliderValue, minute: minutesSliderValue, second: 0, millisecond: 0, microsecond: 0);
+
       await Trip.addTrip(
           widget.goNow ? null : guideRef,
           tour!.id,
-          selectedDate!.copyWith(
-              hour: hourSliderValue, minute: minutesSliderValue, second: 0, millisecond: 0, microsecond: 0),
+          tripDate,
           smallPriceSelected ? 3 : 6,
           widget.goNow ? 'pending' : 'booked',
           getAllSelectedLanguages(),
@@ -1286,6 +1287,13 @@ class _checkoutState extends State<checkout> {
       });
 
       if (!widget.goNow) {
+        DocumentSnapshot<Object?> guide = await guideRef!.get();
+
+        String? token = guide.get("firebaseToken");
+        if (token != null) {
+          await sendNotification(targetToken: token, title: "New Tour", body: "${DateFormat('dd-MM-yyyy HH:mm')
+              .format(tripDate)} - ${tour!.name}");
+        }
         await AppUser.updateTripUnavailability(guideRef!.id, tour!, selectedDate!, hourSliderValue, minutesSliderValue);
       }
 

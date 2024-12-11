@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dm/Domain/tour.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../Utils/notification.dart';
+
 class Trip {
 
   String? id;
@@ -111,26 +113,36 @@ class Trip {
             "guideRef": FirebaseFirestore.instance.doc('users/${FirebaseAuth.instance.currentUser!.uid}'),
             "acceptedDate": FieldValue.serverTimestamp(),
             "reservationId": generateReservationId()});
+
+        DocumentSnapshot<Object?> client = await clientRef!.get();
+        await sendNotification(targetToken: client.get("firebaseToken"), title: "Accepted Tour", body: "$reservationId - ${tour.name} tour was accepted");
+
         return true;
       }
       return false;
     });
   }
 
-  void startTour() {
-    FirebaseFirestore.instance
+  Future<void> startTour() async {
+    await FirebaseFirestore.instance
         .collection('trips')
         .doc(id)
         .update({"status": "started",
       "startedDate": FieldValue.serverTimestamp()});
+
+    DocumentSnapshot<Object?> client = await clientRef!.get();
+    await sendNotification(targetToken: client.get("firebaseToken"), title: "Start Tour", body: "$reservationId - ${tour.name} tour was started");
   }
 
-  void finishTour() {
-    FirebaseFirestore.instance
+  Future<void> finishTour() async {
+    await FirebaseFirestore.instance
         .collection('trips')
         .doc(id)
         .update({"status": "finished",
       "finishedDate": FieldValue.serverTimestamp()});
+
+    DocumentSnapshot<Object?> client = await clientRef!.get();
+    await sendNotification(targetToken: client.get("firebaseToken"), title: "Finish Tour", body: "$reservationId - ${tour.name} tour was finished");
   }
 
   void cancelTour() {
