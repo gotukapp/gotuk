@@ -68,7 +68,8 @@ class _RateTourState extends State<RateTour> {
             style: TextStyle(color: notifier.getwhiteblackcolor,
                 fontFamily: "Gilroy Bold")),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
+        child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,7 +150,8 @@ class _RateTourState extends State<RateTour> {
             ),
           ],
         ),
-      ),
+      )
+      )
     );
   }
 
