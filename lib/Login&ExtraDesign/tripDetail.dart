@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_final_fields, camel_case_types, sized_box_for_whitespace, avoid_print, avoid_unnecessary_containers
 
+import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
@@ -7,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../Domain/appUser.dart';
 import '../Domain/ticket.dart';
@@ -218,7 +221,9 @@ class _TripDetailState extends State<TripDetail> {
                                   height: 30,
                                   color: notifier.getgreycolor,
                                 ),
-                                if (trip?.guideRef != null && !widget.guideMode && trip?.status != 'canceled')
+                                if (trip?.guideRef != null
+                                    && !widget.guideMode
+                                    && trip!.status != 'canceled')
                                   ...[StreamBuilder(
                                   stream: trip?.guideRef?.withConverter(
                                     fromFirestore: AppUser.fromFirestore,
@@ -355,8 +360,8 @@ class _TripDetailState extends State<TripDetail> {
                                       ]
                                     );
                                 }),
-                                    if(trip?.status == 'booked')
-                                     ...[
+                                  if(trip?.status == 'booked')
+                                    ...[
                                        Divider(
                                          height: 30,
                                          color: notifier.getgreycolor,
@@ -364,7 +369,8 @@ class _TripDetailState extends State<TripDetail> {
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          InkWell(
+                                          if (trip!.allowShowStart())
+                                            InkWell(
                                             onTap: () {},
                                             child: Container(
                                               height: 50,
@@ -373,7 +379,7 @@ class _TripDetailState extends State<TripDetail> {
                                                   borderRadius: BorderRadius.circular(50), color: LogoColor),
                                               child: Center(
                                                 child: Text(
-                                                  "I’m Ready",
+                                                  AppLocalizations.of(context)!.letsGo.toUpperCase(),
                                                   style: TextStyle(
                                                       color: WhiteColor,
                                                       fontSize: 18,
@@ -395,7 +401,7 @@ class _TripDetailState extends State<TripDetail> {
                                                   borderRadius: BorderRadius.circular(50), color: greyColor),
                                               child: Center(
                                                 child: Text(
-                                                  "Reschedule",
+                                                  AppLocalizations.of(context)!.reschedule.toUpperCase(),
                                                   style: TextStyle(
                                                       color: WhiteColor,
                                                       fontSize: 18,

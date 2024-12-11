@@ -10,8 +10,9 @@
         }
     },
     "rateTour": "Rate Tour",
-    "letsGo": "Let's Go",
+    "letsGo": "I'm Ready",
     "cancel": "Cancel",
+    "reschedule": "Reschedule",
     "hello": "Hello",
     "letsFindTour": "Let’s find you a tour",
     "welcomeGotuk": "Welcome to Gotuk",

@@ -205,6 +205,11 @@ class Trip {
                   "guideReviewRef": guideReview });
   }
 
+  bool allowShowGuide() {
+    int differenceInMinutes = date.difference(DateTime.now()).inMinutes;
+    return (status == 'booked' || status == 'started' || status == 'finished')  && differenceInMinutes <= 30;
+  }
+
   bool allowShowStart() {
     int differenceInMinutes = date.difference(DateTime.now()).inMinutes;
     return status == 'booked' && differenceInMinutes <= 15;
