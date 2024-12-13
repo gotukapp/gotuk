@@ -205,6 +205,34 @@ class Trip {
                   "guideReviewRef": guideReview });
   }
 
+
+  Future<void> sendChatMessage(String text, String? token, String title) async {
+    CollectionReference chat = FirebaseFirestore.instance
+        .collection('trips')
+        .doc(id)
+        .collection('chat');
+
+    await chat.add({
+      'text': text,
+      'date': DateTime.now(),
+      'origin': FirebaseAuth.instance.currentUser!.uid
+    });
+
+    if (token != null) {
+      await sendNotification(targetToken: token, title: title, body: text);
+    }
+  }
+
+  bool allowShowGuide() {
+    int differenceInMinutes = date.difference(DateTime.now()).inMinutes;
+    return (status == 'booked' || status == 'started' || status == 'finished')  && differenceInMinutes <= 60;
+  }
+
+  bool allowShowChatting() {
+    int differenceInMinutes = date.difference(DateTime.now()).inMinutes;
+    return (status == 'booked' || status == 'started' || status == 'finished')  && differenceInMinutes <= 60;
+  }
+
   bool allowShowStart() {
     int differenceInMinutes = date.difference(DateTime.now()).inMinutes;
     return status == 'booked' && differenceInMinutes <= 15;

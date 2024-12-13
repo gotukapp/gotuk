@@ -277,7 +277,7 @@ tourLayout(BuildContext context, ColorNotifier notifier, Tour tour) {
   );
 }
 
-guideTripLayout(BuildContext context, ColorNotifier notifier, Trip trip) {
+guideTripLayout(BuildContext context, ColorNotifier notifier, Trip trip, bool showActions) {
   return InkWell(
     onTap: () {
       Navigator.of(context).push(MaterialPageRoute(
@@ -296,11 +296,21 @@ guideTripLayout(BuildContext context, ColorNotifier notifier, Trip trip) {
           child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(DateFormat('E, d MMM yyyy HH:mm')
-                .format(trip.date),
-                style: TextStyle(
-                    fontSize: 15,
-                    color: notifier.getwhiteblackcolor)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(trip.reservationId!,
+                      style: TextStyle(
+                          fontSize: 15,
+                          color: notifier.getwhiteblackcolor,
+                          fontFamily: "Gilroy Bold")),
+                  Text(DateFormat('E, d MMM yyyy HH:mm')
+                      .format(trip.date),
+                      style: TextStyle(
+                          fontSize: 15,
+                          color: notifier.getwhiteblackcolor))
+                ],
+              ),
               Row(
                 children: [
                   Container(
@@ -359,7 +369,8 @@ guideTripLayout(BuildContext context, ColorNotifier notifier, Trip trip) {
                 ],
               ),
               const SizedBox(height: 8),
-              Row(
+              if (showActions)
+                Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Column(
@@ -530,7 +541,7 @@ clientTripLayout(BuildContext context, ColorNotifier notifier, Trip trip) {
                           ),
                           SizedBox(width: MediaQuery.of(context).size.width * 0.06),
                           if (trip.status == 'pending' ||
-                              trip.status == 'booked' ||
+                              (trip.status == 'booked' && trip.allowShowStart()) ||
                               (trip.status == 'finished' && !trip.rateSubmitted))
                             InkWell(
                               onTap: () {

@@ -49,9 +49,12 @@ class _checkoutState extends State<checkout> {
   Color highPriceColor = greyColor;
 
   DateTime? selectedDate;
-  int hourSliderValue = 9;
+  int hourSliderValue = 8;
   int minutesSliderValue = 0;
-
+  int minimumHourSlider = 8;
+  int maximumHourSlider = 19;
+  DateTime minimumDate = DateTime.now().add(const Duration(days: 1));
+  DateTime maximumDate = DateTime.now().add(const Duration(days: 32));
 
   bool timeSaved = false;
   int? guidesAvailable;
@@ -88,6 +91,16 @@ class _checkoutState extends State<checkout> {
     if(widget.goNow){
       tours.addAll(tourList);
       carrosselDefaultPage = tourList.indexOf(tour!);
+      if (DateTime.now().hour >= 19) {
+        selectedDate = DateTime.now().add(const Duration(hours: 24));
+      } else {
+        minimumHourSlider = DateTime.now().hour + 1;
+        selectedDate = DateTime.now();
+      }
+    } else {
+      if (DateTime.now().hour >= 19) {
+        minimumDate = DateTime.now().add(const Duration(days: 2));
+      }
     }
 
     userProvider = Provider.of<UserProvider>(context);
@@ -98,7 +111,6 @@ class _checkoutState extends State<checkout> {
           preferredSize: const Size.fromHeight(75),
           child: CustomAppbar(
               centertext: "Checkout${widget.goNow ? " - GoNow" : ""}" ,
-              ActionIcon: Icons.more_vert,
               bgcolor: notifier.getbgcolor,
               actioniconcolor: notifier.getwhiteblackcolor,
               leadingiconcolor: notifier.getwhiteblackcolor,
@@ -110,11 +122,34 @@ class _checkoutState extends State<checkout> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (widget.goNow)
-                ...[Text("The GoNow solution allows you to make a reservation for today",
+                ...[
+                  if (DateTime.now().hour >= 19)
+                    Text("Reservation for tomorrow",
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: LogoColor,
+                            fontFamily: "Gilroy Bold")
+                    )
+                  else
+                    Text("Reservation for today",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: LogoColor,
+                          fontFamily: "Gilroy Bold")
+                    ),
+                  Row(
+                    children: [
+                      Text("Date: ",
                       style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 16,
                           color: notifier.getwhiteblackcolor,
                           fontFamily: "Gilroy Bold")),
+                      Text(DateFormat('dd-MM-yyyy').format(selectedDate!),
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: notifier.getwhiteblackcolor,
+                              fontFamily: "Gilroy Medium"))
+                    ]),
                   const SizedBox(height: 10)
                 ],
               if (widget.goNow)
@@ -237,8 +272,8 @@ class _checkoutState extends State<checkout> {
                   onclick: () {
                     Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => Calendar(selectedDate: selectedDate,
-                              minDate: DateTime.now().add(const Duration(days: 1)),
-                              maxDate: DateTime.now().add(const Duration(days: 32))),
+                              minDate: minimumDate,
+                              maxDate: maximumDate),
                     )).then((value) {
                       checkGuidesAvailability();
                       setState(() {
@@ -666,6 +701,7 @@ class _checkoutState extends State<checkout> {
   }
 
   timerBottomSheet() {
+    hourSliderValue = hourSliderValue < minimumHourSlider ? minimumHourSlider : hourSliderValue;
     showModalBottomSheet(
         backgroundColor: notifier.getbgcolor,
         context: context,
@@ -693,8 +729,8 @@ class _checkoutState extends State<checkout> {
                                 ),
                                 NumberPicker(
                                   value: hourSliderValue,
-                                  minValue: 8,
-                                  maxValue: 19,
+                                  minValue: minimumHourSlider,
+                                  maxValue: maximumHourSlider,
                                   onChanged: (value) => setState(() => hourSliderValue = value),
                                 )
                               ]
@@ -1259,9 +1295,6 @@ class _checkoutState extends State<checkout> {
   Future<bool> bookTour() async {
     try {
       selectedIndex = 0;
-      if (widget.goNow) {
-        selectedDate = DateTime.now();
-      }
 
       DateTime tripDate = selectedDate!.copyWith(
           hour: hourSliderValue, minute: minutesSliderValue, second: 0, millisecond: 0, microsecond: 0);

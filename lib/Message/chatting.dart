@@ -1,24 +1,34 @@
 // ignore_for_file: file_names, non_constant_identifier_names
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 // ignore: unused_import
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../Domain/appUser.dart';
+import '../Domain/trips.dart';
 import '../Utils/customwidget .dart';
-import '../Domain/tour.dart';
 
-class Chating extends StatefulWidget {
-  const Chating({super.key});
+class Chatting extends StatefulWidget {
+  final Trip trip;
+  final AppUser user;
+
+  const Chatting({super.key, required this.trip, required this.user });
 
   @override
-  State<Chating> createState() => _ChatingState();
+  State<Chatting> createState() => _ChattingState();
 }
 
-class _ChatingState extends State<Chating> {
+class _ChattingState extends State<Chatting> {
+  TextEditingController chatTextController = TextEditingController();
+
   @override
   void initState() {
     getdarkmodepreviousstate();
@@ -28,6 +38,11 @@ class _ChatingState extends State<Chating> {
   late ColorNotifier notifier;
   @override
   Widget build(BuildContext context) {
+    final Stream<QuerySnapshot<Map<String, dynamic>>> chatMessages = FirebaseFirestore.instance
+        .collection('trips').doc(widget.trip.id)
+        .collection('chat')
+        .orderBy("date").snapshots();
+
     notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
       backgroundColor: notifier.getblackwhitecolor,
@@ -79,7 +94,7 @@ class _ChatingState extends State<Chating> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const SizedBox(height: 4),
-                          Text("Kim Hayo",
+                          Text(widget.user.name!,
                               style: TextStyle(
                                   fontSize: 18,
                                   color: notifier.getwhiteblackcolor,
@@ -116,39 +131,38 @@ class _ChatingState extends State<Chating> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    tourLayout(context, notifier, tourList[0]),
-                    Massagelist(
-                        SenderText:
-                            "Hi, i'm already here",
-                        timetext2: "8:14 Am",
-                        timetext: "8:12 Am",
-                        timetext3: "8:16 Am",
-                        ReciveText:
-                            "Hello Marine, wait a moment, I'm almost there.",
-                        ReciveText2: "Thank You! 😁",
-                        SenderText2: "Thanks for your information"),
-                    // SizedBox(
-                    //   child: ListView.builder(
-                    //     physics: NeverScrollableScrollPhysics(),
-                    //     shrinkWrap: true,
-                    //     padding: EdgeInsets.zero,
-                    //     itemCount: 5,
-                    //     itemBuilder: (BuildContext context, int index) {
-                    //       return Padding(
-                    //         padding: const EdgeInsets.symmetric(vertical: 6),
-                    //         child:
-                    //       );
-                    //     },
-                    //   ),
-                    // ),
+                    guideTripLayout(context, notifier, widget.trip, false),
+                    StreamBuilder(
+                      stream: chatMessages,
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return Center(child: CircularProgressIndicator(color: WhiteColor));
+                        }
+
+                        return ListView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          padding: EdgeInsets.zero,
+                          itemCount: snapshot.data != null ? snapshot.data!.docs.length : 0,
+                          itemBuilder: (BuildContext context,
+                              int index) {
+                            QueryDocumentSnapshot chatMessage = snapshot.data!.docs[index];
+                            return message(text: chatMessage["text"],
+                                timeText:  DateFormat('HH:mm').format(chatMessage["date"].toDate()),
+                                origin:  chatMessage["origin"]);
+                          },
+                        );
+                      }
+                    ),
                   ],
                 ),
               ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
+            padding: const EdgeInsets.only(left: 8, right: 8, bottom: 20),
             child: TextField(
+              controller: chatTextController,
               decoration: InputDecoration(
                 hintText: "Write a reply",
                 hintStyle: TextStyle(
@@ -218,16 +232,30 @@ class _ChatingState extends State<Chating> {
                 ),
                 suffixIcon: Padding(
                   padding: const EdgeInsets.all(6),
-                  child: Icon(
-                    Icons.send,
-                    color: Darkblue,
-                  ),
+                  child:
+                    InkWell(
+                      onTap: () {
+                        if (chatTextController.text.isNotEmpty) {
+                          setState(() {
+                            widget.trip.sendChatMessage(chatTextController.text, widget.user.firebaseToken, widget.user.name!).then((value) => {
+                              chatTextController.clear()
+                            });
+                          });
+                        }
+                      },
+                      child:
+                        Icon(
+                          Icons.send,
+                          color: Darkblue)
+                    ),
                 ),
-                border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(50))),
-                enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: notifier.getgreywhite,
+                border: const OutlineInputBorder( borderRadius: BorderRadius.all(Radius.circular(50))),
+                focusedBorder: OutlineInputBorder( borderSide: BorderSide(
+                  color: LogoColor,
+                ),
+                    borderRadius: BorderRadius.circular(50)),
+                enabledBorder: OutlineInputBorder( borderSide: BorderSide(
+                      color: darkGrey,
                     ),
                     borderRadius: BorderRadius.circular(50)),
               ),
@@ -241,19 +269,13 @@ class _ChatingState extends State<Chating> {
     );
   }
 
-  Massagelist(
-      {SenderText,
-      ReciveText,
-      ReciveText2,
-      SenderText2,
-      timetext,
-      timetext2,
-      timetext3}) {
+  message({text, timeText, origin}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 15),
-        Column(
+        if (origin == FirebaseAuth.instance.currentUser!.uid)
+          Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Align(
@@ -268,138 +290,72 @@ class _ChatingState extends State<Chating> {
                 width: MediaQuery.of(context).size.width * 0.70,
                 child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        SenderText,
-                        style: TextStyle(
-                            fontSize: 14,
-                            color: notifier.getdarkwhitecolor,
-                            fontFamily: "Gilroy Medium"),
+                          text,
+                          style: TextStyle(
+                              fontSize: 14,
+                              color: notifier.getdarkwhitecolor,
+                              fontFamily: "Gilroy Medium"),
                       ),
+                      const SizedBox(height: 3),
+                      Text(
+                        timeText,
+                        style: TextStyle(
+                            color: lightGrey,
+                            fontSize: 13,
+                            fontFamily: "Gilroy Medium"),
+                      )
                     ],
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              timetext,
-              style: TextStyle(
-                  color: notifier.getgreycolor,
-                  fontSize: 15,
-                  fontFamily: "Gilroy Medium"),
             )
           ],
-        ),
-        const SizedBox(height: 15),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Align(
-              alignment: Alignment.topLeft,
-              child: Container(
-                decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        bottomLeft: Radius.circular(10),
-                        bottomRight: Radius.circular(10)),
-                    color: lightGrey),
-                width: MediaQuery.of(context).size.width * 0.70,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                  child: Text(
-                    ReciveText,
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontFamily: "Gilroy Medium",
-                        color: notifier.getwhiteblackcolor),
-                  ),
-                ),
-              ),
-            ),
-            // SizedBox(height: 4),
-            // Text("8:14 Am", style: TextStyle(color: greyColor, fontSize: 15))
-          ],
-        ),
-        const SizedBox(height: 15),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Align(
-              alignment: Alignment.topLeft,
-              child: Container(
-                decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        bottomLeft: Radius.circular(10),
-                        bottomRight: Radius.circular(10)),
-                    color: lightGrey),
-                width: MediaQuery.of(context).size.width * 0.70,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                  child: Text(
-                    ReciveText2,
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontFamily: "Gilroy Medium",
-                        color: notifier.getwhiteblackcolor),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(timetext2,
-                style: TextStyle(
-                    color: notifier.getgreycolor,
-                    fontSize: 15,
-                    fontFamily: "Gilroy Medium")),
-            const SizedBox(height: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Container(
-                    decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            bottomLeft: Radius.circular(10),
-                            bottomRight: Radius.circular(10)),
-                        color: notifier.getdarkbluecolor),
-                    width: MediaQuery.of(context).size.width * 0.70,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 8),
-                      child: Column(
-                        children: [
-                          Text(
-                            SenderText,
+        )
+        else
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Align(
+                alignment: Alignment.topLeft,
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          bottomLeft: Radius.circular(10),
+                          bottomRight: Radius.circular(10)),
+                      color: lightGrey),
+                  width: MediaQuery.of(context).size.width * 0.70,
+                  child: Padding(
+                    padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                          Text(text,
                             style: TextStyle(
-                                fontSize: 14,
-                                color: notifier.getdarkwhitecolor,
-                                fontFamily: "Gilroy Medium"),
+                            fontSize: 14,
+                            fontFamily: "Gilroy Medium",
+                            color: notifier.getwhiteblackcolor),
                           ),
+                          const SizedBox(height: 3),
+                          Text(timeText,
+                            style: TextStyle(
+                            color: darkGrey,
+                            fontSize: 13,
+                            fontFamily: "Gilroy Medium"),
+                          )
                         ],
-                      ),
+                      )
                     ),
                   ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  timetext3,
-                  style: TextStyle(
-                      color: notifier.getgreycolor,
-                      fontSize: 15,
-                      fontFamily: "Gilroy Medium"),
-                )
-              ],
-            ),
-          ],
-        ),
+            ],
+          )
       ],
     );
   }
