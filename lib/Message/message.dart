@@ -1,6 +1,5 @@
 // ignore_for_file: camel_case_types
 
-import 'package:dm/Message/chating.dart';
 import 'package:dm/Message/ShowMassage.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
@@ -106,10 +105,7 @@ class _messageState extends State<message> {
                               padding: const EdgeInsets.symmetric(vertical: 0),
                               child: InkWell(
                                   onTap: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const Chating()));
+
                                   },
                                   child: ListTile(
                                     leading: CircleAvatar(

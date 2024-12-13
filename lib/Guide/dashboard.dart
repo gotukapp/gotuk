@@ -326,7 +326,7 @@ class _DashboardState extends State<Dashboard> {
                           padding: const EdgeInsets.symmetric(
                               vertical: 6),
                           child: guideTripLayout(
-                              context, notifier,  Trip.fromFirestore(snapshot.data!.docs[0], null)),
+                              context, notifier,  Trip.fromFirestore(snapshot.data!.docs[0], null), true),
                         );
                       }
                       return const SizedBox();
@@ -354,7 +354,7 @@ class _DashboardState extends State<Dashboard> {
                             itemCount: todayTrips?.length,
                             itemBuilder: (BuildContext context,
                                 int index) {
-                              return guideTripLayout(context, notifier, todayTrips![index]);
+                              return guideTripLayout(context, notifier, todayTrips![index], true);
                             },
                           ),
                         );

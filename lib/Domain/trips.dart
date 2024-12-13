@@ -205,9 +205,28 @@ class Trip {
                   "guideReviewRef": guideReview });
   }
 
+
+  Future<void> sendChatMessage(String text) async {
+    CollectionReference chat = FirebaseFirestore.instance
+        .collection('trips')
+        .doc(id)
+        .collection('chat');
+
+    await chat.add({
+      'text': text,
+      'date': DateTime.now(),
+      'origin': FirebaseAuth.instance.currentUser!.uid
+    });
+  }
+
   bool allowShowGuide() {
     int differenceInMinutes = date.difference(DateTime.now()).inMinutes;
-    return (status == 'booked' || status == 'started' || status == 'finished')  && differenceInMinutes <= 30;
+    return (status == 'booked' || status == 'started' || status == 'finished')  && differenceInMinutes <= 60;
+  }
+
+  bool allowShowChatting() {
+    int differenceInMinutes = date.difference(DateTime.now()).inMinutes;
+    return (status == 'booked' || status == 'started' || status == 'finished')  && differenceInMinutes <= 60;
   }
 
   bool allowShowStart() {

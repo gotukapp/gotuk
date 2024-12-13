@@ -59,7 +59,7 @@ class _TripsListState extends State<TripsList> {
                   itemCount: widget.trips.length,
                   itemBuilder: (BuildContext context,
                       int index) {
-                    return guideTripLayout(context, notifier, widget.trips[index]);
+                    return guideTripLayout(context, notifier, widget.trips[index], true);
                   },
                 ),
               )

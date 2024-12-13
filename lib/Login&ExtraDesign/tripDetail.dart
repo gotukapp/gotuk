@@ -14,6 +14,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../Domain/appUser.dart';
 import '../Domain/ticket.dart';
 import '../Domain/trips.dart';
+import '../Message/chatting.dart';
 import '../Profile/supportTicket.dart';
 
 class TripDetail extends StatefulWidget {
@@ -60,7 +61,7 @@ class _TripDetailState extends State<TripDetail> {
         stream: ref.snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const Text("Loading");
+            return Center(child: CircularProgressIndicator(color: WhiteColor));
           }
           trip = snapshot.data?.data();
           return Scaffold(
@@ -231,39 +232,76 @@ class _TripDetailState extends State<TripDetail> {
                                   ).snapshots(),
                                   builder: (context, snapshot) {
                                     if (!snapshot.hasData) {
-                                      return const Text("Loading");
+                                      return Center(child: CircularProgressIndicator(color: WhiteColor));
                                     }
                                     DocumentReference tuktukRef = snapshot.data?.get("tuktuk");
                                     AppUser? guide = snapshot.data?.data();
                                     return Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text("Guide",
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              color: notifier.getwhiteblackcolor,
-                                              fontFamily: "Gilroy Bold"),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text("Guide",
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  color: notifier.getwhiteblackcolor,
+                                                  fontFamily: "Gilroy Bold"),
+                                            ),
+                                            if (trip!.allowShowChatting())
+                                              InkWell(
+                                              onTap: () {
+                                                Navigator.of(context)
+                                                    .push(MaterialPageRoute(
+                                                    builder: (context) => Chatting(trip: trip!, user: guide!)));
+                                              },
+                                              child: Container(
+                                                height: 50,
+                                                width: 50,
+                                                decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(50), color: WhiteColor),
+                                                child: Center(
+                                                    child: Image.asset(
+                                                      "assets/images/message.png",
+                                                      height: 40,
+                                                      width: 40,
+                                                      color: LogoColor,
+                                                    )
+                                                ),
+                                              ),
+                                            )
+                                          ],
                                         ),
                                         SizedBox(
                                             height: MediaQuery.of(context).size.height * 0.01),
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.start,
                                           children: [
-                                            CircleAvatar(
-                                              backgroundColor: WhiteColor,
-                                              backgroundImage: const AssetImage('assets/images/avatar.png'),
-                                              radius: 25,
+                                            ImageFiltered(
+                                              imageFilter: ImageFilter.blur(sigmaX: trip!.allowShowGuide() ? 0 : 4, sigmaY: trip!.allowShowGuide() ? 0 : 4),
+                                              child: Container(child:
+                                                CircleAvatar(
+                                                  backgroundColor: WhiteColor,
+                                                  backgroundImage: const AssetImage('assets/images/avatar.png'),
+                                                  radius: 25,
+                                                )
+                                              ),
                                             ),
                                             const SizedBox(width: 25),
                                             Column(
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                Text(guide!.name!,
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      color: notifier
-                                                          .getwhiteblackcolor,
-                                                      fontFamily: "Gilroy Medium"),
+                                                ImageFiltered(
+                                                  imageFilter: ImageFilter.blur(sigmaX: trip!.allowShowGuide() ? 0 : 4, sigmaY: trip!.allowShowGuide() ? 0 : 4),
+                                                  child: Container(child:
+                                                    Text(guide!.name!,
+                                                      style: TextStyle(
+                                                          fontSize: 16,
+                                                          color: notifier
+                                                              .getwhiteblackcolor,
+                                                          fontFamily: "Gilroy Medium"),
+                                                    )
+                                                  ),
                                                 ),
                                                 Row(
                                                   children: [
@@ -293,7 +331,7 @@ class _TripDetailState extends State<TripDetail> {
                                                 stream: tuktukRef.snapshots(),
                                                 builder: (context, snapshot) {
                                                   if (!snapshot.hasData) {
-                                                    return const Text("Loading");
+                                                    return Center(child: CircularProgressIndicator(color: WhiteColor));
                                                   }
                                                   return Column(
                                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -316,12 +354,17 @@ class _TripDetailState extends State<TripDetail> {
                                                           )
                                                         ],
                                                       ),
-                                                      Text(snapshot.data?.get("licensePlate"),
-                                                        style: TextStyle(
-                                                            fontSize: 16,
-                                                            color: notifier
-                                                                .getwhiteblackcolor,
-                                                            fontFamily: "Gilroy Medium"),
+                                                      ImageFiltered(
+                                                        imageFilter: ImageFilter.blur(sigmaX: trip!.allowShowGuide() ? 0 : 4, sigmaY: trip!.allowShowGuide() ? 0 : 4),
+                                                        child: Container(child:
+                                                          Text(snapshot.data?.get("licensePlate"),
+                                                            style: TextStyle(
+                                                                fontSize: 16,
+                                                                color: notifier
+                                                                    .getwhiteblackcolor,
+                                                                fontFamily: "Gilroy Medium"),
+                                                          )
+                                                        ),
                                                       )
                                                     ],
                                                   );
@@ -360,60 +403,60 @@ class _TripDetailState extends State<TripDetail> {
                                       ]
                                     );
                                 }),
-                                  if(trip?.status == 'booked')
-                                    ...[
-                                       Divider(
-                                         height: 30,
-                                         color: notifier.getgreycolor,
-                                       ),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          if (trip!.allowShowStart())
-                                            InkWell(
-                                            onTap: () {},
-                                            child: Container(
-                                              height: 50,
-                                              width: MediaQuery.of(context).size.width * 0.4,
-                                              decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(50), color: LogoColor),
-                                              child: Center(
-                                                child: Text(
-                                                  AppLocalizations.of(context)!.letsGo.toUpperCase(),
-                                                  style: TextStyle(
-                                                      color: WhiteColor,
-                                                      fontSize: 18,
-                                                      fontFamily: "Gilroy Bold"),
+                                      if(trip?.status == 'booked')
+                                        ...[
+                                           Divider(
+                                             height: 30,
+                                             color: notifier.getgreycolor,
+                                           ),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              if (trip!.allowShowStart())
+                                                InkWell(
+                                                onTap: () {},
+                                                child: Container(
+                                                  height: 50,
+                                                  width: MediaQuery.of(context).size.width * 0.4,
+                                                  decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(50), color: LogoColor),
+                                                  child: Center(
+                                                    child: Text(
+                                                      AppLocalizations.of(context)!.letsGo.toUpperCase(),
+                                                      style: TextStyle(
+                                                          color: WhiteColor,
+                                                          fontSize: 18,
+                                                          fontFamily: "Gilroy Bold"),
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ),
-                                          InkWell(
-                                            onTap: () {
-                                              Navigator.of(context)
-                                                  .push(MaterialPageRoute(
-                                                  builder: (context) => SupportTicket(trip, 'Reservation', ticketReasons['Reservation']?[0])));
-                                            },
-                                            child: Container(
-                                              height: 50,
-                                              width: MediaQuery.of(context).size.width * 0.4,
-                                              decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(50), color: greyColor),
-                                              child: Center(
-                                                child: Text(
-                                                  AppLocalizations.of(context)!.reschedule.toUpperCase(),
-                                                  style: TextStyle(
-                                                      color: WhiteColor,
-                                                      fontSize: 18,
-                                                      fontFamily: "Gilroy Bold"),
+                                              InkWell(
+                                                onTap: () {
+                                                  Navigator.of(context)
+                                                      .push(MaterialPageRoute(
+                                                      builder: (context) => SupportTicket(trip, 'Reservation', ticketReasons['Reservation']?[0])));
+                                                },
+                                                child: Container(
+                                                  height: 50,
+                                                  width: MediaQuery.of(context).size.width * 0.4,
+                                                  decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(50), color: greyColor),
+                                                  child: Center(
+                                                    child: Text(
+                                                      AppLocalizations.of(context)!.reschedule.toUpperCase(),
+                                                      style: TextStyle(
+                                                          color: WhiteColor,
+                                                          fontSize: 18,
+                                                          fontFamily: "Gilroy Bold"),
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
-                                            ),
+                                              )
+                                            ],
                                           )
-                                        ],
-                                      )
-                                    ]
-                                  ],
+                                        ]
+                                      ],
                                 if (widget.guideMode)
                                   StreamBuilder(
                                       stream: trip?.clientRef?.withConverter(
@@ -422,17 +465,44 @@ class _TripDetailState extends State<TripDetail> {
                                       ).snapshots(),
                                       builder: (context, snapshot) {
                                         if (!snapshot.hasData) {
-                                          return const Text("Loading");
+                                          return Center(child: CircularProgressIndicator(color: WhiteColor));
                                         }
                                         AppUser? client = snapshot.data?.data();
                                         return Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Text("Client",
-                                                style: TextStyle(
-                                                    fontSize: 18,
-                                                    color: notifier.getwhiteblackcolor,
-                                                    fontFamily: "Gilroy Bold"),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Text("Client",
+                                                    style: TextStyle(
+                                                        fontSize: 18,
+                                                        color: notifier.getwhiteblackcolor,
+                                                        fontFamily: "Gilroy Bold"),
+                                                  ),
+                                                  if (trip!.allowShowChatting())
+                                                    InkWell(
+                                                    onTap: () {
+                                                      Navigator.of(context)
+                                                          .push(MaterialPageRoute(
+                                                          builder: (context) => Chatting(trip: trip!, user: client!)));
+                                                    },
+                                                    child: Container(
+                                                      height: 50,
+                                                      width: 50,
+                                                      decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(50), color: WhiteColor),
+                                                      child: Center(
+                                                        child: Image.asset(
+                                                          "assets/images/message.png",
+                                                          height: 40,
+                                                          width: 40,
+                                                          color: LogoColor,
+                                                        )
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ]
                                               ),
                                               SizedBox(
                                                   height: MediaQuery.of(context).size.height * 0.01),
