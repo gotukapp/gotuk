@@ -206,7 +206,7 @@ class Trip {
   }
 
 
-  Future<void> sendChatMessage(String text) async {
+  Future<void> sendChatMessage(String text, String? token, String title) async {
     CollectionReference chat = FirebaseFirestore.instance
         .collection('trips')
         .doc(id)
@@ -217,6 +217,10 @@ class Trip {
       'date': DateTime.now(),
       'origin': FirebaseAuth.instance.currentUser!.uid
     });
+
+    if (token != null) {
+      await sendNotification(targetToken: token, title: title, body: text);
+    }
   }
 
   bool allowShowGuide() {

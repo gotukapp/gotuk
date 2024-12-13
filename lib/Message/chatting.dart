@@ -237,7 +237,7 @@ class _ChattingState extends State<Chatting> {
                       onTap: () {
                         if (chatTextController.text.isNotEmpty) {
                           setState(() {
-                            widget.trip.sendChatMessage(chatTextController.text).then((value) => {
+                            widget.trip.sendChatMessage(chatTextController.text, widget.user.firebaseToken, widget.user.name!).then((value) => {
                               chatTextController.clear()
                             });
                           });
