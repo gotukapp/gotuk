@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "788543987645-45kmtms4j74g6kp8o25jkkjjg6730dfa.apps.googleusercontent.com",
+          "client_id": "788543987645-4j3ilj0sthuhedn363k4mkuh0dsb8tp2.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.gotuk.dm",
-            "certificate_hash": "de094bbcef89f3e1d8c06f2de481644182dc4afe"
+            "certificate_hash": "86f031640c51ee12fc955fc9e34e3ebb3588db0c"
           }
         },
         {

@@ -279,14 +279,16 @@ class _loginscreenState extends State<loginscreen> {
       });
       String phoneNumber = "+$countryCode${phoneNumberController.text}";
       if (await userExists(phoneNumber)) {
-        await signInWithPhoneNumber(context, phoneNumber, (UserCredential credential) async {
-          AppUser user = await getUserFirebaseInstance(
-              guideMode, credential.user!);
-          userProvider.setUser(user);
-          user.setFirebaseToken();
-          Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-              builder: (context) => const homepage()),
-                  (route) => false);
+        await signInWithPhoneNumber(context, phoneNumber, (UserCredential? credential) async {
+          if (credential != null) {
+            AppUser user = await getUserFirebaseInstance(
+                guideMode, credential.user!);
+            userProvider.setUser(user);
+            user.setFirebaseToken();
+            Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                builder: (context) => const homepage()),
+                    (route) => false);
+          }
           setState(() {
             _isLoading = false;
           });
