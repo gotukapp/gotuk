@@ -16,7 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../Domain/trips.dart';
+import '../Domain/trip.dart';
 import '../Utils/customwidget .dart';
 import 'checkout.dart';
 import 'tourDetail.dart';

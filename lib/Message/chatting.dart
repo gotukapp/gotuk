@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Domain/appUser.dart';
-import '../Domain/trips.dart';
+import '../Domain/trip.dart';
 import '../Utils/customwidget .dart';
 
 class Chatting extends StatefulWidget {
@@ -39,8 +39,8 @@ class _ChattingState extends State<Chatting> {
   @override
   Widget build(BuildContext context) {
     final Stream<QuerySnapshot<Map<String, dynamic>>> chatMessages = FirebaseFirestore.instance
-        .collection('trips').doc(widget.trip.id)
-        .collection('chat')
+        .collection('chat').doc(widget.trip.id)
+        .collection('messages')
         .orderBy("date").snapshots();
 
     notifier = Provider.of<ColorNotifier>(context, listen: true);

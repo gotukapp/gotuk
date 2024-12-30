@@ -1,8 +1,10 @@
 // ignore_for_file: camel_case_types
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dm/Message/ShowMassage.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,6 +29,19 @@ class _messageState extends State<message> {
   @override
   Widget build(BuildContext context) {
     notifier = Provider.of<ColorNotifier>(context, listen: true);
+
+    final db = FirebaseFirestore.instance.collection("trips");
+    final userDocRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser?.uid);
+
+    final Stream<QuerySnapshot<Map<String, dynamic>>> trips =
+    db
+        .where("guideRef", isEqualTo: userDocRef)
+        .where("date", isLessThan:  DateTime.now())
+        .orderBy("date")
+        .snapshots();
+
     return Scaffold(
       backgroundColor: notifier.getbgcolor,
       body: Padding(

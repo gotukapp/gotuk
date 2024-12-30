@@ -7,7 +7,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../Domain/trips.dart';
+import '../Domain/trip.dart';
 import '../Utils/Colors.dart';
 
 class RateTour extends StatefulWidget {

@@ -13,7 +13,7 @@ import '../Login&ExtraDesign/notification.dart';
 import '../Providers/userProvider.dart';
 import '../Utils/Colors.dart';
 import '../Utils/customwidget .dart';
-import '../Domain/trips.dart';
+import '../Domain/trip.dart';
 import '../Utils/dark_lightmode.dart';
 
 class Dashboard extends StatefulWidget {

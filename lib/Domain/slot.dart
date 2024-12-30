@@ -1,4 +1,4 @@
-import 'package:dm/Domain/trips.dart';
+import 'package:dm/Domain/trip.dart';
 
 class Slot {
   DateTime start;

@@ -25,10 +25,11 @@ class Trip {
   bool? showStartButton;
   bool? showEndButton;
   bool? onlyElectricVehicles;
+  bool? clientIsReady;
 
   Trip(this.id, this.tourRef, this.date, this.persons, this.status, this.clientRef,
       this.guideRef, this.guideLang, this.paymentMethod, this.creditCardId,
-      this.withTaxNumber, this.taxNumber, this.reservationId, this.rateSubmitted, this.onlyElectricVehicles);
+      this.withTaxNumber, this.taxNumber, this.reservationId, this.rateSubmitted, this.onlyElectricVehicles, this.clientIsReady);
 
   factory Trip.fromFirestore(
       DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -49,7 +50,8 @@ class Trip {
         data?['taxNumber'],
         data?['reservationId'],
         data?['rateSubmitted'],
-        data?['onlyElectricVehicles']
+        data?['onlyElectricVehicles'],
+        data?['clientIsReady']
     );
     t.showStartButton = t.allowShowStart();
     t.showEndButton = t.allowShowEnd();
@@ -115,9 +117,19 @@ class Trip {
             "reservationId": generateReservationId()});
 
         DocumentSnapshot<Object?> client = await clientRef!.get();
-        await sendNotification(targetToken: client.get("firebaseToken"), title: "Accepted Tour", body: "$reservationId - ${tour.name} tour was accepted");
-
-        return true;
+        if (client.exists) {
+          if (client.data() != null && (client.data() as Map<String, dynamic>).containsKey('firebaseToken')) {
+            await sendNotification(targetToken: client.get("firebaseToken"),
+              title: "Accepted Tour",
+              body: "$reservationId - ${tour.name} tour was accepted");
+          } else {
+            print('Field "firebaseToken" does not exist or is null.');
+            return true;
+          }
+        } else {
+          print('Document does not exist.');
+          return false;
+        }
       }
       return false;
     });
@@ -151,6 +163,15 @@ class Trip {
         .doc(id)
         .update({"status": "canceled",
       "canceledDate": FieldValue.serverTimestamp()});
+  }
+
+
+  void setClientIsReady() {
+    clientIsReady = true;
+    FirebaseFirestore.instance
+        .collection('trips')
+        .doc(id)
+        .update({"clientIsReady": true});
   }
 
   static String generateReservationId()
@@ -208,9 +229,9 @@ class Trip {
 
   Future<void> sendChatMessage(String text, String? token, String title) async {
     CollectionReference chat = FirebaseFirestore.instance
-        .collection('trips')
+        .collection('chat')
         .doc(id)
-        .collection('chat');
+        .collection('messages');
 
     await chat.add({
       'text': text,
