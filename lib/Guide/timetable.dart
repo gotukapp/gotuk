@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../Domain/trips.dart';
+import '../Domain/trip.dart';
 import '../Utils/Colors.dart';
 import '../Utils/customwidget .dart';
 import '../Utils/dark_lightmode.dart';

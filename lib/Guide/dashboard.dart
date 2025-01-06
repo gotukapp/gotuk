@@ -7,11 +7,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../Login&ExtraDesign/notification.dart';
+import '../Providers/userProvider.dart';
 import '../Utils/Colors.dart';
 import '../Utils/customwidget .dart';
-import '../Domain/trips.dart';
+import '../Domain/trip.dart';
 import '../Utils/dark_lightmode.dart';
 
 class Dashboard extends StatefulWidget {
@@ -53,9 +55,11 @@ class _DashboardState extends State<Dashboard> {
     });
   }
 
+  late UserProvider userProvider;
   late ColorNotifier notifier;
   @override
   Widget build(BuildContext context) {
+    userProvider = Provider.of<UserProvider>(context);
     notifier = Provider.of<ColorNotifier>(context, listen: true);
     final now = DateTime.now();
     final tomorrow = DateTime(now.year, now.month, now.day + 1, 0, 0, 0);
@@ -122,7 +126,7 @@ class _DashboardState extends State<Dashboard> {
                                     .size
                                     .height * 0.01),
                             Text(
-                              "Hello, ${FirebaseAuth.instance.currentUser?.displayName}! 👋",
+                              "${AppLocalizations.of(context)!.hello}, ${userProvider.user!.name}! 👋",
                               style: TextStyle(
                                   color: notifier.getwhiteblackcolor,
                                   fontSize: 16,

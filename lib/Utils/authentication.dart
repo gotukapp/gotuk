@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../CreatAccount/verifyaccount.dart';
 
@@ -12,7 +13,14 @@ Future<UserCredential?> signInWithPhoneNumber(BuildContext context, String phone
       userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
       print("User signed in automatically with phone credentials.");
     },
-    verificationFailed: (FirebaseAuthException e) {
+    verificationFailed: (FirebaseAuthException e) async {
+      await Sentry.captureException(e,stackTrace: e.stackTrace);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.message != null ? e.message! : ''),
+        ),
+      );
+      callback.call(null);
       print("Phone number verification failed. Code: ${e.code}. Message: ${e.message}");
     },
     codeSent: (String verificationId, int? resendToken) async {

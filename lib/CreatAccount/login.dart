@@ -156,7 +156,7 @@ class _loginscreenState extends State<loginscreen> {
                               if(user != null) {
                                 userProvider.setUser(user);
                                 Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-                                    builder: (context) => homepage()),
+                                    builder: (context) => const homepage()),
                                         (route) => false);
                               }
                             },
@@ -273,15 +273,14 @@ class _loginscreenState extends State<loginscreen> {
   }
 
   Future<void> signIn() async {
-    try {
-      if (phoneNumberController.text.isNotEmpty) {
-        setState(() {
-          _isLoading = true;
-        });
-        String phoneNumber = "+$countryCode${phoneNumberController.text}";
-        if (await userExists(phoneNumber)) {
-          await signInWithPhoneNumber(
-              context, phoneNumber, (UserCredential credential) async {
+    if (phoneNumberController.text.isNotEmpty) {
+      setState(() {
+        _isLoading = true;
+      });
+      String phoneNumber = "+$countryCode${phoneNumberController.text}";
+      if (await userExists(phoneNumber)) {
+        await signInWithPhoneNumber(context, phoneNumber, (UserCredential? credential) async {
+          if (credential != null) {
             AppUser user = await getUserFirebaseInstance(
                 guideMode, credential.user!);
             userProvider.setUser(user);
@@ -289,33 +288,28 @@ class _loginscreenState extends State<loginscreen> {
             Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
                 builder: (context) => const homepage()),
                     (route) => false);
-            setState(() {
-              _isLoading = false;
-            });
-          });
-        } else {
+          }
           setState(() {
             _isLoading = false;
           });
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text(
-                  'This phone number is not associated with any account..'),
-            ),
-          );
-        }
+        });
       } else {
+        setState(() {
+          _isLoading = false;
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('You must fill in the phone number.'),
+            content: Text(
+                'This phone number is not associated with any account..'),
           ),
         );
       }
-    }
-    on Exception catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('You must fill in the phone number.'),
+        ),
+      );
     }
   }
 

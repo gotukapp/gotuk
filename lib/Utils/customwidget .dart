@@ -2,10 +2,12 @@
 
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dm/Login&ExtraDesign/tripDetail.dart';
+import 'package:dm/Message/chatting.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Domain/tour.dart';
-import 'package:dm/Domain/trips.dart';
+import 'package:dm/Domain/trip.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -393,13 +395,13 @@ guideTripLayout(BuildContext context, ColorNotifier notifier, Trip trip, bool sh
                             "Start Tour",
                             "Are you sure you want to start this tour?",
                             () async => await trip.startTour(),
-                            () {});
+                            () {}, null, null);
                       } else if (trip.status == "started") {
                         showConfirmationMessage(context,
                             "Finish Tour",
                             "Are you sure you want to finish this tour?",
                                 () async => await trip.finishTour(),
-                                () {});
+                                () {}, null, null);
                       } else if (trip.status == "pending") {
                         showConfirmationMessage(context,
                             "Accept Tour",
@@ -410,7 +412,7 @@ guideTripLayout(BuildContext context, ColorNotifier notifier, Trip trip, bool sh
                                       showTripAcceptResultMessage(context, result);
                                     }
                                 },
-                                () {});
+                                () {}, null, null);
 
                       }
                     },
@@ -541,13 +543,23 @@ clientTripLayout(BuildContext context, ColorNotifier notifier, Trip trip) {
                           ),
                           SizedBox(width: MediaQuery.of(context).size.width * 0.06),
                           if (trip.status == 'pending' ||
-                              (trip.status == 'booked' && trip.allowShowStart()) ||
+                              (trip.status == 'booked' && trip.allowShowStart() && (trip.clientIsReady == null || !trip.clientIsReady!)) ||
                               (trip.status == 'finished' && !trip.rateSubmitted))
                             InkWell(
-                              onTap: () {
-                                if (trip.status == 'finished') {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => RateTour(trip)));
+                              onTap: () async {
+                                try {
+                                  if (trip.status == 'finished') {
+                                    Navigator.of(context).push(MaterialPageRoute(
+                                        builder: (context) => RateTour(trip)));
+                                  } else if (trip.status == 'booked') {
+                                    await setClientReady(context, trip);
+                                  }
+                                } on Exception catch (_, e) {
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text(e.toString())),
+                                    );
+                                  }
                                 }
                               },
                               child: Container(
@@ -576,6 +588,29 @@ clientTripLayout(BuildContext context, ColorNotifier notifier, Trip trip) {
       ),
     )
   );
+}
+
+Future<void> setClientReady(BuildContext context, Trip trip) async {
+  final convertedDocRef = trip.guideRef!.withConverter<AppUser>(
+    fromFirestore: AppUser.fromFirestore,
+    toFirestore: (AppUser user, _) => user.toFirestore(),
+  );
+  DocumentSnapshot<AppUser> snapshot = await convertedDocRef.get();
+  AppUser appUser = snapshot.data()!;
+  if (context.mounted) {
+    showConfirmationMessage(context,
+        AppLocalizations.of(context)!.letsGo,
+        "Do you want to send a message to the guide notifying him that you are ready for the tour?",
+            () async {
+              await trip.sendChatMessage("Hi, just to let you know that i'm already at the pickup location.", appUser.firebaseToken, appUser.name!);
+              trip.setClientIsReady();
+              if (context.mounted) {
+                Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => Chatting(trip: trip, sendTo: snapshot.data()!)));
+              }
+            },
+            () {}, "Yes", "No");
+  }
 }
 
 newTripNotification(BuildContext context, ColorNotifier notifier, Trip trip) {
@@ -697,7 +732,7 @@ newTripNotification(BuildContext context, ColorNotifier notifier, Trip trip) {
                                   showTripAcceptResultMessage(context, resultOk);
                                 }
                               },
-                              () {});
+                              () {}, null, null);
                         },
                         child: Container(
                           height: 40,
@@ -763,8 +798,8 @@ tourReview({double? review})   {
   );
 }
 
-showConfirmationMessage(BuildContext context, String title, String description, Function()? onClickOk, Function()? onClickCancel) {
-  return showDialog<String>(
+showConfirmationMessage(BuildContext context, String title, String description, Function()? onClickOk, Function()? onClickCancel, String? confirmText, String? cancelText) {
+  return showDialog<bool>(
     context: context,
     builder: (BuildContext context) => AlertDialog(
       title: Text(title),
@@ -774,17 +809,17 @@ showConfirmationMessage(BuildContext context, String title, String description, 
           TextButton(
             onPressed: () {
               onClickCancel.call();
-              Navigator.pop(context, 'Cancel');
+              Navigator.pop(context, false);
             },
-            child: const Text('Cancel'),
+            child: Text(cancelText ?? "Cancel"),
           ),
         if (onClickOk != null)
           TextButton(
             onPressed: () {
               onClickOk.call();
-              Navigator.pop(context, 'OK');
+              Navigator.pop(context, true);
             },
-            child: const Text('OK'),
+            child: Text(confirmText ?? "OK"),
           ),
       ],
     ),

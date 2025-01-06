@@ -12,7 +12,20 @@
           "package_name": "com.gotuk.dm"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "788543987645-4j3ilj0sthuhedn363k4mkuh0dsb8tp2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gotuk.dm",
+            "certificate_hash": "86f031640c51ee12fc955fc9e34e3ebb3588db0c"
+          }
+        },
+        {
+          "client_id": "788543987645-8uc62qfbdfcpmtbujnqc4abbaqdg4cus.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyATWP2zO78tPToWZZq-GjZo1OKwf2r9cTk"
@@ -20,7 +33,20 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "788543987645-8uc62qfbdfcpmtbujnqc4abbaqdg4cus.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "788543987645-4sqort95uev34tngl5ui7kc2o03kv2of.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.gotuk.gotuk",
+                "app_store_id": "6504156451"
+              }
+            }
+          ]
         }
       }
     }

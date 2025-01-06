@@ -300,7 +300,7 @@ class _TourDetailState extends State<TourDetail> {
                                             color: notifier.getwhiteblackcolor,
                                             fontFamily: "Gilroy Medium"),
                                       ),
-                                      SizedBox(width: 10),
+                                      const SizedBox(width: 10),
                                       Text(
                                         "${tour!.priceHigh}€",
                                         style: TextStyle(

@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../Domain/trips.dart';
+import '../Domain/trip.dart';
 import '../Utils/customwidget .dart';
 
 
@@ -33,6 +33,8 @@ class _TripsBookedState extends State<TripsBooked> {
     final userDocRef = FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser?.uid);
+
+    print(userDocRef);
 
     final Stream<QuerySnapshot<Map<String, dynamic>>> pendingTrips =
     db

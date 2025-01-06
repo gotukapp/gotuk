@@ -13,9 +13,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../Domain/appUser.dart';
 import '../Domain/ticket.dart';
-import '../Domain/trips.dart';
+import '../Domain/trip.dart';
 import '../Message/chatting.dart';
 import '../Profile/supportTicket.dart';
+import '../Utils/customwidget .dart';
 
 class TripDetail extends StatefulWidget {
   final String tripId;
@@ -253,7 +254,7 @@ class _TripDetailState extends State<TripDetail> {
                                               onTap: () {
                                                 Navigator.of(context)
                                                     .push(MaterialPageRoute(
-                                                    builder: (context) => Chatting(trip: trip!, user: guide!)));
+                                                    builder: (context) => Chatting(trip: trip!, sendTo: guide!)));
                                               },
                                               child: Container(
                                                 height: 50,
@@ -412,9 +413,11 @@ class _TripDetailState extends State<TripDetail> {
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
-                                              if (trip!.allowShowStart())
+                                              if (trip!.allowShowStart() && (trip!.clientIsReady == null || !trip!.clientIsReady!))
                                                 InkWell(
-                                                onTap: () {},
+                                                onTap: () async {
+                                                  await setClientReady(context, trip!);
+                                                },
                                                 child: Container(
                                                   height: 50,
                                                   width: MediaQuery.of(context).size.width * 0.4,
@@ -485,7 +488,7 @@ class _TripDetailState extends State<TripDetail> {
                                                     onTap: () {
                                                       Navigator.of(context)
                                                           .push(MaterialPageRoute(
-                                                          builder: (context) => Chatting(trip: trip!, user: client!)));
+                                                          builder: (context) => Chatting(trip: trip!, sendTo: client!)));
                                                     },
                                                     child: Container(
                                                       height: 50,

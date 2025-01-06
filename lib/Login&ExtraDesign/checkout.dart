@@ -5,7 +5,7 @@ import 'package:dm/Login&ExtraDesign/calendar.dart';
 import 'package:dm/Login&ExtraDesign/homepage.dart';
 import 'package:dm/Login&ExtraDesign/tripDetail.dart';
 import 'package:dm/Utils/Colors.dart';
-import 'package:dm/Domain/trips.dart';
+import 'package:dm/Domain/trip.dart';
 import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:flutter/material.dart';

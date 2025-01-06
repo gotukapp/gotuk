@@ -25,10 +25,11 @@ class Trip {
   bool? showStartButton;
   bool? showEndButton;
   bool? onlyElectricVehicles;
+  bool? clientIsReady;
 
   Trip(this.id, this.tourRef, this.date, this.persons, this.status, this.clientRef,
       this.guideRef, this.guideLang, this.paymentMethod, this.creditCardId,
-      this.withTaxNumber, this.taxNumber, this.reservationId, this.rateSubmitted, this.onlyElectricVehicles);
+      this.withTaxNumber, this.taxNumber, this.reservationId, this.rateSubmitted, this.onlyElectricVehicles, this.clientIsReady);
 
   factory Trip.fromFirestore(
       DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -49,7 +50,8 @@ class Trip {
         data?['taxNumber'],
         data?['reservationId'],
         data?['rateSubmitted'],
-        data?['onlyElectricVehicles']
+        data?['onlyElectricVehicles'],
+        data?['clientIsReady']
     );
     t.showStartButton = t.allowShowStart();
     t.showEndButton = t.allowShowEnd();
@@ -81,8 +83,8 @@ class Trip {
   static Future<DocumentReference<Map<String, dynamic>>> addTrip(DocumentReference? guideRef, String tourId,
       DateTime date, int persons, String status,
       String guideLang, String paymentMethod, String creditCardId,
-      bool withTaxNumber, String taxNumber, bool onlyElectricVehicles) {
-    return FirebaseFirestore.instance
+      bool withTaxNumber, String taxNumber, bool onlyElectricVehicles) async {
+    DocumentReference<Map<String, dynamic>> trip = await FirebaseFirestore.instance
         .collection('trips')
         .add(<String, dynamic>{
       'tourId': FirebaseFirestore.instance.doc('tours/$tourId'),
@@ -101,6 +103,17 @@ class Trip {
       'creationDate': FieldValue.serverTimestamp(),
       'onlyElectricVehicles': onlyElectricVehicles
     });
+
+    FirebaseFirestore.instance
+        .collection('chat')
+        .doc(trip.id)
+        .update({
+      "clientRef": FirebaseFirestore.instance.doc('users/${FirebaseAuth.instance.currentUser!.uid}'),
+      "guideRef": guideRef,
+      "date": date
+    });
+
+    return trip;
   }
 
   Future<bool> acceptTour() async {
@@ -114,10 +127,27 @@ class Trip {
             "acceptedDate": FieldValue.serverTimestamp(),
             "reservationId": generateReservationId()});
 
-        DocumentSnapshot<Object?> client = await clientRef!.get();
-        await sendNotification(targetToken: client.get("firebaseToken"), title: "Accepted Tour", body: "$reservationId - ${tour.name} tour was accepted");
+        FirebaseFirestore.instance
+            .collection('chat')
+            .doc(id)
+            .update({
+          "guideRef": FirebaseFirestore.instance.doc('users/${FirebaseAuth.instance.currentUser!.uid}'),
+        });
 
-        return true;
+        DocumentSnapshot<Object?> client = await clientRef!.get();
+        if (client.exists) {
+          if (client.data() != null && (client.data() as Map<String, dynamic>).containsKey('firebaseToken')) {
+            await sendNotification(targetToken: client.get("firebaseToken"),
+              title: "Accepted Tour",
+              body: "$reservationId - ${tour.name} tour was accepted");
+          } else {
+            print('Field "firebaseToken" does not exist or is null.');
+            return true;
+          }
+        } else {
+          print('Document does not exist.');
+          return false;
+        }
       }
       return false;
     });
@@ -151,6 +181,15 @@ class Trip {
         .doc(id)
         .update({"status": "canceled",
       "canceledDate": FieldValue.serverTimestamp()});
+  }
+
+
+  void setClientIsReady() {
+    clientIsReady = true;
+    FirebaseFirestore.instance
+        .collection('trips')
+        .doc(id)
+        .update({"clientIsReady": true});
   }
 
   static String generateReservationId()
@@ -207,15 +246,24 @@ class Trip {
 
 
   Future<void> sendChatMessage(String text, String? token, String title) async {
-    CollectionReference chat = FirebaseFirestore.instance
-        .collection('trips')
+    CollectionReference chatMessages = FirebaseFirestore.instance
+        .collection('chat')
         .doc(id)
-        .collection('chat');
+        .collection('messages');
 
-    await chat.add({
+    DateTime messageDate = DateTime.now();
+
+    await chatMessages.add({
       'text': text,
-      'date': DateTime.now(),
+      'date': messageDate,
       'origin': FirebaseAuth.instance.currentUser!.uid
+    });
+
+    FirebaseFirestore.instance
+        .collection('chat')
+        .doc(id)
+        .update({
+      "hasMessages": true
     });
 
     if (token != null) {

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Domain/ticket.dart';
-import '../Domain/trips.dart';
+import '../Domain/trip.dart';
 import '../Utils/customwidget .dart';
 import '../Utils/dark_lightmode.dart';
 
