@@ -6,10 +6,13 @@ import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../Domain/tour.dart';
+import '../Domain/appUser.dart';
+import '../Domain/trip.dart';
+import 'chatting.dart';
 
 class message extends StatefulWidget {
   const message({super.key});
@@ -19,9 +22,12 @@ class message extends StatefulWidget {
 }
 
 class _messageState extends State<message> {
+  bool guideMode = false;
+
   @override
   void initState() {
     getdarkmodepreviousstate();
+    getAppModeState();
     super.initState();
   }
 
@@ -30,16 +36,18 @@ class _messageState extends State<message> {
   Widget build(BuildContext context) {
     notifier = Provider.of<ColorNotifier>(context, listen: true);
 
-    final db = FirebaseFirestore.instance.collection("trips");
+    final db = FirebaseFirestore.instance.collection("chat");
     final userDocRef = FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser?.uid);
 
-    final Stream<QuerySnapshot<Map<String, dynamic>>> trips =
+    print(userDocRef);
+
+    final Stream<QuerySnapshot<Map<String, dynamic>>> chats =
     db
-        .where("guideRef", isEqualTo: userDocRef)
-        .where("date", isLessThan:  DateTime.now())
-        .orderBy("date")
+        .where(guideMode ? "guideRef" : "clientRef", isEqualTo: userDocRef)
+        .where("hasMessages", isEqualTo: true)
+        .orderBy("date", descending: true)
         .snapshots();
 
     return Scaffold(
@@ -80,109 +88,118 @@ class _messageState extends State<message> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    Container(
-                        height: 50,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(
-                              50,
-                            ),
-                            color: notifier.getdarkmodecolor),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 6),
-                          child: TextField(
-                            decoration: InputDecoration(
-                              hintText: 'Search a tour',
-                              hintStyle: TextStyle(
-                                  color: notifier.getgreycolor,
-                                  fontFamily: "Gilroy Medium"),
-                              prefixIcon: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8),
-                                child: Image.asset(
-                                  "assets/images/search.png",
-                                  height: 25,
-                                  color: notifier.getgreycolor,
-                                ),
-                              ),
-                              border: InputBorder.none,
-                            ),
-                          ),
-                        )),
-                    SizedBox(
-                      child: ListView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        padding: EdgeInsets.zero,
-                        itemCount: chatMessages.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 0),
-                              child: InkWell(
-                                  onTap: () {
+                    StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                      stream: chats,
+                      builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> chatSnapshot)
+                      {
+                        if (!chatSnapshot.hasData) {
+                          return const CircularProgressIndicator();
+                        }
+                        return SizedBox(
+                            child:
+                            ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              padding: EdgeInsets.zero,
+                              itemCount: chatSnapshot.data!.docs.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                for(var doc in chatSnapshot.data!.docs) {
+                                  DocumentReference user = doc.get(guideMode ? "clientRef" : "guideRef");
+                                  final convertedDocRef = user.withConverter<AppUser>(
+                                    fromFirestore: AppUser.fromFirestore,
+                                    toFirestore: (AppUser user, _) => user.toFirestore(),
+                                  );
+                                  return StreamBuilder<DocumentSnapshot<AppUser>>(
+                                    stream: convertedDocRef.snapshots(),
+                                    builder: (context, userSnapshot) {
+                                      if (!userSnapshot.hasData) {
+                                        return const CircularProgressIndicator();
+                                      }
+                                      AppUser user = userSnapshot.data!.data()!;
+                                      final messages = db.doc(doc.id)
+                                          .collection('messages')
+                                          .orderBy('date', descending: true)
+                                          .limit(1);
 
-                                  },
-                                  child: ListTile(
-                                    leading: CircleAvatar(
-                                      radius: 25,
-                                      backgroundColor: WhiteColor,
-                                      backgroundImage: AssetImage(
-                                          chatMessages[index].img),
-                                    ),
-                                    contentPadding: const EdgeInsets.only(
-                                        left: 0, right: 0),
-                                    title: Text(
-                                      chatMessages[index].name,
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          color: notifier.getwhiteblackcolor,
-                                          fontFamily: "Gilroy Bold"),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    subtitle: Text(
-                                      chatMessages[index].message,
-                                      style: TextStyle(
-                                          color: notifier.getgreycolor,
-                                          fontFamily: "Gilroy Medium"),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    trailing: Column(
-                                      children: [
-                                        SizedBox(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.03),
-                                        Text(
-                                          "7:12 Am",
-                                          style: TextStyle(
-                                              fontSize: 13,
-                                              color:
-                                                  notifier.getwhiteblackcolor,
-                                              fontFamily: "Gilroy Medium"),
-                                        ),
-                                        SizedBox(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.01),
-                                        CircleAvatar(
-                                          backgroundColor: notifier.getredcolor,
-                                          radius: 10,
-                                          child: Text(
-                                            "12",
-                                            style: TextStyle(
-                                                fontSize: 10,
-                                                color:
-                                                    notifier.getdarkwhitecolor),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                    isThreeLine: false,
-                                  )));
-                        },
-                      ),
+                                      return StreamBuilder<QuerySnapshot>(
+                                        stream: messages.snapshots(),
+                                        builder: (context, messageSnapshot) {
+                                          if (!messageSnapshot.hasData) {
+                                            return const CircularProgressIndicator();
+                                          }
+
+                                          var messageData = messageSnapshot.data!.docs[0];
+
+                                          return InkWell(
+                                              onTap: () async {
+                                                final convertedDocRef =  FirebaseFirestore.instance.collection("trips")
+                                                    .doc(doc.id)
+                                                    .withConverter<Trip>(
+                                                  fromFirestore: Trip.fromFirestore,
+                                                  toFirestore: (Trip trip, _) => trip.toFirestore(),
+                                                );
+                                                DocumentSnapshot<Trip> tripSnapshot = await convertedDocRef.get();
+                                                Navigator.of(context)
+                                                    .push(MaterialPageRoute(
+                                                    builder: (context) => Chatting(trip: tripSnapshot.data()!, sendTo: user)));
+                                              },
+                                              child: ListTile(
+                                                leading: CircleAvatar(
+                                                  radius: 25,
+                                                  backgroundColor: WhiteColor,
+                                                  backgroundImage: const AssetImage(
+                                                      'assets/images/avatar.png'),
+                                                ),
+                                                contentPadding: const EdgeInsets.only(
+                                                    left: 0, right: 0),
+                                                title: Text(
+                                                  user.name!,
+                                                  style: TextStyle(
+                                                      fontSize: 15,
+                                                      color: notifier.getwhiteblackcolor,
+                                                      fontFamily: "Gilroy Bold"),
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                                subtitle: Text(
+                                                  messageData["text"],
+                                                  style: TextStyle(
+                                                      color: notifier.getgreycolor,
+                                                      fontFamily: "Gilroy Medium"),
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                                trailing: Column(
+                                                  children: [
+                                                    SizedBox(
+                                                        height: MediaQuery.of(context)
+                                                            .size
+                                                            .width *
+                                                            0.03),
+                                                    Text(
+                                                      DateFormat('HH:mm').format(messageData["date"].toDate()),
+                                                      style: TextStyle(
+                                                          fontSize: 13,
+                                                          color:
+                                                          notifier.getwhiteblackcolor,
+                                                          fontFamily: "Gilroy Medium"),
+                                                    ),
+                                                    SizedBox(
+                                                        height: MediaQuery.of(context)
+                                                            .size
+                                                            .width *
+                                                            0.01)
+                                                  ],
+                                                ),
+                                                isThreeLine: false,
+                                              ));
+                                        },
+                                      );
+                                    },
+                                  );
+                                }
+                              },
+                            )
+                        );
+                      }
                     ),
                   ],
                 ),
@@ -192,6 +209,12 @@ class _messageState extends State<message> {
         ),
       ),
     );
+  }
+
+  getAppModeState() async {
+    final prefs = await SharedPreferences.getInstance();
+    bool? previousState = prefs.getBool("setGuideMode");
+    guideMode = previousState ?? false;
   }
 
   getdarkmodepreviousstate() async {

@@ -606,7 +606,7 @@ Future<void> setClientReady(BuildContext context, Trip trip) async {
               trip.setClientIsReady();
               if (context.mounted) {
                 Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => Chatting(trip: trip, user: snapshot.data()!)));
+                builder: (context) => Chatting(trip: trip, sendTo: snapshot.data()!)));
               }
             },
             () {}, "Yes", "No");

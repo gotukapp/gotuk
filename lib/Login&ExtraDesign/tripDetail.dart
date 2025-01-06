@@ -254,7 +254,7 @@ class _TripDetailState extends State<TripDetail> {
                                               onTap: () {
                                                 Navigator.of(context)
                                                     .push(MaterialPageRoute(
-                                                    builder: (context) => Chatting(trip: trip!, user: guide!)));
+                                                    builder: (context) => Chatting(trip: trip!, sendTo: guide!)));
                                               },
                                               child: Container(
                                                 height: 50,
@@ -488,7 +488,7 @@ class _TripDetailState extends State<TripDetail> {
                                                     onTap: () {
                                                       Navigator.of(context)
                                                           .push(MaterialPageRoute(
-                                                          builder: (context) => Chatting(trip: trip!, user: client!)));
+                                                          builder: (context) => Chatting(trip: trip!, sendTo: client!)));
                                                     },
                                                     child: Container(
                                                       height: 50,

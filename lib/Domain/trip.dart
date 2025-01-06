@@ -83,8 +83,8 @@ class Trip {
   static Future<DocumentReference<Map<String, dynamic>>> addTrip(DocumentReference? guideRef, String tourId,
       DateTime date, int persons, String status,
       String guideLang, String paymentMethod, String creditCardId,
-      bool withTaxNumber, String taxNumber, bool onlyElectricVehicles) {
-    return FirebaseFirestore.instance
+      bool withTaxNumber, String taxNumber, bool onlyElectricVehicles) async {
+    DocumentReference<Map<String, dynamic>> trip = await FirebaseFirestore.instance
         .collection('trips')
         .add(<String, dynamic>{
       'tourId': FirebaseFirestore.instance.doc('tours/$tourId'),
@@ -103,6 +103,17 @@ class Trip {
       'creationDate': FieldValue.serverTimestamp(),
       'onlyElectricVehicles': onlyElectricVehicles
     });
+
+    FirebaseFirestore.instance
+        .collection('chat')
+        .doc(trip.id)
+        .update({
+      "clientRef": FirebaseFirestore.instance.doc('users/${FirebaseAuth.instance.currentUser!.uid}'),
+      "guideRef": guideRef,
+      "date": date
+    });
+
+    return trip;
   }
 
   Future<bool> acceptTour() async {
@@ -115,6 +126,13 @@ class Trip {
             "guideRef": FirebaseFirestore.instance.doc('users/${FirebaseAuth.instance.currentUser!.uid}'),
             "acceptedDate": FieldValue.serverTimestamp(),
             "reservationId": generateReservationId()});
+
+        FirebaseFirestore.instance
+            .collection('chat')
+            .doc(id)
+            .update({
+          "guideRef": FirebaseFirestore.instance.doc('users/${FirebaseAuth.instance.currentUser!.uid}'),
+        });
 
         DocumentSnapshot<Object?> client = await clientRef!.get();
         if (client.exists) {
@@ -228,15 +246,24 @@ class Trip {
 
 
   Future<void> sendChatMessage(String text, String? token, String title) async {
-    CollectionReference chat = FirebaseFirestore.instance
+    CollectionReference chatMessages = FirebaseFirestore.instance
         .collection('chat')
         .doc(id)
         .collection('messages');
 
-    await chat.add({
+    DateTime messageDate = DateTime.now();
+
+    await chatMessages.add({
       'text': text,
-      'date': DateTime.now(),
+      'date': messageDate,
       'origin': FirebaseAuth.instance.currentUser!.uid
+    });
+
+    FirebaseFirestore.instance
+        .collection('chat')
+        .doc(id)
+        .update({
+      "hasMessages": true
     });
 
     if (token != null) {

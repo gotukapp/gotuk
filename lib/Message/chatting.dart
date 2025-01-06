@@ -18,9 +18,9 @@ import '../Utils/customwidget .dart';
 
 class Chatting extends StatefulWidget {
   final Trip trip;
-  final AppUser user;
+  final AppUser sendTo;
 
-  const Chatting({super.key, required this.trip, required this.user });
+  const Chatting({super.key, required this.trip, required this.sendTo });
 
   @override
   State<Chatting> createState() => _ChattingState();
@@ -94,7 +94,7 @@ class _ChattingState extends State<Chatting> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const SizedBox(height: 4),
-                          Text(widget.user.name!,
+                          Text(widget.sendTo.name!,
                               style: TextStyle(
                                   fontSize: 18,
                                   color: notifier.getwhiteblackcolor,
@@ -237,7 +237,7 @@ class _ChattingState extends State<Chatting> {
                       onTap: () {
                         if (chatTextController.text.isNotEmpty) {
                           setState(() {
-                            widget.trip.sendChatMessage(chatTextController.text, widget.user.firebaseToken, widget.user.name!).then((value) => {
+                            widget.trip.sendChatMessage(chatTextController.text, widget.sendTo.firebaseToken, widget.sendTo.name!).then((value) => {
                               chatTextController.clear()
                             });
                           });

@@ -34,6 +34,8 @@ class _TripsBookedState extends State<TripsBooked> {
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser?.uid);
 
+    print(userDocRef);
+
     final Stream<QuerySnapshot<Map<String, dynamic>>> pendingTrips =
     db
         .where("clientRef", isEqualTo: userDocRef)

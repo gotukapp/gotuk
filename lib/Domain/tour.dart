@@ -1,5 +1,3 @@
-import 'chatMessage.dart';
-
 Tour tour1 = Tour("lrBbhAD64JMbq81yjUAF",
     "Lisboa Old City",
     "1h30 - 2h",
@@ -151,13 +149,6 @@ List starPoints5 = [
   { "index": 0, "name": "Senhora do Monte", "img": "assets/images/tour1_img4.jpg" },
   { "index":17, "name": "Parque Eduardo Sétimo", "img": "assets/images/tour1_img3.jpg" },
   { "index":35, "name": "São Pedro de Alcântara", "img": "assets/images/tour1_img2.jpg" }
-];
-
-List<ChatMessage> chatMessages = [
-  ChatMessage("John kennedy","assets/images/person.jpg","Tuk Tuk is the best tour in the city",4.8),
-  ChatMessage("Alexander","assets/images/person.jpg","Thank you for booking our tour",4.6),
-  ChatMessage("Emanuel","assets/images/person.jpg","50% discount on first booking",4.5),
-  ChatMessage("Jamison","assets/images/person.jpg","You will have more fun in this tour than any other",4.4)
 ];
 
 class Tour {
