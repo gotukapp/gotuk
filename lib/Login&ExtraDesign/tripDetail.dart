@@ -145,11 +145,12 @@ class _TripDetailState extends State<TripDetail> {
                                         ],
                                       ),
                                     if (trip?.status == 'pending')
-                                      Text("The trip reservation is on hold until a guide accepts it",
+                                      Expanded(
+                                        child: Text("The trip reservation is on hold until a guide accepts it.",
                                           style: TextStyle(
                                               fontSize: 18,
                                               color: notifier.getwhiteblackcolor,
-                                              fontFamily: "Gilroy Bold"))
+                                              fontFamily: "Gilroy Bold")))
                                   ],
                                 ),
 
