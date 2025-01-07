@@ -722,14 +722,27 @@ newTripNotification(BuildContext context, ColorNotifier notifier, Trip trip) {
                             "Accept Tour",
                             "Are you sure you want to accept this tour?",
                               () async {
-                                bool resultOk = await trip.acceptTour();
-                                if (resultOk) {
-                                  await AppUser.updateTripUnavailability(FirebaseAuth.instance.currentUser!.uid, trip.tour, trip.date, trip.date.hour, trip.date.minute);
-                                }
-                                if (context.mounted) {
-                                  ScaffoldMessenger.of(context)
-                                      .hideCurrentSnackBar();
-                                  showTripAcceptResultMessage(context, resultOk);
+                                if (await AppUser.isGuideAvailable(trip)) {
+                                  bool resultOk = await trip.acceptTour();
+                                  if (resultOk) {
+                                    await AppUser.updateTripUnavailability(FirebaseAuth.instance.currentUser!.uid, trip.tour, trip.date, trip.date.hour, trip.date.minute);
+                                  }
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context)
+                                        .hideCurrentSnackBar();
+                                    showTripAcceptResultMessage(context, resultOk);
+                                  }
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        backgroundColor: lightGrey,
+                                        content: Text("You are not available for this dates!",
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                fontFamily: "Gilroy Medium",
+                                                color: LogoColor)
+                                        ),
+                                      ));
                                 }
                               },
                               () {}, null, null);
