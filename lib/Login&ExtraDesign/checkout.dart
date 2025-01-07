@@ -177,9 +177,9 @@ class _checkoutState extends State<checkout> {
               if (!widget.goNow && selectedDate != null)
                 Text("Guides available: $guidesAvailable",
                     style: TextStyle(
-                        fontSize: 16,
-                        fontFamily: "Gilroy Medium",
-                        color: notifier.getwhiteblackcolor)),
+                        fontSize: 18,
+                        fontFamily: "Gilroy Bold",
+                        color: LogoColor)),
               Divider(
                 color: notifier.getgreycolor,
                 thickness: 2,
@@ -425,6 +425,12 @@ class _checkoutState extends State<checkout> {
                           const SnackBar(
                             content: Text('Please select a date to proceed.'),
                           )
+                        )
+                      } else if (guideRef == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('There is no guide available for this date/time. Please review the date/time or guide features so we can find a guide for you.'),
+                            )
                         )
                       } else {
                         paymentModelBottomSheet(guideRef!)
