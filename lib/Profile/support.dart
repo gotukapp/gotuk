@@ -66,7 +66,7 @@ class _SupportState extends State<Support> {
                   onclick: () {
                     Navigator.of(context)
                         .push(MaterialPageRoute(
-                        builder: (context) => SupportTicket(null, null, null)));
+                        builder: (context) => const SupportTicket(null, null, null)));
                   }),
               Divider(
                 height: 30,
