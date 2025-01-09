@@ -20,6 +20,7 @@ import '../Domain/appUser.dart';
 import '../Domain/tour.dart';
 import '../Providers/userProvider.dart';
 import '../Utils/notification.dart';
+import '../Utils/util.dart';
 
 class checkout extends StatefulWidget {
   final String tourId;
@@ -503,8 +504,9 @@ class _checkoutState extends State<checkout> {
           return !guidesUnavailable.contains(doc.id);
         }).toList();
 
-        guideRef = filteredGuides.isNotEmpty ? filteredGuides[0].reference : null;
+        guideRef = selectGuide(filteredGuides);
         guidesAvailable = filteredGuides.length;
+
       });
     });
   }
