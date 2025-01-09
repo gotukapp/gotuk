@@ -20,6 +20,7 @@ import '../Domain/appUser.dart';
 import '../Domain/tour.dart';
 import '../Providers/userProvider.dart';
 import '../Utils/notification.dart';
+import '../Utils/util.dart';
 
 class checkout extends StatefulWidget {
   final String tourId;
@@ -177,9 +178,9 @@ class _checkoutState extends State<checkout> {
               if (!widget.goNow && selectedDate != null)
                 Text("Guides available: $guidesAvailable",
                     style: TextStyle(
-                        fontSize: 16,
-                        fontFamily: "Gilroy Medium",
-                        color: notifier.getwhiteblackcolor)),
+                        fontSize: 18,
+                        fontFamily: "Gilroy Bold",
+                        color: LogoColor)),
               Divider(
                 color: notifier.getgreycolor,
                 thickness: 2,
@@ -426,6 +427,12 @@ class _checkoutState extends State<checkout> {
                             content: Text('Please select a date to proceed.'),
                           )
                         )
+                      } else if (guideRef == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('There is no guide available for this date/time. Please review the date/time or guide features so we can find a guide for you.'),
+                            )
+                        )
                       } else {
                         paymentModelBottomSheet(guideRef!)
                       }
@@ -497,8 +504,9 @@ class _checkoutState extends State<checkout> {
           return !guidesUnavailable.contains(doc.id);
         }).toList();
 
-        guideRef = filteredGuides.isNotEmpty ? filteredGuides[0].reference : null;
+        guideRef = selectGuide(filteredGuides);
         guidesAvailable = filteredGuides.length;
+
       });
     });
   }

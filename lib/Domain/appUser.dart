@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dm/Domain/tour.dart';
+import 'package:dm/Domain/trip.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:intl/intl.dart';
@@ -119,6 +120,34 @@ class AppUser {
       });
     }
 
+  }
+
+  static Future<bool> isGuideAvailable(Trip t) async {
+    String date = DateFormat('yyyy-MM-dd').format(t.date);
+    DocumentSnapshot<Map<String, dynamic>> dayUnavailability = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection('unavailability')
+        .doc(date).get();
+
+    List<dynamic> slots = [];
+    if (dayUnavailability.exists) {
+      slots = dayUnavailability.get("slots");
+    }
+
+    for(int i = 0; i < t.tour.durationSlots; i++) {
+      // Calculate total minutes from the starting point
+      int totalMinutes = (t.date.hour * 60) + t.date.minute + (i * 30);
+      int newHour = totalMinutes ~/ 60; // Integer division to get hours
+      int newMinutes = totalMinutes % 60; // Remainder to get minutes
+      String hour = '${newHour.toString().padLeft(2, '0')}:${newMinutes.toString().padLeft(2, '0')}';
+      var result = slots.contains(hour);
+      if (result) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   Future<void> submitAccountData(List<Item> data) async {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../Domain/ticket.dart';
 import '../Domain/trip.dart';
 import '../Utils/customwidget .dart';
@@ -163,73 +164,24 @@ class _SupportTicketState extends State<SupportTicket> {
                     )
               ),
               const SizedBox(height: 30),
-              TextFormField(
-                controller: _subjectController,
-                cursorColor: LogoColor,
-                readOnly: widget.trip != null,
-                style: TextStyle(
-                    color: BlackColor2,
-                    fontSize: 16,
-                    fontFamily: "Gilroy Bold"),
-                decoration: InputDecoration(
-                    labelText: 'Subject',
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: LogoColor), // Color when not focused
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: LogoColor, width: 2.0), // Color when focused
-                    ),
-                    labelStyle: TextStyle(
-                          color: lightBlack,
-                          fontSize: 18,
-                          fontFamily: "Gilroy Bold")),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a subject';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _messageController,
-                cursorColor: LogoColor,
-                style: TextStyle(
-                    color: BlackColor2,
-                    fontSize: 16,
-                    fontFamily: "Gilroy Bold"),
-                decoration: InputDecoration(
-                    labelText: 'Message',
-                    enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: LogoColor), // Color when not focused
-                    ),
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: LogoColor, width: 2.0), // Color when focused
-                    ),
-                    labelStyle: TextStyle(
-                        color: lightBlack,
-                        fontSize: 18,
-                        fontFamily: "Gilroy Bold")),
-                maxLines: 8,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your message';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 40),
               _isLoading
                   ? const CircularProgressIndicator()
                   : Center(
                   child: AppButton(
                       bgColor: notifier.getwhitelogocolor,
                       textColor: notifier.getblackwhitecolor,
-                      buttontext: "Submit",
+                      buttontext: "Create Ticket",
                       onclick: () async {
-                        await _submitTicket();
-                        if (widget.trip != null) {
-                          widget.trip?.cancelTour();
+                        if (_selectedCategory != null && _selectedReason != null) {
+                          _sendEmail();
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("You have to select a Category and a Reason to create a ticket."),
+                            ),
+                          );
                         }
+
                       })
               ),
             ],
@@ -237,6 +189,20 @@ class _SupportTicketState extends State<SupportTicket> {
         ),
       ),
     );
+  }
+
+  void _sendEmail() async {
+    const String email = 'suporte@gotuk.pt';
+    final String subject = Uri.encodeComponent(_selectedCategory!);
+    final String body = Uri.encodeComponent("Category: ${_selectedCategory!}\nReason: ${_selectedReason!}\nMessage: ");
+
+    final Uri emailUri = Uri.parse('mailto:$email?subject=$subject&body=$body');
+
+    if (await canLaunchUrl(emailUri)) {
+      await launchUrl(emailUri);
+    } else {
+      throw 'Could not launch $emailUri';
+    }
   }
 
   getdarkmodepreviousstate() async {
