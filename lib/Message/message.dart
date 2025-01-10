@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../Domain/appUser.dart';
 import '../Domain/trip.dart';
@@ -61,7 +62,7 @@ class _messageState extends State<message> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Message",
+                  AppLocalizations.of(context)!.messages,
                   style: TextStyle(
                       fontSize: 18,
                       color: notifier.getwhiteblackcolor,

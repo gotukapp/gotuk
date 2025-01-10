@@ -5,6 +5,7 @@ import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../Utils/customwidget .dart';
 
@@ -33,7 +34,7 @@ class _SupportState extends State<Support> {
         backgroundColor: notifier.getbgcolor,
         leading: BackButton(color: notifier.getwhiteblackcolor),
         title: Text(
-          "Support",
+          AppLocalizations.of(context)!.support,
           style: TextStyle(
               color: notifier.getwhiteblackcolor, fontFamily: "Gilroy Bold"),
         ),

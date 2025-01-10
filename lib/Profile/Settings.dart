@@ -12,6 +12,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../Utils/customwidget .dart';
 
@@ -41,7 +42,7 @@ class _SettingsState extends State<Settings> {
         backgroundColor: notifier.getbgcolor,
         leading: BackButton(color: notifier.getwhiteblackcolor),
         title: Text(
-          "Settings",
+          AppLocalizations.of(context)!.settings,
           style: TextStyle(color: notifier.getwhiteblackcolor),
         ),
       ),
@@ -52,7 +53,7 @@ class _SettingsState extends State<Settings> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Account Settings",
+              Text(AppLocalizations.of(context)!.accountSettings,
                   style: TextStyle(
                       fontSize: 16,
                       color: notifier.getwhiteblackcolor,
@@ -60,7 +61,7 @@ class _SettingsState extends State<Settings> {
               const SizedBox(height: 10),
               AccountSetting(
                 image: "assets/images/profile.png",
-                text: "My Profile",
+                text: AppLocalizations.of(context)!.myProfile,
                 icon: Icons.keyboard_arrow_right,
                 onclick: () {
                   Navigator.of(context).push(MaterialPageRoute(
@@ -73,7 +74,7 @@ class _SettingsState extends State<Settings> {
               ),
               AccountSetting(
                 image: "assets/images/notification.png",
-                text: "Notifications",
+                text: AppLocalizations.of(context)!.notifications,
                 icon: Icons.keyboard_arrow_right,
                 onclick: () {
                   Navigator.of(context).push(MaterialPageRoute(
@@ -86,7 +87,7 @@ class _SettingsState extends State<Settings> {
               ),
               AccountSetting(
                   image: "assets/images/Payments.png",
-                  text: "Payments and Payouts",
+                  text: AppLocalizations.of(context)!.payments,
                   icon: Icons.keyboard_arrow_right,
                   onclick: () {
                     // Navigator.of(context).push(
@@ -97,7 +98,7 @@ class _SettingsState extends State<Settings> {
                   iconcolor: notifier.getwhiteblackcolor,
                   TextColor: notifier.getwhiteblackcolor),
               const SizedBox(height: 10),
-              Text("Preferences",
+              Text(AppLocalizations.of(context)!.preferences,
                   style: TextStyle(
                       fontSize: 16,
                       color: notifier.getwhiteblackcolor,
@@ -105,7 +106,7 @@ class _SettingsState extends State<Settings> {
               const SizedBox(height: 10),
               AccountSetting(
                   image: "assets/images/language.png",
-                  text: "Language",
+                  text: AppLocalizations.of(context)!.language,
                   icon: Icons.keyboard_arrow_right,
                   onclick: () {
                     Navigator.of(context).push(MaterialPageRoute(
@@ -129,7 +130,7 @@ class _SettingsState extends State<Settings> {
                         height: 30,
                         color: notifier.getwhiteblackcolor,
                       ),
-                      title: Text("Dark Mode",
+                      title: Text(AppLocalizations.of(context)!.darkMode,
                           style: TextStyle(
                               fontSize: 15,
                               color: notifier.getwhiteblackcolor,
@@ -156,7 +157,7 @@ class _SettingsState extends State<Settings> {
 
               AccountSetting(
                   image: "assets/images/lock.png",
-                  text: "Privacy Settings",
+                  text: AppLocalizations.of(context)!.privacySettings,
                   icon: Icons.keyboard_arrow_right,
                   onclick: () {
                     // Navigator.of(context).push(
@@ -167,7 +168,7 @@ class _SettingsState extends State<Settings> {
                   iconcolor: notifier.getwhiteblackcolor,
                   TextColor: notifier.getwhiteblackcolor),
               const SizedBox(height: 10),
-              Text("Support",
+              Text(AppLocalizations.of(context)!.support,
                   style: TextStyle(
                       fontSize: 16,
                       color: notifier.getwhiteblackcolor,
@@ -175,7 +176,7 @@ class _SettingsState extends State<Settings> {
               const SizedBox(height: 10),
               AccountSetting(
                   image: "assets/images/support.png",
-                  text: "Support",
+                  text: AppLocalizations.of(context)!.support,
                   icon: Icons.keyboard_arrow_right,
                   onclick: () {
                     Navigator.of(context).push(MaterialPageRoute(
@@ -188,7 +189,7 @@ class _SettingsState extends State<Settings> {
               const SizedBox(height: 10),
               AccountSetting(
                   image: "assets/images/logout.png",
-                  text: "Log Out",
+                  text: AppLocalizations.of(context)!.logOut,
                   icon: null,
                   onclick: () async {
                     await FirebaseAuth.instance.signOut();

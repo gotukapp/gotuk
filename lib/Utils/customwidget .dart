@@ -306,7 +306,7 @@ guideTripLayout(BuildContext context, ColorNotifier notifier, Trip trip, bool sh
                           fontSize: 15,
                           color: notifier.getwhiteblackcolor,
                           fontFamily: "Gilroy Bold")),
-                  Text(DateFormat('E, d MMM yyyy HH:mm')
+                  Text(DateFormat('E, d MMM yyyy HH:mm', AppLocalizations.of(context)!.locale)
                       .format(trip.date),
                       style: TextStyle(
                           fontSize: 15,
@@ -358,7 +358,7 @@ guideTripLayout(BuildContext context, ColorNotifier notifier, Trip trip, bool sh
                           Container(
                             width: MediaQuery.of(context).size.width *
                                 0.3,
-                            child:  Text("${trip.persons == 3 ? "1-3" : "4-6"} Persons",
+                            child:  Text("${trip.persons == 3 ? "1-3" : "4-6"} ${AppLocalizations.of(context)!.persons}",
                               style: TextStyle(
                               fontSize: 15,
                               color: notifier.getwhiteblackcolor,
@@ -507,7 +507,7 @@ clientTripLayout(BuildContext context, ColorNotifier notifier, Trip trip) {
                       const SizedBox(height: 15),
                       Row(
                         children: [
-                          Text(DateFormat('E, d MMM yyyy - HH:mm').format(trip.date),
+                          Text(DateFormat('E, d MMM yyyy - HH:mm', AppLocalizations.of(context)!.locale).format(trip.date),
                               style: TextStyle(
                                   fontSize: 12,
                                   color: notifier.getwhiteblackcolor)),
@@ -520,7 +520,7 @@ clientTripLayout(BuildContext context, ColorNotifier notifier, Trip trip) {
                               color:
                               notifier.getwhiteblackcolor,
                               fontFamily: "Gilroy Bold")),
-                      Text("${trip.persons} Persons",
+                      Text("${trip.persons} ${AppLocalizations.of(context)!.persons}",
                           style: TextStyle(
                               fontSize: 12,
                               color: notifier.getwhiteblackcolor,
@@ -634,7 +634,7 @@ newTripNotification(BuildContext context, ColorNotifier notifier, Trip trip) {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(DateFormat('E, d MMM yyyy HH:mm')
+                      Text(DateFormat('E, d MMM yyyy HH:mm', AppLocalizations.of(context)!.locale)
                           .format(trip.date),
                           style: TextStyle(
                               fontSize: 15,
@@ -699,7 +699,7 @@ newTripNotification(BuildContext context, ColorNotifier notifier, Trip trip) {
                               Container(
                                 width: MediaQuery.of(context).size.width *
                                     0.3,
-                                child:  Text("${trip.persons == 3 ? "1-3" : "4-6"} Persons",
+                                child:  Text("${trip.persons == 3 ? "1-3" : "4-6"} ${AppLocalizations.of(context)!.persons}",
                                     style: TextStyle(
                                         fontSize: 15,
                                         color: notifier.getwhiteblackcolor,

@@ -1,12 +1,12 @@
 // ignore_for_file: file_names
 
-import 'package:dm/CreatAccount/newpassword.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../Providers/userProvider.dart';
 
@@ -43,7 +43,7 @@ class _MyProfileState extends State<MyProfile> {
         backgroundColor: notifier.getbgcolor,
         leading: BackButton(color: notifier.getwhiteblackcolor),
         title: Text(
-          "My Profile",
+          AppLocalizations.of(context)!.myProfile,
           style: TextStyle(
               color: notifier.getwhiteblackcolor, fontFamily: "Gilroy Bold"),
         ),
@@ -95,7 +95,7 @@ class _MyProfileState extends State<MyProfile> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Full Name",
+                    AppLocalizations.of(context)!.fullName,
                     style: TextStyle(
                         fontSize: 16,
                         color: notifier.getwhiteblackcolor,
@@ -105,12 +105,12 @@ class _MyProfileState extends State<MyProfile> {
                   textfield(
                       fieldColor: notifier.getdarkmodecolor,
                       hintColor: notifier.getgreycolor,
-                      text: 'Enter your Name',
+                      text: AppLocalizations.of(context)!.enterYourName,
                       controller: nameController,
                       suffix: null),
                   const SizedBox(height: 20),
                   Text(
-                    "Email",
+                    AppLocalizations.of(context)!.email,
                     style: TextStyle(
                         fontSize: 16,
                         color: notifier.getwhiteblackcolor,
@@ -126,7 +126,7 @@ class _MyProfileState extends State<MyProfile> {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    "Phone Number",
+                    AppLocalizations.of(context)!.phoneNumber,
                     style: TextStyle(
                         fontSize: 16,
                         color: notifier.getwhiteblackcolor,
@@ -144,7 +144,7 @@ class _MyProfileState extends State<MyProfile> {
               ),
               SizedBox(height: 40),
               AppButton(
-                  buttontext: "Save Changes",
+                  buttontext: AppLocalizations.of(context)!.saveChanges,
                   onclick: () {
                      userProvider.user!.update(nameController.text);
                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -152,21 +152,6 @@ class _MyProfileState extends State<MyProfile> {
                        ),
                      );
                   }),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-              Center(
-                child: InkWell(
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const newpassword(),
-                    ));
-                  },
-                  child: Text("Change Password?",
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: Darkblue,
-                          fontFamily: "Gilroy Bold")),
-                ),
-              )
             ],
           ),
         ),
