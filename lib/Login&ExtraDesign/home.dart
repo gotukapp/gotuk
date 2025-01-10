@@ -218,7 +218,7 @@ class _homeState extends State<home> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "Booked Tours",
+                                  AppLocalizations.of(context)!.bookedTours,
                                   style: TextStyle(
                                       fontFamily: "Gilroy Bold",
                                       color: notifier.getwhiteblackcolor),
@@ -230,7 +230,7 @@ class _homeState extends State<home> {
                                     ));
                                   },
                                   child: Text(
-                                    "See All",
+                                    AppLocalizations.of(context)!.seeAll,
                                     style: TextStyle(
                                         color: notifier.getdarkbluecolor,
                                         fontFamily: "Gilroy Medium"),
@@ -258,7 +258,7 @@ class _homeState extends State<home> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Recommended",
+                                AppLocalizations.of(context)!.recommended,
                                 style: TextStyle(
                                     fontFamily: "Gilroy Bold",
                                     color: notifier.getwhiteblackcolor),
@@ -270,7 +270,7 @@ class _homeState extends State<home> {
                                   ));
                                 },
                                 child: Text(
-                                  "See All",
+                                  AppLocalizations.of(context)!.seeAll,
                                   style: TextStyle(
                                       color: notifier.getdarkbluecolor,
                                       fontFamily: "Gilroy Medium"),
@@ -394,7 +394,7 @@ class _homeState extends State<home> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Nearby Tour",
+                                AppLocalizations.of(context)!.nearbyTours,
                                 style: TextStyle(
                                     fontFamily: "Gilroy Bold",
                                     color: notifier.getwhiteblackcolor),
@@ -406,7 +406,7 @@ class _homeState extends State<home> {
                                       const nearbyAllTours()));
                                 },
                                 child: Text(
-                                  "See All",
+                                  AppLocalizations.of(context)!.seeAll,
                                   style: TextStyle(
                                     color: notifier.getdarkbluecolor,
                                     fontFamily: "Gilroy Medium",

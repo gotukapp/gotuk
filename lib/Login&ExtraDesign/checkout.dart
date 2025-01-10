@@ -15,6 +15,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../Domain/appUser.dart';
 import '../Domain/tour.dart';
@@ -204,7 +205,7 @@ class _checkoutState extends State<checkout> {
                         child: Column(
                           children: [
                             const SizedBox(height: 5),
-                            Text("1-3 persons",
+                            Text("1-3 ${AppLocalizations.of(context)!.persons}",
                                 style: TextStyle(
                                     fontSize: 14,
                                     color: WhiteColor,
@@ -234,7 +235,7 @@ class _checkoutState extends State<checkout> {
                         child: Column(
                             children: [
                               const SizedBox(height: 5),
-                              Text("4-6 persons",
+                              Text("4-6 ${AppLocalizations.of(context)!.persons}",
                                 style: TextStyle(
                                     fontSize: 14,
                                     color: WhiteColor,
@@ -254,7 +255,7 @@ class _checkoutState extends State<checkout> {
               if (widget.goNow)
                 ...[const SizedBox(height: 10),
                   selectDetail(
-                    heading: "Pickup Point",
+                    heading: AppLocalizations.of(context)!.pickupPoint,
                     image: "assets/images/location.png",
                     text: pickupPointSelected ?? "Select Pickup Point",
                     icon: Icons.keyboard_arrow_down,

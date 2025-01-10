@@ -8,6 +8,7 @@ import 'package:dm/Domain/tour.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class showAllTours extends StatefulWidget {
   const showAllTours({super.key});
@@ -31,7 +32,7 @@ class _showAllToursState extends State<showAllTours> {
       appBar: PreferredSize(
           preferredSize: const Size.fromHeight(75),
           child: CustomAppbar(
-              centertext: "Recomended for you",
+              centertext: AppLocalizations.of(context)!.recommended,
               ActionIcon: null,
               bgcolor: notifier.getbgcolor,
               actioniconcolor: notifier.getwhiteblackcolor,

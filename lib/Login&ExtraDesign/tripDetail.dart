@@ -128,7 +128,7 @@ class _TripDetailState extends State<TripDetail> {
                                                 color: LogoColor,
                                               ),
                                               const SizedBox(width: 5),
-                                              Text("Reservation Id",
+                                              Text(AppLocalizations.of(context)!.reservationId,
                                                 style: TextStyle(
                                                     fontSize: 14,
                                                     color: notifier.getwhiteblackcolor,
@@ -146,7 +146,7 @@ class _TripDetailState extends State<TripDetail> {
                                       ),
                                     if (trip?.status == 'pending')
                                       Expanded(
-                                        child: Text("The trip reservation is on hold until a guide accepts it.",
+                                        child: Text(AppLocalizations.of(context)!.reservationOnHold,
                                           style: TextStyle(
                                               fontSize: 18,
                                               color: notifier.getwhiteblackcolor,
@@ -170,7 +170,7 @@ class _TripDetailState extends State<TripDetail> {
                                           color: LogoColor,
                                         ),
                                         const SizedBox(width: 5),
-                                        Text("Pickup point",
+                                        Text(AppLocalizations.of(context)!.pickupPoint,
                                           style: TextStyle(
                                               fontSize: 14,
                                               color: notifier.getwhiteblackcolor,
@@ -202,7 +202,7 @@ class _TripDetailState extends State<TripDetail> {
                                           color: LogoColor,
                                         ),
                                         const SizedBox(width: 5),
-                                        Text("Reservation Date",
+                                        Text(AppLocalizations.of(context)!.reservationDate,
                                           style: TextStyle(
                                               fontSize: 14,
                                               color: notifier.getwhiteblackcolor,
@@ -211,7 +211,7 @@ class _TripDetailState extends State<TripDetail> {
                                       ],
                                     ),
                                     Text(
-                                      DateFormat('E, d MMM yyyy HH:mm')
+                                      DateFormat('E, d MMM yyyy HH:mm', AppLocalizations.of(context)!.locale)
                                           .format(trip!.date),
                                       style: TextStyle(
                                           fontSize: 18,
@@ -244,7 +244,7 @@ class _TripDetailState extends State<TripDetail> {
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text("Guide",
+                                            Text(AppLocalizations.of(context)!.guide,
                                               style: TextStyle(
                                                   fontSize: 18,
                                                   color: notifier.getwhiteblackcolor,
@@ -348,7 +348,7 @@ class _TripDetailState extends State<TripDetail> {
                                                             color: LogoColor,
                                                           ),
                                                           const SizedBox(width: 5),
-                                                          Text("License Plate",
+                                                          Text(AppLocalizations.of(context)!.licensePlate,
                                                             style: TextStyle(
                                                                 fontSize: 14,
                                                                 color: notifier.getwhiteblackcolor,
@@ -384,7 +384,7 @@ class _TripDetailState extends State<TripDetail> {
                                                       color: LogoColor,
                                                     ),
                                                     const SizedBox(width: 5),
-                                                    Text("Payment to Guide",
+                                                    Text(AppLocalizations.of(context)!.remainingPayment,
                                                       style: TextStyle(
                                                           fontSize: 14,
                                                           color: notifier.getwhiteblackcolor,
@@ -478,7 +478,7 @@ class _TripDetailState extends State<TripDetail> {
                                               Row(
                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 children: [
-                                                  Text("Client",
+                                                  Text(AppLocalizations.of(context)!.client,
                                                     style: TextStyle(
                                                         fontSize: 18,
                                                         color: notifier.getwhiteblackcolor,

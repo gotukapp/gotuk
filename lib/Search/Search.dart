@@ -8,6 +8,7 @@ import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Search extends StatefulWidget {
   Search({super.key});
@@ -263,7 +264,7 @@ class _SearchState extends State<Search> {
                               color: notifier.getwhiteblackcolor),
                         ),
                         Text(
-                          "See All",
+                          AppLocalizations.of(context)!.seeAll,
                           style: TextStyle(
                               fontSize: 15,
                               color: notifier.getdarkbluecolor,

@@ -13,9 +13,9 @@ import 'package:dm/Domain/trip.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../Domain/appUser.dart';
 import '../Providers/userProvider.dart';
 import '../Guide/dashboard.dart';
@@ -102,17 +102,17 @@ class _homepageState extends State<homepage> {
               icon: Image.asset("assets/images/homeicon.png",
                   color: selectedIndex == 0 ? Darkblue : greyColor,
                   height: MediaQuery.of(context).size.height / 35),
-              label: 'Home'),
+              label: AppLocalizations.of(context)!.home),
           BottomNavigationBarItem(
               icon: Image.asset("assets/images/message.png",
                   color: selectedIndex == 1 ? Darkblue : greyColor,
                   height: MediaQuery.of(context).size.height / 35),
-              label: 'Message'),
+              label: AppLocalizations.of(context)!.messages),
           BottomNavigationBarItem(
             icon: Image.asset("assets/images/profile.png",
                 color: selectedIndex == 2 ? Darkblue : greyColor,
                 height: MediaQuery.of(context).size.height / 35),
-            label: 'Profile',
+            label: AppLocalizations.of(context)!.profile,
           ),
         ],
         onTap: (index) {

@@ -22,42 +22,11 @@ class SupportTicket extends StatefulWidget {
 class _SupportTicketState extends State<SupportTicket> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _subjectController = TextEditingController();
-  final TextEditingController _messageController = TextEditingController();
 
   String? _selectedCategory;
   String? _selectedReason;
   bool _isLoading = false;
   late ColorNotifier notifier;
-
-  Future<void> _submitTicket() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() {
-        _isLoading = true;
-      });
-
-      try {
-        Ticket ticket = Ticket(null, null,
-            _selectedCategory!, _selectedReason!, _subjectController.text, _messageController.text);
-
-        await ticket.submitTicket();
-
-        // Show confirmation
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Support ticket submitted successfully!'),
-        ));
-
-        _formKey.currentState!.reset();
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Failed to submit ticket: $e'),
-        ));
-      } finally {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
-  }
 
   @override
   void initState() {
@@ -193,8 +162,8 @@ class _SupportTicketState extends State<SupportTicket> {
 
   void _sendEmail() async {
     const String email = 'suporte@gotuk.pt';
-    final String subject = Uri.encodeComponent(_selectedCategory!);
-    final String body = Uri.encodeComponent("Category: ${_selectedCategory!}\nReason: ${_selectedReason!}\nMessage: ");
+    final String subject = Uri.encodeComponent("${_selectedCategory!} - ${_selectedReason!}");
+    final String body = Uri.encodeComponent("");
 
     final Uri emailUri = Uri.parse('mailto:$email?subject=$subject&body=$body');
 
