@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dm/Domain/tour.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../Utils/notification.dart';
 
@@ -134,20 +135,18 @@ class Trip {
           "guideRef": FirebaseFirestore.instance.doc('users/${FirebaseAuth.instance.currentUser!.uid}'),
         });
 
-        DocumentSnapshot<Object?> client = await clientRef!.get();
-        if (client.exists) {
-          if (client.data() != null && (client.data() as Map<String, dynamic>).containsKey('firebaseToken')) {
-            await sendNotification(targetToken: client.get("firebaseToken"),
+        try {
+          DocumentSnapshot<Object?> client = await clientRef!.get();
+          await sendNotification(targetToken: client.get("firebaseToken"),
               title: "Accepted Tour",
               body: "$reservationId - ${tour.name} tour was accepted");
-          } else {
-            print('Field "firebaseToken" does not exist or is null.');
-            return true;
-          }
-        } else {
-          print('Document does not exist.');
-          return false;
+        } catch(e, stackTrace) {
+          await Sentry.captureException(e,
+            stackTrace: stackTrace,
+          );
         }
+
+        return true;
       }
       return false;
     });
