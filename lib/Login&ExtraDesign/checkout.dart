@@ -51,9 +51,9 @@ class _checkoutState extends State<checkout> {
   Color highPriceColor = greyColor;
 
   DateTime? selectedDate;
-  int hourSliderValue = 8;
+  int hourSliderValue = 9;
   int minutesSliderValue = 0;
-  int minimumHourSlider = 8;
+  int minimumHourSlider = 9;
   int maximumHourSlider = 19;
   DateTime minimumDate = DateTime.now().add(const Duration(days: 1));
   DateTime maximumDate = DateTime.now().add(const Duration(days: 32));
@@ -575,7 +575,7 @@ class _checkoutState extends State<checkout> {
                         child: Row(
                           children: [
                             Text(
-                              tour!.review.toString(),
+                              tour!.rating.toString(),
                               style: TextStyle(
                                   fontSize: 16,
                                   color: notifier.getdarkbluecolor,

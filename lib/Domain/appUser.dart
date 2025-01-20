@@ -238,6 +238,44 @@ class AppUser {
       );
     }
   }
+
+  Future<int?> get totalReviews async {
+    AggregateQuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(id)
+        .collection('reviews').count().get();
+
+    return querySnapshot.count;
+  }
+
+  Future<void> updateRating(double ratingGuide) async {
+    DocumentReference userDoc = FirebaseFirestore.instance
+        .collection('users')
+        .doc(id);
+    int? totalGuideReviews = await totalReviews;
+
+    if (totalGuideReviews != null) {
+      double result = (((rating ?? 0) * totalGuideReviews) + ratingGuide) / (totalGuideReviews + 1);
+
+      userDoc.update({
+        "rating": double.parse(result.toStringAsFixed(1))
+      });
+    }
+  }
+
+  Future<void> addReview(String tripId, double ratingGuide, String commentGuide) async {
+    DocumentReference guideReviewDoc = FirebaseFirestore.instance
+        .collection('users')
+        .doc(id)
+        .collection('reviews')
+        .doc(tripId);
+
+    await guideReviewDoc.set({
+      'rating': ratingGuide,
+      'comment': commentGuide,
+      'creationDate': FieldValue.serverTimestamp()
+    });
+  }
 }
 
 Future<bool> userExists(String phone) async {

@@ -268,7 +268,7 @@ tourLayout(BuildContext context, ColorNotifier notifier, Tour tour) {
                   SizedBox(
                       width: MediaQuery.of(context).size.width *
                           0.15),
-                  tourReview(review: tour.review)
+                  tourReview(review: tour.rating)
                 ],
               )
             ],
@@ -783,7 +783,7 @@ String getTripButtonAction(Trip trip) {
   return "Accept Tour";
 }
 
-tourReview({double? review})   {
+tourReview({num? review})   {
   return Row(
     children: [
       Image.asset(
