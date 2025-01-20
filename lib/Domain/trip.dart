@@ -27,10 +27,15 @@ class Trip {
   bool? showEndButton;
   bool? onlyElectricVehicles;
   bool? clientIsReady;
+  String? reservationType;
+  double? feePrice;
+  double? tourPrice;
+
 
   Trip(this.id, this.tourRef, this.date, this.persons, this.status, this.clientRef,
       this.guideRef, this.guideLang, this.paymentMethod, this.creditCardId,
-      this.withTaxNumber, this.taxNumber, this.reservationId, this.rateSubmitted, this.onlyElectricVehicles, this.clientIsReady);
+      this.withTaxNumber, this.taxNumber, this.reservationId, this.rateSubmitted, this.onlyElectricVehicles,
+      this.clientIsReady, this.reservationType, this.feePrice, this.tourPrice);
 
   factory Trip.fromFirestore(
       DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -52,7 +57,10 @@ class Trip {
         data?['reservationId'],
         data?['rateSubmitted'],
         data?['onlyElectricVehicles'],
-        data?['clientIsReady']
+        data?['clientIsReady'],
+        data?['reservationType'],
+        data?['feePrice'],
+        data?['tourPrice']
     );
     t.showStartButton = t.allowShowStart();
     t.showEndButton = t.allowShowEnd();
@@ -84,7 +92,7 @@ class Trip {
   static Future<DocumentReference<Map<String, dynamic>>> addTrip(DocumentReference? guideRef, String tourId,
       DateTime date, int persons, String status,
       String guideLang, String paymentMethod, String creditCardId,
-      bool withTaxNumber, String taxNumber, bool onlyElectricVehicles) async {
+      bool withTaxNumber, String taxNumber, bool onlyElectricVehicles, String reservationType, double feePrice, double tourPrice) async {
     DocumentReference<Map<String, dynamic>> trip = await FirebaseFirestore.instance
         .collection('trips')
         .add(<String, dynamic>{
@@ -102,7 +110,10 @@ class Trip {
       'taxNumber': taxNumber,
       'rateSubmitted': false,
       'creationDate': FieldValue.serverTimestamp(),
-      'onlyElectricVehicles': onlyElectricVehicles
+      'onlyElectricVehicles': onlyElectricVehicles,
+      'reservationType': reservationType,
+      'feePrice': feePrice,
+      'tourPrice': tourPrice
     });
 
     FirebaseFirestore.instance

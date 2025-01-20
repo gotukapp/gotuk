@@ -1319,7 +1319,10 @@ class _checkoutState extends State<checkout> {
           '',
           withTaxNumber,
           taxNumberController.text,
-          onlyElectricVehicles
+          onlyElectricVehicles,
+          widget.goNow ? 'gonow' : 'booking',
+          tour!.getFeePrice(smallPriceSelected),
+          tour!.getTourPrice(smallPriceSelected)
           ).then((docRef) {
           Navigator.pushAndRemoveUntil(
             context,
