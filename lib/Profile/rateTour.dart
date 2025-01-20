@@ -1,5 +1,6 @@
 // ignore_for_file: camel_case_types, avoid_print
 
+import 'package:dm/Providers/userProvider.dart';
 import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +27,9 @@ class _RateTourState extends State<RateTour> {
     super.initState();
   }
 
+  late UserProvider userProvider;
   late ColorNotifier notifier;
+
 
   double _ratingTour = 3.0;
   double _ratingGuide = 3.0;
@@ -38,7 +41,7 @@ class _RateTourState extends State<RateTour> {
     final commentTour = _commentTourController.text;
     final commentGuide = _commentGuideController.text;
 
-    await widget.trip.submitReview(_ratingTour, commentTour, _ratingGuide, commentGuide);
+    await widget.trip.submitReview(_ratingTour, commentTour, _ratingGuide, commentGuide, userProvider.user!.name);
 
     // Show confirmation message
     ScaffoldMessenger.of(context).showSnackBar(
@@ -57,6 +60,7 @@ class _RateTourState extends State<RateTour> {
 
   @override
   Widget build(BuildContext context) {
+    userProvider = Provider.of<UserProvider>(context);
     notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
       appBar: AppBar(

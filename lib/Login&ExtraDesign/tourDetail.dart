@@ -437,7 +437,7 @@ class _TourDetailState extends State<TourDetail> {
                                                             .width *
                                                         0.54,
                                                     child: Text(
-                                                      reviews?[index].get("name"),
+                                                      reviews?[index].get("name") ?? '',
                                                       style: TextStyle(
                                                           fontSize: 15,
                                                           color: notifier

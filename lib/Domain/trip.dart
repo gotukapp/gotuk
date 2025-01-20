@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../Utils/notification.dart';
+import 'appUser.dart';
 
 class Trip {
 
@@ -216,37 +217,19 @@ class Trip {
     return "$text$number";
   }
 
-  Future<void>  submitReview(double ratingTour, String commentTour, double ratingGuide, String commentGuide) async {
-    DocumentReference trip = FirebaseFirestore.instance
-        .collection('trip')
-        .doc(id);
+  Future<void>  submitReview(double ratingTour, String commentTour, double ratingGuide, String commentGuide, String? clientName) async {
+    await tour.updateRating(ratingTour);
+    await tour.addReview(id!, clientName ?? '', ratingTour, commentTour);
 
-    DocumentReference tourReviewDoc = FirebaseFirestore.instance
-        .collection('tours')
-        .doc(tour.id)
-        .collection('reviews')
-        .doc(id);
+    final convertedDocRef = guideRef!.withConverter<AppUser>(
+      fromFirestore: AppUser.fromFirestore,
+      toFirestore: (AppUser user, _) => user.toFirestore(),
+    );
+    DocumentSnapshot<AppUser> snapshot = await convertedDocRef.get();
+    AppUser appUser = snapshot.data()!;
 
-    await tourReviewDoc.set({
-      'tripRef': trip,
-      'name': FirebaseAuth.instance.currentUser?.displayName,
-      'rating': ratingTour,
-      'comment': commentTour,
-      'creationDate': FieldValue.serverTimestamp()
-    });
-
-    DocumentReference guideReviewDoc = FirebaseFirestore.instance
-        .collection('users')
-        .doc(guideRef?.id)
-        .collection('reviews')
-        .doc(id);
-
-    await guideReviewDoc.set({
-      'tripRef': trip,
-      'rating': ratingGuide,
-      'comment': commentGuide,
-      'creationDate': FieldValue.serverTimestamp()
-    });
+    appUser.updateRating(ratingGuide);
+    appUser.addReview(id!, ratingGuide, commentGuide);
 
     FirebaseFirestore.instance
         .collection('trips')
