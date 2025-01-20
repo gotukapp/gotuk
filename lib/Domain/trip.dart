@@ -221,12 +221,13 @@ class Trip {
         .collection('trip')
         .doc(id);
 
-    CollectionReference tourReviews = FirebaseFirestore.instance
+    DocumentReference tourReviewDoc = FirebaseFirestore.instance
         .collection('tours')
         .doc(tour.id)
-        .collection('reviews');
+        .collection('reviews')
+        .doc(id);
 
-    DocumentReference<Object?> tourReview = await tourReviews.add({
+    await tourReviewDoc.set({
       'tripRef': trip,
       'name': FirebaseAuth.instance.currentUser?.displayName,
       'rating': ratingTour,
@@ -234,12 +235,13 @@ class Trip {
       'creationDate': FieldValue.serverTimestamp()
     });
 
-    CollectionReference guideReviews = FirebaseFirestore.instance
+    DocumentReference guideReviewDoc = FirebaseFirestore.instance
         .collection('users')
         .doc(guideRef?.id)
-        .collection('reviews');
+        .collection('reviews')
+        .doc(id);
 
-    DocumentReference<Object?> guideReview = await guideReviews.add({
+    await guideReviewDoc.set({
       'tripRef': trip,
       'rating': ratingGuide,
       'comment': commentGuide,
@@ -249,9 +251,7 @@ class Trip {
     FirebaseFirestore.instance
         .collection('trips')
         .doc(id)
-        .update({ "rateSubmitted": true,
-                  "tourReviewRef": tourReview,
-                  "guideReviewRef": guideReview });
+        .update({ "rateSubmitted": true });
   }
 
 
