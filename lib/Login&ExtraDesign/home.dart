@@ -311,7 +311,7 @@ class _homeState extends State<home> {
                                               Positioned(
                                                 top: 5,
                                                 left: 185,
-                                                child: tourReview(review: tourList[0].review),
+                                                child: tourReview(review: tourList[0].rating),
                                               ),
                                               Container(
                                                   height: 240,

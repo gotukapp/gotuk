@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 Tour tour1 = Tour("lrBbhAD64JMbq81yjUAF",
     "Lisboa Old City",
     "1h30 - 2h",
@@ -162,14 +164,14 @@ class Tour {
   final double priceHigh;
   final String address;
   final String icon;
-  final double review;
+  final num rating;
   final List coords;
   final List starPoints;
   bool? favorite;
 
 
   Tour(this.id, this.name, this.duration, this.durationSlots, this.img, this.images, this.priceLow,
-      this.priceHigh, this.address, this.icon, this.review, this.coords, this.starPoints);
+      this.priceHigh, this.address, this.icon, this.rating, this.coords, this.starPoints);
 
   Tour.fromJson(Map<String, dynamic> json)
       : id = json['id'] as String,
@@ -182,7 +184,7 @@ class Tour {
         priceHigh = json['priceHigh'] as double,
         address = json['address'] as String,
         icon = json['icon'] as String,
-        review = json['review'] as double,
+        rating = json['rating'] as double,
         coords = json['coords'] as List,
         starPoints = json['starPoints'] as List;
 
@@ -198,7 +200,7 @@ class Tour {
         'priceHigh': priceHigh,
         'address': address,
         'icon': icon,
-        'review': review,
+        'rating': rating,
         'coords': coords,
         'starPoints': starPoints
       };
@@ -214,4 +216,43 @@ class Tour {
   double getTotalPrice(bool smallPriceSelected) {
     return smallPriceSelected ? priceLow : priceHigh;
   }
+
+  Future<int?> get totalReviews async {
+    AggregateQuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('tours')
+        .doc(id)
+        .collection('reviews').count().get();
+
+    return querySnapshot.count;
+  }
+
+  Future<void> updateRating(double ratingTour) async {
+    DocumentReference tourDoc = FirebaseFirestore.instance
+        .collection('tours')
+        .doc(id);
+    int? totalTourReviews = await totalReviews;
+
+    if (totalTourReviews != null) {
+      double result = ((rating * totalTourReviews) + ratingTour) / (totalTourReviews + 1);
+
+      tourDoc.update({
+        "rating": double.parse(result.toStringAsFixed(1))
+      });
+    }
+  }
+
+  addReview(String tripId, String clientName, double ratingTour, String commentTour) async {
+    DocumentReference tourReviewDoc = FirebaseFirestore.instance
+        .collection('tours')
+        .doc(id)
+        .collection('reviews')
+        .doc(tripId);
+    await tourReviewDoc.set({
+      'name': clientName,
+      'rating': ratingTour,
+      'comment': commentTour,
+      'creationDate': FieldValue.serverTimestamp()
+    });
+  }
+
 }

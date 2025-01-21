@@ -3,8 +3,10 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dm/Domain/tour.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../Utils/notification.dart';
+import 'appUser.dart';
 
 class Trip {
 
@@ -26,10 +28,15 @@ class Trip {
   bool? showEndButton;
   bool? onlyElectricVehicles;
   bool? clientIsReady;
+  String? reservationType;
+  double? feePrice;
+  double? tourPrice;
+
 
   Trip(this.id, this.tourRef, this.date, this.persons, this.status, this.clientRef,
       this.guideRef, this.guideLang, this.paymentMethod, this.creditCardId,
-      this.withTaxNumber, this.taxNumber, this.reservationId, this.rateSubmitted, this.onlyElectricVehicles, this.clientIsReady);
+      this.withTaxNumber, this.taxNumber, this.reservationId, this.rateSubmitted, this.onlyElectricVehicles,
+      this.clientIsReady, this.reservationType, this.feePrice, this.tourPrice);
 
   factory Trip.fromFirestore(
       DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -51,7 +58,10 @@ class Trip {
         data?['reservationId'],
         data?['rateSubmitted'],
         data?['onlyElectricVehicles'],
-        data?['clientIsReady']
+        data?['clientIsReady'],
+        data?['reservationType'],
+        data?['feePrice'],
+        data?['tourPrice']
     );
     t.showStartButton = t.allowShowStart();
     t.showEndButton = t.allowShowEnd();
@@ -83,7 +93,7 @@ class Trip {
   static Future<DocumentReference<Map<String, dynamic>>> addTrip(DocumentReference? guideRef, String tourId,
       DateTime date, int persons, String status,
       String guideLang, String paymentMethod, String creditCardId,
-      bool withTaxNumber, String taxNumber, bool onlyElectricVehicles) async {
+      bool withTaxNumber, String taxNumber, bool onlyElectricVehicles, String reservationType, double feePrice, double tourPrice) async {
     DocumentReference<Map<String, dynamic>> trip = await FirebaseFirestore.instance
         .collection('trips')
         .add(<String, dynamic>{
@@ -101,7 +111,10 @@ class Trip {
       'taxNumber': taxNumber,
       'rateSubmitted': false,
       'creationDate': FieldValue.serverTimestamp(),
-      'onlyElectricVehicles': onlyElectricVehicles
+      'onlyElectricVehicles': onlyElectricVehicles,
+      'reservationType': reservationType,
+      'feePrice': feePrice,
+      'tourPrice': tourPrice
     });
 
     FirebaseFirestore.instance
@@ -114,6 +127,33 @@ class Trip {
     });
 
     return trip;
+  }
+
+  static String generateReservationId()
+  {
+    var letters = "ABCDEFGHJKMNPQRSTUXY";
+    String text = "";
+    for (var i = 0; i < 3; i++) {
+      text += letters[(Random().nextDouble() * letters.length).round()];
+    }
+
+    Random random = Random();
+    int number = 1000 + random.nextInt(9000);
+
+    return "$text$number";
+  }
+
+  static Query<Map<String, dynamic>> getPendingTours() {
+    final db = FirebaseFirestore.instance.collection("trips");
+    final userDocRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser?.uid);
+    final Query<Map<String, dynamic>> pendingTrips =
+    db
+        .where("clientRef", isEqualTo: userDocRef)
+        .where("status", whereIn: ["pending", "booked", 'started'])
+        .orderBy("date");
+    return pendingTrips;
   }
 
   Future<bool> acceptTour() async {
@@ -134,20 +174,18 @@ class Trip {
           "guideRef": FirebaseFirestore.instance.doc('users/${FirebaseAuth.instance.currentUser!.uid}'),
         });
 
-        DocumentSnapshot<Object?> client = await clientRef!.get();
-        if (client.exists) {
-          if (client.data() != null && (client.data() as Map<String, dynamic>).containsKey('firebaseToken')) {
-            await sendNotification(targetToken: client.get("firebaseToken"),
+        try {
+          DocumentSnapshot<Object?> client = await clientRef!.get();
+          await sendNotification(targetToken: client.get("firebaseToken"),
               title: "Accepted Tour",
               body: "$reservationId - ${tour.name} tour was accepted");
-          } else {
-            print('Field "firebaseToken" does not exist or is null.');
-            return true;
-          }
-        } else {
-          print('Document does not exist.');
-          return false;
+        } catch(e, stackTrace) {
+          await Sentry.captureException(e,
+            stackTrace: stackTrace,
+          );
         }
+
+        return true;
       }
       return false;
     });
@@ -192,56 +230,24 @@ class Trip {
         .update({"clientIsReady": true});
   }
 
-  static String generateReservationId()
-  {
-    var letters = "ABCDEFGHJKMNPQRSTUXY";
-    String text = "";
-    for (var i = 0; i < 3; i++) {
-      text += letters[(Random().nextDouble() * letters.length).round()];
-    }
+  Future<void>  submitReview(double ratingTour, String commentTour, double ratingGuide, String commentGuide, String? clientName) async {
+    await tour.updateRating(ratingTour);
+    await tour.addReview(id!, clientName ?? '', ratingTour, commentTour);
 
-    Random random = Random();
-    int number = 1000 + random.nextInt(9000);
+    final convertedDocRef = guideRef!.withConverter<AppUser>(
+      fromFirestore: AppUser.fromFirestore,
+      toFirestore: (AppUser user, _) => user.toFirestore(),
+    );
+    DocumentSnapshot<AppUser> snapshot = await convertedDocRef.get();
+    AppUser appUser = snapshot.data()!;
 
-    return "$text$number";
-  }
-
-  Future<void>  submitReview(double ratingTour, String commentTour, double ratingGuide, String commentGuide) async {
-    DocumentReference trip = FirebaseFirestore.instance
-        .collection('trip')
-        .doc(id);
-
-    CollectionReference tourReviews = FirebaseFirestore.instance
-        .collection('tours')
-        .doc(tour.id)
-        .collection('reviews');
-
-    DocumentReference<Object?> tourReview = await tourReviews.add({
-      'tripRef': trip,
-      'name': FirebaseAuth.instance.currentUser?.displayName,
-      'rating': ratingTour,
-      'comment': commentTour,
-      'creationDate': FieldValue.serverTimestamp()
-    });
-
-    CollectionReference guideReviews = FirebaseFirestore.instance
-        .collection('users')
-        .doc(guideRef?.id)
-        .collection('reviews');
-
-    DocumentReference<Object?> guideReview = await guideReviews.add({
-      'tripRef': trip,
-      'rating': ratingGuide,
-      'comment': commentGuide,
-      'creationDate': FieldValue.serverTimestamp()
-    });
+    appUser.updateRating(ratingGuide);
+    appUser.addReview(id!, ratingGuide, commentGuide);
 
     FirebaseFirestore.instance
         .collection('trips')
         .doc(id)
-        .update({ "rateSubmitted": true,
-                  "tourReviewRef": tourReview,
-                  "guideReviewRef": guideReview });
+        .update({ "rateSubmitted": true });
   }
 
 
