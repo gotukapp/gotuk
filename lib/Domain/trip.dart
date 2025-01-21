@@ -129,6 +129,33 @@ class Trip {
     return trip;
   }
 
+  static String generateReservationId()
+  {
+    var letters = "ABCDEFGHJKMNPQRSTUXY";
+    String text = "";
+    for (var i = 0; i < 3; i++) {
+      text += letters[(Random().nextDouble() * letters.length).round()];
+    }
+
+    Random random = Random();
+    int number = 1000 + random.nextInt(9000);
+
+    return "$text$number";
+  }
+
+  static Query<Map<String, dynamic>> getPendingTours() {
+    final db = FirebaseFirestore.instance.collection("trips");
+    final userDocRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser?.uid);
+    final Query<Map<String, dynamic>> pendingTrips =
+    db
+        .where("clientRef", isEqualTo: userDocRef)
+        .where("status", whereIn: ["pending", "booked", 'started'])
+        .orderBy("date");
+    return pendingTrips;
+  }
+
   Future<bool> acceptTour() async {
     final sfDocRef = FirebaseFirestore.instance.collection("trips").doc(id);
     return await FirebaseFirestore.instance.runTransaction((transaction) async {
@@ -201,20 +228,6 @@ class Trip {
         .collection('trips')
         .doc(id)
         .update({"clientIsReady": true});
-  }
-
-  static String generateReservationId()
-  {
-    var letters = "ABCDEFGHJKMNPQRSTUXY";
-    String text = "";
-    for (var i = 0; i < 3; i++) {
-      text += letters[(Random().nextDouble() * letters.length).round()];
-    }
-
-    Random random = Random();
-    int number = 1000 + random.nextInt(9000);
-
-    return "$text$number";
   }
 
   Future<void>  submitReview(double ratingTour, String commentTour, double ratingGuide, String commentGuide, String? clientName) async {

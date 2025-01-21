@@ -421,21 +421,41 @@ class _checkoutState extends State<checkout> {
                   ),
                   const SizedBox(height: 25),
                   InkWell(
-                    onTap: () => {
+                    onTap: () {
                       if (selectedDate == null) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text('Please select a date to proceed.'),
                           )
-                        )
+                        );
                       } else if (guideRef == null) {
                         ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text('There is no guide available for this date/time. Please review the date/time or guide features so we can find a guide for you.'),
                             )
-                        )
+                        );
                       } else {
-                        paymentModelBottomSheet(guideRef!)
+                        Query<Map<String, dynamic>> pendingTours = Trip.getPendingTours();
+                        pendingTours.get().then((result) {
+                          List<QueryDocumentSnapshot<Map<String, dynamic>>> tours = result.docs;
+                          DateTime tripDate = selectedDate!.copyWith(
+                              hour: hourSliderValue, minute: minutesSliderValue, second: 0, millisecond: 0, microsecond: 0);
+                          final docs = tours.where((d) {
+                            Trip t = Trip.fromFirestore(d, null);
+                            return t.date.difference(tripDate).inHours.abs() <= 2;
+                          });
+                          if (docs.isNotEmpty) {
+                            showConfirmationMessage(context,
+                                "Booking Tour",
+                                "It looks like you already have a tour booked at this time. Are you sure you want to continue?",
+                                    () {
+                                  paymentModelBottomSheet(guideRef!);
+                                },
+                                    () {}, 'Yes', 'No');
+                          } else {
+                            paymentModelBottomSheet(guideRef!);
+                          }
+                        });
                       }
                     },
                     child: Container(
@@ -938,7 +958,7 @@ class _checkoutState extends State<checkout> {
   }
 
   paymentModelBottomSheet(DocumentReference guideRef) {
-    return showModalBottomSheet(
+    showModalBottomSheet(
         isScrollControlled: true,
         backgroundColor: notifier.getbgcolor,
         context: context,

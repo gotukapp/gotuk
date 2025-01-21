@@ -815,16 +815,16 @@ showConfirmationMessage(BuildContext context, String title, String description, 
         if (onClickCancel != null)
           TextButton(
             onPressed: () {
-              onClickCancel.call();
               Navigator.pop(context, false);
+              onClickCancel.call();
             },
             child: Text(cancelText ?? "Cancel"),
           ),
         if (onClickOk != null)
           TextButton(
             onPressed: () {
-              onClickOk.call();
               Navigator.pop(context, true);
+              onClickOk.call();
             },
             child: Text(confirmText ?? "OK"),
           ),

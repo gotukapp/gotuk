@@ -30,19 +30,7 @@ class _TripsBookedState extends State<TripsBooked> {
   late ColorNotifier notifier;
   @override
   Widget build(BuildContext context) {
-    final db = FirebaseFirestore.instance.collection("trips");
-    final userDocRef = FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser?.uid);
-
-    print(userDocRef);
-
-    final Stream<QuerySnapshot<Map<String, dynamic>>> pendingTrips =
-    db
-        .where("clientRef", isEqualTo: userDocRef)
-        .where("status", whereIn: ["pending", "booked", 'started'])
-        .orderBy("date")
-        .snapshots();
+    Stream<QuerySnapshot<Map<String, dynamic>>> pendingTrips = Trip.getPendingTours().snapshots();
 
     notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
