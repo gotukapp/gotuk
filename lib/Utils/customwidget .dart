@@ -403,17 +403,7 @@ guideTripLayout(BuildContext context, ColorNotifier notifier, Trip trip, bool sh
                                 () async => await trip.finishTour(),
                                 () {}, null, null);
                       } else if (trip.status == "pending") {
-                        showConfirmationMessage(context,
-                            "Accept Tour",
-                            "Are you sure you want to accept this tour?",
-                                () async {
-                                    bool result = await trip.acceptTour();
-                                    if (context.mounted) {
-                                      showTripAcceptResultMessage(context, result);
-                                    }
-                                },
-                                () {}, null, null);
-
+                        showConfirmationAcceptTour(context, trip);
                       }
                     },
                     child: Container(
@@ -718,34 +708,7 @@ newTripNotification(BuildContext context, ColorNotifier notifier, Trip trip) {
                     children: [
                       InkWell(
                         onTap: () {
-                          showConfirmationMessage(context,
-                            "Accept Tour",
-                            "Are you sure you want to accept this tour?",
-                              () async {
-                                if (await AppUser.isGuideAvailable(trip)) {
-                                  bool resultOk = await trip.acceptTour();
-                                  if (resultOk) {
-                                    await AppUser.updateTripUnavailability(FirebaseAuth.instance.currentUser!.uid, trip.tour, trip.date, trip.date.hour, trip.date.minute);
-                                  }
-                                  if (context.mounted) {
-                                    ScaffoldMessenger.of(context)
-                                        .hideCurrentSnackBar();
-                                    showTripAcceptResultMessage(context, resultOk);
-                                  }
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        backgroundColor: lightGrey,
-                                        content: Text("You are not available for this dates!",
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                fontFamily: "Gilroy Medium",
-                                                color: LogoColor)
-                                        ),
-                                      ));
-                                }
-                              },
-                              () {}, null, null);
+                          showConfirmationAcceptTour(context, trip);
                         },
                         child: Container(
                           height: 40,
@@ -768,6 +731,37 @@ newTripNotification(BuildContext context, ColorNotifier notifier, Trip trip) {
         )
     ),
   );
+}
+
+void showConfirmationAcceptTour(BuildContext context, Trip trip) {
+  showConfirmationMessage(context,
+    "Accept Tour",
+    "Are you sure you want to accept this tour?",
+      () async {
+        if (await AppUser.isGuideAvailable(trip)) {
+          bool resultOk = await trip.acceptTour();
+          if (resultOk) {
+            await AppUser.updateTripUnavailability(FirebaseAuth.instance.currentUser!.uid, trip.tour, trip.date, trip.date.hour, trip.date.minute);
+          }
+          if (context.mounted) {
+            ScaffoldMessenger.of(context)
+                .hideCurrentSnackBar();
+            showTripAcceptResultMessage(context, resultOk);
+          }
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: lightGrey,
+                content: Text("You are not available for this dates!",
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontFamily: "Gilroy Medium",
+                        color: LogoColor)
+                ),
+              ));
+        }
+      },
+      () {}, null, null);
 }
 
 
