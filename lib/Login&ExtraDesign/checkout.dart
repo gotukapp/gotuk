@@ -436,22 +436,22 @@ class _checkoutState extends State<checkout> {
                         );
                       } else {
                         Query<Map<String, dynamic>> pendingTours = Trip.getPendingTours();
-                        pendingTours.get().then((result) {
+                        pendingTours.get().then((result) async {
                           List<QueryDocumentSnapshot<Map<String, dynamic>>> tours = result.docs;
                           DateTime tripDate = selectedDate!.copyWith(
                               hour: hourSliderValue, minute: minutesSliderValue, second: 0, millisecond: 0, microsecond: 0);
                           final docs = tours.where((d) {
                             Trip t = Trip.fromFirestore(d, null);
-                            return t.date.difference(tripDate).inHours.abs() <= 2;
+                            return t.date.difference(tripDate).inMinutes.abs() <= 120;
                           });
                           if (docs.isNotEmpty) {
-                            showConfirmationMessage(context,
+                            bool resultYes = await showConfirmationMessage(context,
                                 "Booking Tour",
                                 "It looks like you already have a tour booked at this time. Are you sure you want to continue?",
-                                    () {
-                                  paymentModelBottomSheet(guideRef!);
-                                },
-                                    () {}, 'Yes', 'No');
+                                    () {}, () {}, 'Yes', 'No');
+                            if (resultYes) {
+                              paymentModelBottomSheet(guideRef!);
+                            }
                           } else {
                             paymentModelBottomSheet(guideRef!);
                           }
