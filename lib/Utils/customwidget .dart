@@ -707,7 +707,7 @@ newTripNotification(BuildContext context, ColorNotifier notifier, Trip trip) {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       InkWell(
-                        onTap: () {
+                        onTap: () async {
                           showConfirmationAcceptTour(context, trip);
                         },
                         child: Container(
@@ -733,8 +733,8 @@ newTripNotification(BuildContext context, ColorNotifier notifier, Trip trip) {
   );
 }
 
-void showConfirmationAcceptTour(BuildContext context, Trip trip) {
-  showConfirmationMessage(context,
+showConfirmationAcceptTour(BuildContext context, Trip trip) {
+  return showConfirmationMessage(context,
     "Accept Tour",
     "Are you sure you want to accept this tour?",
       () async {
@@ -744,21 +744,23 @@ void showConfirmationAcceptTour(BuildContext context, Trip trip) {
             await AppUser.updateTripUnavailability(FirebaseAuth.instance.currentUser!.uid, trip.tour, trip.date, trip.date.hour, trip.date.minute);
           }
           if (context.mounted) {
-            ScaffoldMessenger.of(context)
-                .hideCurrentSnackBar();
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
             showTripAcceptResultMessage(context, resultOk);
           }
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                backgroundColor: lightGrey,
-                content: Text("You are not available for this dates!",
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontFamily: "Gilroy Medium",
-                        color: LogoColor)
-                ),
-              ));
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  backgroundColor: lightGrey,
+                  content: Text("You are not available for this dates!",
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontFamily: "Gilroy Medium",
+                          color: LogoColor)
+                  ),
+                ));
+          }
         }
       },
       () {}, null, null);
@@ -808,23 +810,23 @@ tourReview({num? review})   {
 showConfirmationMessage(BuildContext context, String title, String description, Function()? onClickOk, Function()? onClickCancel, String? confirmText, String? cancelText) {
   return showDialog<bool>(
     context: context,
-    builder: (BuildContext context) => AlertDialog(
+    builder: (BuildContext dialogContext) => AlertDialog(
       title: Text(title),
       content: Text(description),
       actions: <Widget>[
         if (onClickCancel != null)
           TextButton(
             onPressed: () {
-              Navigator.pop(context, false);
               onClickCancel.call();
+              Navigator.pop(dialogContext, false);
             },
             child: Text(cancelText ?? "Cancel"),
           ),
         if (onClickOk != null)
           TextButton(
             onPressed: () {
-              Navigator.pop(context, true);
               onClickOk.call();
+              Navigator.pop(dialogContext, true);
             },
             child: Text(confirmText ?? "OK"),
           ),

@@ -197,6 +197,12 @@ class _createScreenState extends State<createScreen> {
                                   content: Text("Phone number is required."),
                                 ),
                               );
+                            } else if (nameController.text.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Name is required."),
+                                ),
+                              );
                             } else if (!termsAndConditionsAccepted || !dataProtectionPolicyAccepted) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
@@ -258,7 +264,8 @@ class _createScreenState extends State<createScreen> {
           "email": emailController.text,
           "name": nameController.text,
           "phone": phoneNumber,
-          "accountValidated": false
+          "accountValidated": false,
+          "rating": 3
         });
 
         Navigator.of(context).push(MaterialPageRoute(

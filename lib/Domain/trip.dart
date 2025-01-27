@@ -131,10 +131,10 @@ class Trip {
 
   static String generateReservationId()
   {
-    var letters = "ABCDEFGHJKMNPQRSTUXY";
+    var letters = "ABCDEFGHJKMNPQRSTUVWXYZ";
     String text = "";
     for (var i = 0; i < 3; i++) {
-      text += letters[(Random().nextDouble() * letters.length).round()];
+      text += letters[(Random().nextDouble() * (letters.length-1)).round()];
     }
 
     Random random = Random();
