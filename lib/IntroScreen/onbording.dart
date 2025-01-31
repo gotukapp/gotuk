@@ -324,7 +324,7 @@ class _loginpageState extends State<loginpage> {
   void initState() {
     getdarkmodepreviousstate();
     getAppModeState();
-    requestPermission();
+    requestNotificationPermission();
     super.initState();
   }
 
@@ -467,7 +467,7 @@ class _loginpageState extends State<loginpage> {
     guideMode = previousState ?? false;
   }
 
-  void requestPermission() async {
+  void requestNotificationPermission() async {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
     NotificationSettings settings = await messaging.requestPermission(
       alert: true,
