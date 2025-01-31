@@ -205,7 +205,7 @@ class _checkoutState extends State<checkout> {
                         child: Column(
                           children: [
                             const SizedBox(height: 5),
-                            Text("1-3 ${AppLocalizations.of(context)!.persons}",
+                            Text("1-4 ${AppLocalizations.of(context)!.persons}",
                                 style: TextStyle(
                                     fontSize: 14,
                                     color: WhiteColor,
@@ -235,7 +235,7 @@ class _checkoutState extends State<checkout> {
                         child: Column(
                             children: [
                               const SizedBox(height: 5),
-                              Text("4-6 ${AppLocalizations.of(context)!.persons}",
+                              Text("5-6 ${AppLocalizations.of(context)!.persons}",
                                 style: TextStyle(
                                     fontSize: 14,
                                     color: WhiteColor,
@@ -517,7 +517,7 @@ class _checkoutState extends State<checkout> {
 
     guides
         .where("tuktukElectric", whereIn: onlyElectricVehicles ? [true] : [true, false])
-        .where("tuktukSeats", isGreaterThanOrEqualTo: smallPriceSelected ? 3 : 6)
+        .where("tuktukSeats", isGreaterThanOrEqualTo: smallPriceSelected ? 4 : 6)
         .where("language", arrayContainsAny: currentSelectedLanguages.isNotEmpty ? currentSelectedLanguages : checkedLanguages.map((item) => item["code"].toString().toLowerCase()).toList())
         .orderBy("rating", descending: true).get().then((querySnapshot) {
       setState(() {
@@ -1332,7 +1332,7 @@ class _checkoutState extends State<checkout> {
           widget.goNow ? null : guideRef,
           tour!.id,
           tripDate,
-          smallPriceSelected ? 3 : 6,
+          smallPriceSelected ? 4 : 6,
           widget.goNow ? 'pending' : 'booked',
           getAllSelectedLanguages(),
           masterCard ? 'mastercard' : 'visa',
