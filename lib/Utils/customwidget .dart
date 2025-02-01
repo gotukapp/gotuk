@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dm/Login&ExtraDesign/tripDetail.dart';
 import 'package:dm/Message/chatting.dart';
+import 'package:dm/Providers/userProvider.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Domain/tour.dart';
 import 'package:dm/Domain/trip.dart';
@@ -12,6 +13,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
 import '../Domain/appUser.dart';
 import '../Login&ExtraDesign/tourDetail.dart';
@@ -581,6 +583,7 @@ clientTripLayout(BuildContext context, ColorNotifier notifier, Trip trip) {
 }
 
 Future<void> setClientReady(BuildContext context, Trip trip) async {
+  UserProvider userProvider = Provider.of<UserProvider>(context);
   final convertedDocRef = trip.guideRef!.withConverter<AppUser>(
     fromFirestore: AppUser.fromFirestore,
     toFirestore: (AppUser user, _) => user.toFirestore(),
@@ -592,7 +595,7 @@ Future<void> setClientReady(BuildContext context, Trip trip) async {
         AppLocalizations.of(context)!.letsGo,
         "Do you want to send a message to the guide notifying him that you are ready for the tour?",
             () async {
-              await trip.sendChatMessage("Hi, just to let you know that i'm already at the pickup location.", appUser.firebaseToken, appUser.name!);
+              await trip.sendChatMessage("Hi, just to let you know that i'm already at the pickup location.", appUser.firebaseToken, userProvider.user!.name!);
               trip.setClientIsReady();
               if (context.mounted) {
                 Navigator.of(context).push(MaterialPageRoute(
