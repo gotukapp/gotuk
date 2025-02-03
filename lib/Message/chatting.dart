@@ -14,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Domain/appUser.dart';
 import '../Domain/trip.dart';
+import '../Providers/userProvider.dart';
 import '../Utils/customwidget .dart';
 
 class Chatting extends StatefulWidget {
@@ -35,6 +36,7 @@ class _ChattingState extends State<Chatting> {
     super.initState();
   }
 
+  late UserProvider userProvider;
   late ColorNotifier notifier;
   @override
   Widget build(BuildContext context) {
@@ -43,6 +45,7 @@ class _ChattingState extends State<Chatting> {
         .collection('messages')
         .orderBy("date").snapshots();
 
+    userProvider = Provider.of<UserProvider>(context);
     notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
       backgroundColor: notifier.getblackwhitecolor,
@@ -237,7 +240,7 @@ class _ChattingState extends State<Chatting> {
                       onTap: () {
                         if (chatTextController.text.isNotEmpty) {
                           setState(() {
-                            widget.trip.sendChatMessage(chatTextController.text, widget.sendTo.firebaseToken, widget.sendTo.name!).then((value) => {
+                            widget.trip.sendChatMessage(chatTextController.text, widget.sendTo.firebaseToken, userProvider.user!.name!).then((value) => {
                               chatTextController.clear()
                             });
                           });

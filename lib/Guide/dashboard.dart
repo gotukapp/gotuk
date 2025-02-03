@@ -77,7 +77,7 @@ class _DashboardState extends State<Dashboard> {
     final Stream<QuerySnapshot<Map<String, dynamic>>> queryFinishedTrips =
     db
         .where("guideRef", isEqualTo: userDocRef)
-        .where("status", isEqualTo: "finished")
+        .where("status", whereIn: ["booked", 'started', 'finished'])
         .where("date", isGreaterThan:  lastMonth)
         .orderBy("date")
         .snapshots();

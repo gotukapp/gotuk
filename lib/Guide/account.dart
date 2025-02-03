@@ -69,7 +69,8 @@ class _AccountState extends State<account> {
   DateTime? insurancePersonalAccidentExpirationDate;
 
   final vehicleLicensePlate = TextEditingController();
-  final vehicleSeatsNumber = TextEditingController();
+  int? selectedSeatsNumber = 0;
+  int vehicleSeatsNumber = 4;
   final vehicleInsuranceCompanyName = TextEditingController();
   final vehicleInsurancePolicyNumber = TextEditingController();
   DateTime? vehicleInsuranceExpirationDate;
@@ -165,7 +166,7 @@ class _AccountState extends State<account> {
           status: 'not approved',
           fields: [
             { "name": "Matrícula", "description": "", "type": "String", "fieldName": "vehicleLicensePlate", "field": vehicleLicensePlate },
-            { "name": "Lugares", "description": "", "type": "String", "fieldName": "vehicleSeatsNumber", "field": vehicleSeatsNumber },
+            { "name": "Lugares", "description": "", "type": "List", "fieldName": "vehicleSeatsNumber", "field": vehicleSeatsNumber, "values": ["4","6"] },
             { "name": "Veículo Eléctrico", "description": "", "type": "Boolean", "fieldName": "vehicleType", "field": vehicleType },
             { "name": "Companhia de Seguros", "description": "Nome", "type": "String", "fieldName": "vehicleInsuranceCompanyName", "field": vehicleInsuranceCompanyName },
             { "name": "Nº Apólice", "description": "Indique o Número", "type": "String", "fieldName": "vehicleInsurancePolicyNumber", "field": vehicleInsurancePolicyNumber },
@@ -174,6 +175,8 @@ class _AccountState extends State<account> {
       )
     ];
   }
+
+  List<String> list = <String>['4', '6'];
 
   Future<void> _loadDocument() async {
     try {
@@ -199,6 +202,9 @@ class _AccountState extends State<account> {
                 } else if (field["type"] == 'Array') {
                   field["field"] = data[field["fieldName"]].whereType<String>().toList();
                   language = data[field["fieldName"]].whereType<String>().toList();
+                } else if (field["type"] == 'List') {
+                  field["field"] = data[field["fieldName"]];
+                  field["selectedIndex"] = field["values"].indexOf(data[field["fieldName"]].toString());
                 } else {
                   field["field"] = data[field["fieldName"]];
                 }
@@ -267,13 +273,23 @@ class _AccountState extends State<account> {
                             buttontext: "Submit Data",
                             onclick: () async {
                               AppUser user = userProvider.user!;
-                              await user.submitAccountData(_data);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Account information submitted successfully!"),
-                                ),
-                              );
-                              Navigator.of(context).pop();
+                              bool resultOk = await user.submitAccountData(_data);
+                              if (resultOk) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                        "Account information submitted successfully!"),
+                                  ),
+                                );
+                                Navigator.of(context).pop();
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                        "Error submitting data!"),
+                                  ),
+                                );
+                              }
                             })
                       ]
                   )
@@ -346,6 +362,29 @@ class _AccountState extends State<account> {
                       item["function"]();
                     },
                     notifier: notifier),
+              if (item["type"] == 'List')
+                 Wrap(
+                   spacing: 10.0,
+                   children: List<Widget>.generate(
+                     item["values"].length,
+                         (int index) {
+                       return ChoiceChip(
+                         backgroundColor: WhiteColor,
+                         label: Text(item["values"][index],
+                             style: TextStyle(fontSize: 16,
+                             color: notifier.getdarkgreycolor,
+                             fontFamily: "Gilroy Medium")),
+                         selected: item["selectedIndex"] == index,
+                         onSelected: (bool selected) {
+                           setState(() {
+                             item["selectedIndex"] = selected ? index : null;
+                             item["field"] = item["values"][index];
+                           });
+                         },
+                       );
+                     },
+                   ).toList(),
+                 ),
               if (item["type"] == 'String')
                 textfield(
                   fieldColor: notifier.getdarkmodecolor,

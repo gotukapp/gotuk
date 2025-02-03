@@ -65,7 +65,7 @@ class _checkoutState extends State<checkout> {
   List<Tour> tours = [];
   int carrosselDefaultPage = 0;
 
-  DocumentReference? guideRef;
+  DocumentReference? selectedGuideRef;
 
   Query<Map<String, dynamic>> guides = FirebaseFirestore.instance.collection("users")
       .where("accountValidated", isEqualTo: true);
@@ -205,7 +205,7 @@ class _checkoutState extends State<checkout> {
                         child: Column(
                           children: [
                             const SizedBox(height: 5),
-                            Text("1-3 ${AppLocalizations.of(context)!.persons}",
+                            Text("1-4 ${AppLocalizations.of(context)!.persons}",
                                 style: TextStyle(
                                     fontSize: 14,
                                     color: WhiteColor,
@@ -235,7 +235,7 @@ class _checkoutState extends State<checkout> {
                         child: Column(
                             children: [
                               const SizedBox(height: 5),
-                              Text("4-6 ${AppLocalizations.of(context)!.persons}",
+                              Text("5-6 ${AppLocalizations.of(context)!.persons}",
                                 style: TextStyle(
                                     fontSize: 14,
                                     color: WhiteColor,
@@ -428,7 +428,7 @@ class _checkoutState extends State<checkout> {
                             content: Text('Please select a date to proceed.'),
                           )
                         );
-                      } else if (guideRef == null) {
+                      } else if (selectedGuideRef == null) {
                         ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text('There is no guide available for this date/time. Please review the date/time or guide features so we can find a guide for you.'),
@@ -450,10 +450,10 @@ class _checkoutState extends State<checkout> {
                                 "It looks like you already have a tour booked at this time. Are you sure you want to continue?",
                                     () {}, () {}, 'Yes', 'No');
                             if (resultYes) {
-                              paymentModelBottomSheet(guideRef!);
+                              paymentModelBottomSheet(selectedGuideRef!);
                             }
                           } else {
-                            paymentModelBottomSheet(guideRef!);
+                            paymentModelBottomSheet(selectedGuideRef!);
                           }
                         });
                       }
@@ -517,15 +517,16 @@ class _checkoutState extends State<checkout> {
 
     guides
         .where("tuktukElectric", whereIn: onlyElectricVehicles ? [true] : [true, false])
-        .where("tuktukSeats", isGreaterThanOrEqualTo: smallPriceSelected ? 3 : 6)
+        .where("tuktukSeats", isGreaterThanOrEqualTo: smallPriceSelected ? 4 : 6)
         .where("language", arrayContainsAny: currentSelectedLanguages.isNotEmpty ? currentSelectedLanguages : checkedLanguages.map((item) => item["code"].toString().toLowerCase()).toList())
+        .orderBy("tuktukSeats", descending: false)
         .orderBy("rating", descending: true).get().then((querySnapshot) {
       setState(() {
         List<QueryDocumentSnapshot> filteredGuides = querySnapshot.docs.where((doc) {
           return !guidesUnavailable.contains(doc.id);
         }).toList();
 
-        guideRef = selectGuide(filteredGuides);
+        selectedGuideRef = selectGuide(filteredGuides, smallPriceSelected ? 4 : 6);
         guidesAvailable = filteredGuides.length;
 
       });
@@ -1329,10 +1330,10 @@ class _checkoutState extends State<checkout> {
           hour: hourSliderValue, minute: minutesSliderValue, second: 0, millisecond: 0, microsecond: 0);
 
       await Trip.addTrip(
-          widget.goNow ? null : guideRef,
+          widget.goNow ? null : selectedGuideRef,
           tour!.id,
           tripDate,
-          smallPriceSelected ? 3 : 6,
+          smallPriceSelected ? 4 : 6,
           widget.goNow ? 'pending' : 'booked',
           getAllSelectedLanguages(),
           masterCard ? 'mastercard' : 'visa',
@@ -1352,14 +1353,14 @@ class _checkoutState extends State<checkout> {
       });
 
       if (!widget.goNow) {
-        DocumentSnapshot<Object?> guide = await guideRef!.get();
+        DocumentSnapshot<Object?> guide = await selectedGuideRef!.get();
 
         String? token = guide.get("firebaseToken");
         if (token != null) {
           await sendNotification(targetToken: token, title: "New Tour", body: "${DateFormat('dd-MM-yyyy HH:mm')
               .format(tripDate)} - ${tour!.name}");
         }
-        await AppUser.updateTripUnavailability(guideRef!.id, tour!, selectedDate!, hourSliderValue, minutesSliderValue);
+        await AppUser.updateTripUnavailability(selectedGuideRef!.id, tour!, selectedDate!, hourSliderValue, minutesSliderValue);
       }
 
       return true;

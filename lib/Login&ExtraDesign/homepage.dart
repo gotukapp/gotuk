@@ -5,12 +5,14 @@ import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dm/Login&ExtraDesign/tripDetail.dart';
 import 'package:dm/Profile/profile.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:dm/Domain/trip.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
@@ -57,7 +59,28 @@ class _homepageState extends State<homepage> {
     getdarkmodepreviousstate();
     getAppModeState();
     initializeNotifications();
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      _handleNotificationClick(message);
+    });
+
+    FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? message) {
+      if (message != null) {
+        _handleNotificationClick(message);
+      }
+    });
+
     super.initState();
+  }
+
+  void _handleNotificationClick(RemoteMessage message) {
+    final data = message.data;
+    final tripId = data['tripId'];
+
+    if (tripId != null) {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => TripDetail(tripId, true)));
+    }
   }
 
   late ColorNotifier notifier;
@@ -177,6 +200,14 @@ class _homepageState extends State<homepage> {
                   content: newTripNotification(context, notifier, t),
                 ),
               );
+            }
+          } else if (change.type == DocumentChangeType.modified) {
+            if (change.doc.get("status") == 'finished') {
+              Trip t = Trip.fromFirestore(change.doc, null);
+              if (t.clientRef?.id == FirebaseAuth.instance.currentUser?.uid && !t.rateSubmitted) {
+                // Client
+
+              }
             }
           }
         }
