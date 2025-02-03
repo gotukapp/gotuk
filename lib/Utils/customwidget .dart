@@ -360,7 +360,7 @@ guideTripLayout(BuildContext context, ColorNotifier notifier, Trip trip, bool sh
                           Container(
                             width: MediaQuery.of(context).size.width *
                                 0.3,
-                            child:  Text("${trip.persons == 3 ? "1-3" : "4-6"} ${AppLocalizations.of(context)!.persons}",
+                            child:  Text("${trip.persons == 3 ? "1-4" : "5-6"} ${AppLocalizations.of(context)!.persons}",
                               style: TextStyle(
                               fontSize: 15,
                               color: notifier.getwhiteblackcolor,
@@ -692,7 +692,7 @@ newTripNotification(BuildContext context, ColorNotifier notifier, Trip trip) {
                               Container(
                                 width: MediaQuery.of(context).size.width *
                                     0.3,
-                                child:  Text("${trip.persons == 3 ? "1-3" : "4-6"} ${AppLocalizations.of(context)!.persons}",
+                                child:  Text("${trip.persons == 3 ? "1-4" : "5-6"} ${AppLocalizations.of(context)!.persons}",
                                     style: TextStyle(
                                         fontSize: 15,
                                         color: notifier.getwhiteblackcolor,
