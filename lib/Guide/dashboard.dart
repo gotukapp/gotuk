@@ -17,8 +17,7 @@ import '../Domain/trip.dart';
 import '../Utils/dark_lightmode.dart';
 
 class Dashboard extends StatefulWidget {
-  final AppUser guide;
-  const Dashboard({super.key, required this.guide});
+  const Dashboard({super.key});
 
   @override
   State<Dashboard> createState() => _DashboardState();
@@ -111,260 +110,271 @@ class _DashboardState extends State<Dashboard> {
             horizontal: 18, vertical: 8),
             child: SingleChildScrollView(
               child:
-              Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                                height: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .height * 0.01),
-                            Text(
-                              "${AppLocalizations.of(context)!.hello}, ${userProvider.user!.name}! 👋",
-                              style: TextStyle(
-                                  color: notifier.getwhiteblackcolor,
-                                  fontSize: 16,
-                                  fontFamily: "Gilroy Medium"),
-                            ),
-                            SizedBox(
-                                height: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .height * 0.0001),
-                            Text(
-                              "Good tours with GoTuk",
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: LogoColor,
-                                  fontFamily: "Gilroy Bold"),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                              StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                              stream: queryPendingTrips,
-                              builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                                  if (snapshot.data != null && snapshot.data!.docs.isNotEmpty) {
-                                    List<DocumentSnapshot<Map<String, dynamic>>> pendingTripsSnap = snapshot.data!.docs.toList();
-                                    var pendingTrips = pendingTripsSnap.map<Trip>((d) => Trip.fromFirestore(d, null)).toList();
-                                    return InkWell(
-                                      onTap: () {
-                                        Navigator.of(context).push(MaterialPageRoute(
-                                            builder: (context) => TripsList(title:"Pending Tours", trips:pendingTrips)));
-                                      },
-                                      child: CircleAvatar(
-                                          backgroundColor: notifier.getdarkmodecolor,
-                                          child: Image.asset(
-                                            "assets/images/newTripCalendar.png",
-                                            height: 25,
-                                            color: LogoColor,
-                                          ))
-                                    );
-                                  } else {
-                                    return const SizedBox();
-                                  }
-                                }
-                              ),
-                            InkWell(
-                                onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => const notification()));
-                                },
-                                child: CircleAvatar(
-                                    backgroundColor: notifier.getdarkmodecolor,
-                                    child: Image.asset(
-                                      "assets/images/notification.png",
-                                      height: 25,
-                                      color: notifier.getwhiteblackcolor,
-                                    )))
-                          ],
-                        )
-                      ],
-                    ),
-                    if (!widget.guide.accountValidated)
-                      ...[
-                        const SizedBox(height: 10),
-                        Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: notifier.getlogobgcolor),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 10),
-                            child: Text(
-                                "Your account is not active."
-                                "\nYou will not receive new tours."
-                                "\nPlease check your account details.",
-                                softWrap: true,
-                                textAlign: TextAlign.justify,
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    color: WhiteColor,
-                                    fontFamily: "Gilroy Medium"))
-                            ),
-                          ),
-                      ],
-                    SizedBox(height: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.025),
-                    Text(
-                      "Completed Tours",
-                      style: TextStyle(
-                          fontSize: 14,
-                          color: LogoColor,
-                          fontFamily: "Gilroy Medium"),
-                    ),
-                    SizedBox(height: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.001),
-                    StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                      stream: queryFinishedTrips,
-                      builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                          List<Trip> finishedTripsToday = [];
-                          List<Trip> finishedTripsThisWeek = [];
-                          List<Trip> finishedTripsThisMonth = [];
-                          if(snapshot.hasData) {
-                            List<DocumentSnapshot<Map<String, dynamic>>> finishedTripsSnap = snapshot.data!.docs.toList();
-                            finishedTripsThisMonth = finishedTripsSnap.map<Trip>((d) => Trip.fromFirestore(d, null)).toList();
-                            finishedTripsToday = finishedTripsThisMonth.where((d) => d.date.compareTo(today) > 0).toList();
-                            finishedTripsThisWeek = finishedTripsThisMonth.where((d) => d.date.compareTo(lastWeek) > 0).toList();
-                          }
-                          return Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                color: notifier.getdarklightgreycolor),
-                            child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 10),
-                                child: Column(
-                                    mainAxisAlignment: MainAxisAlignment .spaceBetween,
+              StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                  stream: userDocRef.snapshots(),
+                  builder: (context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    }
+                    if (!snapshot.hasData || !snapshot.data!.exists) {
+                      return Text("Document does not exist");
+                    }
+                    Map<String, dynamic>?  guide = snapshot.data!.data();
+                    return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                    Row(
-                                    mainAxisAlignment: MainAxisAlignment .spaceBetween,
-                                    children: [
-                                      dashboardValue(title: "Today", trips:finishedTripsToday),
-                                      dashboardValue(title: "Last 7 days", trips:finishedTripsThisWeek),
-                                      dashboardValue(title: "Last 30 days", trips:finishedTripsThisMonth),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          SizedBox(
+                                              height: MediaQuery
+                                                  .of(context)
+                                                  .size
+                                                  .height * 0.01),
+                                          Text(
+                                            "${AppLocalizations.of(context)!.hello}, ${userProvider.user!.name}! 👋",
+                                            style: TextStyle(
+                                                color: notifier.getwhiteblackcolor,
+                                                fontSize: 16,
+                                                fontFamily: "Gilroy Medium"),
+                                          ),
+                                          SizedBox(
+                                              height: MediaQuery
+                                                  .of(context)
+                                                  .size
+                                                  .height * 0.0001),
+                                          Text(
+                                            "Good tours with GoTuk",
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                color: LogoColor,
+                                                fontFamily: "Gilroy Bold"),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                            StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                                            stream: queryPendingTrips,
+                                            builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                                if (snapshot.data != null && snapshot.data!.docs.isNotEmpty) {
+                                                  List<DocumentSnapshot<Map<String, dynamic>>> pendingTripsSnap = snapshot.data!.docs.toList();
+                                                  var pendingTrips = pendingTripsSnap.map<Trip>((d) => Trip.fromFirestore(d, null)).toList();
+                                                  return InkWell(
+                                                    onTap: () {
+                                                      Navigator.of(context).push(MaterialPageRoute(
+                                                          builder: (context) => TripsList(title:"Pending Tours", trips:pendingTrips)));
+                                                    },
+                                                    child: CircleAvatar(
+                                                        backgroundColor: notifier.getdarkmodecolor,
+                                                        child: Image.asset(
+                                                          "assets/images/newTripCalendar.png",
+                                                          height: 25,
+                                                          color: LogoColor,
+                                                        ))
+                                                  );
+                                                } else {
+                                                  return const SizedBox();
+                                                }
+                                              }
+                                            ),
+                                          InkWell(
+                                              onTap: () {
+                                                Navigator.of(context).push(MaterialPageRoute(
+                                                    builder: (context) => const notification()));
+                                              },
+                                              child: CircleAvatar(
+                                                  backgroundColor: notifier.getdarkmodecolor,
+                                                  child: Image.asset(
+                                                    "assets/images/notification.png",
+                                                    height: 25,
+                                                    color: notifier.getwhiteblackcolor,
+                                                  )))
+                                        ],
+                                      )
                                     ],
                                   ),
-                              ]
-                            ),
-                          ),
-                        );
-                      }
-                    )
-                    ,
-                    SizedBox(height: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.025),
-                    Text(
-                      "Next Tours",
-                      style: TextStyle(
-                          fontSize: 14,
-                          color: LogoColor,
-                          fontFamily: "Gilroy Medium"),
-                    ),
-                    SizedBox(height: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.001),
-                    StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                    stream: queryBookedTrips,
-                    builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                      List<Trip> bookedTripsToday = [];
-                      List<Trip> bookedTripsThisWeek = [];
-                      List<Trip> bookedTripsThisMonth = [];
-                      if(snapshot.hasData) {
-                        List<DocumentSnapshot<Map<String, dynamic>>> bookedTripsSnap = snapshot.data!.docs.toList();
-                        bookedTripsThisMonth = bookedTripsSnap.map<Trip>((d) => Trip.fromFirestore(d, null)).toList();
-                        bookedTripsToday = bookedTripsThisMonth.where((d) => d.date.compareTo(tomorrow) < 0).toList();
-                        bookedTripsThisWeek = bookedTripsThisMonth.where((d) => d.date.compareTo(nextWeek) < 0).toList();
-                      }
-                      return Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: notifier.getdarklightgreycolor),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment
-                                  .spaceBetween,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment
-                                      .spaceBetween,
-                                  children: [
-                                    dashboardValue(title: "Today", trips:bookedTripsToday),
-                                    dashboardValue(title: "Next 7 days", trips:bookedTripsThisWeek),
-                                    dashboardValue(title: "Next 30 days", trips:bookedTripsThisMonth),
-                                  ],
-                                ),
-                              ]
-                          ),
-                        ),
-                      );
-                    }),
-                    const SizedBox(height: 30),
-                    Text("Current Tour",
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: LogoColor,
-                            fontFamily: "Gilroy Bold")),
-                    const SizedBox(height: 8),
-                    StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                    stream: queryCurrentTrips,
-                    builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                      if (snapshot.data != null && snapshot.data!.docs.isNotEmpty) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 6),
-                          child: guideTripLayout(
-                              context, notifier,  Trip.fromFirestore(snapshot.data!.docs[0], null), true),
-                        );
-                      }
-                      return const SizedBox();
-                    }),
-                    const SizedBox(height: 30),
-                    Text("Today Tours",
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: LogoColor,
-                            fontFamily: "Gilroy Bold")),
-                    const SizedBox(height: 8),
-                    StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                      stream: queryBookedTrips,
-                      builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot)
-                      {
-                        List<DocumentSnapshot<Map<String, dynamic>>> todayTripsSnap = snapshot.data != null
-                            ? snapshot.data!.docs.where((d) => d['date'].toDate().compareTo(tomorrow) < 0).toList()
-                            : [];
-                        todayTrips = todayTripsSnap.map<Trip>((t) =>  Trip.fromFirestore(t, null)).toList();
-                        return SizedBox(
-                          child: ListView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            padding: EdgeInsets.zero,
-                            itemCount: todayTrips?.length,
-                            itemBuilder: (BuildContext context,
-                                int index) {
-                              return guideTripLayout(context, notifier, todayTrips![index], true);
-                            },
-                          ),
-                        );
-                      })
-                    ]
-              ),
+                                  if (!guide!["accountValidated"])
+                                    ...[
+                                      const SizedBox(height: 10),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(15),
+                                            color: notifier.getlogobgcolor),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10, vertical: 10),
+                                          child: Text(
+                                              "Your account is not active."
+                                              "\nYou will not receive new tours."
+                                              "\nPlease check your account details.",
+                                              softWrap: true,
+                                              textAlign: TextAlign.justify,
+                                              style: TextStyle(
+                                                  fontSize: 20,
+                                                  color: WhiteColor,
+                                                  fontFamily: "Gilroy Medium"))
+                                          ),
+                                        ),
+                                    ],
+                                  SizedBox(height: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .height * 0.025),
+                                  Text(
+                                    "Completed Tours",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        color: LogoColor,
+                                        fontFamily: "Gilroy Medium"),
+                                  ),
+                                  SizedBox(height: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .height * 0.001),
+                                  StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                                    stream: queryFinishedTrips,
+                                    builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                        List<Trip> finishedTripsToday = [];
+                                        List<Trip> finishedTripsThisWeek = [];
+                                        List<Trip> finishedTripsThisMonth = [];
+                                        if(snapshot.hasData) {
+                                          List<DocumentSnapshot<Map<String, dynamic>>> finishedTripsSnap = snapshot.data!.docs.toList();
+                                          finishedTripsThisMonth = finishedTripsSnap.map<Trip>((d) => Trip.fromFirestore(d, null)).toList();
+                                          finishedTripsToday = finishedTripsThisMonth.where((d) => d.date.compareTo(today) > 0).toList();
+                                          finishedTripsThisWeek = finishedTripsThisMonth.where((d) => d.date.compareTo(lastWeek) > 0).toList();
+                                        }
+                                        return Container(
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(15),
+                                              color: notifier.getdarklightgreycolor),
+                                          child: Padding(
+                                              padding: const EdgeInsets.symmetric(
+                                                  horizontal: 10, vertical: 10),
+                                              child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment .spaceBetween,
+                                                  children: [
+                                                  Row(
+                                                  mainAxisAlignment: MainAxisAlignment .spaceBetween,
+                                                  children: [
+                                                    dashboardValue(title: "Today", trips:finishedTripsToday),
+                                                    dashboardValue(title: "Last 7 days", trips:finishedTripsThisWeek),
+                                                    dashboardValue(title: "Last 30 days", trips:finishedTripsThisMonth),
+                                                  ],
+                                                ),
+                                            ]
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  )
+                                  ,
+                                  SizedBox(height: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .height * 0.025),
+                                  Text(
+                                    "Next Tours",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        color: LogoColor,
+                                        fontFamily: "Gilroy Medium"),
+                                  ),
+                                  SizedBox(height: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .height * 0.001),
+                                  StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                                  stream: queryBookedTrips,
+                                  builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                    List<Trip> bookedTripsToday = [];
+                                    List<Trip> bookedTripsThisWeek = [];
+                                    List<Trip> bookedTripsThisMonth = [];
+                                    if(snapshot.hasData) {
+                                      List<DocumentSnapshot<Map<String, dynamic>>> bookedTripsSnap = snapshot.data!.docs.toList();
+                                      bookedTripsThisMonth = bookedTripsSnap.map<Trip>((d) => Trip.fromFirestore(d, null)).toList();
+                                      bookedTripsToday = bookedTripsThisMonth.where((d) => d.date.compareTo(tomorrow) < 0).toList();
+                                      bookedTripsThisWeek = bookedTripsThisMonth.where((d) => d.date.compareTo(nextWeek) < 0).toList();
+                                    }
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(15),
+                                          color: notifier.getdarklightgreycolor),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10, vertical: 10),
+                                        child: Column(
+                                            mainAxisAlignment: MainAxisAlignment
+                                                .spaceBetween,
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment
+                                                    .spaceBetween,
+                                                children: [
+                                                  dashboardValue(title: "Today", trips:bookedTripsToday),
+                                                  dashboardValue(title: "Next 7 days", trips:bookedTripsThisWeek),
+                                                  dashboardValue(title: "Next 30 days", trips:bookedTripsThisMonth),
+                                                ],
+                                              ),
+                                            ]
+                                        ),
+                                      ),
+                                    );
+                                  }),
+                                  const SizedBox(height: 30),
+                                  Text("Current Tour",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          color: LogoColor,
+                                          fontFamily: "Gilroy Bold")),
+                                  const SizedBox(height: 8),
+                                  StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                                  stream: queryCurrentTrips,
+                                  builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                                    if (snapshot.data != null && snapshot.data!.docs.isNotEmpty) {
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 6),
+                                        child: guideTripLayout(
+                                            context, notifier,  Trip.fromFirestore(snapshot.data!.docs[0], null), true),
+                                      );
+                                    }
+                                    return const SizedBox();
+                                  }),
+                                  const SizedBox(height: 30),
+                                  Text("Today Tours",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          color: LogoColor,
+                                          fontFamily: "Gilroy Bold")),
+                                  const SizedBox(height: 8),
+                                  StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                                    stream: queryBookedTrips,
+                                    builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot)
+                                    {
+                                      List<DocumentSnapshot<Map<String, dynamic>>> todayTripsSnap = snapshot.data != null
+                                          ? snapshot.data!.docs.where((d) => d['date'].toDate().compareTo(tomorrow) < 0).toList()
+                                          : [];
+                                      todayTrips = todayTripsSnap.map<Trip>((t) =>  Trip.fromFirestore(t, null)).toList();
+                                      return SizedBox(
+                                        child: ListView.builder(
+                                          physics: const NeverScrollableScrollPhysics(),
+                                          shrinkWrap: true,
+                                          padding: EdgeInsets.zero,
+                                          itemCount: todayTrips?.length,
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            return guideTripLayout(context, notifier, todayTrips![index], true);
+                                          },
+                                        ),
+                                      );
+                                    })
+                                  ]
+                            );
+                })
             )
           )
       )

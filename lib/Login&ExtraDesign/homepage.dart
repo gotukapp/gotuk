@@ -98,7 +98,7 @@ class _homepageState extends State<homepage> {
     ];
 
     final driverPageOption = guideMode ? [
-      Dashboard(guide: userProvider.user!),
+      const Dashboard(),
       const message(),
       const profile(),
     ] : [];
