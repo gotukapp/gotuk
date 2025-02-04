@@ -251,7 +251,7 @@ class Trip {
   }
 
 
-  Future<void> sendChatMessage(String text, String? token, String title) async {
+  Future<void> sendChatMessage(String text, AppUser from, AppUser to) async {
     CollectionReference chatMessages = FirebaseFirestore.instance
         .collection('chat')
         .doc(id)
@@ -262,7 +262,8 @@ class Trip {
     await chatMessages.add({
       'text': text,
       'date': messageDate,
-      'origin': FirebaseAuth.instance.currentUser!.uid
+      'from': FirebaseAuth.instance.currentUser!.uid,
+      'to': to.id
     });
 
     FirebaseFirestore.instance
@@ -272,8 +273,8 @@ class Trip {
       "hasMessages": true
     });
 
-    if (token != null) {
-      await sendNotification(targetToken: token, title: title, body: text);
+    if (to.firebaseToken != null) {
+      await sendNotification(targetToken: to.firebaseToken!, title: from.name!, body: text);
     }
   }
 

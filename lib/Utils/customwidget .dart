@@ -595,7 +595,7 @@ Future<void> setClientReady(BuildContext context, Trip trip) async {
         AppLocalizations.of(context)!.letsGo,
         "Do you want to send a message to the guide notifying him that you are ready for the tour?",
             () async {
-              await trip.sendChatMessage("Hi, just to let you know that i'm already at the pickup location.", appUser.firebaseToken, userProvider.user!.name!);
+              await trip.sendChatMessage("Hi, just to let you know that i'm already at the pickup location.", userProvider.user!, appUser);
               trip.setClientIsReady();
               if (context.mounted) {
                 Navigator.of(context).push(MaterialPageRoute(

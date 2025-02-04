@@ -36,6 +36,16 @@ class _ChattingState extends State<Chatting> {
     super.initState();
   }
 
+  final ScrollController _scrollController = ScrollController();
+
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+      }
+    });
+  }
+
   late UserProvider userProvider;
   late ColorNotifier notifier;
   @override
@@ -54,7 +64,7 @@ class _ChattingState extends State<Chatting> {
           SizedBox(height: MediaQuery.of(context).size.height * 0.05),
           // ignore: sized_box_for_whitespace
           Container(
-            height: 70,
+            height: 80,
             child: ListTile(
               contentPadding: const EdgeInsets.only(left: 0, right: 10),
               visualDensity: VisualDensity.standard,
@@ -126,15 +136,16 @@ class _ChattingState extends State<Chatting> {
               ),
             ),
           ),
+          guideTripLayout(context, notifier, widget.trip, false),
           Expanded(
             child: SingleChildScrollView(
+              controller: _scrollController, // Attach controller here
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    guideTripLayout(context, notifier, widget.trip, false),
                     StreamBuilder(
                       stream: chatMessages,
                       builder: (context, snapshot) {
@@ -142,6 +153,7 @@ class _ChattingState extends State<Chatting> {
                           return Center(child: CircularProgressIndicator(color: WhiteColor));
                         }
 
+                        WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
                         return ListView.builder(
                           physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
@@ -152,7 +164,7 @@ class _ChattingState extends State<Chatting> {
                             QueryDocumentSnapshot chatMessage = snapshot.data!.docs[index];
                             return message(text: chatMessage["text"],
                                 timeText:  DateFormat('HH:mm').format(chatMessage["date"].toDate()),
-                                origin:  chatMessage["origin"]);
+                                from:  chatMessage["from"]);
                           },
                         );
                       }
@@ -240,7 +252,7 @@ class _ChattingState extends State<Chatting> {
                       onTap: () {
                         if (chatTextController.text.isNotEmpty) {
                           setState(() {
-                            widget.trip.sendChatMessage(chatTextController.text, widget.sendTo.firebaseToken, userProvider.user!.name!).then((value) => {
+                            widget.trip.sendChatMessage(chatTextController.text,  userProvider.user!, widget.sendTo).then((value) => {
                               chatTextController.clear()
                             });
                           });
@@ -272,12 +284,12 @@ class _ChattingState extends State<Chatting> {
     );
   }
 
-  message({text, timeText, origin}) {
+  message({text, timeText, from}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 15),
-        if (origin == FirebaseAuth.instance.currentUser!.uid)
+        if (from == FirebaseAuth.instance.currentUser!.uid)
           Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
