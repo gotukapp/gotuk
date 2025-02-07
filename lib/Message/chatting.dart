@@ -174,7 +174,8 @@ class _ChattingState extends State<Chatting> {
               ),
             ),
           ),
-          Padding(
+          if(widget.trip.status != 'finished')
+            Padding(
             padding: const EdgeInsets.only(left: 8, right: 8, bottom: 20),
             child: TextField(
               controller: chatTextController,

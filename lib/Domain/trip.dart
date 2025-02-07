@@ -178,7 +178,8 @@ class Trip {
           DocumentSnapshot<Object?> client = await clientRef!.get();
           await sendNotification(targetToken: client.get("firebaseToken"),
               title: "Accepted Tour",
-              body: "$reservationId - ${tour.name} tour was accepted");
+              body: "$reservationId - ${tour.name} tour was accepted",
+              data: { "tripId": tour.id });
         } catch(e, stackTrace) {
           await Sentry.captureException(e,
             stackTrace: stackTrace,
@@ -199,7 +200,10 @@ class Trip {
       "startedDate": FieldValue.serverTimestamp()});
 
     DocumentSnapshot<Object?> client = await clientRef!.get();
-    await sendNotification(targetToken: client.get("firebaseToken"), title: "Start Tour", body: "$reservationId - ${tour.name} tour was started");
+    await sendNotification(targetToken: client.get("firebaseToken"),
+        title: "Start Tour",
+        body: "$reservationId - ${tour.name} tour was started",
+        data: { "tripId": tour.id });
   }
 
   Future<void> finishTour() async {
@@ -210,7 +214,10 @@ class Trip {
       "finishedDate": FieldValue.serverTimestamp()});
 
     DocumentSnapshot<Object?> client = await clientRef!.get();
-    await sendNotification(targetToken: client.get("firebaseToken"), title: "Finish Tour", body: "$reservationId - ${tour.name} tour was finished");
+    await sendNotification(targetToken: client.get("firebaseToken"),
+        title: "Finish Tour",
+        body: "$reservationId - ${tour.name} tour was finished",
+        data: { "tripId": tour.id });
   }
 
   void cancelTour() {
@@ -274,7 +281,10 @@ class Trip {
     });
 
     if (to.firebaseToken != null) {
-      await sendNotification(targetToken: to.firebaseToken!, title: from.name!, body: text);
+      await sendNotification(targetToken: to.firebaseToken!,
+          title: from.name!,
+          body: text,
+          data: { "tripId": id, "type": "message" } );
     }
   }
 

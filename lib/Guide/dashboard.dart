@@ -68,13 +68,14 @@ class _DashboardState extends State<Dashboard> {
     final lastMonth = DateTime(now.year, now.month, now.day - 30, 0, 0, 0);
     final nextMonth = DateTime(now.year, now.month, now.day + 30, 0, 0, 0);
 
-    final db = FirebaseFirestore.instance.collection("trips");
+    final tripsCollection = FirebaseFirestore.instance.collection("trips");
+    final notificationsCollection = FirebaseFirestore.instance.collection("notifications");
     final userDocRef = FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser?.uid);
 
     final Stream<QuerySnapshot<Map<String, dynamic>>> queryFinishedTrips =
-    db
+    tripsCollection
         .where("guideRef", isEqualTo: userDocRef)
         .where("status", whereIn: ["booked", 'started', 'finished'])
         .where("date", isGreaterThan:  lastMonth)
@@ -82,7 +83,7 @@ class _DashboardState extends State<Dashboard> {
         .snapshots();
 
     final Stream<QuerySnapshot<Map<String, dynamic>>> queryBookedTrips =
-    db
+    tripsCollection
         .where("guideRef", isEqualTo: userDocRef)
         .where("status", isEqualTo: "booked")
         .where("date", isLessThan:  nextMonth)
@@ -91,16 +92,22 @@ class _DashboardState extends State<Dashboard> {
         .snapshots();
 
     final Stream<QuerySnapshot<Map<String, dynamic>>> queryCurrentTrips =
-    db
+    tripsCollection
         .where("guideRef", isEqualTo: userDocRef)
         .where("status", isEqualTo: "started")
         .snapshots();
 
     final Stream<QuerySnapshot<Map<String, dynamic>>> queryPendingTrips =
-    db
+    tripsCollection
         .where("date", isGreaterThan:  today)
         .where("status", isEqualTo: "pending")
         .snapshots();
+
+    final Stream<int> notificationCountStream = notificationsCollection
+        .where("userRef", isEqualTo: userDocRef)
+        .where("status", isEqualTo: "new")
+        .snapshots()
+        .map((snapshot) => snapshot.size);
 
     return SafeArea(
         child: Scaffold(
@@ -117,7 +124,7 @@ class _DashboardState extends State<Dashboard> {
                       return const CircularProgressIndicator();
                     }
                     if (!snapshot.hasData || !snapshot.data!.exists) {
-                      return Text("Document does not exist");
+                      return const Text("Document does not exist");
                     }
                     Map<String, dynamic>?  guide = snapshot.data!.data();
                     return Column(
@@ -161,7 +168,7 @@ class _DashboardState extends State<Dashboard> {
                                             stream: queryPendingTrips,
                                             builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                                                 if (snapshot.data != null && snapshot.data!.docs.isNotEmpty) {
-                                                  List<DocumentSnapshot<Map<String, dynamic>>> pendingTripsSnap = snapshot.data!.docs.toList();
+                                                  List<DocumentSnapshot<Map<String, dynamic>>> pendingTripsSnap = snapshot.data!.docs;
                                                   var pendingTrips = pendingTripsSnap.map<Trip>((d) => Trip.fromFirestore(d, null)).toList();
                                                   return InkWell(
                                                     onTap: () {
@@ -181,18 +188,32 @@ class _DashboardState extends State<Dashboard> {
                                                 }
                                               }
                                             ),
-                                          InkWell(
-                                              onTap: () {
-                                                Navigator.of(context).push(MaterialPageRoute(
-                                                    builder: (context) => const notification()));
-                                              },
-                                              child: CircleAvatar(
-                                                  backgroundColor: notifier.getdarkmodecolor,
-                                                  child: Image.asset(
-                                                    "assets/images/notification.png",
-                                                    height: 25,
-                                                    color: notifier.getwhiteblackcolor,
-                                                  )))
+                                            StreamBuilder<int>(
+                                            stream: notificationCountStream,
+                                            builder: (context, snapshot) {
+                                              if (!snapshot.hasData) return const CircularProgressIndicator();
+                                              int count = snapshot.data ?? 0; // Ensure count is not null
+
+                                              return InkWell(
+                                                  onTap: () {
+                                                    Navigator.of(context).push(
+                                                        MaterialPageRoute(
+                                                            builder: (
+                                                                context) => const notification()));
+                                                  },
+                                                  child: Badge.count(
+                                                      count: count,
+                                                      isLabelVisible: count > 0,
+                                                      child: CircleAvatar(
+                                                          backgroundColor: notifier
+                                                              .getdarkmodecolor,
+                                                          child: Image.asset(
+                                                            "assets/images/notification.png",
+                                                            height: 25,
+                                                            color: notifier
+                                                                .getwhiteblackcolor,
+                                                          ))));
+                                            })
                                         ],
                                       )
                                     ],
@@ -238,15 +259,15 @@ class _DashboardState extends State<Dashboard> {
                                   StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                                     stream: queryFinishedTrips,
                                     builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                                        List<Trip> finishedTripsToday = [];
-                                        List<Trip> finishedTripsThisWeek = [];
-                                        List<Trip> finishedTripsThisMonth = [];
-                                        if(snapshot.hasData) {
-                                          List<DocumentSnapshot<Map<String, dynamic>>> finishedTripsSnap = snapshot.data!.docs.toList();
-                                          finishedTripsThisMonth = finishedTripsSnap.map<Trip>((d) => Trip.fromFirestore(d, null)).toList();
-                                          finishedTripsToday = finishedTripsThisMonth.where((d) => d.date.compareTo(today) > 0).toList();
-                                          finishedTripsThisWeek = finishedTripsThisMonth.where((d) => d.date.compareTo(lastWeek) > 0).toList();
+                                        if(!snapshot.hasData) {
+                                          return Center(child: CircularProgressIndicator(color: WhiteColor));
                                         }
+
+                                        List<DocumentSnapshot<Map<String, dynamic>>> finishedTripsSnap = snapshot.data!.docs;
+                                        List<Trip> finishedTripsThisMonth = finishedTripsSnap.map<Trip>((d) => Trip.fromFirestore(d, null)).toList();;
+                                        List<Trip> finishedTripsToday = finishedTripsThisMonth.where((d) => d.date.compareTo(today) > 0).toList();
+                                        List<Trip> finishedTripsThisWeek = finishedTripsThisMonth.where((d) => d.date.compareTo(lastWeek) > 0).toList();
+
                                         return Container(
                                           decoration: BoxDecoration(
                                               borderRadius: BorderRadius.circular(15),
@@ -290,15 +311,16 @@ class _DashboardState extends State<Dashboard> {
                                   StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                                   stream: queryBookedTrips,
                                   builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                                    List<Trip> bookedTripsToday = [];
-                                    List<Trip> bookedTripsThisWeek = [];
-                                    List<Trip> bookedTripsThisMonth = [];
-                                    if(snapshot.hasData) {
-                                      List<DocumentSnapshot<Map<String, dynamic>>> bookedTripsSnap = snapshot.data!.docs.toList();
-                                      bookedTripsThisMonth = bookedTripsSnap.map<Trip>((d) => Trip.fromFirestore(d, null)).toList();
-                                      bookedTripsToday = bookedTripsThisMonth.where((d) => d.date.compareTo(tomorrow) < 0).toList();
-                                      bookedTripsThisWeek = bookedTripsThisMonth.where((d) => d.date.compareTo(nextWeek) < 0).toList();
+                                    if(!snapshot.hasData) {
+                                      return Center(child: CircularProgressIndicator(color: WhiteColor));
                                     }
+
+                                    List<DocumentSnapshot<Map<String, dynamic>>> bookedTripsSnap = snapshot.data!.docs;
+
+                                    List<Trip> bookedTripsThisMonth = bookedTripsSnap.map<Trip>((d) => Trip.fromFirestore(d, null)).toList();
+                                    List<Trip> bookedTripsToday = bookedTripsThisMonth.where((d) => d.date.compareTo(tomorrow) < 0).toList();
+                                    List<Trip> bookedTripsThisWeek = bookedTripsThisMonth.where((d) => d.date.compareTo(nextWeek) < 0).toList();
+
                                     return Container(
                                       decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(15),
@@ -385,7 +407,7 @@ class _DashboardState extends State<Dashboard> {
     return InkWell(
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => TripsList(title:title, trips:trips)));
+              builder: (context) => TripsList(title: title, trips: trips)));
         },
         child: Column(
           children: [

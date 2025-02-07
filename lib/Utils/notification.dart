@@ -5,6 +5,7 @@ Future<void> sendNotification({
   required String targetToken,
   required String title,
   required String body,
+  data
 }) async {
   final url = Uri.parse('https://sendnotification-m4ti3eo3ua-uc.a.run.app');
 
@@ -15,7 +16,8 @@ Future<void> sendNotification({
   final payload = {
     "token": targetToken,
     "body": body,
-    "title": title
+    "title": title,
+    "data": data
   };
 
   try {

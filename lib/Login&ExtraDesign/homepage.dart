@@ -19,6 +19,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../Domain/appUser.dart';
+import '../Message/chatting.dart';
 import '../Providers/userProvider.dart';
 import '../Guide/dashboard.dart';
 import 'home.dart';
@@ -73,11 +74,37 @@ class _homepageState extends State<homepage> {
     super.initState();
   }
 
-  void _handleNotificationClick(RemoteMessage message) {
+  Future<void> _handleNotificationClick(RemoteMessage message) async {
     final data = message.data;
     final tripId = data['tripId'];
+    final type = data['type'];
 
-    if (tripId != null) {
+    if (tripId != null && type != null) {
+      final ref = FirebaseFirestore.instance.collection("trips").doc(tripId)
+          .withConverter(
+        fromFirestore: Trip.fromFirestore,
+        toFirestore: (Trip trip, _) => trip.toFirestore(),
+      );
+      DocumentSnapshot<Trip> tripSnapshot = await ref.get();
+      Trip trip = tripSnapshot.data()!;
+      DocumentSnapshot<AppUser>? snapshot;
+      if (guideMode) {
+        final convertedDocRef = trip.guideRef!.withConverter<AppUser>(
+          fromFirestore: AppUser.fromFirestore,
+          toFirestore: (AppUser user, _) => user.toFirestore(),
+        );
+        snapshot = await convertedDocRef.get();
+      } else {
+        final convertedDocRef = trip.guideRef!.withConverter<AppUser>(
+          fromFirestore: AppUser.fromFirestore,
+          toFirestore: (AppUser user, _) => user.toFirestore(),
+        );
+        snapshot = await convertedDocRef.get();
+      }
+      AppUser appUser = snapshot.data()!;
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => Chatting(trip: trip, sendTo: appUser)));
+    } else {
       Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => TripDetail(tripId, true)));
     }
