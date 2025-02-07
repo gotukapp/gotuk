@@ -178,7 +178,8 @@ class Trip {
           DocumentSnapshot<Object?> client = await clientRef!.get();
           await sendNotification(targetToken: client.get("firebaseToken"),
               title: "Accepted Tour",
-              body: "$reservationId - ${tour.name} tour was accepted");
+              body: "$reservationId - ${tour.name} tour was accepted",
+              data: { "tripId": tour.id });
         } catch(e, stackTrace) {
           await Sentry.captureException(e,
             stackTrace: stackTrace,
@@ -192,25 +193,59 @@ class Trip {
   }
 
   Future<void> startTour() async {
-    await FirebaseFirestore.instance
+    DocumentReference tripRef = FirebaseFirestore.instance
         .collection('trips')
-        .doc(id)
-        .update({"status": "started",
-      "startedDate": FieldValue.serverTimestamp()});
+        .doc(id);
+
+    DocumentReference notificationRef = FirebaseFirestore.instance
+        .collection("notifications")
+        .doc();
+    WriteBatch batch = FirebaseFirestore.instance.batch();
+    batch.update(tripRef, {"status": "started", "startedDate": FieldValue.serverTimestamp()});
+    batch.set(notificationRef, {
+          "type": "trip started",
+          "tripRef": tripRef,
+          "userRef": clientRef,
+          "status": "new",
+          "content": "",
+          "timestamp": FieldValue.serverTimestamp(),
+        });
+    await batch.commit();
 
     DocumentSnapshot<Object?> client = await clientRef!.get();
-    await sendNotification(targetToken: client.get("firebaseToken"), title: "Start Tour", body: "$reservationId - ${tour.name} tour was started");
+    await sendNotification(targetToken: client.get("firebaseToken"),
+        title: "Start Tour",
+        body: "$reservationId - ${tour.name} tour was started",
+        data: { "tripId": tour.id });
   }
 
   Future<void> finishTour() async {
-    await FirebaseFirestore.instance
+    DocumentReference tripRef = FirebaseFirestore.instance
         .collection('trips')
-        .doc(id)
-        .update({"status": "finished",
-      "finishedDate": FieldValue.serverTimestamp()});
+        .doc(id);
+
+    DocumentReference notificationRef = FirebaseFirestore.instance
+        .collection("notifications")
+        .doc();
+    WriteBatch batch = FirebaseFirestore.instance.batch();
+    batch.update(tripRef, {"status": "finished", "finishedDate": FieldValue.serverTimestamp()});
+    batch.set(notificationRef, {
+      "type": "trip finished",
+      "tripRef": tripRef,
+      "userRef": clientRef,
+      "status": "new",
+      "content": "",
+      "timestamp": FieldValue.serverTimestamp(),
+    });
+    await batch.commit();
+
+
 
     DocumentSnapshot<Object?> client = await clientRef!.get();
-    await sendNotification(targetToken: client.get("firebaseToken"), title: "Finish Tour", body: "$reservationId - ${tour.name} tour was finished");
+    await sendNotification(targetToken: client.get("firebaseToken"),
+        title: "Finish Tour",
+        body: "$reservationId - ${tour.name} tour was finished",
+        data: { "tripId": tour.id });
   }
 
   void cancelTour() {
@@ -251,7 +286,7 @@ class Trip {
   }
 
 
-  Future<void> sendChatMessage(String text, String? token, String title) async {
+  Future<void> sendChatMessage(String text, AppUser from, AppUser to) async {
     CollectionReference chatMessages = FirebaseFirestore.instance
         .collection('chat')
         .doc(id)
@@ -262,7 +297,8 @@ class Trip {
     await chatMessages.add({
       'text': text,
       'date': messageDate,
-      'origin': FirebaseAuth.instance.currentUser!.uid
+      'from': FirebaseAuth.instance.currentUser!.uid,
+      'to': to.id
     });
 
     FirebaseFirestore.instance
@@ -272,8 +308,11 @@ class Trip {
       "hasMessages": true
     });
 
-    if (token != null) {
-      await sendNotification(targetToken: token, title: title, body: text);
+    if (to.firebaseToken != null) {
+      await sendNotification(targetToken: to.firebaseToken!,
+          title: from.name!,
+          body: text,
+          data: { "tripId": id, "type": "message" } );
     }
   }
 

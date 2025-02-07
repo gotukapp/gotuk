@@ -146,7 +146,7 @@ class _checkoutState extends State<checkout> {
                           fontSize: 16,
                           color: notifier.getwhiteblackcolor,
                           fontFamily: "Gilroy Bold")),
-                      Text(DateFormat('dd-MM-yyyy').format(selectedDate!),
+                      Text(DateFormat('yyyy-MM-dd').format(selectedDate!),
                           style: TextStyle(
                               fontSize: 18,
                               color: notifier.getwhiteblackcolor,
@@ -1329,7 +1329,7 @@ class _checkoutState extends State<checkout> {
       DateTime tripDate = selectedDate!.copyWith(
           hour: hourSliderValue, minute: minutesSliderValue, second: 0, millisecond: 0, microsecond: 0);
 
-      await Trip.addTrip(
+      DocumentReference docRef = await Trip.addTrip(
           widget.goNow ? null : selectedGuideRef,
           tour!.id,
           tripDate,
@@ -1344,21 +1344,23 @@ class _checkoutState extends State<checkout> {
           widget.goNow ? 'gonow' : 'booking',
           tour!.getFeePrice(smallPriceSelected),
           tour!.getTourPrice(smallPriceSelected)
-          ).then((docRef) {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => TripDetail(docRef.id, false)),
-            (Route<dynamic> route) => route.isFirst, // Keep only the homepage
           );
-      });
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => TripDetail(docRef.id, false)),
+            (Route<dynamic> route) => route.isFirst, // Keep only the homepage
+      );
 
       if (!widget.goNow) {
         DocumentSnapshot<Object?> guide = await selectedGuideRef!.get();
 
         String? token = guide.get("firebaseToken");
         if (token != null) {
-          await sendNotification(targetToken: token, title: "New Tour", body: "${DateFormat('dd-MM-yyyy HH:mm')
-              .format(tripDate)} - ${tour!.name}");
+          await sendNotification(targetToken: token,
+              title: "New Tour",
+              body: "${DateFormat('dd-MM-yyyy HH:mm').format(tripDate)} - ${tour!.name}",
+              data: { "tripId": docRef.id });
         }
         await AppUser.updateTripUnavailability(selectedGuideRef!.id, tour!, selectedDate!, hourSliderValue, minutesSliderValue);
       }

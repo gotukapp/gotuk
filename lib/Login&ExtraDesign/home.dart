@@ -86,6 +86,17 @@ class _homeState extends State<home> {
   late ColorNotifier notifier;
   @override
   Widget build(BuildContext context) {
+    final userDocRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser?.uid);
+
+    final Stream<int> notificationCountStream = FirebaseFirestore.instance
+        .collection('notifications')
+        .where("userRef", isEqualTo: userDocRef)
+        .where("status", isEqualTo: "new")
+        .snapshots()
+        .map((snapshot) => snapshot.size);
+
     userProvider = Provider.of<UserProvider>(context);
     notifier = Provider.of<ColorNotifier>(context, listen: true);
     return SafeArea(
@@ -138,19 +149,28 @@ class _homeState extends State<home> {
                                     color: LogoColor,
                                   ))
                           ),
-                          InkWell(
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => const notification()));
-                              },
-                              child: CircleAvatar(
-                                  backgroundColor: notifier.getdarkmodecolor,
-                                  child: Image.asset(
-                                    "assets/images/notification.png",
-                                    height: 25,
-                                    color: notifier.getwhiteblackcolor,
-                                  )))
-                          ]
+                          StreamBuilder<int>(
+                              stream: notificationCountStream,
+                              builder: (context, snapshot) {
+                                if (!snapshot.hasData) return const CircularProgressIndicator();
+                                int count = snapshot.data ?? 0; // Ensure count is not null
+                                return InkWell(
+                                    onTap: () {
+                                      Navigator.of(context).push(MaterialPageRoute(
+                                          builder: (context) => const notification()));
+                                    },
+                                    child: Badge.count(
+                                        count: count,
+                                        isLabelVisible: count > 0,
+                                        child: CircleAvatar(
+                                        backgroundColor: notifier.getdarkmodecolor,
+                                        child: Image.asset(
+                                          "assets/images/notification.png",
+                                          height: 25,
+                                          color: notifier.getwhiteblackcolor,
+                                        )))
+                                );
+                          })]
                       )
                     ],
                   ),

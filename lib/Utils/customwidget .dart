@@ -375,54 +375,54 @@ guideTripLayout(BuildContext context, ColorNotifier notifier, Trip trip, bool sh
               const SizedBox(height: 8),
               if (showActions)
                 Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Total Price",
-                        style: TextStyle(
-                            fontSize: 15, color: notifier.getwhiteblackcolor, fontFamily: "Gilroy Medium")),
-                    const SizedBox(height: 4),
-                    Text("${trip.tour.getTourPrice(trip.persons == 3)}€",
-                        style: TextStyle(
-                            fontSize: 16, color: Darkblue, fontFamily: "Gilroy Bold")),
-                  ],
-                ),
-                if (trip.status == "pending" || trip.showStartButton! || trip.showEndButton!)
-                  InkWell(
-                    onTap: () {
-                      if (trip.status == "booked") {
-                        showConfirmationMessage(context,
-                            "Start Tour",
-                            "Are you sure you want to start this tour?",
-                            () async => await trip.startTour(),
-                            () {}, null, null);
-                      } else if (trip.status == "started") {
-                        showConfirmationMessage(context,
-                            "Finish Tour",
-                            "Are you sure you want to finish this tour?",
-                                () async => await trip.finishTour(),
-                                () {}, null, null);
-                      } else if (trip.status == "pending") {
-                        showConfirmationAcceptTour(context, trip);
-                      }
-                    },
-                    child: Container(
-                      height: 40,
-                      width: 110,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50), color: trip.status == 'started' ? Darkblue : LogoColor),
-                      child: Center(
-                        child: Text(
-                          getTripButtonAction(trip),
-                          style: TextStyle(
-                              fontSize: 15, color: WhiteColor, fontFamily: "Gilroy Bold"),
-                        ),
-                      ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Total Price",
+                            style: TextStyle(
+                                fontSize: 15, color: notifier.getwhiteblackcolor, fontFamily: "Gilroy Medium")),
+                        const SizedBox(height: 4),
+                        Text("${trip.tour.getTourPrice(trip.persons == 3)}€",
+                            style: TextStyle(
+                                fontSize: 16, color: Darkblue, fontFamily: "Gilroy Bold")),
+                      ],
                     ),
-                  )
-              ],
+                    if (trip.status == "pending" || trip.showStartButton! || trip.showEndButton!)
+                      InkWell(
+                        onTap: () {
+                          if (trip.status == "booked") {
+                            showConfirmationMessage(context,
+                                "Start Tour",
+                                "Are you sure you want to start this tour?",
+                                () async => await trip.startTour(),
+                                () {}, null, null);
+                          } else if (trip.status == "started") {
+                            showConfirmationMessage(context,
+                                "Finish Tour",
+                                "Are you sure you want to finish this tour?",
+                                    () async => await trip.finishTour(),
+                                    () {}, null, null);
+                          } else if (trip.status == "pending") {
+                            showConfirmationAcceptTour(context, trip);
+                          }
+                        },
+                        child: Container(
+                          height: 40,
+                          width: 110,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50), color: trip.status == 'started' ? Darkblue : LogoColor),
+                          child: Center(
+                            child: Text(
+                              getTripButtonAction(trip),
+                              style: TextStyle(
+                                  fontSize: 15, color: WhiteColor, fontFamily: "Gilroy Bold"),
+                            ),
+                          ),
+                        ),
+                      )
+                  ],
             )
           ]
       )
@@ -595,7 +595,7 @@ Future<void> setClientReady(BuildContext context, Trip trip) async {
         AppLocalizations.of(context)!.letsGo,
         "Do you want to send a message to the guide notifying him that you are ready for the tour?",
             () async {
-              await trip.sendChatMessage("Hi, just to let you know that i'm already at the pickup location.", appUser.firebaseToken, userProvider.user!.name!);
+              await trip.sendChatMessage("Hi, just to let you know that i'm already at the pickup location.", userProvider.user!, appUser);
               trip.setClientIsReady();
               if (context.mounted) {
                 Navigator.of(context).push(MaterialPageRoute(
@@ -1012,30 +1012,6 @@ List hotelList2 = [
     "Night": "Tour",
     "review": "4.7",
     "reviewCount": "(140 Reviews)"
-  }
-];
-
-List notificationList = [
-  {
-    "img": "assets/images/person.jpg",
-    "title": "Kim Hayo Send You a Message",
-    "subtitle":
-    "Hi mariana, are you looking for Tuk Tuk in Lisbon?",
-    "massagetime": "1:m Ago"
-  },
-  {
-    "img": "assets/images/person.jpg",
-    "title": "John  Send You a Message",
-    "subtitle":
-    "The service is on point, and I really like the tour. Good job!",
-    "massagetime": "2:m Ago"
-  },
-  {
-    "img": "assets/images/person.jpg",
-    "title": "Alexander Send You a Message",
-    "subtitle":
-    "The hotels give me amazing view, I really like it!. All people must try this Tuk Tuk.",
-    "massagetime": "3:m Ago"
   }
 ];
 
