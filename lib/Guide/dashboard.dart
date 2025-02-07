@@ -79,6 +79,7 @@ class _DashboardState extends State<Dashboard> {
         .where("guideRef", isEqualTo: userDocRef)
         .where("status", whereIn: ["booked", 'started', 'finished'])
         .where("date", isGreaterThan:  lastMonth)
+        .where("date", isLessThan:  today)
         .orderBy("date")
         .snapshots();
 

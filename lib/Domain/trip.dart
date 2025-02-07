@@ -193,11 +193,24 @@ class Trip {
   }
 
   Future<void> startTour() async {
-    await FirebaseFirestore.instance
+    DocumentReference tripRef = FirebaseFirestore.instance
         .collection('trips')
-        .doc(id)
-        .update({"status": "started",
-      "startedDate": FieldValue.serverTimestamp()});
+        .doc(id);
+
+    DocumentReference notificationRef = FirebaseFirestore.instance
+        .collection("notifications")
+        .doc();
+    WriteBatch batch = FirebaseFirestore.instance.batch();
+    batch.update(tripRef, {"status": "started", "startedDate": FieldValue.serverTimestamp()});
+    batch.set(notificationRef, {
+          "type": "trip started",
+          "tripRef": tripRef,
+          "userRef": clientRef,
+          "status": "new",
+          "content": "",
+          "timestamp": FieldValue.serverTimestamp(),
+        });
+    await batch.commit();
 
     DocumentSnapshot<Object?> client = await clientRef!.get();
     await sendNotification(targetToken: client.get("firebaseToken"),
@@ -207,11 +220,26 @@ class Trip {
   }
 
   Future<void> finishTour() async {
-    await FirebaseFirestore.instance
+    DocumentReference tripRef = FirebaseFirestore.instance
         .collection('trips')
-        .doc(id)
-        .update({"status": "finished",
-      "finishedDate": FieldValue.serverTimestamp()});
+        .doc(id);
+
+    DocumentReference notificationRef = FirebaseFirestore.instance
+        .collection("notifications")
+        .doc();
+    WriteBatch batch = FirebaseFirestore.instance.batch();
+    batch.update(tripRef, {"status": "finished", "finishedDate": FieldValue.serverTimestamp()});
+    batch.set(notificationRef, {
+      "type": "trip finished",
+      "tripRef": tripRef,
+      "userRef": clientRef,
+      "status": "new",
+      "content": "",
+      "timestamp": FieldValue.serverTimestamp(),
+    });
+    await batch.commit();
+
+
 
     DocumentSnapshot<Object?> client = await clientRef!.get();
     await sendNotification(targetToken: client.get("firebaseToken"),

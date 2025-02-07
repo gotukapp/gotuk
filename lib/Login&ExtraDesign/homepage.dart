@@ -195,6 +195,8 @@ class _homepageState extends State<homepage> {
         addFirebaseTripsListen();
       }
     }
+
+    addFirebaseNotificationsListen();
   }
 
   @override
@@ -235,6 +237,25 @@ class _homepageState extends State<homepage> {
                 // Client
 
               }
+            }
+          }
+        }
+      }
+      isFirstTime = false;
+    });
+  }
+
+  void addFirebaseNotificationsListen() {
+    final Stream<QuerySnapshot<Map<String, dynamic>>> usersStream =
+    FirebaseFirestore.instance.collection('notifications').snapshots();
+
+    bool isFirstTime = true;
+    listener = usersStream.listen((onData) async {
+      if (!isFirstTime) {
+        for (var change in onData.docChanges) {
+        if (change.type == DocumentChangeType.added) {
+            if (change.doc.get("userRef").id == FirebaseAuth.instance.currentUser!.uid) {
+              playNotificationSound();
             }
           }
         }

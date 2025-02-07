@@ -117,7 +117,7 @@ class _notificationState extends State<notification> {
                               child: CircularProgressIndicator()); // Show loading indicator
                         }
                         Trip? t;
-                        if (snapshot.hasData && snapshot.data!.exists) {
+                        if (snapshot.hasData && snapshot.data!.exists && notificationList[index]["type"] != "message") {
                           t = Trip.fromFirestore(snapshot.data!, null);
                           content = "${t.reservationId!} - ${DateFormat("yyyy-MM-dd HH:mm").format(t.date)}";
                         }
@@ -287,6 +287,14 @@ class _notificationState extends State<notification> {
 
     if (type.startsWith("trip booked")) {
       return 'New Trip Booked';
+    }
+
+    if (type.startsWith("trip started")) {
+      return 'Trip Started';
+    }
+
+    if (type.startsWith("trip finished")) {
+      return 'Trip Finished';
     }
 
     return '';

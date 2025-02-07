@@ -161,6 +161,7 @@ class _homeState extends State<home> {
                                     },
                                     child: Badge.count(
                                         count: count,
+                                        isLabelVisible: count > 0,
                                         child: CircleAvatar(
                                         backgroundColor: notifier.getdarkmodecolor,
                                         child: Image.asset(
