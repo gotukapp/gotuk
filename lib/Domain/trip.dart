@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dm/Domain/tour.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Utils/notification.dart';
 import 'appUser.dart';
@@ -287,26 +288,39 @@ class Trip {
 
 
   Future<void> sendChatMessage(String text, AppUser from, AppUser to) async {
-    CollectionReference chatMessages = FirebaseFirestore.instance
+    final prefs = await SharedPreferences.getInstance();
+    bool guideMode = prefs.getBool("setGuideMode") ?? false;
+
+    DocumentReference messageRef = FirebaseFirestore.instance
         .collection('chat')
         .doc(id)
-        .collection('messages');
+        .collection('messages')
+        .doc();
 
-    DateTime messageDate = DateTime.now();
+    DocumentReference chatRef = FirebaseFirestore.instance
+        .collection('chat')
+        .doc(id);
 
-    await chatMessages.add({
+    WriteBatch batch = FirebaseFirestore.instance.batch();
+    batch.set(messageRef, {
       'text': text,
-      'date': messageDate,
+      'date': FieldValue.serverTimestamp(),
       'from': FirebaseAuth.instance.currentUser!.uid,
       'to': to.id
     });
-
-    FirebaseFirestore.instance
-        .collection('chat')
-        .doc(id)
-        .update({
-      "hasMessages": true
+    batch.set(chatRef, {
+      "hasMessages": true,
+      'date': FieldValue.serverTimestamp(),
+      'guideRef': guideMode
+          ? FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid)
+          : FirebaseFirestore.instance.collection('users').doc(to.id),
+      'clientRef': guideMode
+          ? FirebaseFirestore.instance.collection('users').doc(to.id)
+          : FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid)
     });
+
+    await batch.commit();
+
 
     if (to.firebaseToken != null) {
       await sendNotification(targetToken: to.firebaseToken!,

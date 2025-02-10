@@ -163,7 +163,7 @@ class _ChattingState extends State<Chatting> {
                               int index) {
                             QueryDocumentSnapshot chatMessage = snapshot.data!.docs[index];
                             return message(text: chatMessage["text"],
-                                timeText:  DateFormat('HH:mm').format(chatMessage["date"].toDate()),
+                                timeText:  chatMessage["date"] != null ? DateFormat('HH:mm').format(chatMessage["date"].toDate()) : "",
                                 from:  chatMessage["from"]);
                           },
                         );
