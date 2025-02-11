@@ -59,6 +59,7 @@ class _homepageState extends State<homepage> {
   @override
   void initState() {
     getdarkmodepreviousstate();
+    getAppModeState();
     addFirebaseTripsListen();
     addFirebaseNotificationsListen();
     initializeNotifications();
@@ -336,5 +337,11 @@ class _homepageState extends State<homepage> {
     }
 
     return true;
+  }
+
+  getAppModeState() async {
+    final prefs = await SharedPreferences.getInstance();
+    bool? previousState = prefs.getBool("setGuideMode");
+    guideMode = previousState ?? false;
   }
 }
