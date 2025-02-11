@@ -6,6 +6,7 @@ import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dm/Login&ExtraDesign/tripDetail.dart';
+import 'package:dm/Login&ExtraDesign/tripFinished.dart';
 import 'package:dm/Profile/profile.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/customwidget%20.dart';
@@ -58,7 +59,8 @@ class _homepageState extends State<homepage> {
   @override
   void initState() {
     getdarkmodepreviousstate();
-    getAppModeState();
+    addFirebaseTripsListen();
+    addFirebaseNotificationsListen();
     initializeNotifications();
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
@@ -184,21 +186,6 @@ class _homepageState extends State<homepage> {
     }
   }
 
-  getAppModeState() async {
-    final prefs = await SharedPreferences.getInstance();
-    bool? previousState = prefs.getBool("setGuideMode");
-    guideMode = previousState ?? false;
-
-    if (guideMode) {
-      AppUser guide = userProvider.user!;
-      if (guide.accountValidated) {
-        addFirebaseTripsListen();
-      }
-    }
-
-    addFirebaseNotificationsListen();
-  }
-
   @override
   void dispose() {
     print("dispose homepage");
@@ -215,32 +202,41 @@ class _homepageState extends State<homepage> {
 
     bool isFirstTime = true;
     listener = usersStream.listen((onData) async {
-      if (!isFirstTime) {
-        for (var change in onData.docChanges) {
-          if (change.type == DocumentChangeType.added) {
-            Trip t = Trip.fromFirestore(change.doc, null);
-            if ((t.status == 'pending' && await checkGuideRequirements(t) && await AppUser.isGuideAvailable(t) )
-                || (t.status == 'booked' && t.guideRef?.id == FirebaseAuth.instance.currentUser?.uid)) {
-              int duration = t.status == 'booked' ? 10 : 60;
-              playNotificationSound();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  duration: Duration(seconds: duration),
-                  content: newTripNotification(context, notifier, t),
-                ),
-              );
-            }
-          } else if (change.type == DocumentChangeType.modified) {
-            if (change.doc.get("status") == 'finished') {
-              Trip t = Trip.fromFirestore(change.doc, null);
-              if (t.clientRef?.id == FirebaseAuth.instance.currentUser?.uid && !t.rateSubmitted) {
-                // Client
+      final prefs = await SharedPreferences.getInstance();
+      bool guideMode = prefs.getBool("setGuideMode") ?? false;
 
+      for (var change in onData.docChanges) {
+        if (change.type == DocumentChangeType.added) {
+          if (guideMode && !isFirstTime) {
+            AppUser guide = userProvider.user!;
+            if (guide.accountValidated) {
+              Trip t = Trip.fromFirestore(change.doc, null);
+              if ((t.status == 'pending' && await checkGuideRequirements(t) &&
+                  await AppUser.isGuideAvailable(t))
+                  || (t.status == 'booked' && t.guideRef?.id ==
+                      FirebaseAuth.instance.currentUser?.uid)) {
+                int duration = t.status == 'booked' ? 10 : 60;
+                playNotificationSound();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    duration: Duration(seconds: duration),
+                    content: newTripNotification(context, notifier, t),
+                  ),
+                );
               }
+            }
+          }
+        } else if (change.type == DocumentChangeType.modified) {
+          if (!guideMode && change.doc.get("status") == 'finished') {
+            Trip t = Trip.fromFirestore(change.doc, null);
+            if (t.clientRef?.id == FirebaseAuth.instance.currentUser?.uid && !t.rateSubmitted) {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => TourFinishedScreen(t)));
             }
           }
         }
       }
+
       isFirstTime = false;
     });
   }
@@ -304,7 +300,6 @@ class _homepageState extends State<homepage> {
       iOS: iOSPlatformChannelSpecifics,
     );
 
-    print("show notification");
     await flutterLocalNotificationsPlugin.show(
       0,
       title,
