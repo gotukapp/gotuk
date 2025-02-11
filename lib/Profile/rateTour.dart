@@ -63,11 +63,12 @@ class _RateTourState extends State<RateTour> {
     userProvider = Provider.of<UserProvider>(context);
     notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
+        automaticallyImplyLeading: false,
         centerTitle: true,
         backgroundColor: notifier.getblackwhitecolor,
-        leading: BackButton(color: notifier.getwhiteblackcolor),
         title: Text("Rate Your Tour",
             style: TextStyle(color: notifier.getwhiteblackcolor,
                 fontFamily: "Gilroy Bold")),
