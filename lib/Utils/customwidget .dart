@@ -224,7 +224,7 @@ tourLayout(BuildContext context, ColorNotifier notifier, Tour tour) {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: Image.asset(
-                tour.icon,
+                tour.mainImage,
                 fit: BoxFit.fill,
               ),
             ),
@@ -244,7 +244,7 @@ tourLayout(BuildContext context, ColorNotifier notifier, Tour tour) {
                   height: MediaQuery.of(context) .size .height *
                       0.001),
               Text(
-                tour.address,
+                tour.pickupPoint,
                 style: TextStyle(
                     fontSize: 13,
                     color: notifier.getgreycolor,
@@ -260,7 +260,7 @@ tourLayout(BuildContext context, ColorNotifier notifier, Tour tour) {
                     width: MediaQuery.of(context).size.width *
                         0.3,
                     child: Text(
-                      "${tour.priceLow}€ - ${tour.priceHigh}€",
+                      "${tour.lowPrice}€ - ${tour.highPrice}€",
                       style: TextStyle(
                           fontSize: 14,
                           color: Darkblue,
@@ -325,7 +325,7 @@ guideTripLayout(BuildContext context, ColorNotifier notifier, Trip trip, bool sh
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12),
                       child: Image.asset(
-                        trip.tour.icon,
+                        trip.tour.mainImage,
                         fit: BoxFit.fill,
                       ),
                     ),
@@ -345,7 +345,7 @@ guideTripLayout(BuildContext context, ColorNotifier notifier, Trip trip, bool sh
                           height: MediaQuery.of(context) .size .height *
                               0.001),
                       Text(
-                        trip.tour.address,
+                        trip.tour.pickupPoint,
                         style: TextStyle(
                             fontSize: 13,
                             color: notifier.getwhiteblackcolor,
@@ -462,7 +462,7 @@ clientTripLayout(BuildContext context, ColorNotifier notifier, Trip trip) {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
                                 child: Image.asset(
-                                    trip.tour.img,
+                                    trip.tour.mainImage,
                                     fit: BoxFit.fill
                                 ),
                               ),
@@ -657,7 +657,7 @@ newTripNotification(BuildContext context, ColorNotifier notifier, Trip trip) {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(12),
                           child: Image.asset(
-                            trip.tour.icon,
+                            trip.tour.mainImage,
                             fit: BoxFit.fill,
                           ),
                         ),
@@ -677,7 +677,7 @@ newTripNotification(BuildContext context, ColorNotifier notifier, Trip trip) {
                               height: MediaQuery.of(context) .size .height *
                                   0.001),
                           Text(
-                            trip.tour.address,
+                            trip.tour.pickupPoint,
                             style: TextStyle(
                                 fontSize: 13,
                                 color: notifier.getwhiteblackcolor,
@@ -919,101 +919,6 @@ Widget selectDetail({heading, image, text, icon, onclick, notifier}) {
     ],
   );
 }
-
-List hotelList = [
-  {
-    "id": 1,
-    "title": "Lisboa Old City",
-    "duration": "1h30 - 2h",
-    "img": "assets/images/eco-tuk-tours.jpg",
-    "price": "26€",
-    "priceLow": 115,
-    "priceHigh": 148,
-    "address": "Sé de Lisboa"
-  },
-  {
-    "id": 2,
-    "title": "Lisboa New City",
-    "duration": "1h30",
-    "img": "",
-    "price": "32€",
-    "priceLow": 110,
-    "priceHigh": 135,
-    "address": "Terreiro do Paço (Praça do Comércio)"
-  },
-  {
-    "id": 3,
-    "title": "Discoveries in Belém",
-    "duration": "1h30 - 2h30",
-    "img": "",
-    "price": "34€",
-    "priceLow": 140,
-    "priceHigh": 180,
-    "address": "Mosteiro dos Jerónimos"
-  },
-  {
-    "id": 4,
-    "title": "Cristo Rei",
-    "duration": "1h30 - 2h30",
-    "img": "",
-    "price": "36€",
-    "priceLow": 95,
-    "priceHigh": 135,
-    "address": "Lisboa"
-  },
-  {
-    "id": 5,
-    "title": "Three sight hills",
-    "duration": "1h30 - 2h",
-    "img": "",
-    "price": "38€",
-    "priceLow": 105,
-    "priceHigh": 152,
-    "address": "Parque Eduardo VII, Lisboa"
-  },
-  {
-    "id": 6,
-    "title": "Instant Book",
-    "img": "",
-    "price": "40€",
-    "priceLow": 115,
-    "priceHigh": 148,
-    "address": "1, Voznesensky Avenue"
-  }
-];
-
-List hotelList2 = [
-  {
-    "id": "1",
-    "title": "Grand Park City Tuk Tuk",
-    "img": "assets/images/eco-tuk-tours.jpg",
-    "price": "26€/",
-    "address": "155 Rajadamri Road, Bangkok 10330 Thailand",
-    "Night": "Tour",
-    "review": "4.9",
-    "reviewCount": "(160 Reviews)"
-  },
-  {
-    "id": "2",
-    "title": "Lisbon Tuk Tuk",
-    "img": "",
-    "price": "28€/",
-    "address": "",
-    "Night": "Tour",
-    "review": "4.8",
-    "reviewCount": "(150 Reviews)"
-  },
-  {
-    "id": "3",
-    "title": "Cascais Tour",
-    "img": "",
-    "price": "30€/",
-    "address": "",
-    "Night": "Tour",
-    "review": "4.7",
-    "reviewCount": "(140 Reviews)"
-  }
-];
 
 List guideLanguages = [
   {

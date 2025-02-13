@@ -1,52 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-Tour tour1 = Tour("lrBbhAD64JMbq81yjUAF",
-    "Lisboa Old City",
-    "1h30 - 2h",
-    5,
-    "assets/images/tour1_img1.jpg",
-    ["assets/images/tour1_img1.jpg","assets/images/tour1_img2.jpg","assets/images/tour1_img3.jpg","assets/images/tour1_img4.jpg"],
-    115, 148,
-    "Sé de Lisboa",
-    "assets/images/tour1_img1.jpg",
-    4.5,
-    coords, starPoints);
-Tour tour2 = Tour("iPvTzM9QAK99KjlmWOQc", "Lisboa New City",
-    "1h30",
-    4,
-    "assets/images/tour2_img4.jpg",
-    ["assets/images/tour2_img4.jpg","assets/images/tour2_img2.jpg","assets/images/tour2_img3.jpg"],
-    110, 135,
-    "Chiado Garrett",
-    "assets/images/tour2_img4.jpg", 4.9, coords, starPoints2);
-Tour tour3 = Tour("iFeHZGf61ZR6RsCxZFUf", "Discoveries in Belém",
-    "2h - 2h30",
-    6,
-    "assets/images/tour3_img1.jpg",
-    ["assets/images/tour3_img1.jpg","assets/images/tour3_img2.jpg","assets/images/tour3_img3.jpg","assets/images/tour3_img4.jpg"],
-    140, 180,
-    "Mosteiro dos Jerónimos",
-    "assets/images/tour3_img1.jpg", 4.6, coords, starPoints3);
-Tour tour4 = Tour("QbVWW17rwjARJLNwWQ5S", "Cristo Rei",
-    "2h - 2h30",
-    6,
-    "assets/images/tour4_img1.jpg",
-    ["assets/images/tour4_img1.jpg"],
-    95, 135,
-    "Lisboa", "assets/images/tour4_img1.jpg", 4.6, coords, starPoints4);
-Tour tour5 = Tour("s8xkuv1KCEfOAvOe5V8W",
-    "Three sight hills",
-    "1h30 - 2h",
-    5,
-    "assets/images/tour5_img1.jpg",
-    ["assets/images/tour5_img1.jpg", "assets/images/tour5_img2.jpg","assets/images/tour5_img3.jpg"],
-    105, 152,
-    "Parque Eduardo VII, Lisboa", "assets/images/tour5_img1.jpg", 4.7, coords, starPoints5);
-
-List<Tour> tourList = [tour1, tour2, tour3, tour5];
-
-List<Tour> nearbyTours = [tour1, tour2, tour3];
-
 List coords = [
   { "lat": 38.709819267469186, "lng": -9.1334956851527, "course": 50 },
   { "lat": 38.709829, "lng": -9.133445, "course": 30 },
@@ -155,55 +108,70 @@ List starPoints5 = [
 
 class Tour {
   final String id;
+  final bool isActive;
   final String name;
-  final String duration;
+  final int duration;
+  final String durationDescription;
   final int durationSlots;
-  final String img;
+  final String mainImage;
   final List<String> images;
-  final double priceLow;
-  final double priceHigh;
-  final String address;
-  final String icon;
+  final double lowPrice;
+  final double highPrice;
+  final String pickupPoint;
   final num rating;
-  final List coords;
-  final List starPoints;
+  final List? coords;
+  final List? starPoints;
+  final List<String> pickupPoints;
   bool? favorite;
 
+  static List<Tour> availableTours = [];
+  static List<Tour> allTours = [];
 
-  Tour(this.id, this.name, this.duration, this.durationSlots, this.img, this.images, this.priceLow,
-      this.priceHigh, this.address, this.icon, this.rating, this.coords, this.starPoints);
+  Tour(this.id, this.isActive, this.name, this.duration, this.durationDescription, this.durationSlots, this.mainImage, this.images, this.lowPrice,
+      this.highPrice, this.pickupPoint, this.rating, this.coords, this.starPoints, this.pickupPoints);
 
-  Tour.fromJson(Map<String, dynamic> json)
-      : id = json['id'] as String,
-        name = json['name'] as String,
-        duration = json['duration'] as String,
-        durationSlots = json['durationSlots'] as int,
-        img = json['img'] as String,
-        images = json['images'] as List<String>,
-        priceLow = json['priceLow'] as double,
-        priceHigh = json['priceHigh'] as double,
-        address = json['address'] as String,
-        icon = json['icon'] as String,
-        rating = json['rating'] as double,
-        coords = json['coords'] as List,
-        starPoints = json['starPoints'] as List;
+  factory Tour.fromFirestore(
+      DocumentSnapshot<Map<String, dynamic>> snapshot,
+      SnapshotOptions? options,
+      ) {
+    final data = snapshot.data();
+    Tour t = Tour(snapshot.id,
+        data?['isActive'],
+        data?['name'],
+        data?['duration'],
+        data?['durationDescription'],
+        data?['durationSlots'],
+        data?['mainImage'],
+        (data?['images'] as List<dynamic>).cast<String>(),
+        (data?['lowPrice'] as num).toDouble(),
+        (data?['highPrice'] as num).toDouble(),
+        data?['pickupPoint'],
+        data?['rating'],
+        data?['coords'],
+        data?['starPoints'],
+        (data?['pickupPoints'] as List<dynamic>).cast<String>()
+    );
+    return t;
+  }
 
-  Map<String, dynamic> toJson() =>
-      {
-        'id': id,
-        'title': name,
-        'duration': duration,
-        'durationSlots': durationSlots,
-        'img': img,
-        'images': images,
-        'priceLow': priceLow,
-        'priceHigh': priceHigh,
-        'address': address,
-        'icon': icon,
-        'rating': rating,
-        'coords': coords,
-        'starPoints': starPoints
-      };
+  Map<String, dynamic> toFirestore() {
+    return {
+      'isActive': isActive,
+      'name': name,
+      'duration': duration,
+      'durationDescription': durationDescription,
+      'durationSlots': durationSlots,
+      'mainImage': mainImage,
+      'images': images,
+      'lowPrice': lowPrice,
+      'highPrice': highPrice,
+      'pickupPoint': pickupPoint,
+      'rating': rating,
+      'coords': coords,
+      'starPoints': starPoints,
+      'pickupPoints': pickupPoints
+    };
+  }
 
   double getTourPrice(bool smallPriceSelected) {
     return getTotalPrice(smallPriceSelected) - getFeePrice(smallPriceSelected);
@@ -214,7 +182,7 @@ class Tour {
   }
 
   double getTotalPrice(bool smallPriceSelected) {
-    return smallPriceSelected ? priceLow : priceHigh;
+    return smallPriceSelected ? lowPrice : highPrice;
   }
 
   Future<int?> get totalReviews async {
@@ -254,5 +222,4 @@ class Tour {
       'creationDate': FieldValue.serverTimestamp()
     });
   }
-
 }

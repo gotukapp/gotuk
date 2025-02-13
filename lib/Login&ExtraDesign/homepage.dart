@@ -5,6 +5,7 @@ import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:dm/Login&ExtraDesign/tripDetail.dart';
 import 'package:dm/Login&ExtraDesign/tripFinished.dart';
 import 'package:dm/Profile/profile.dart';
@@ -17,9 +18,11 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../Domain/appUser.dart';
+import '../Domain/tour.dart';
 import '../Message/chatting.dart';
 import '../Providers/userProvider.dart';
 import '../Guide/dashboard.dart';
@@ -60,7 +63,9 @@ class _homepageState extends State<homepage> {
   void initState() {
     getdarkmodepreviousstate();
     getAppModeState();
-    addFirebaseTripsListen();
+    loadTours();
+    addTourListen();
+    addTripsListen();
     addFirebaseNotificationsListen();
     initializeNotifications();
 
@@ -197,7 +202,7 @@ class _homepageState extends State<homepage> {
     super.dispose();
   }
 
-  void addFirebaseTripsListen() {
+  void addTripsListen() {
     final Stream<QuerySnapshot<Map<String, dynamic>>> usersStream =
     FirebaseFirestore.instance.collection('trips').snapshots();
 
@@ -258,6 +263,29 @@ class _homepageState extends State<homepage> {
         }
       }
       isFirstTime = false;
+    });
+  }
+
+  void addTourListen() {
+    final Stream<QuerySnapshot<Map<String, dynamic>>> usersStream =
+    FirebaseFirestore.instance.collection('tours').snapshots();
+
+    listener = usersStream.listen((onData) async {
+      try {
+        for (var change in onData.docChanges) {
+          if (change.type == DocumentChangeType.modified) {
+            Tour updatedTour = Tour.fromFirestore(change.doc, null);
+            Tour? tour = Tour.availableTours.firstWhereOrNull((t) =>
+            t.id == change.doc.id);
+            if (tour != null) {
+              Tour.availableTours.remove(tour);
+              Tour.availableTours.add(updatedTour);
+            }
+          }
+        }
+      } catch (exception, stackTrace) {
+        await Sentry.captureException(exception,stackTrace: stackTrace);
+      }
     });
   }
 
@@ -343,5 +371,24 @@ class _homepageState extends State<homepage> {
     final prefs = await SharedPreferences.getInstance();
     bool? previousState = prefs.getBool("setGuideMode");
     guideMode = previousState ?? false;
+  }
+
+  void loadTours() {
+    FirebaseFirestore.instance.collection("tours").get().then(
+            (querySnapshot) {
+          for (var docSnapshot in querySnapshot.docs) {
+            try {
+              print('${docSnapshot.id} => ${docSnapshot.data()}');
+              Tour tour = Tour.fromFirestore(docSnapshot, null);
+              if (tour.isActive) {
+                Tour.availableTours.add(tour);
+              }
+              Tour.allTours.add(tour);
+            } catch (e) {
+              print(e);
+            }
+          }
+        }
+    );
   }
 }

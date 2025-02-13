@@ -75,7 +75,7 @@ class _checkoutState extends State<checkout> {
   @override
   void initState() {
     guidesAvailable = 0;
-    tour = tourList.firstWhere((tour) => tour.id == widget.tourId);
+    tour = Tour.availableTours.firstWhere((tour) => tour.id == widget.tourId);
     getdarkmodepreviousstate();
     super.initState();
   }
@@ -91,8 +91,8 @@ class _checkoutState extends State<checkout> {
   @override
   Widget build(BuildContext context) {
     if(widget.goNow){
-      tours.addAll(tourList);
-      carrosselDefaultPage = tourList.indexOf(tour!);
+      tours.addAll(Tour.availableTours);
+      carrosselDefaultPage = Tour.availableTours.indexOf(tour!);
       if (DateTime.now().hour >= 19) {
         selectedDate = DateTime.now().add(const Duration(hours: 24));
       } else {
@@ -163,7 +163,7 @@ class _checkoutState extends State<checkout> {
                     onPageChanged: (index, reason) {
                       setState(() {
                         pickupPointSelected = null;
-                        tour = tourList[index%4];
+                        tour = Tour.availableTours[index%4];
                       });
                     }),
                 items: tours.map((t) {
@@ -210,7 +210,7 @@ class _checkoutState extends State<checkout> {
                                     fontSize: 14,
                                     color: WhiteColor,
                                     fontFamily: "Gilroy Bold")),
-                            Text("${tour?.priceLow}€",
+                            Text("${tour?.lowPrice}€",
                                 style: TextStyle(
                                     fontSize: 14,
                                     color: WhiteColor,
@@ -240,7 +240,7 @@ class _checkoutState extends State<checkout> {
                                     fontSize: 14,
                                     color: WhiteColor,
                                     fontFamily: "Gilroy Bold")),
-                              Text("${tour?.priceHigh}€",
+                              Text("${tour?.highPrice}€",
                                 style: TextStyle(
                                     fontSize: 14,
                                     color: WhiteColor,
@@ -260,7 +260,7 @@ class _checkoutState extends State<checkout> {
                     text: pickupPointSelected ?? "Select Pickup Point",
                     icon: Icons.keyboard_arrow_down,
                     onclick: () {
-                      pickupPointBottomSheet(tour!.starPoints.map((value) => value["name"].toString()).toList());
+                      pickupPointBottomSheet(tour!.pickupPoints);
                     },
                     notifier: notifier
                 )],
@@ -551,7 +551,7 @@ class _checkoutState extends State<checkout> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: Image.asset(
-                tour!.icon,
+                tour!.mainImage,
                 fit: BoxFit.fill,
               ),
             ),
@@ -572,7 +572,7 @@ class _checkoutState extends State<checkout> {
               SizedBox(
                   height: MediaQuery.of(context).size.height * 0.006),
               Text(
-                t.address,
+                t.pickupPoint,
                 style: TextStyle(
                     fontSize: 14,
                     color: notifier.getwhiteblackcolor,

@@ -167,7 +167,7 @@ class _notificationState extends State<notification> {
                                     else
                                       CircleAvatar(
                                         backgroundColor: WhiteColor,
-                                        backgroundImage: AssetImage(t.tour.icon),
+                                        backgroundImage: AssetImage(t.tour.mainImage),
                                         radius: 25,
                                       ),
                                     const SizedBox(width: 8),

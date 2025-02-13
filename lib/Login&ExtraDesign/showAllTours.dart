@@ -43,12 +43,12 @@ class _showAllToursState extends State<showAllTours> {
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
         child: SizedBox(
             child: ListView.builder(
-          itemCount: tourList.length,
+          itemCount: Tour.availableTours.length,
           itemBuilder: (BuildContext context, int index) {
             return InkWell(
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => TourDetail(tourList[index].id)));
+                    builder: (context) => TourDetail(Tour.availableTours[index].id)));
               },
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
@@ -71,7 +71,7 @@ class _showAllToursState extends State<showAllTours> {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(15),
                               child: Image.asset(
-                                tourList[index].img,
+                                Tour.availableTours[index].mainImage,
                                 height: 120,
                                 fit: BoxFit.cover,
                               ),
@@ -89,7 +89,7 @@ class _showAllToursState extends State<showAllTours> {
                                       color: lightBlack),
                                   child: Center(
                                     child: Text(
-                                      "${tourList[index].priceLow}€ - ${tourList[index].priceHigh}€",
+                                      "${Tour.availableTours[index].lowPrice}€ - ${Tour.availableTours[index].highPrice}€",
                                       style: TextStyle(
                                           fontSize: 12,
                                           color: notifier.getdarkwhitecolor,
@@ -103,7 +103,7 @@ class _showAllToursState extends State<showAllTours> {
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.02),
                       Text(
-                        tourList[index].name,
+                        Tour.availableTours[index].name,
                         style: TextStyle(
                             fontSize: 15,
                             fontFamily: "Gilroy Bold",
@@ -112,7 +112,7 @@ class _showAllToursState extends State<showAllTours> {
                       SizedBox(
                           height: MediaQuery.of(context).size.height * 0.01),
                       Text(
-                        tourList[index].address,
+                        Tour.availableTours[index].pickupPoint,
                         style: TextStyle(
                             fontSize: 12,
                             color: notifier.getgreycolor,

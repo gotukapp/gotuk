@@ -179,7 +179,7 @@ class _TripDetailState extends State<TripDetail> {
                                       ],
                                     ),
                                     Text(
-                                      trip!.tour.address,
+                                      trip!.tour.pickupPoint,
                                       style: TextStyle(
                                           color: notifier.getwhiteblackcolor,
                                           fontSize: 18,

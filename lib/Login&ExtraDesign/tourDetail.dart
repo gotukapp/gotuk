@@ -46,7 +46,7 @@ class _TourDetailState extends State<TourDetail> {
   late ColorNotifier notifier;
   @override
   Widget build(BuildContext context) {
-    tour = tourList.firstWhere((tour) => tour.id == widget.tourId);
+    tour = Tour.availableTours.firstWhere((tour) => tour.id == widget.tourId);
     notifier = Provider.of<ColorNotifier>(context, listen: true);
 
     final Stream<QuerySnapshot<Map<String, dynamic>>> tourReviews = FirebaseFirestore.instance
@@ -241,7 +241,7 @@ class _TourDetailState extends State<TourDetail> {
                                   ),
                                   const SizedBox(width: 5),
                                   Text(
-                                    tour!.address,
+                                    tour!.pickupPoint,
                                     style: TextStyle(
                                         color: notifier.getwhiteblackcolor,
                                         fontSize: 16,
@@ -276,14 +276,14 @@ class _TourDetailState extends State<TourDetail> {
                                         ),
                                         const SizedBox(width: 10),
                                         Text(
-                                          "${tour!.priceLow}€",
+                                          "${tour!.lowPrice}€",
                                           style: TextStyle(
                                               fontSize: 16,
                                               color: notifier.getdarkbluecolor,
                                               fontFamily: "Gilroy Bold"),
                                         ),
                                         Text(
-                                          " (Price per person ${(tour!.priceLow/3).toStringAsFixed(1)}€)",
+                                          " (Price per person ${(tour!.lowPrice/3).toStringAsFixed(1)}€)",
                                           style: TextStyle(
                                               fontFamily: "Gilroy Medium",
                                               fontSize: 14,
@@ -303,14 +303,14 @@ class _TourDetailState extends State<TourDetail> {
                                       ),
                                       const SizedBox(width: 10),
                                       Text(
-                                        "${tour!.priceHigh}€",
+                                        "${tour!.highPrice}€",
                                         style: TextStyle(
                                             fontSize: 16,
                                             color: notifier.getdarkbluecolor,
                                             fontFamily: "Gilroy Bold"),
                                       ),
                                       Text(
-                                        " (Price per person ${(tour!.priceHigh/6).toStringAsFixed(1)}€)",
+                                        " (Price per person ${(tour!.highPrice/6).toStringAsFixed(1)}€)",
                                         style: TextStyle(
                                             fontFamily: "Gilroy Medium",
                                             fontSize: 14,
@@ -334,7 +334,7 @@ class _TourDetailState extends State<TourDetail> {
                               ),
                               const SizedBox(width: 10),
                               Text(
-                                tour!.duration,
+                                tour!.durationDescription,
                                 style: TextStyle(
                                     fontSize: 16,
                                     color: notifier.getwhiteblackcolor,

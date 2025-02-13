@@ -80,7 +80,7 @@ class Trip {
   }
 
   Tour get tour {
-    return tourList.firstWhere((t) => t.id == tourRef.id);
+    return Tour.availableTours.firstWhere((t) => t.id == tourRef.id);
   }
 
   double get price {
