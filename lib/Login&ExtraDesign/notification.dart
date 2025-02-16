@@ -146,7 +146,7 @@ class _notificationState extends State<notification> {
                                     builder: (context) => Chatting(trip: trip, sendTo: appUser)));
                               } else {
                                 Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => TripDetail(notificationList[index]["tripRef"].id, true)));
+                                    builder: (context) => TripDetail(notificationList[index]["tripRef"].id)));
                               }
                               await FirebaseFirestore.instance
                                   .collection('notifications')

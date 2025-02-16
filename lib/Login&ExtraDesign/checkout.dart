@@ -1348,7 +1348,7 @@ class _checkoutState extends State<checkout> {
 
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => TripDetail(docRef.id, false)),
+        MaterialPageRoute(builder: (context) => TripDetail(docRef.id)),
             (Route<dynamic> route) => route.isFirst, // Keep only the homepage
       );
 

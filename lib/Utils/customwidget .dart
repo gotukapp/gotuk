@@ -285,7 +285,7 @@ guideTripLayout(BuildContext context, ColorNotifier notifier, Trip trip, bool sh
   return InkWell(
     onTap: () {
       Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => TripDetail(trip.id!, true)));
+          builder: (context) => TripDetail(trip.id!)));
     },
     child: Container(
       width: double.infinity,
@@ -360,7 +360,7 @@ guideTripLayout(BuildContext context, ColorNotifier notifier, Trip trip, bool sh
                           Container(
                             width: MediaQuery.of(context).size.width *
                                 0.3,
-                            child:  Text("${trip.persons == 3 ? "1-4" : "5-6"} ${AppLocalizations.of(context)!.persons}",
+                            child:  Text("${trip.persons < 5 ? "1-4" : "5-6"} ${AppLocalizations.of(context)!.persons}",
                               style: TextStyle(
                               fontSize: 15,
                               color: notifier.getwhiteblackcolor,
@@ -384,7 +384,7 @@ guideTripLayout(BuildContext context, ColorNotifier notifier, Trip trip, bool sh
                             style: TextStyle(
                                 fontSize: 15, color: notifier.getwhiteblackcolor, fontFamily: "Gilroy Medium")),
                         const SizedBox(height: 4),
-                        Text("${trip.tour.getTourPrice(trip.persons == 3)}€",
+                        Text("${trip.tour.getTourPrice(trip.persons < 5)}€",
                             style: TextStyle(
                                 fontSize: 16, color: Darkblue, fontFamily: "Gilroy Bold")),
                       ],
@@ -437,7 +437,7 @@ clientTripLayout(BuildContext context, ColorNotifier notifier, Trip trip) {
     child: InkWell(
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => TripDetail(trip.id!, false)));
+              builder: (context) => TripDetail(trip.id!)));
         },
         child: Container(
         height: 150,
@@ -640,7 +640,7 @@ newTripNotification(BuildContext context, ColorNotifier notifier, Trip trip) {
                               style: TextStyle(
                                   fontSize: 15, color: notifier.getwhiteblackcolor, fontFamily: "Gilroy Medium")),
                           const SizedBox(height: 4),
-                          Text("${trip.tour.getTourPrice(trip.persons == 3)}€",
+                          Text("${trip.tour.getTourPrice(trip.persons < 5)}€",
                               style: TextStyle(
                                   fontSize: 17, color: Darkblue, fontFamily: "Gilroy Bold")),
                         ],
@@ -692,7 +692,7 @@ newTripNotification(BuildContext context, ColorNotifier notifier, Trip trip) {
                               Container(
                                 width: MediaQuery.of(context).size.width *
                                     0.3,
-                                child:  Text("${trip.persons == 3 ? "1-4" : "5-6"} ${AppLocalizations.of(context)!.persons}",
+                                child:  Text("${trip.persons < 5 ? "1-4" : "5-6"} ${AppLocalizations.of(context)!.persons}",
                                     style: TextStyle(
                                         fontSize: 15,
                                         color: notifier.getwhiteblackcolor,

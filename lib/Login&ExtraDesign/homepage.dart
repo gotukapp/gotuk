@@ -18,7 +18,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../Domain/appUser.dart';
@@ -97,7 +96,7 @@ class _homepageState extends State<homepage> {
       Trip trip = tripSnapshot.data()!;
       DocumentSnapshot<AppUser>? snapshot;
       if (guideMode) {
-        final convertedDocRef = trip.guideRef!.withConverter<AppUser>(
+        final convertedDocRef = trip.clientRef!.withConverter<AppUser>(
           fromFirestore: AppUser.fromFirestore,
           toFirestore: (AppUser user, _) => user.toFirestore(),
         );
@@ -114,7 +113,7 @@ class _homepageState extends State<homepage> {
           builder: (context) => Chatting(trip: trip, sendTo: appUser)));
     } else {
       Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => TripDetail(tripId, true)));
+          builder: (context) => TripDetail(tripId)));
     }
   }
 
@@ -271,20 +270,16 @@ class _homepageState extends State<homepage> {
     FirebaseFirestore.instance.collection('tours').snapshots();
 
     listener = usersStream.listen((onData) async {
-      try {
-        for (var change in onData.docChanges) {
-          if (change.type == DocumentChangeType.modified) {
-            Tour updatedTour = Tour.fromFirestore(change.doc, null);
-            Tour? tour = Tour.availableTours.firstWhereOrNull((t) =>
-            t.id == change.doc.id);
-            if (tour != null) {
-              Tour.availableTours.remove(tour);
-              Tour.availableTours.add(updatedTour);
-            }
+      for (var change in onData.docChanges) {
+        if (change.type == DocumentChangeType.modified) {
+          Tour updatedTour = Tour.fromFirestore(change.doc, null);
+          Tour? tour = Tour.availableTours.firstWhereOrNull((t) =>
+          t.id == change.doc.id);
+          if (tour != null) {
+            Tour.availableTours.remove(tour);
+            Tour.availableTours.add(updatedTour);
           }
         }
-      } catch (exception, stackTrace) {
-        await Sentry.captureException(exception,stackTrace: stackTrace);
       }
     });
   }
@@ -376,19 +371,13 @@ class _homepageState extends State<homepage> {
   void loadTours() {
     FirebaseFirestore.instance.collection("tours").get().then(
             (querySnapshot) {
-          for (var docSnapshot in querySnapshot.docs) {
-            try {
-              print('${docSnapshot.id} => ${docSnapshot.data()}');
-              Tour tour = Tour.fromFirestore(docSnapshot, null);
-              if (tour.isActive) {
-                Tour.availableTours.add(tour);
-              }
-              Tour.allTours.add(tour);
-            } catch (e) {
-              print(e);
-            }
-          }
+      for (var docSnapshot in querySnapshot.docs) {
+        Tour tour = Tour.fromFirestore(docSnapshot, null);
+        if (tour.isActive) {
+          Tour.availableTours.add(tour);
         }
-    );
+        Tour.allTours.add(tour);
+      }
+    });
   }
 }
