@@ -46,19 +46,23 @@ class FullMapState extends State<FullMap> {
 
   _onMapCreated(MapLibreMapController controller) {
     mapController = controller;
+    Tour tour1 = Tour.availableTours[0];
+    if (tour1.coords != null) {
+      List<LatLng> lineCoordinates = tour1.coords!
+          .map((c) => LatLng(c["lat"], c["lng"]))
+          .toList();
 
-    List<LatLng> lineCoordinates = tour1.coords
-        .map((c) => LatLng(c["lat"], c["lng"]))
-        .toList();
-
-    if (lineCoordinates.isNotEmpty) {
-      LatLngBounds bounds = LatLngBounds(
-        southwest: lineCoordinates.reduce((a, b) =>
-            LatLng(a.latitude < b.latitude ? a.latitude : b.latitude, a.longitude < b.longitude ? a.longitude : b.longitude)),
-        northeast: lineCoordinates.reduce((a, b) =>
-            LatLng(a.latitude > b.latitude ? a.latitude : b.latitude, a.longitude > b.longitude ? a.longitude : b.longitude)),
-      );
-      mapController!.moveCamera(CameraUpdate.newLatLngBounds(bounds));
+      if (lineCoordinates.isNotEmpty) {
+        LatLngBounds bounds = LatLngBounds(
+          southwest: lineCoordinates.reduce((a, b) =>
+              LatLng(a.latitude < b.latitude ? a.latitude : b.latitude,
+                  a.longitude < b.longitude ? a.longitude : b.longitude)),
+          northeast: lineCoordinates.reduce((a, b) =>
+              LatLng(a.latitude > b.latitude ? a.latitude : b.latitude,
+                  a.longitude > b.longitude ? a.longitude : b.longitude)),
+        );
+        mapController!.moveCamera(CameraUpdate.newLatLngBounds(bounds));
+      }
     }
   }
 
@@ -75,98 +79,110 @@ class FullMapState extends State<FullMap> {
   }
 
   _onStyleLoadedCallback() async {
-    addImageFromAsset("star-marker", "assets/images/star.png");
-    mapController?.addLine(
-      LineOptions(
-          draggable: false,
-          lineColor: "#ff0000",
-          lineWidth: 4.0,
-          lineOpacity: 0.7,
-          geometry: tour1.coords.map((c) => LatLng(c["lat"], c["lng"])).toList()
-      ),
-    );
+    Tour tour1 = Tour.availableTours[0];
+    if (tour1.coords != null && tour1.starPoints != null) {
+      addImageFromAsset("star-marker", "assets/images/star.png");
+      mapController?.addLine(
+        LineOptions(
+            draggable: false,
+            lineColor: "#ff0000",
+            lineWidth: 4.0,
+            lineOpacity: 0.7,
+            geometry: tour1.coords!
+                .map((c) => LatLng(c["lat"], c["lng"]))
+                .toList()
+        ),
+      );
 
-    late List points = [];
-    for (var a in tour1.starPoints) {
+      late List points = [];
+      for (var a in tour1.starPoints!) {
         points.add({
           "type": "Feature",
           "id": a["index"],
           "properties": {
-            "name":  a["name"],
+            "name": a["name"],
           },
           "geometry": {
             "type": "Point",
-            "coordinates": [tour1.coords[a["index"]]["lng"], tour1.coords[a["index"]]["lat"]]
+            "coordinates": [
+              tour1.coords![a["index"]]["lng"],
+              tour1.coords![a["index"]]["lat"]
+            ]
           }
         });
-    }
-    dynamic _points = {
-      "type": "FeatureCollection",
-      "features": points
-    };
-
-    await mapController!.addGeoJsonSource("points", _points);
-
-    await mapController!.addSymbolLayer(
-      "points",
-      "symbols",
-      const SymbolLayerProperties(
-        iconImage: "star-marker", //  "{type}-15",
-        iconSize: 0.8,
-        iconAllowOverlap: true,
-        textField: [Expressions.get, "name"],
-        textSize: 13,
-        textAllowOverlap: true,
-        textFont: ['DIN Offc Pro Bold', 'Arial Unicode MS Regular'],
-        textAnchor: 'top',
-        textOffset: [ Expressions.literal, [0, 0.8] ],
-        textColor: '#000000',
-        textHaloBlur: 1,
-        textHaloColor: '#ffffff',
-        textHaloWidth: 0.8
-      ),
-    );
-
-    circle = await mapController!.addCircle(
-      CircleOptions(
-          geometry: LatLng(tour1.coords[0]["lat"], tour1.coords[0]["lng"]),
-          circleColor: BlackColor.toString()),
-    );
-    showStarPointImage(tour1.starPoints[0]["img"]);
-
-    List<dynamic> startPointsIndex = tour1.starPoints.map((a) => a["index"]).toList();
-    routeTimer = Timer.periodic(const Duration(milliseconds: 1000), (t) {
-      if (!showStarPointIsActive) {
-        index = index + 1;
       }
+      dynamic _points = {
+        "type": "FeatureCollection",
+        "features": points
+      };
 
-      if (index == tour1.coords.length) {
-        index = 0;
-      }
+      await mapController!.addGeoJsonSource("points", _points);
 
-      if(!showStarPointIsActive) {
-        _updateSelectedCircle(CircleOptions(
-            geometry: LatLng(
-                tour1.coords[index]["lat"], tour1.coords[index]["lng"]),
-            circleColor: BlackColor.toString()));
+      await mapController!.addSymbolLayer(
+        "points",
+        "symbols",
+        const SymbolLayerProperties(
+            iconImage: "star-marker",
+            //  "{type}-15",
+            iconSize: 0.8,
+            iconAllowOverlap: true,
+            textField: [Expressions.get, "name"],
+            textSize: 13,
+            textAllowOverlap: true,
+            textFont: ['DIN Offc Pro Bold', 'Arial Unicode MS Regular'],
+            textAnchor: 'top',
+            textOffset: [ Expressions.literal, [0, 0.8]],
+            textColor: '#000000',
+            textHaloBlur: 1,
+            textHaloColor: '#ffffff',
+            textHaloWidth: 0.8
+        ),
+      );
 
-        rotateCamera(tour1.coords[index]);
-      }
+      circle = await mapController!.addCircle(
+        CircleOptions(
+            geometry: LatLng(tour1.coords![0]["lat"], tour1.coords![0]["lng"]),
+            circleColor: BlackColor.toString()),
+      );
+      showStarPointImage(tour1.starPoints![0]["img"]);
 
-      if (startPointsIndex.contains(index)) {
-        dynamic starPoint = tour1.starPoints.firstWhere((a) => a["index"] == index);
-
-        overlayEntry.remove();
-        showStarPointImage(starPoint["img"]);
-
-        if(!showStarPointIsActive) {
-          showStarPointIsActive = true;
-          showStarPoint = Timer(const Duration(seconds: 5), () {
-            showStarPointIsActive = false;
-          });
+      List<dynamic> startPointsIndex = tour1.starPoints!
+          .map((a) => a["index"])
+          .toList();
+      routeTimer = Timer.periodic(const Duration(milliseconds: 1000), (t) {
+        if (!showStarPointIsActive) {
+          index = index + 1;
         }
-      }
-    });
+
+        if (index == tour1.coords!.length) {
+          index = 0;
+        }
+
+        if (!showStarPointIsActive) {
+          _updateSelectedCircle(CircleOptions(
+              geometry: LatLng(
+                  tour1.coords![index]["lat"], tour1.coords![index]["lng"]),
+              circleColor: BlackColor.toString()));
+
+          rotateCamera(tour1.coords![index]);
+        }
+
+        if (startPointsIndex.contains(index)) {
+          dynamic starPoint = tour1.starPoints!.firstWhere((a) =>
+          a["index"] == index);
+
+          overlayEntry.remove();
+          showStarPointImage(starPoint["img"]);
+
+          if (!showStarPointIsActive) {
+            showStarPointIsActive = true;
+            showStarPoint = Timer(const Duration(seconds: 5), () {
+              showStarPointIsActive = false;
+            });
+          }
+        }
+      });
+    }
   }
 
   void showStarPointImage(String img) {

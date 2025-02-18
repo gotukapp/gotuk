@@ -84,7 +84,7 @@ class _ChattingState extends State<Chatting> {
                         children: [
                           Positioned(
                             child: Image.asset(
-                              "assets/images/CircleAvatarimage.png",
+                              "assets/images/avatar.png",
                               height: 50,
                               width: 60,
                             ),

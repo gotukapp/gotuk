@@ -48,15 +48,6 @@ class _homeState extends State<home> {
           .where("status", whereIn: ["pending", "booked", 'started'])
           .orderBy("date");
 
-
-      FirebaseFirestore.instance.collection("tours").get().then(
-            (querySnapshot) {
-          for (var docSnapshot in querySnapshot.docs) {
-            print('${docSnapshot.id} => ${docSnapshot.data()}');
-          }
-        }
-      );
-
       pendingTrips.get().then( (querySnapshot) {
           setState(() {
             bookedTrips?.clear();
@@ -214,7 +205,7 @@ class _homeState extends State<home> {
                             onTap: () {
                               Navigator.of(context)
                                   .push(MaterialPageRoute(
-                                  builder: (context) => checkout(tourId: tourList[0].id, goNow: true)));
+                                  builder: (context) => checkout(tourId: Tour.availableTours[0].id, goNow: true)));
                             },
                             child: Container(
                               height: 50,
@@ -305,7 +296,7 @@ class _homeState extends State<home> {
                               height: 240,
                               child: ListView.builder(
                                 scrollDirection: Axis.horizontal,
-                                itemCount: tourList.length,
+                                itemCount: Tour.availableTours.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   return Padding(
                                       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
@@ -313,7 +304,7 @@ class _homeState extends State<home> {
                                         onTap: () {
                                           Navigator.of(context).push(MaterialPageRoute(
                                               builder: (context) =>
-                                                  TourDetail(tourList[index].id)));
+                                                  TourDetail(Tour.availableTours[index].id)));
                                         },
                                         child: Stack(
                                             children: [
@@ -323,7 +314,7 @@ class _homeState extends State<home> {
                                                 child: ClipRRect(
                                                   borderRadius: BorderRadius.circular(12),
                                                   child: Image.asset(
-                                                    tourList[index].icon,
+                                                    Tour.availableTours[index].mainImage,
                                                     fit: BoxFit.fill,
                                                   ),
                                                 ),
@@ -331,7 +322,7 @@ class _homeState extends State<home> {
                                               Positioned(
                                                 top: 5,
                                                 left: 185,
-                                                child: tourReview(review: tourList[0].rating),
+                                                child: tourReview(review: Tour.availableTours[index].rating),
                                               ),
                                               Container(
                                                   height: 240,
@@ -353,7 +344,7 @@ class _homeState extends State<home> {
                                                             CrossAxisAlignment.start,
                                                             children: [
                                                               Text(
-                                                                tourList[index].name.toUpperCase(),
+                                                                Tour.availableTours[index].name.toUpperCase(),
                                                                 style: TextStyle(
                                                                     fontSize: 14,
                                                                     fontFamily: "Gilroy Bold",
@@ -366,7 +357,7 @@ class _homeState extends State<home> {
                                                                       .height *
                                                                       0.0005),
                                                               Text(
-                                                                tourList[index].address,
+                                                                Tour.availableTours[index].pickupPoint,
                                                                 style: TextStyle(
                                                                     fontSize: 12,
                                                                     color: notifier.getwhiteblackcolor,
@@ -383,7 +374,7 @@ class _homeState extends State<home> {
                                                                 MainAxisAlignment.spaceBetween,
                                                                 children: [
                                                                   Text(
-                                                                      "${tourList[index].priceLow}€ - ${tourList[index].priceHigh}€",
+                                                                      "${Tour.availableTours[index].lowPrice}€ - ${Tour.availableTours[index].highPrice}€",
                                                                       style: TextStyle(
                                                                           color: Darkblue,
                                                                           fontFamily:
@@ -391,7 +382,7 @@ class _homeState extends State<home> {
                                                                   ),
                                                                   tourDuration(
                                                                       image: "assets/images/timer.png",
-                                                                      text: tourList[index].duration,
+                                                                      text: Tour.availableTours[index].durationDescription,
                                                                       radi: 0)
                                                                 ],
                                                               )
@@ -441,9 +432,9 @@ class _homeState extends State<home> {
                             shrinkWrap: true,
                             padding: EdgeInsets.zero,
                             physics: const NeverScrollableScrollPhysics(),
-                            itemCount: nearbyTours.length,
+                            itemCount: Tour.availableTours.length,
                             itemBuilder: (BuildContext context, int index) {
-                              return tourLayout(context, notifier, nearbyTours[index]);
+                              return tourLayout(context, notifier, Tour.availableTours[index]);
                             },
                           )
                         ],

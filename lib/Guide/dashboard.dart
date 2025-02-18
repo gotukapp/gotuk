@@ -69,6 +69,7 @@ class _DashboardState extends State<Dashboard> {
     final nextMonth = DateTime(now.year, now.month, now.day + 30, 0, 0, 0);
 
     final tripsCollection = FirebaseFirestore.instance.collection("trips");
+    final tuktuksCollection = FirebaseFirestore.instance.collection("tuktuks");
     final notificationsCollection = FirebaseFirestore.instance.collection("notifications");
     final userDocRef = FirebaseFirestore.instance
         .collection('users')
@@ -128,6 +129,9 @@ class _DashboardState extends State<Dashboard> {
                       return const Text("Document does not exist");
                     }
                     Map<String, dynamic>?  guide = snapshot.data!.data();
+
+                    final Stream<DocumentSnapshot<Map<String, dynamic>>> currentTukTuk = tuktuksCollection.doc(guide!["tuktuk"].id).snapshots();
+
                     return Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -219,7 +223,7 @@ class _DashboardState extends State<Dashboard> {
                                       )
                                     ],
                                   ),
-                                  if (!guide!["accountValidated"])
+                                  if (!guide["accountValidated"])
                                     ...[
                                       const SizedBox(height: 10),
                                       Container(
@@ -245,7 +249,40 @@ class _DashboardState extends State<Dashboard> {
                                   SizedBox(height: MediaQuery
                                       .of(context)
                                       .size
-                                      .height * 0.025),
+                                      .height * 0.001),
+                                  StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                                      stream: currentTukTuk,
+                                      builder: (context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
+                                        if(!snapshot.hasData) {
+                                          return Center(child: CircularProgressIndicator(color: WhiteColor));
+                                        }
+
+                                        Map<String, dynamic>? tuktuk = snapshot.data!.data();
+
+                                        return Padding(
+                                            padding: const EdgeInsets.symmetric(vertical: 10),
+                                            child: Row(
+                                              children: [
+                                                Image.asset(
+                                                  "assets/images/tuktuk.png",
+                                                  height: 20,
+                                                  width: 20,
+                                                  color: LogoColor,
+                                                ),
+                                                const SizedBox(width: 10),
+                                                Text(
+                                                  tuktuk != null ? tuktuk["licensePlate"] : 'TukTuk not found',
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: notifier.getwhiteblackcolor,
+                                                      fontFamily: "Gilroy Medium"),
+                                                )
+                                              ],
+                                            )
+                                        );
+                                      }
+                                  ),
+                                  const SizedBox(height: 10),
                                   Text(
                                     "Completed Tours",
                                     style: TextStyle(
@@ -353,7 +390,6 @@ class _DashboardState extends State<Dashboard> {
                                           fontSize: 16,
                                           color: LogoColor,
                                           fontFamily: "Gilroy Bold")),
-                                  const SizedBox(height: 8),
                                   StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                                   stream: queryCurrentTrips,
                                   builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
@@ -367,7 +403,7 @@ class _DashboardState extends State<Dashboard> {
                                     }
                                     return const SizedBox();
                                   }),
-                                  const SizedBox(height: 30),
+                                  const SizedBox(height: 20),
                                   Text("Today Tours",
                                       style: TextStyle(
                                           fontSize: 16,

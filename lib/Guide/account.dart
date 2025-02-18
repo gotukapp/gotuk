@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
+import 'package:dm/Utils/plateFormatter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -165,7 +166,7 @@ class _AccountState extends State<account> {
           expandedValue: 'Dados do Veículo',
           status: 'not approved',
           fields: [
-            { "name": "Matrícula", "description": "", "type": "String", "fieldName": "vehicleLicensePlate", "field": vehicleLicensePlate },
+            { "name": "Matrícula", "description": "", "type": "String", "fieldName": "vehicleLicensePlate", "field": vehicleLicensePlate, "formatter": PlateFormatter() },
             { "name": "Lugares", "description": "", "type": "List", "fieldName": "vehicleSeatsNumber", "field": vehicleSeatsNumber, "values": ["4","6"] },
             { "name": "Veículo Eléctrico", "description": "", "type": "Boolean", "fieldName": "vehicleType", "field": vehicleType },
             { "name": "Companhia de Seguros", "description": "Nome", "type": "String", "fieldName": "vehicleInsuranceCompanyName", "field": vehicleInsuranceCompanyName },
@@ -386,12 +387,13 @@ class _AccountState extends State<account> {
                    ).toList(),
                  ),
               if (item["type"] == 'String')
-                textfield(
+                textField(
                   fieldColor: notifier.getdarkmodecolor,
                   hintColor: notifier.getdarkgreycolor,
                   controller: item["field"],
                   text: item["description"],
-                  suffix: null),
+                  suffix: null,
+                  formatter: item["formatter"]),
              if (item["type"] == 'Date')
                selectDetail(
                    text: item["field"] != null ? DateFormat('dd/MM/yyyy').format(item["field"]!) : "Seleccionar Data",

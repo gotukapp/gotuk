@@ -47,7 +47,7 @@ class AppUser {
     };
   }
 
-  static Future<void> updateTripUnavailability(String guideId, Tour tour, DateTime tripDate, int hours, int minutes) async {
+  static Future<void> updateUserUnavailability(String guideId, Tour tour, DateTime tripDate, int hours, int minutes, bool available) async {
     for (int i = 0; i < tour.durationSlots; i++) {
       // Calculate total minutes from the starting point
       int totalMinutes = (hours * 60) + minutes +
@@ -57,8 +57,8 @@ class AppUser {
       String hour = '${newHour.toString().padLeft(2, '0')}:${newMinutes
           .toString().padLeft(2, '0')}';
       String date = DateFormat('yyyy-MM-dd').format(tripDate);
-      await updateUserCollection(date, hour, unavailableStatus);
-      await updateUnavailabilityCollection(guideId, date, hour, unavailableStatus);
+      await updateUserCollection(date, hour, available ? availableStatus : unavailableStatus);
+      await updateUnavailabilityCollection(guideId, date, hour, available ? availableStatus : unavailableStatus);
     }
   }
 

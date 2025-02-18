@@ -146,7 +146,7 @@ class _notificationState extends State<notification> {
                                     builder: (context) => Chatting(trip: trip, sendTo: appUser)));
                               } else {
                                 Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => TripDetail(notificationList[index]["tripRef"].id, true)));
+                                    builder: (context) => TripDetail(notificationList[index]["tripRef"].id)));
                               }
                               await FirebaseFirestore.instance
                                   .collection('notifications')
@@ -167,7 +167,7 @@ class _notificationState extends State<notification> {
                                     else
                                       CircleAvatar(
                                         backgroundColor: WhiteColor,
-                                        backgroundImage: AssetImage(t.tour.icon),
+                                        backgroundImage: AssetImage(t.tour.mainImage),
                                         radius: 25,
                                       ),
                                     const SizedBox(width: 8),

@@ -59,7 +59,7 @@ class _newpasswordState extends State<newpassword> {
                       fontFamily: "Gilroy Medium",
                       color: WhiteColor)),
               SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-              textfield(
+              textField(
                 fieldColor: notifier.getfieldcolor,
                 hintColor: notifier.gettextfieldcolor,
                 text: 'New Password',
@@ -73,7 +73,7 @@ class _newpasswordState extends State<newpassword> {
                       fontFamily: "Gilroy Medium",
                       color: WhiteColor)),
               SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-              textfield(
+              textField(
                 fieldColor: notifier.getfieldcolor,
                 hintColor: notifier.gettextfieldcolor,
                 text: 'Confirm Password',
