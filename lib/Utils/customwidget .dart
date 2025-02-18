@@ -433,6 +433,89 @@ guideTripLayout(BuildContext context, ColorNotifier notifier, Trip trip, bool sh
   );
 }
 
+Widget tourInfo(BuildContext context, ColorNotifier notifier, Tour tour) {
+  return Container(
+    width: MediaQuery.of(context).size.width,
+    margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 6),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(15),
+      color: notifier.getdarkmodecolor,
+    ),
+    child: Row(
+      children: [
+        Container(
+          margin: const EdgeInsets.symmetric(
+              horizontal: 10, vertical: 10),
+          height: 80,
+          width: 80,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.asset(
+              tour.mainImage,
+              fit: BoxFit.fill,
+            ),
+          ),
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+                height: MediaQuery.of(context).size.height * 0.012),
+            Text(
+              tour.name.toUpperCase(),
+              style: TextStyle(
+                  fontSize: 16,
+                  fontFamily: "Gilroy Bold",
+                  color: notifier.getwhiteblackcolor),
+            ),
+            // const SizedBox(height: 6),
+            SizedBox(
+                height: MediaQuery.of(context).size.height * 0.006),
+            Text(
+              tour.pickupPoint,
+              style: TextStyle(
+                  fontSize: 14,
+                  color: notifier.getwhiteblackcolor,
+                  fontFamily: "Gilroy Medium"),
+            ),
+            SizedBox(
+                height: MediaQuery.of(context).size.height * 0.001),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Row(
+                  children: [
+                    const SizedBox(width: 150),
+                    Image.asset(
+                      "assets/images/star.png",
+                      height: 20,
+                    ),
+                    const SizedBox(width: 2),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 1),
+                      child: Row(
+                        children: [
+                          Text(
+                            tour.rating.toString(),
+                            style: TextStyle(
+                                fontSize: 16,
+                                color: notifier.getdarkbluecolor,
+                                fontWeight: FontWeight.bold),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            )
+          ],
+        ),
+      ],
+    ),
+  );
+}
+
 clientTripLayout(BuildContext context, ColorNotifier notifier, Trip trip) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 6),
@@ -746,7 +829,7 @@ showConfirmationAcceptTour(BuildContext context, Trip trip) {
         if (await AppUser.isGuideAvailable(trip)) {
           bool resultOk = await trip.acceptTour();
           if (resultOk) {
-            await AppUser.updateTripUnavailability(FirebaseAuth.instance.currentUser!.uid, trip.tour, trip.date, trip.date.hour, trip.date.minute);
+            await AppUser.updateUserUnavailability(FirebaseAuth.instance.currentUser!.uid, trip.tour, trip.date, trip.date.hour, trip.date.minute, false);
           }
           if (context.mounted) {
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -768,7 +851,7 @@ showConfirmationAcceptTour(BuildContext context, Trip trip) {
           }
         }
       },
-      () {}, null, null);
+      () {}, "Yes", "No");
 }
 
 

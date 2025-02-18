@@ -118,6 +118,20 @@ class Trip {
       'tourPrice': tourPrice
     });
 
+    DocumentReference eventRef = FirebaseFirestore.instance
+        .collection('trips')
+        .doc(trip.id)
+        .collection("events")
+        .doc();
+
+    eventRef.set({
+      "creationDate": FieldValue.serverTimestamp(),
+      "action": "created",
+      "reason": "",
+      "notes": "",
+      "createdBy": FirebaseAuth.instance.currentUser!.uid
+    });
+
     FirebaseFirestore.instance
         .collection('chat')
         .doc(trip.id)
@@ -168,12 +182,28 @@ class Trip {
             "acceptedDate": FieldValue.serverTimestamp(),
             "reservationId": generateReservationId()});
 
-        FirebaseFirestore.instance
-            .collection('chat')
+        DocumentReference eventRef = FirebaseFirestore.instance
+            .collection('trips')
             .doc(id)
-            .update({
+            .collection("events")
+            .doc();
+
+        DocumentReference chatRef = FirebaseFirestore.instance
+            .collection('chat')
+            .doc(id);
+
+        WriteBatch batch = FirebaseFirestore.instance.batch();
+        batch.set(eventRef, {
+          "creationDate": FieldValue.serverTimestamp(),
+          "action": "started",
+          "reason": "",
+          "notes": "",
+          "createdBy": FirebaseAuth.instance.currentUser!.uid
+        });
+        batch.update(chatRef, {
           "guideRef": FirebaseFirestore.instance.doc('users/${FirebaseAuth.instance.currentUser!.uid}'),
         });
+        batch.commit();
 
         try {
           DocumentSnapshot<Object?> client = await clientRef!.get();
@@ -198,6 +228,12 @@ class Trip {
         .collection('trips')
         .doc(id);
 
+    DocumentReference eventRef = FirebaseFirestore.instance
+        .collection('trips')
+        .doc(id)
+        .collection("events")
+        .doc();
+
     DocumentReference notificationRef = FirebaseFirestore.instance
         .collection("notifications")
         .doc();
@@ -211,6 +247,13 @@ class Trip {
           "content": "",
           "timestamp": FieldValue.serverTimestamp(),
         });
+    batch.set(eventRef, {
+      "creationDate": FieldValue.serverTimestamp(),
+      "action": "started",
+      "reason": "",
+      "notes": "",
+      "createdBy": FirebaseAuth.instance.currentUser!.uid
+    });
     await batch.commit();
 
     DocumentSnapshot<Object?> client = await clientRef!.get();
@@ -225,6 +268,12 @@ class Trip {
         .collection('trips')
         .doc(id);
 
+    DocumentReference eventRef = FirebaseFirestore.instance
+        .collection('trips')
+        .doc(id)
+        .collection("events")
+        .doc();
+
     DocumentReference notificationRef = FirebaseFirestore.instance
         .collection("notifications")
         .doc();
@@ -238,9 +287,14 @@ class Trip {
       "content": "",
       "timestamp": FieldValue.serverTimestamp(),
     });
+    batch.set(eventRef, {
+      "creationDate": FieldValue.serverTimestamp(),
+      "action": "finished",
+      "reason": "",
+      "notes": "",
+      "createdBy": FirebaseAuth.instance.currentUser!.uid
+    });
     await batch.commit();
-
-
 
     DocumentSnapshot<Object?> client = await clientRef!.get();
     await sendNotification(targetToken: client.get("firebaseToken"),
@@ -249,12 +303,32 @@ class Trip {
         data: { "tripId": tour.id });
   }
 
-  void cancelTour() {
-    FirebaseFirestore.instance
-        .collection('trips')
+  void cancelTour(String notes) async {
+    DocumentReference tripRef = FirebaseFirestore.instance
+        .collection("trips")
+        .doc(id);
+
+    DocumentReference eventRef = FirebaseFirestore.instance
+        .collection("trips")
         .doc(id)
-        .update({"status": "canceled",
-      "canceledDate": FieldValue.serverTimestamp()});
+        .collection("events")
+        .doc();
+
+    WriteBatch batch = FirebaseFirestore.instance.batch();
+    batch.update(tripRef, {
+      "status": "pending",
+      "guideRef": null
+    });
+    batch.set(eventRef, {
+      "creationDate": FieldValue.serverTimestamp(),
+      "action": "canceled",
+      "reason": 'Guide Request',
+      "notes": notes,
+      "createdBy": FirebaseAuth.instance.currentUser!.uid
+    });
+    await batch.commit();
+
+    await AppUser.updateUserUnavailability(FirebaseAuth.instance.currentUser!.uid, tour, date, date.hour, date.minute, true);
   }
 
 

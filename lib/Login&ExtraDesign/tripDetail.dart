@@ -3,6 +3,7 @@
 import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dm/Guide/tripCancel.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:flutter/material.dart';
@@ -335,7 +336,7 @@ class _TripDetailState extends State<TripDetail> {
                                                         crossAxisAlignment: CrossAxisAlignment.center,
                                                         children: [
                                                           Image.asset(
-                                                            "assets/images/license-plate.png",
+                                                            "assets/images/tuktuk.png",
                                                             height: 20,
                                                             width: 20,
                                                             color: LogoColor,
@@ -624,15 +625,14 @@ class _TripDetailState extends State<TripDetail> {
                                       );
                                     }),
                                 if(guideMode && trip.status == 'pending')
-                                  ...[Divider(
+                                  ...[
+                                    Divider(
                                       height: 30,
                                       color: notifier.getgreycolor,
                                     ),
                                     InkWell(
                                     onTap: () {
-                                      Navigator.of(context)
-                                          .push(MaterialPageRoute(
-                                          builder: (context) => showConfirmationAcceptTour(context, trip)));
+                                      showConfirmationAcceptTour(context, trip);
                                     },
                                     child: Container(
                                       height: 50,
@@ -649,7 +649,35 @@ class _TripDetailState extends State<TripDetail> {
                                         ),
                                       ),
                                     ),
-                                  )]
+                                  )],
+                                if(guideMode && trip.status == 'booked')
+                                  ...[
+                                    Divider(
+                                      height: 30,
+                                      color: notifier.getgreycolor,
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        Navigator.of(context).push(MaterialPageRoute(
+                                            builder: (context) => TripCancel(trip: trip)));
+                                      },
+                                      child: Container(
+                                        height: 50,
+                                        margin: const EdgeInsets.only(bottom: 15),
+                                        width: MediaQuery.of(context).size.width * 0.4,
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(50), color: greyColor),
+                                        child: Center(
+                                          child: Text(
+                                            "CANCEL TOUR",
+                                            style: TextStyle(
+                                                color: WhiteColor,
+                                                fontSize: 18,
+                                                fontFamily: "Gilroy Bold"),
+                                          ),
+                                        ),
+                                      ),
+                                    )]
                               ],
                             ),
                           ]),

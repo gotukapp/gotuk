@@ -169,13 +169,13 @@ class _checkoutState extends State<checkout> {
                 items: tours.map((t) {
                   return Builder(
                     builder: (BuildContext context) {
-                      return tourInfo(t);
+                      return tourInfo(context, notifier, t);
                     },
                   );
                 }).toList(),
               )
               else
-                tourInfo(tour),
+                tourInfo(context, notifier, tour!),
               if (!widget.goNow && selectedDate != null)
                 Text("Guides available: $guidesAvailable",
                     style: TextStyle(
@@ -531,89 +531,6 @@ class _checkoutState extends State<checkout> {
 
       });
     });
-  }
-
-  Widget tourInfo(t) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 6),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        color: notifier.getdarkmodecolor,
-      ),
-      child: Row(
-        children: [
-          Container(
-            margin: const EdgeInsets.symmetric(
-                horizontal: 10, vertical: 10),
-            height: 80,
-            width: 80,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
-                tour!.mainImage,
-                fit: BoxFit.fill,
-              ),
-            ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.012),
-              Text(
-                t.name.toUpperCase(),
-                style: TextStyle(
-                    fontSize: 16,
-                    fontFamily: "Gilroy Bold",
-                    color: notifier.getwhiteblackcolor),
-              ),
-              // const SizedBox(height: 6),
-              SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.006),
-              Text(
-                t.pickupPoint,
-                style: TextStyle(
-                    fontSize: 14,
-                    color: notifier.getwhiteblackcolor,
-                    fontFamily: "Gilroy Medium"),
-              ),
-              SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.001),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Row(
-                    children: [
-                      const SizedBox(width: 150),
-                      Image.asset(
-                        "assets/images/star.png",
-                        height: 20,
-                      ),
-                      const SizedBox(width: 2),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 1),
-                        child: Row(
-                          children: [
-                            Text(
-                              tour!.rating.toString(),
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: notifier.getdarkbluecolor,
-                                  fontWeight: FontWeight.bold),
-                            )
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ],
-              )
-            ],
-          ),
-        ],
-      ),
-    );
   }
 
 
@@ -1362,7 +1279,7 @@ class _checkoutState extends State<checkout> {
               body: "${DateFormat('dd-MM-yyyy HH:mm').format(tripDate)} - ${tour!.name}",
               data: { "tripId": docRef.id });
         }
-        await AppUser.updateTripUnavailability(selectedGuideRef!.id, tour!, selectedDate!, hourSliderValue, minutesSliderValue);
+        await AppUser.updateUserUnavailability(selectedGuideRef!.id, tour!, selectedDate!, hourSliderValue, minutesSliderValue, false);
       }
 
       return true;
