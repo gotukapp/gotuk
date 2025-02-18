@@ -11,6 +11,7 @@ import 'package:dm/Domain/tour.dart';
 import 'package:dm/Domain/trip.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -53,7 +54,7 @@ CustomAppbar(
       backgroundColor: bgcolor);
 }
 
-textfield({String? text, suffix, Color? hintColor, fieldColor, TextEditingController? controller, bool password = false}) {
+textField({String? text, suffix, Color? hintColor, fieldColor, TextEditingController? controller, bool password = false, TextInputFormatter? formatter}) {
   return Container(
       height: 50,
       padding: const EdgeInsets.symmetric(vertical: 1),
@@ -62,6 +63,7 @@ textfield({String? text, suffix, Color? hintColor, fieldColor, TextEditingContro
       child: TextField(
         obscureText: password,
         controller: controller,
+        inputFormatters: formatter != null ? [formatter] : [],
         decoration: InputDecoration(
           hintText: text,
           labelStyle: const TextStyle(fontSize: 16, color: Colors.white),

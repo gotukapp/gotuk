@@ -35,8 +35,6 @@ class _verifyaccountState extends State<verifyaccount> {
     return "$minute:$second";
   }
 
-  int _start = 30;
-
   void startTimer() {}
   late ColorNotifier notifier;
 
@@ -82,7 +80,7 @@ class _verifyaccountState extends State<verifyaccount> {
                       fontFamily: "Gilroy Medium",
                       color: WhiteColor)),
               SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-              textfield(
+              textField(
                 fieldColor: notifier.getdarkmodecolor,
                 hintColor: notifier.getgreycolor,
                 text: 'Verification Code',

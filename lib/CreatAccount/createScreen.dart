@@ -90,7 +90,7 @@ class _createScreenState extends State<createScreen> {
                                 fontFamily: "Gilroy Medium",
                                 color: WhiteColor)),
                         SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                        textfield(
+                        textField(
                             fieldColor: notifier.getfieldcolor,
                             hintColor: notifier.gettextfieldcolor,
                             text: 'Enter your name',
@@ -135,7 +135,7 @@ class _createScreenState extends State<createScreen> {
                                 fontFamily: "Gilroy Medium",
                                 color: WhiteColor)),
                         SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                        textfield(
+                        textField(
                             fieldColor: notifier.getfieldcolor,
                             hintColor: notifier.gettextfieldcolor,
                             text: 'Enter your email',

@@ -102,7 +102,7 @@ class _MyProfileState extends State<MyProfile> {
                         fontFamily: "Gilroy Bold"),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                  textfield(
+                  textField(
                       fieldColor: notifier.getdarkmodecolor,
                       hintColor: notifier.getgreycolor,
                       text: AppLocalizations.of(context)!.enterYourName,

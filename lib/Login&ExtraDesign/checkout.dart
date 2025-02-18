@@ -347,7 +347,7 @@ class _checkoutState extends State<checkout> {
               ),
               if (withTaxNumber)
                 ...[
-                  textfield(
+                  textField(
                     controller: taxNumberController,
                     fieldColor: notifier.getfieldcolor,
                     hintColor: notifier.gettextfieldcolor,
