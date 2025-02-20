@@ -113,7 +113,7 @@ cupon({text1, text1Color, text2, buttonText, Function()? onClick}) {
           const SizedBox(height: 4),
           Text(text2,
               style: TextStyle(
-                  fontSize: 16, color: Darkblue, fontFamily: "Gilroy Bold")),
+                  fontSize: 16, color: LogoColor, fontFamily: "Gilroy Bold")),
         ],
       ),
       if (buttonText.isNotEmpty)
@@ -123,7 +123,7 @@ cupon({text1, text1Color, text2, buttonText, Function()? onClick}) {
             height: 40,
             width: 90,
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(50), color: Darkblue),
+                borderRadius: BorderRadius.circular(50), color: LogoColor),
             child: Center(
               child: Text(
                 buttonText,

@@ -43,7 +43,7 @@ class _MyCuponState extends State<MyCupon> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("4 Ready to Use",
+              Text("0 Ready to Use",
                   style: TextStyle(
                       fontSize: 16,
                       color: notifier.getwhiteblackcolor,
@@ -54,7 +54,7 @@ class _MyCuponState extends State<MyCupon> {
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   padding: EdgeInsets.zero,
-                  itemCount: 5,
+                  itemCount: 0,
                   itemBuilder: (BuildContext context, int index) {
                     return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 6),
@@ -66,7 +66,7 @@ class _MyCuponState extends State<MyCupon> {
                             children: [
                               ListTile(
                                 leading: Image.asset("assets/images/promo.png",
-                                    height: 35),
+                                    height: 35, color: notifier.getwhitelogocolor,),
                                 title: Text(
                                   '50% Cashback',
                                   style: TextStyle(

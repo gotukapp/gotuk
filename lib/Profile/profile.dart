@@ -100,27 +100,6 @@ class _profileState extends State<profile> {
                     ),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-                  if (!guideMode)
-                    ...[
-                      Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: notifier.getdarklightgreycolor),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Transaction(text1: "26", text2: "History"),
-                              Transaction(text1: "12", text2: "Reviews"),
-                              Transaction(text1: "4", text2: "Bookings"),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height * 0.03)
-                    ],
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
