@@ -83,6 +83,7 @@ class _TripCancelState extends State<TripCancel> {
             InkWell(
               onTap: () {
                 widget.trip.cancelTour(_reasonController.text);
+                Navigator.popUntil(context, (route) => route.isFirst);
               },
               child: Container(
                 height: 50,
