@@ -286,15 +286,15 @@ class _notificationState extends State<notification> {
     }
 
     if (type.startsWith("trip booked")) {
-      return 'New Trip Booked';
+      return 'New Tour Booked';
     }
 
     if (type.startsWith("trip started")) {
-      return 'Trip Started';
+      return 'Tour Started';
     }
 
     if (type.startsWith("trip finished")) {
-      return 'Trip Finished';
+      return 'Tour Finished';
     }
 
     return '';

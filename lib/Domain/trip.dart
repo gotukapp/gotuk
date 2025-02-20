@@ -363,7 +363,8 @@ class Trip {
 
   Future<void> sendChatMessage(String text, AppUser from, AppUser to) async {
     final prefs = await SharedPreferences.getInstance();
-    bool guideMode = prefs.getBool("setGuideMode") ?? false;
+    bool? currentState = prefs.getBool("setGuideMode");
+    bool guideMode = currentState ?? false;
 
     DocumentReference messageRef = FirebaseFirestore.instance
         .collection('chat')
@@ -383,14 +384,10 @@ class Trip {
       'to': to.id
     });
     batch.set(chatRef, {
-      "hasMessages": true,
+      'hasMessages': true,
       'date': FieldValue.serverTimestamp(),
-      'guideRef': guideMode
-          ? FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid)
-          : FirebaseFirestore.instance.collection('users').doc(to.id),
-      'clientRef': guideMode
-          ? FirebaseFirestore.instance.collection('users').doc(to.id)
-          : FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid)
+      'guideRef': FirebaseFirestore.instance.collection('users').doc(guideMode ? FirebaseAuth.instance.currentUser!.uid : to.id),
+      'clientRef': FirebaseFirestore.instance.collection('users').doc(guideMode ? to.id : FirebaseAuth.instance.currentUser!.uid)
     });
 
     await batch.commit();
