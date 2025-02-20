@@ -38,7 +38,7 @@ class _TripsHistoryState extends State<TripsHistory> {
     db
         .where("clientRef", isEqualTo: userDocRef)
         .where("status", whereIn: ["finished", "canceled"])
-        .orderBy("date")
+        .orderBy("date", descending: true)
         .snapshots();
 
     notifier = Provider.of<ColorNotifier>(context, listen: true);

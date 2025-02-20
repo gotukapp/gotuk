@@ -39,12 +39,12 @@ class _DashboardState extends State<Dashboard> {
     timer = Timer.periodic(const Duration(minutes: 1), (timer) {
       if (todayTrips != null) {
         for (var t in todayTrips!) {
-          if (t.allowShowStart() && t.showStartButton == false) {
+          if (t.allowStart() && t.showStartButton == false) {
             setState(() {
               t.showStartButton = true;
             });
           }
-          if (t.allowShowEnd() && t.showEndButton == false) {
+          if (t.allowFinish() && t.showEndButton == false) {
             setState(() {
               t.showEndButton = true;
             });

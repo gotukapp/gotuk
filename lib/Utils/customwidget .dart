@@ -113,7 +113,7 @@ cupon({text1, text1Color, text2, buttonText, Function()? onClick}) {
           const SizedBox(height: 4),
           Text(text2,
               style: TextStyle(
-                  fontSize: 16, color: Darkblue, fontFamily: "Gilroy Bold")),
+                  fontSize: 16, color: LogoColor, fontFamily: "Gilroy Bold")),
         ],
       ),
       if (buttonText.isNotEmpty)
@@ -123,7 +123,7 @@ cupon({text1, text1Color, text2, buttonText, Function()? onClick}) {
             height: 40,
             width: 90,
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(50), color: Darkblue),
+                borderRadius: BorderRadius.circular(50), color: LogoColor),
             child: Center(
               child: Text(
                 buttonText,
@@ -620,7 +620,7 @@ clientTripLayout(BuildContext context, ColorNotifier notifier, Trip trip) {
                           ),
                           SizedBox(width: MediaQuery.of(context).size.width * 0.06),
                           if (trip.status == 'pending' ||
-                              (trip.status == 'booked' && trip.allowShowStart() && (trip.clientIsReady == null || !trip.clientIsReady!)) ||
+                              (trip.status == 'booked' && trip.allowStart() && (trip.clientIsReady == null || !trip.clientIsReady!)) ||
                               (trip.status == 'finished' && !trip.rateSubmitted))
                             InkWell(
                               onTap: () async {

@@ -64,8 +64,8 @@ class Trip {
         data?['feePrice'],
         data?['tourPrice']
     );
-    t.showStartButton = t.allowShowStart();
-    t.showEndButton = t.allowShowEnd();
+    t.showStartButton = t.allowStart();
+    t.showEndButton = t.allowFinish();
     return t;
   }
 
@@ -316,7 +316,7 @@ class Trip {
 
     WriteBatch batch = FirebaseFirestore.instance.batch();
     batch.update(tripRef, {
-      "status": "pending",
+      "status": "rescheduling",
       "guideRef": null
     });
     batch.set(eventRef, {
@@ -363,7 +363,8 @@ class Trip {
 
   Future<void> sendChatMessage(String text, AppUser from, AppUser to) async {
     final prefs = await SharedPreferences.getInstance();
-    bool guideMode = prefs.getBool("setGuideMode") ?? false;
+    bool? currentState = prefs.getBool("setGuideMode");
+    bool guideMode = currentState ?? false;
 
     DocumentReference messageRef = FirebaseFirestore.instance
         .collection('chat')
@@ -383,14 +384,10 @@ class Trip {
       'to': to.id
     });
     batch.set(chatRef, {
-      "hasMessages": true,
+      'hasMessages': true,
       'date': FieldValue.serverTimestamp(),
-      'guideRef': guideMode
-          ? FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid)
-          : FirebaseFirestore.instance.collection('users').doc(to.id),
-      'clientRef': guideMode
-          ? FirebaseFirestore.instance.collection('users').doc(to.id)
-          : FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid)
+      'guideRef': FirebaseFirestore.instance.collection('users').doc(guideMode ? FirebaseAuth.instance.currentUser!.uid : to.id),
+      'clientRef': FirebaseFirestore.instance.collection('users').doc(guideMode ? to.id : FirebaseAuth.instance.currentUser!.uid)
     });
 
     await batch.commit();
@@ -409,18 +406,23 @@ class Trip {
     return (status == 'booked' || status == 'started' || status == 'finished')  && differenceInMinutes <= 60;
   }
 
-  bool allowShowChatting() {
+  bool allowChat() {
     int differenceInMinutes = date.difference(DateTime.now()).inMinutes;
     return (status == 'booked' || status == 'started' || status == 'finished')  && differenceInMinutes <= 60;
   }
 
-  bool allowShowStart() {
+  bool allowStart() {
     int differenceInMinutes = date.difference(DateTime.now()).inMinutes;
     return status == 'booked' && differenceInMinutes <= 15;
   }
 
-  bool allowShowEnd() {
+  bool allowFinish() {
     int differenceInMinutes = date.add(Duration(minutes: tour.durationSlots - 1 * 30)).difference(DateTime.now()).inMinutes;
     return status == 'started' && differenceInMinutes <= 15;
+  }
+
+  bool allowCancel() {
+    int differenceInMinutes = date.difference(DateTime.now()).inMinutes;
+    return status == 'booked' && differenceInMinutes <= 30;
   }
 }

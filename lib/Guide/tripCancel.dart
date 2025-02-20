@@ -10,7 +10,7 @@ import '../Utils/dark_lightmode.dart';
 class TripCancel extends StatefulWidget {
   final Trip trip;
 
-  const TripCancel({Key? key, required this.trip}) : super(key: key);
+  const TripCancel({super.key, required this.trip});
 
   @override
   _TripCancelState createState() => _TripCancelState();
@@ -79,10 +79,10 @@ class _TripCancelState extends State<TripCancel> {
 
             const SizedBox(height: 40),
 
-
             InkWell(
               onTap: () {
                 widget.trip.cancelTour(_reasonController.text);
+                Navigator.popUntil(context, (route) => route.isFirst);
               },
               child: Container(
                 height: 50,
