@@ -294,7 +294,7 @@ class _TripDetailState extends State<TripDetail> {
                                                 )
                                               ],
                                             ),
-                                            if (trip.allowShowChatting())
+                                            if (trip.allowChat())
                                               InkWell(
                                               onTap: () {
                                                 Navigator.of(context)
@@ -408,7 +408,7 @@ class _TripDetailState extends State<TripDetail> {
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          if (trip.allowShowStart() && (trip.clientIsReady == null || !trip.clientIsReady!))
+                                          if (trip.allowStart() && (trip.clientIsReady == null || !trip.clientIsReady!))
                                             InkWell(
                                             onTap: () async {
                                               await setClientReady(context, trip);
@@ -497,7 +497,7 @@ class _TripDetailState extends State<TripDetail> {
                                                       )
                                                     ],
                                                   ),
-                                                  if (trip.allowShowChatting())
+                                                  if (trip.allowChat())
                                                     InkWell(
                                                     onTap: () {
                                                       Navigator.of(context)
@@ -650,7 +650,7 @@ class _TripDetailState extends State<TripDetail> {
                                       ),
                                     ),
                                   )],
-                                if(guideMode && trip.status == 'booked')
+                                if(guideMode && trip.status == 'booked' && trip.allowCancel())
                                   ...[
                                     Divider(
                                       height: 30,

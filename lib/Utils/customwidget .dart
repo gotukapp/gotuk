@@ -620,7 +620,7 @@ clientTripLayout(BuildContext context, ColorNotifier notifier, Trip trip) {
                           ),
                           SizedBox(width: MediaQuery.of(context).size.width * 0.06),
                           if (trip.status == 'pending' ||
-                              (trip.status == 'booked' && trip.allowShowStart() && (trip.clientIsReady == null || !trip.clientIsReady!)) ||
+                              (trip.status == 'booked' && trip.allowStart() && (trip.clientIsReady == null || !trip.clientIsReady!)) ||
                               (trip.status == 'finished' && !trip.rateSubmitted))
                             InkWell(
                               onTap: () async {

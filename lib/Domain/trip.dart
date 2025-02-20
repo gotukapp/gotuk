@@ -64,8 +64,8 @@ class Trip {
         data?['feePrice'],
         data?['tourPrice']
     );
-    t.showStartButton = t.allowShowStart();
-    t.showEndButton = t.allowShowEnd();
+    t.showStartButton = t.allowStart();
+    t.showEndButton = t.allowFinish();
     return t;
   }
 
@@ -316,7 +316,7 @@ class Trip {
 
     WriteBatch batch = FirebaseFirestore.instance.batch();
     batch.update(tripRef, {
-      "status": "pending",
+      "status": "rescheduling",
       "guideRef": null
     });
     batch.set(eventRef, {
@@ -409,18 +409,23 @@ class Trip {
     return (status == 'booked' || status == 'started' || status == 'finished')  && differenceInMinutes <= 60;
   }
 
-  bool allowShowChatting() {
+  bool allowChat() {
     int differenceInMinutes = date.difference(DateTime.now()).inMinutes;
     return (status == 'booked' || status == 'started' || status == 'finished')  && differenceInMinutes <= 60;
   }
 
-  bool allowShowStart() {
+  bool allowStart() {
     int differenceInMinutes = date.difference(DateTime.now()).inMinutes;
     return status == 'booked' && differenceInMinutes <= 15;
   }
 
-  bool allowShowEnd() {
+  bool allowFinish() {
     int differenceInMinutes = date.add(Duration(minutes: tour.durationSlots - 1 * 30)).difference(DateTime.now()).inMinutes;
     return status == 'started' && differenceInMinutes <= 15;
+  }
+
+  bool allowCancel() {
+    int differenceInMinutes = date.difference(DateTime.now()).inMinutes;
+    return status == 'booked' && differenceInMinutes <= 30;
   }
 }
