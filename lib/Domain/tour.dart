@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 List coords = [
   { "lat": 38.709819267469186, "lng": -9.1334956851527, "course": 50 },
@@ -222,4 +223,28 @@ class Tour {
       'creationDate': FieldValue.serverTimestamp()
     });
   }
+
+  static Future<void> fetchTours() async {
+    while (true) {
+      try {
+        QuerySnapshot snapshot = await  FirebaseFirestore.instance.collection("tours").get();
+
+        if (snapshot.docs.isNotEmpty) {
+          for (var docSnapshot in snapshot.docs) {
+            Tour tour = Tour.fromFirestore(docSnapshot as DocumentSnapshot<Map<String, dynamic>>, null);
+            if (tour.isActive) {
+              Tour.availableTours.add(tour);
+            }
+            Tour.allTours.add(tour);
+          }
+          // Exit loop on success
+          return;
+        }
+      } catch (e) {
+        await Sentry.captureException(e);
+      }
+      await Future.delayed(const Duration(milliseconds: 300)); // Wait before retrying
+    }
+  }
+
 }

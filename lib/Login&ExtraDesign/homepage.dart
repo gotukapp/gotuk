@@ -62,7 +62,6 @@ class _homepageState extends State<homepage> {
   void initState() {
     getdarkmodepreviousstate();
     getAppModeState();
-    loadTours();
     addTourListen();
     addTripsListen();
     addFirebaseNotificationsListen();
@@ -366,18 +365,5 @@ class _homepageState extends State<homepage> {
     final prefs = await SharedPreferences.getInstance();
     bool? previousState = prefs.getBool("setGuideMode");
     guideMode = previousState ?? false;
-  }
-
-  void loadTours() {
-    FirebaseFirestore.instance.collection("tours").get().then(
-            (querySnapshot) {
-      for (var docSnapshot in querySnapshot.docs) {
-        Tour tour = Tour.fromFirestore(docSnapshot, null);
-        if (tour.isActive) {
-          Tour.availableTours.add(tour);
-        }
-        Tour.allTours.add(tour);
-      }
-    });
   }
 }
