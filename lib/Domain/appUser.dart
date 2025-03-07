@@ -22,17 +22,19 @@ class AppUser {
   final String? phone;
   final String? firebaseToken;
   final bool accountValidated;
+  final DocumentReference? organizationRef;
   num? rating;
   List<String>? languages;
 
-  AppUser(this.id, this.name, this.email, this.phone, this.accountValidated, this.rating, this.languages, this.firebaseToken);
+  AppUser(this.id, this.name, this.email, this.phone, this.accountValidated, this.rating, this.languages, this.firebaseToken, this.organizationRef);
 
   factory AppUser.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot,
       SnapshotOptions? options,) {
     final data = snapshot.data();
     return AppUser(snapshot.id, data?['name'], data?['email'],
         data?['phone'], data?['accountValidated'],
-        data?['rating'], data?['languages'], data?['firebaseToken']);
+        data?['rating'], data?['languages'], data?['firebaseToken'],
+        data?['organizationRef']);
   }
 
   Map<String, dynamic> toFirestore() {
@@ -288,6 +290,54 @@ class AppUser {
       'creationDate': FieldValue.serverTimestamp()
     });
   }
+
+  Future<void> associateTukTuk(DocumentReference<Map<String, dynamic>> reference) async {
+    String date = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+    var tuktuk = await reference.get();
+
+    WriteBatch batch = FirebaseFirestore.instance.batch();
+
+    DocumentReference userDoc = FirebaseFirestore.instance
+        .collection('users')
+        .doc(id);
+
+    DocumentReference userTukTukDoc = FirebaseFirestore.instance
+        .collection('users')
+        .doc(id)
+        .collection('tuktuk')
+        .doc(date);
+
+    DocumentReference tuktukGuideDoc = FirebaseFirestore.instance
+        .collection('tuktuks')
+        .doc(reference.id)
+        .collection('guide')
+        .doc(date);
+
+    DocumentReference userRefDoc = FirebaseFirestore.instance
+        .collection('users')
+        .doc(id);
+
+    batch.set(userTukTukDoc, {
+      "tuktukRef": reference
+    });
+
+    batch.set(tuktukGuideDoc, {
+      "userRef": userRefDoc
+    });
+
+    batch.update(userDoc, {
+      "tuktukLicensePlate": tuktuk.get("licensePlate"),
+      "tuktukElectric": tuktuk.get("electric"),
+      "tuktukSeats": tuktuk.get("seats")
+    });
+
+    batch.update(userRefDoc, {
+      "needSelectTukTuk": false
+    });
+
+    await batch.commit();
+  }
 }
 
 Future<bool> userExists(String phone) async {
@@ -305,7 +355,7 @@ Future<AppUser> getUserFirebaseInstance(bool guideMode, User user) async {
   final docSnap = await ref.get();
   AppUser? appUser = docSnap.data();
   if (appUser == null) {
-    appUser = AppUser(user.uid, user.displayName, user.email, user.phoneNumber, false, 0.0, null, null);
+    appUser = AppUser(user.uid, user.displayName, user.email, user.phoneNumber, false, 0.0, null, null, null);
     FirebaseFirestore.instance.collection("users")
         .doc(user.uid)
         .set(appUser.toFirestore());

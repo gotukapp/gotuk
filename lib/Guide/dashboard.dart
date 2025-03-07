@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dm/Domain/appUser.dart';
 import 'package:dm/Guide/tripsList.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -69,7 +69,6 @@ class _DashboardState extends State<Dashboard> {
     final nextMonth = DateTime(now.year, now.month, now.day + 30, 0, 0, 0);
 
     final tripsCollection = FirebaseFirestore.instance.collection("trips");
-    final tuktuksCollection = FirebaseFirestore.instance.collection("tuktuks");
     final notificationsCollection = FirebaseFirestore.instance.collection("notifications");
     final userDocRef = FirebaseFirestore.instance
         .collection('users')
@@ -129,8 +128,6 @@ class _DashboardState extends State<Dashboard> {
                       return const Text("Document does not exist");
                     }
                     Map<String, dynamic>?  guide = snapshot.data!.data();
-
-                    final Stream<DocumentSnapshot<Map<String, dynamic>>> currentTukTuk = tuktuksCollection.doc(guide!["tuktuk"].id).snapshots();
 
                     return Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -223,7 +220,7 @@ class _DashboardState extends State<Dashboard> {
                                       )
                                     ],
                                   ),
-                                  if (!guide["accountValidated"])
+                                  if (!guide?["accountValidated"])
                                     ...[
                                       const SizedBox(height: 10),
                                       Container(
@@ -250,16 +247,7 @@ class _DashboardState extends State<Dashboard> {
                                       .of(context)
                                       .size
                                       .height * 0.001),
-                                  StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                                      stream: currentTukTuk,
-                                      builder: (context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
-                                        if(!snapshot.hasData) {
-                                          return Center(child: CircularProgressIndicator(color: WhiteColor));
-                                        }
-
-                                        Map<String, dynamic>? tuktuk = snapshot.data!.data();
-
-                                        return Padding(
+                                  Padding(
                                             padding: const EdgeInsets.symmetric(vertical: 10),
                                             child: Row(
                                               children: [
@@ -271,7 +259,7 @@ class _DashboardState extends State<Dashboard> {
                                                 ),
                                                 const SizedBox(width: 10),
                                                 Text(
-                                                  tuktuk != null ? tuktuk["licensePlate"] : 'TukTuk not found',
+                                                  guide != null && guide["tuktukLicensePlate"] != null ? guide["tuktukLicensePlate"] : '------',
                                                   style: TextStyle(
                                                       fontSize: 16,
                                                       color: notifier.getwhiteblackcolor,
@@ -279,9 +267,8 @@ class _DashboardState extends State<Dashboard> {
                                                 )
                                               ],
                                             )
-                                        );
-                                      }
-                                  ),
+                                        )
+                                  ,
                                   const SizedBox(height: 10),
                                   Text(
                                     "Completed Tours",
