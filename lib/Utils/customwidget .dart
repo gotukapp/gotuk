@@ -54,13 +54,14 @@ CustomAppbar(
       backgroundColor: bgcolor);
 }
 
-textField({String? text, suffix, Color? hintColor, fieldColor, TextEditingController? controller, bool password = false, TextInputFormatter? formatter}) {
+textField({String? text, suffix, Color? hintColor, fieldColor, TextEditingController? controller, bool password = false, TextInputFormatter? formatter, bool readOnly = false}) {
   return Container(
       height: 50,
       padding: const EdgeInsets.symmetric(vertical: 1),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15), color: fieldColor),
       child: TextField(
+        readOnly: readOnly,
         obscureText: password,
         controller: controller,
         inputFormatters: formatter != null ? [formatter] : [],
