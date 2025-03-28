@@ -52,7 +52,7 @@ class _AccountState extends State<account> {
 
   String personalDataStatus = '';
   List<String> language = [];
-  List<bool> expandedData = [false, false, false, false, false];
+  List<bool> expandedData = [false, false, false, false];
   final identificationNumber = TextEditingController();
   final drivingLicenseNumber = TextEditingController();
   DateTime? identificationNumberExpirationDate;
@@ -63,11 +63,6 @@ class _AccountState extends State<account> {
   final insuranceWorkAccidentCompanyName = TextEditingController();
   final insuranceWorkAccidentPolicyNumber = TextEditingController();
   DateTime? insuranceWorkAccidentExpirationDate;
-
-  String personalAccidentInsuranceStatus = '';
-  final insurancePersonalAccidentCompanyName = TextEditingController();
-  final insurancePersonalAccidentPolicyNumber = TextEditingController();
-  DateTime? insurancePersonalAccidentExpirationDate;
 
   final organizationCode = TextEditingController();
   String organizationName = '';
@@ -111,14 +106,6 @@ class _AccountState extends State<account> {
           .limit(1) // Limit to 1 document
           .get();
 
-      final queryPersonalAccidentInsurance = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser?.uid)
-          .collection('personalAccidentInsurance')
-          .orderBy('submitDate', descending: true) // Sort by 'datetime' in descending order
-          .limit(1) // Limit to 1 document
-          .get();
-
       final queryCriminalRecord = await FirebaseFirestore.instance
           .collection('users')
           .doc(FirebaseAuth.instance.currentUser?.uid)
@@ -148,14 +135,6 @@ class _AccountState extends State<account> {
           workAccidentInsuranceStatus = workAccidentInsurance["status"];
         }
 
-        if (queryPersonalAccidentInsurance.docs.isNotEmpty) {
-          Map<String,dynamic>? personalAccidentInsurance = queryPersonalAccidentInsurance.docs.first.data();
-          insurancePersonalAccidentCompanyName.text = personalAccidentInsurance["name"];
-          insurancePersonalAccidentPolicyNumber.text = personalAccidentInsurance["number"];
-          insurancePersonalAccidentExpirationDate = personalAccidentInsurance["expirationDate"]?.toDate();
-          personalAccidentInsuranceStatus = personalAccidentInsurance["status"];
-        }
-
         if (queryOrganizationData.docs.isNotEmpty) {
           Map<String, dynamic>? organizationData = queryOrganizationData.docs.first.data();
           organizationCode.text = organizationData["code"];
@@ -165,7 +144,7 @@ class _AccountState extends State<account> {
 
         if (queryCriminalRecord.docs.isNotEmpty) {
           Map<String, dynamic>? criminalRecord = queryCriminalRecord.docs.first.data();
-          organizationStatus = criminalRecord["status"];
+          criminalRecordStatus = criminalRecord["status"];
         }
 
         _isLoading = false;
@@ -236,9 +215,6 @@ class _AccountState extends State<account> {
                                 "insuranceWorkAccidentPolicyNumber": insuranceWorkAccidentPolicyNumber.text,
                                 "insuranceWorkAccidentExpirationDate": insuranceWorkAccidentExpirationDate,
                                 "useWorkAccidentOrganizationInsurance": useWorkAccidentOrganizationInsurance,
-                                "insurancePersonalAccidentCompanyName": insurancePersonalAccidentCompanyName.text,
-                                "insurancePersonalAccidentPolicyNumber": insurancePersonalAccidentPolicyNumber.text,
-                                "insurancePersonalAccidentExpirationDate": insurancePersonalAccidentExpirationDate,
                                 "organizationCode": organizationCode.text,
                                 "updateOrganizationCode": true
                               });
@@ -272,8 +248,7 @@ class _AccountState extends State<account> {
       _personalDataPanel(0),
       _organizationDataPanel(1),
       _workAccidentInsurancePanel(2),
-      _personalAccidentInsurancePanel(3),
-      _criminalRecordPanel(4)
+      _criminalRecordPanel(3)
     ];
     return ExpansionPanelList(
       expansionCallback: (int index, bool isExpanded) {
@@ -319,9 +294,9 @@ class _AccountState extends State<account> {
                 },
                 notifier: notifier),
             const SizedBox(height: 20),
-            Text("Nº CC/Passaporte",
+            Text("C.Cidadão / C.Residente / Passaporte",
               style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 15,
                   color: notifier.getwhiteblackcolor,
                   fontFamily: "Gilroy Bold"),
             ),
@@ -458,89 +433,6 @@ class _AccountState extends State<account> {
     );
   }
 
-  ExpansionPanel _personalAccidentInsurancePanel(index) {
-    return ExpansionPanel(
-      backgroundColor: getBackroundColorByStatus(personalAccidentInsuranceStatus),
-      headerBuilder: (BuildContext context, bool isExpanded) {
-        return
-          ListTile(
-            title: Text(
-              'Apólice de Seguro de Acidentes Pessoais',
-              style: TextStyle(
-                  fontSize: 16,
-                  color: notifier.getwhiteblackcolor,
-                  fontFamily: "Gilroy Bold"),
-            ),
-          );
-      },
-      body: Padding(
-          padding: const EdgeInsets.only(left: 10, right: 10, bottom: 20),
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Companhia de Seguros",
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: notifier.getwhiteblackcolor,
-                      fontFamily: "Gilroy Bold"),
-                ),
-                const SizedBox(height: 10),
-                textField(
-                    fieldColor: notifier.getdarkmodecolor,
-                    hintColor: notifier.getdarkgreycolor,
-                    controller: insurancePersonalAccidentCompanyName,
-                    text: "Número do documento",
-                    suffix: null),
-                const SizedBox(height: 10),
-                Text("Nº Apólice",
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: notifier.getwhiteblackcolor,
-                      fontFamily: "Gilroy Bold"),
-                ),
-                const SizedBox(height: 10),
-                textField(
-                    fieldColor: notifier.getdarkmodecolor,
-                    hintColor: notifier.getdarkgreycolor,
-                    controller: insurancePersonalAccidentPolicyNumber,
-                    text: "Número do documento",
-                    suffix: null),
-                const SizedBox(height: 10),
-                Text("Validade",
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: notifier.getwhiteblackcolor,
-                      fontFamily: "Gilroy Bold"),
-                ),
-                const SizedBox(height: 10),
-                selectDetail(
-                    text: insurancePersonalAccidentExpirationDate != null ? DateFormat('dd/MM/yyyy').format(insurancePersonalAccidentExpirationDate!) : "Seleccionar Data",
-                    icon: Icons.keyboard_arrow_down,
-                    onclick: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => Calendar(selectedDate: insurancePersonalAccidentExpirationDate),
-                      )).then((value) {
-                        setState(() {
-                          insurancePersonalAccidentExpirationDate = value;
-                        });
-                      });
-                    },
-                    notifier: notifier
-                ),
-                const SizedBox(height: 25),
-                AppButton(
-                    bgColor: notifier.getlogobgcolor,
-                    textColor: WhiteColor,
-                    buttontext: "Attach Document",
-                    onclick: () async {
-
-                    })
-              ])
-      ),
-      isExpanded: expandedData[index],
-    );
-  }
-
   ExpansionPanel _workAccidentInsurancePanel(index) {
     return ExpansionPanel(
       backgroundColor: getBackroundColorByStatus(workAccidentInsuranceStatus),
@@ -564,7 +456,7 @@ class _AccountState extends State<account> {
                 Row(
                   children: [
                     Text(
-                      "Usar Apólice da Empresa",
+                      "Está incluido na apólice da empresa",
                       style: TextStyle(
                           fontSize: 16,
                           color: notifier.getwhiteblackcolor,
@@ -583,6 +475,14 @@ class _AccountState extends State<account> {
                     ),
                   ],
                 ),
+                if (useWorkAccidentOrganizationInsurance)
+                  Text(
+                    "Atenção - A sua conta apenas será validada se na apólice enviada pela empresa constar o seu nome",
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: notifier.getlogobgcolor,
+                        fontFamily: "Gilroy Bold"),
+                  ),
                 if (!useWorkAccidentOrganizationInsurance)
                   ...[
                     const SizedBox(height: 10),

@@ -46,30 +46,6 @@ class BoardingScreen extends StatelessWidget {
         child: Consumer<LocaleModel>(
           builder: (context, localeModel, child) => MaterialApp(
             debugShowCheckedModeBanner: false,
-            home: FutureBuilder(
-                    future: Tour.fetchTours(),
-                    builder: (context, AsyncSnapshot<void> snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return Scaffold(
-                            backgroundColor: WhiteColor,
-                            body: Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Image.asset("assets/images/applogo.png",
-                                        height: 170, width: 200),
-                                    const Padding(
-                                        padding: EdgeInsets.symmetric(vertical: 0, horizontal: 100),
-                                        child: LinearProgressIndicator()
-                                    )
-                                  ],
-                                )) // Loading indicator
-                          );
-                        } else {
-                          return const onbording();
-                        }
-
-                    }),
             localizationsDelegates: const [
               AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,
@@ -81,6 +57,30 @@ class BoardingScreen extends StatelessWidget {
               Locale('en'),
               Locale('pt')
             ],
+            home: FutureBuilder(
+                future: Tour.fetchTours(),
+                builder: (context, AsyncSnapshot<void> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Scaffold(
+                        backgroundColor: WhiteColor,
+                        body: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset("assets/images/applogo.png",
+                                    height: 170, width: 200),
+                                const Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 0, horizontal: 100),
+                                    child: LinearProgressIndicator()
+                                )
+                              ],
+                            )) // Loading indicator
+                    );
+                  } else {
+                    return const onbording();
+                  }
+
+                }),
           )
       )
     );

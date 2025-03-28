@@ -342,6 +342,7 @@ class _TourDetailState extends State<TourDetail> {
                               )
                             ],
                           ),
+                          /*
                           const SizedBox(height: 15),
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -368,7 +369,7 @@ class _TourDetailState extends State<TourDetail> {
                                   )
                               )
                             ],
-                          ),
+                          ),*/
                           SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -152,8 +152,6 @@ class AppUser {
 
   Future<bool> submitAccountData(data) async {
     try {
-      print(data);
-
       final personalDataDocRef = await FirebaseFirestore.instance
           .collection('users')
           .doc(FirebaseAuth.instance.currentUser?.uid)
@@ -216,6 +214,14 @@ class AppUser {
               .update({ "organizationRef": queryOrganizationData.docs[0]});
         }
       }
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .collection('criminalRecord').add({
+        "status": 'pending',
+        "submitDate": FieldValue.serverTimestamp()
+      });
 
       return true;
     } catch (e) {
