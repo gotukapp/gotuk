@@ -7,6 +7,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../Providers/userProvider.dart';
+import 'Domain/tour.dart';
+import 'Utils/Colors.dart';
 import 'Utils/LocaleModel.dart';
 import 'Utils/dark_lightmode.dart';
 import 'firebase_options.dart';
@@ -44,7 +46,6 @@ class BoardingScreen extends StatelessWidget {
         child: Consumer<LocaleModel>(
           builder: (context, localeModel, child) => MaterialApp(
             debugShowCheckedModeBanner: false,
-            home: const onbording(),
             localizationsDelegates: const [
               AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,
@@ -56,6 +57,30 @@ class BoardingScreen extends StatelessWidget {
               Locale('en'),
               Locale('pt')
             ],
+            home: FutureBuilder(
+                future: Tour.fetchTours(),
+                builder: (context, AsyncSnapshot<void> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Scaffold(
+                        backgroundColor: WhiteColor,
+                        body: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset("assets/images/applogo.png",
+                                    height: 170, width: 200),
+                                const Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 0, horizontal: 100),
+                                    child: LinearProgressIndicator()
+                                )
+                              ],
+                            )) // Loading indicator
+                    );
+                  } else {
+                    return const onbording();
+                  }
+
+                }),
           )
       )
     );

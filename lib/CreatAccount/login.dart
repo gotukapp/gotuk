@@ -122,7 +122,7 @@ class _loginscreenState extends State<loginscreen> {
                       : AppButton(
                           bgColor: notifier.getlogowhitecolor,
                           textColor: notifier.getwhiteblackcolor,
-                          buttontext: guideMode ? AppLocalizations.of(context)!.loginAsGuide : "LOGIN",
+                          buttontext: guideMode ? AppLocalizations.of(context)!.loginAsGuide.toUpperCase() : AppLocalizations.of(context)!.login.toUpperCase(),
                           onclick: signIn
                       ),
                   const SizedBox(height: 10),
@@ -207,14 +207,14 @@ class _loginscreenState extends State<loginscreen> {
                 child:
                   Column(
               children: [
-                Text("Don’t have an account?",
+                Text(AppLocalizations.of(context)!.withoutAccount,
                   style: TextStyle(
                       fontSize: 15,
                       fontFamily: "Gilroy Medium",
                       color: LogoColor)),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                 AppButton(
-                    buttontext: "REGISTER",
+                    buttontext: AppLocalizations.of(context)!.register,
                     onclick: () {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => const createScreen()));
@@ -227,7 +227,7 @@ class _loginscreenState extends State<loginscreen> {
                       children: [
                         SizedBox(
                             width: MediaQuery.of(context).size.width * 0.065),
-                        Text("I want to be a Guide",
+                        Text(AppLocalizations.of(context)!.toBeGuide,
                             style: TextStyle(
                                 fontSize: 18,
                                 color: notifier.getwhitelogocolor,
@@ -298,16 +298,16 @@ class _loginscreenState extends State<loginscreen> {
           _isLoading = false;
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text(
-                'This phone number is not associated with any account..'),
+                AppLocalizations.of(context)!.warningPhoneNumberAccountNotFound),
           ),
         );
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('You must fill in the phone number.'),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.phoneNumberRequired),
         ),
       );
     }

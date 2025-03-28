@@ -8,8 +8,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:intl/intl.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
-import '../Guide/account.dart';
-
 const int availableStatus = 0;
 const int unavailableStatus = 1;
 const int tripStatus = 2;
@@ -22,17 +20,19 @@ class AppUser {
   final String? phone;
   final String? firebaseToken;
   final bool accountValidated;
+  final DocumentReference? organizationRef;
   num? rating;
   List<String>? languages;
 
-  AppUser(this.id, this.name, this.email, this.phone, this.accountValidated, this.rating, this.languages, this.firebaseToken);
+  AppUser(this.id, this.name, this.email, this.phone, this.accountValidated, this.rating, this.languages, this.firebaseToken, this.organizationRef);
 
   factory AppUser.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot,
       SnapshotOptions? options,) {
     final data = snapshot.data();
     return AppUser(snapshot.id, data?['name'], data?['email'],
         data?['phone'], data?['accountValidated'],
-        data?['rating'], data?['languages'], data?['firebaseToken']);
+        data?['rating'], data?['languages'], data?['firebaseToken'],
+        data?['organizationRef']);
   }
 
   Map<String, dynamic> toFirestore() {
@@ -150,66 +150,77 @@ class AppUser {
     return true;
   }
 
-  Future<bool> submitAccountData(List<Item> data) async {
+  Future<bool> submitAccountData(data) async {
     try {
-      Map<String, dynamic> documents = {};
-      for (Item item in data) {
-        for (dynamic field in item.fields) {
-          if (field["field"] != null) {
-            if (field["type"] == 'String') {
-              documents[field["fieldName"]] = field["field"].text;
-            } else if (field["type"] == 'Array') {
-              if (field["field"].length > 0) {
-                documents[field["fieldName"]] = field["field"];
-              }
-            } else {
-              documents[field["fieldName"]] = field["field"];
-            }
-          }
+      final personalDataDocRef = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .collection('personalData').add({
+        "language": data["language"],
+        "identificationNumber": data["identificationNumber"],
+        "identificationNumberExpirationDate": data["identificationNumberExpirationDate"],
+        "drivingLicenseNumber": data["drivingLicenseNumber"],
+        "drivingLicenseExpirationDate": data["drivingLicenseExpirationDate"],
+        "status": 'pending',
+        "submitDate": FieldValue.serverTimestamp()
+      });
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .update({ "language": data["language"] });
+
+      final workAccidentInsuranceDocRef = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .collection('workAccidentInsurance').add({
+        "name": data["insuranceWorkAccidentCompanyName"],
+        "number": data["insuranceWorkAccidentPolicyNumber"],
+        "expirationDate": data["insuranceWorkAccidentExpirationDate"],
+        "useOrganizationInsurance": data["useWorkAccidentOrganizationInsurance"],
+        "status": 'pending',
+        "submitDate": FieldValue.serverTimestamp()
+      });
+
+      final personalAccidentInsuranceDocRef = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .collection('personalAccidentInsurance').add({
+        "name": data["insurancePersonalAccidentCompanyName"],
+        "number": data["insurancePersonalAccidentPolicyNumber"],
+        "expirationDate": data["insurancePersonalAccidentExpirationDate"],
+        "status": 'pending',
+        "submitDate": FieldValue.serverTimestamp()
+      });
+
+      if (data["updateOrganizationCode"]) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser?.uid)
+            .collection('organizationData').add({
+          "code": data["organizationCode"],
+          "status": 'pending',
+          "submitDate": FieldValue.serverTimestamp()
+        });
+
+        final queryOrganizationData = await FirebaseFirestore.instance
+            .collection('organizations')
+            .where("code", isEqualTo: data["organizationCode"]).get();
+
+        if (queryOrganizationData.docs.isNotEmpty) {
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(FirebaseAuth.instance.currentUser?.uid)
+              .update({ "organizationRef": queryOrganizationData.docs[0]});
         }
       }
 
-      documents["submitDate"] = DateTime.now();
-
       await FirebaseFirestore.instance
           .collection('users')
           .doc(FirebaseAuth.instance.currentUser?.uid)
-          .collection('documents').add(documents);
-
-      Item item = data.firstWhere((i) => i.itemName == "personalData");
-      dynamic field = item.fields.firstWhere((i) =>
-      i["fieldName"] == "language");
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser?.uid)
-          .update({
-        "language": field["field"]
-      });
-
-      Item vehicleData = data.firstWhere((i) => i.itemName == "vehicleData");
-      dynamic fieldLicensePlate = vehicleData.fields.firstWhere((
-          i) => i["fieldName"] == "vehicleLicensePlate");
-      dynamic fieldSeatsNumber = vehicleData.fields.firstWhere((
-          i) => i["fieldName"] == "vehicleSeatsNumber");
-      dynamic fieldVehicleType = vehicleData.fields.firstWhere((
-          i) => i["fieldName"] == "vehicleType");
-
-      await FirebaseFirestore.instance
-          .collection('tuktuks')
-          .doc(fieldLicensePlate["field"].text).set({
-        "electric": fieldVehicleType["field"],
-        "licensePlate": fieldLicensePlate["field"].text,
-        "seats": int.parse(fieldSeatsNumber["field"])
-      });
-
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser?.uid)
-          .update({
-        "tuktukElectric": fieldVehicleType["field"],
-        "tuktukSeats": int.parse(fieldSeatsNumber["field"]),
-        "tuktuk": FirebaseFirestore.instance.doc(
-            'tuktuks/${fieldLicensePlate["field"].text}')
+          .collection('criminalRecord').add({
+        "status": 'pending',
+        "submitDate": FieldValue.serverTimestamp()
       });
 
       return true;
@@ -288,6 +299,54 @@ class AppUser {
       'creationDate': FieldValue.serverTimestamp()
     });
   }
+
+  Future<void> associateTukTuk(DocumentReference<Map<String, dynamic>> reference) async {
+    String date = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+    var tuktuk = await reference.get();
+
+    WriteBatch batch = FirebaseFirestore.instance.batch();
+
+    DocumentReference userDoc = FirebaseFirestore.instance
+        .collection('users')
+        .doc(id);
+
+    DocumentReference userTukTukDoc = FirebaseFirestore.instance
+        .collection('users')
+        .doc(id)
+        .collection('tuktuk')
+        .doc(date);
+
+    DocumentReference tuktukGuideDoc = FirebaseFirestore.instance
+        .collection('tuktuks')
+        .doc(reference.id)
+        .collection('guide')
+        .doc(date);
+
+    DocumentReference userRefDoc = FirebaseFirestore.instance
+        .collection('users')
+        .doc(id);
+
+    batch.set(userTukTukDoc, {
+      "tuktukRef": reference
+    });
+
+    batch.set(tuktukGuideDoc, {
+      "userRef": userRefDoc
+    });
+
+    batch.update(userDoc, {
+      "tuktukLicensePlate": tuktuk.get("licensePlate"),
+      "tuktukElectric": tuktuk.get("electric"),
+      "tuktukSeats": tuktuk.get("seats")
+    });
+
+    batch.update(userRefDoc, {
+      "needSelectTukTuk": false
+    });
+
+    await batch.commit();
+  }
 }
 
 Future<bool> userExists(String phone) async {
@@ -305,7 +364,7 @@ Future<AppUser> getUserFirebaseInstance(bool guideMode, User user) async {
   final docSnap = await ref.get();
   AppUser? appUser = docSnap.data();
   if (appUser == null) {
-    appUser = AppUser(user.uid, user.displayName, user.email, user.phoneNumber, false, 0.0, null, null);
+    appUser = AppUser(user.uid, user.displayName, user.email, user.phoneNumber, false, 0.0, null, null, null);
     FirebaseFirestore.instance.collection("users")
         .doc(user.uid)
         .set(appUser.toFirestore());

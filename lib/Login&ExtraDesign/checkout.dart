@@ -20,7 +20,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../Domain/appUser.dart';
 import '../Domain/tour.dart';
 import '../Providers/userProvider.dart';
-import '../Utils/notification.dart';
 import '../Utils/util.dart';
 
 class checkout extends StatefulWidget {
@@ -1270,15 +1269,6 @@ class _checkoutState extends State<checkout> {
       );
 
       if (!widget.goNow) {
-        DocumentSnapshot<Object?> guide = await selectedGuideRef!.get();
-
-        String? token = guide.get("firebaseToken");
-        if (token != null) {
-          await sendNotification(targetToken: token,
-              title: "New Tour",
-              body: "${DateFormat('dd-MM-yyyy HH:mm').format(tripDate)} - ${tour!.name}",
-              data: { "tripId": docRef.id });
-        }
         await AppUser.updateUserUnavailability(selectedGuideRef!.id, tour!, selectedDate!, hourSliderValue, minutesSliderValue, false);
       }
 

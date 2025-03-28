@@ -36,6 +36,9 @@ class _TimeTableState extends State<TimeTable> {
   late UserProvider userProvider;
   late Map<DateTime,List<Slot>> slots;
   List<TimetableItem<Slot>> items = [];
+  bool updatingSlotStatus = false;
+  int progressCount = 0;
+  int totalSlots = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -139,7 +142,25 @@ class _TimeTableState extends State<TimeTable> {
                           body: Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 18, vertical: 8),
-                            child: Timetable<Slot>(
+                            child: updatingSlotStatus
+                                ? Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      CircularProgressIndicator(color: LogoColor),
+                                      const SizedBox(height: 16),
+                                      LinearProgressIndicator(
+                                        value: totalSlots == 0 ? 0 : progressCount / totalSlots,
+                                        backgroundColor: Colors.grey[300],
+                                        valueColor: AlwaysStoppedAnimation<Color>(LogoColor),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        "Updating calendar: $progressCount / $totalSlots",
+                                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  )
+                                : Timetable<Slot>(
                               controller: controller,
                               items: items,
                               cellBuilder: (datetime) => Container(
@@ -153,19 +174,51 @@ class _TimeTableState extends State<TimeTable> {
                               ),
                               headerCellBuilder: (datetime) {
                                 final color = BlackColor;
-                                return Container(
-                                  decoration: BoxDecoration(
-                                    border: Border(bottom: BorderSide(color: color, width: 2)),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      DateFormat("E\nMMM d").format(datetime),
-                                      style: TextStyle(
-                                        color: LogoColor,
-                                      ),
-                                      textAlign: TextAlign.center,
+                                return GestureDetector(
+                                  onTap: () async {
+                                    final date = DateUtils.dateOnly(datetime);
+                                    var daySlots = slots[date];
+                                    if (daySlots != null) {
+                                      final slot = slots[date]!.firstWhereOrNull((s) => s.status != 2);
+                                      if (slot != null) {
+                                        final changeToStatus = slot.status == availableStatus ? unavailableStatus : availableStatus;
+                                        final slotsToChange = slots[date]!.where((s) => s.status != 2 && s.status != changeToStatus);
+                                        setState(() {
+                                          updatingSlotStatus = true;
+                                          progressCount = 0;
+                                          totalSlots = slotsToChange.length;
+                                        });
+
+                                        for (Slot s in slotsToChange) {
+                                          await AppUser.updateUnavailability(s.start, changeToStatus);
+
+                                          setState(() {
+                                            progressCount++;
+                                            s.status = changeToStatus;
+                                          });
+                                        }
+
+                                        setState(() {
+                                          updatingSlotStatus = false;
+                                        });
+
+                                      }
+                                    }
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      border: Border(bottom: BorderSide(color: color, width: 2)),
                                     ),
-                                  ),
+                                    child: Center(
+                                      child: Text(
+                                        DateFormat("E\nMMM d").format(datetime),
+                                        style: TextStyle(
+                                          color: LogoColor,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  )
                                 );
                               },
                               hourLabelBuilder: (time) {
@@ -197,7 +250,7 @@ class _TimeTableState extends State<TimeTable> {
                                       if (item.data!.status != tripStatus) {
                                         await AppUser.updateUnavailability(item.start, item.data!.status == availableStatus ? unavailableStatus : availableStatus);
                                         setState(() {
-                                          item.data!.status == availableStatus ? unavailableStatus : availableStatus;
+                                          item.data!.status = item.data!.status == availableStatus ? unavailableStatus : availableStatus;
                                         });
                                       }
                                     },

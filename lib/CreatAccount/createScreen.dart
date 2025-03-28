@@ -265,6 +265,7 @@ class _createScreenState extends State<createScreen> {
           "name": nameController.text,
           "phone": phoneNumber,
           "accountValidated": false,
+          "accountAccepted": false,
           "rating": 3
         });
 

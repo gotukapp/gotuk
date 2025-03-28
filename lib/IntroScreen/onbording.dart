@@ -29,6 +29,7 @@ class _onbordingState extends State<onbording> {
 
   @override
   void initState() {
+    print("init onboarding");
     getdarkmodepreviousstate();
     getAppModeState();
     super.initState();
@@ -102,14 +103,6 @@ class _BoardingScreenState extends State<BoardingPage> {
   void initState() {
     getdarkmodepreviousstate();
     _currentPage = 0;
-    slides = [
-      Slide("assets/images/onboarding1.jpg", "Tuk Tuk booking with GoTuk",
-          "The best tours at the best prices"),
-      Slide("assets/images/onboarding2.jpg", " Best tour experience",
-          "Get the best deals on tuk tuk tours - Everyday!"),
-      Slide("assets/images/onboarding3.jpg", "Signup on GoTuk",
-          "Largest & most trusted Tuk Tuk App"),
-    ];
     _pageController = PageController(initialPage: _currentPage);
     super.initState();
   }
@@ -208,6 +201,20 @@ class _BoardingScreenState extends State<BoardingPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (slides.isEmpty) {
+      print("Add slides");
+      setState(() {
+        slides.add(Slide("assets/images/onboarding1.jpg",
+            AppLocalizations.of(context)!.onboardingTitle_1,
+            AppLocalizations.of(context)!.onboardingText_1));
+        slides.add(Slide("assets/images/onboarding2.jpg",
+            AppLocalizations.of(context)!.onboardingTitle_2,
+            AppLocalizations.of(context)!.onboardingText_2));
+        slides.add(Slide("assets/images/onboarding3.jpg",
+            AppLocalizations.of(context)!.onboardingTitle_3,
+            AppLocalizations.of(context)!.onboardingText_3));
+      });
+    }
     return Scaffold(
       backgroundColor: WhiteColor,
       body: Stack(
@@ -269,7 +276,7 @@ class _BoardingScreenState extends State<BoardingPage> {
                               width: double.infinity,
                               child: Center(
                                 child: Text(
-                                  "CONTINUE",
+                                  AppLocalizations.of(context)!.onboardingContinue.toUpperCase(),
                                   style: TextStyle(
                                       fontSize: 16,
                                       color: WhiteColor,
@@ -287,7 +294,7 @@ class _BoardingScreenState extends State<BoardingPage> {
                           builder: (context) => const loginpage()));
                     },
                     child: Text(
-                      "SKIP",
+                      AppLocalizations.of(context)!.skip.toUpperCase(),
                       style: TextStyle(
                           fontSize: 16,
                           color: Darkblue,
@@ -350,7 +357,7 @@ class _loginpageState extends State<loginpage> {
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.05),
             Text(
-              "Welcome to GoTuk",
+              AppLocalizations.of(context)!.welcome,
               style: TextStyle(
                   fontSize: 25,
                   fontFamily: "Gilroy Bold",
@@ -358,7 +365,7 @@ class _loginpageState extends State<loginpage> {
             ),
             const SizedBox(height: 10),
             Text(
-                "If you are new here, please create your account before booking a tour.",
+                AppLocalizations.of(context)!.onboardingCreateAccount,
                 style: TextStyle(
                     fontSize: 20,
                     color: notifier.getdarkgreycolor,
@@ -372,7 +379,7 @@ class _loginpageState extends State<loginpage> {
               },
               // ignore: sort_child_properties_last
               child: Text(
-                guideMode ? 'CREATE GUIDE ACCOUNT' : 'CREATE ACCOUNT',
+                guideMode ? AppLocalizations.of(context)!.createGuideAccount.toUpperCase() : AppLocalizations.of(context)!.createAccount.toUpperCase(),
                 style: TextStyle(
                     color: WhiteColor, fontSize: 16, fontFamily: "Gilroy Bold"),
               ),
@@ -390,7 +397,7 @@ class _loginpageState extends State<loginpage> {
               },
               // ignore: sort_child_properties_last
               child: Text(
-                guideMode ? 'LOGIN AS A GUIDE' :  'LOGIN',
+                guideMode ? AppLocalizations.of(context)!.loginAsGuide.toUpperCase() :  AppLocalizations.of(context)!.login.toUpperCase(),
                 style: TextStyle(
                     color: WhiteColor, fontSize: 16, fontFamily: "Gilroy Bold"),
               ),
@@ -408,7 +415,7 @@ class _loginpageState extends State<loginpage> {
                   children: [
                     SizedBox(
                         width: MediaQuery.of(context).size.width * 0.065),
-                    Text("I want to be a Guide",
+                    Text(AppLocalizations.of(context)!.toBeGuide,
                         style: TextStyle(
                             fontSize: 18,
                             color: notifier.getwhitelogocolor,

@@ -6,6 +6,7 @@ import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
+import 'package:dm/Guide/selectTukTuk.dart';
 import 'package:dm/Login&ExtraDesign/tripDetail.dart';
 import 'package:dm/Login&ExtraDesign/tripFinished.dart';
 import 'package:dm/Profile/profile.dart';
@@ -41,7 +42,10 @@ class _homepageState extends State<homepage> {
   late int _lastTimeBackButtonWasTapped;
   static const exitTimeInMillis = 2000;
   bool guideMode = false;
+  StreamSubscription<QuerySnapshot<Object?>>? tourListener;
   StreamSubscription<QuerySnapshot<Object?>>? listener;
+  StreamSubscription<QuerySnapshot<Object?>>? appNotificationslistener;
+  StreamSubscription<DocumentSnapshot<Object?>>? userListener;
 
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
@@ -62,10 +66,10 @@ class _homepageState extends State<homepage> {
   void initState() {
     getdarkmodepreviousstate();
     getAppModeState();
-    loadTours();
+    addUserListen();
     addTourListen();
     addTripsListen();
-    addFirebaseNotificationsListen();
+    addAppNotificationsListen();
     initializeNotifications();
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
@@ -197,6 +201,15 @@ class _homepageState extends State<homepage> {
     if (listener != null) {
       listener?.cancel();
     }
+    if (tourListener != null) {
+      tourListener?.cancel();
+    }
+    if (appNotificationslistener != null) {
+      appNotificationslistener?.cancel();
+    }
+    if (userListener != null) {
+      userListener?.cancel();
+    }
     selectedIndex = 0;
     super.dispose();
   }
@@ -246,12 +259,12 @@ class _homepageState extends State<homepage> {
     });
   }
 
-  void addFirebaseNotificationsListen() {
+  void addAppNotificationsListen() {
     final Stream<QuerySnapshot<Map<String, dynamic>>> usersStream =
     FirebaseFirestore.instance.collection('notifications').snapshots();
 
     bool isFirstTime = true;
-    listener = usersStream.listen((onData) async {
+    appNotificationslistener = usersStream.listen((onData) async {
       if (!isFirstTime) {
         for (var change in onData.docChanges) {
         if (change.type == DocumentChangeType.added) {
@@ -269,7 +282,7 @@ class _homepageState extends State<homepage> {
     final Stream<QuerySnapshot<Map<String, dynamic>>> usersStream =
     FirebaseFirestore.instance.collection('tours').snapshots();
 
-    listener = usersStream.listen((onData) async {
+    tourListener = usersStream.listen((onData) async {
       for (var change in onData.docChanges) {
         if (change.type == DocumentChangeType.modified) {
           Tour updatedTour = Tour.fromFirestore(change.doc, null);
@@ -284,14 +297,28 @@ class _homepageState extends State<homepage> {
     });
   }
 
+  void addUserListen() {
+    final Stream<DocumentSnapshot<Map<String, dynamic>>> usersStream =
+    FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser?.uid).snapshots();
+
+    userListener = usersStream.listen((docSnapshot) async {
+      if (docSnapshot.exists) {
+        if (docSnapshot.get("needSelectTukTuk")) {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => const SelectTukTuk()));
+        }
+      }
+    });
+  }
+
   void initializeNotifications() {
     const AndroidInitializationSettings initializationSettingsAndroid =
     AndroidInitializationSettings('@mipmap/ic_launcher'); // Ícone padrão
 
-    final DarwinInitializationSettings initializationSettingsIOS =
+    const DarwinInitializationSettings initializationSettingsIOS =
     DarwinInitializationSettings();
 
-    final InitializationSettings initializationSettings =
+    const InitializationSettings initializationSettings =
     InitializationSettings(
       android: initializationSettingsAndroid,
       iOS: initializationSettingsIOS,
@@ -308,14 +335,14 @@ class _homepageState extends State<homepage> {
       channelDescription: 'your_channel_description',
       importance: Importance.max,
       priority: Priority.high,
-      playSound: true, // Sons padrão ativados
+      playSound: true,
     );
 
     const DarwinNotificationDetails iOSPlatformChannelSpecifics =
     DarwinNotificationDetails(
       presentAlert: true,
       presentBadge: true,
-      presentSound: true, // Sons padrão ativados
+      presentSound: true,
     );
 
     const NotificationDetails platformChannelSpecifics =
@@ -366,18 +393,5 @@ class _homepageState extends State<homepage> {
     final prefs = await SharedPreferences.getInstance();
     bool? previousState = prefs.getBool("setGuideMode");
     guideMode = previousState ?? false;
-  }
-
-  void loadTours() {
-    FirebaseFirestore.instance.collection("tours").get().then(
-            (querySnapshot) {
-      for (var docSnapshot in querySnapshot.docs) {
-        Tour tour = Tour.fromFirestore(docSnapshot, null);
-        if (tour.isActive) {
-          Tour.availableTours.add(tour);
-        }
-        Tour.allTours.add(tour);
-      }
-    });
   }
 }

@@ -4,7 +4,6 @@ import 'package:collection/collection.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
-import 'package:dm/Utils/plateFormatter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -50,32 +49,26 @@ class _AccountState extends State<account> {
   String? _error;
 
   bool vehicleType = false;
+
+  String personalDataStatus = '';
   List<String> language = [];
+  List<bool> expandedData = [false, false, false, false];
   final identificationNumber = TextEditingController();
   final drivingLicenseNumber = TextEditingController();
-  final licenseRNAATNumber = TextEditingController();
   DateTime? identificationNumberExpirationDate;
   DateTime? drivingLicenseExpirationDate;
 
-  final insuranceCompanyName = TextEditingController();
-  final insurancePolicyNumber = TextEditingController();
-  DateTime? insuranceExpirationDate;
-
+  String workAccidentInsuranceStatus = '';
+  bool useWorkAccidentOrganizationInsurance = false;
   final insuranceWorkAccidentCompanyName = TextEditingController();
   final insuranceWorkAccidentPolicyNumber = TextEditingController();
   DateTime? insuranceWorkAccidentExpirationDate;
 
-  final insurancePersonalAccidentCompanyName = TextEditingController();
-  final insurancePersonalAccidentPolicyNumber = TextEditingController();
-  DateTime? insurancePersonalAccidentExpirationDate;
+  final organizationCode = TextEditingController();
+  String organizationName = '';
+  String organizationStatus = '';
 
-  final vehicleLicensePlate = TextEditingController();
-  int? selectedSeatsNumber = 0;
-  int vehicleSeatsNumber = 4;
-  final vehicleInsuranceCompanyName = TextEditingController();
-  final vehicleInsurancePolicyNumber = TextEditingController();
-  DateTime? vehicleInsuranceExpirationDate;
-  late List<Item> _data;
+  String criminalRecordStatus = '';
 
   late UserProvider userProvider;
   late ColorNotifier notifier;
@@ -83,142 +76,79 @@ class _AccountState extends State<account> {
   @override
   void initState() {
     getdarkmodepreviousstate();
-    _data = generateItems(8);
     _loadDocument();
     super.initState();
   }
 
-  List<Item> generateItems(int numberOfItems) {
-    return [ Item(
-        itemName: 'personalData',
-        headerValue: 'Dados Pessoais',
-        expandedValue: 'Dados Pessoais',
-        status: 'not approved',
-        fields: [
-          { "name": "Linguas Faladas", "description": getSelectedLanguagesDescription, "type": "Array", "fieldName":"language", "field": language, "function": onLanguageClick },
-          { "name": "Nº CC/Passaporte", "description": "Número do documento", "type": "String", "fieldName":"identificationNumber", "field": identificationNumber },
-          { "name": "Validade", "description": "Data de Validade", "type": "Date", "fieldName":"identificationNumberExpirationDate", "field": identificationNumberExpirationDate},
-          { "name": "Carta de condução", "description": "Número do documento", "type": "String", "fieldName":"drivingLicenseNumber", "field": drivingLicenseNumber },
-          { "name": "Validade", "description": "Data de Validade", "type": "Date", "fieldName":"drivingLicenseExpirationDate", "field": drivingLicenseExpirationDate }
-        ]
-    ),
-      Item(
-          itemName: 'activity',
-          headerValue: 'Comprovativo de Actividade',
-          expandedValue: 'Comprovativo de Actividade',
-          status: 'not approved',
-          fields: [
-            { "name": "Declaração Abertura Atividade", "description": "", "type": "String"},
-          ]
-      ),
-      Item(
-          itemName: 'licenseRNAAT',
-          headerValue: 'Licença RNAAT',
-          expandedValue: 'Licença RNAAT',
-          status: 'not approved',
-          fields: [
-            { "name": "Nº Registo", "description": "", "type": "String", "fieldName": "licenseRNAATNumber", "field": licenseRNAATNumber }
-          ]
-      ),
-      Item(
-          itemName: 'training',
-          headerValue: 'Formação',
-          expandedValue: 'Formação',
-          status: 'not approved',
-          fields: []
-      ),
-      Item(
-          itemName: 'civilLiabilityInsurancePolicy',
-          headerValue: 'Apólice de Seguro de Responsabilidade Civil',
-          expandedValue: 'Apólice de Seguro de Responsabilidade Civil',
-          status: 'not approved',
-          fields: [
-            { "name": "Companhia de Seguros", "description": "Nome", "type": "String", "fieldName": "insuranceCompanyName", "field": insuranceCompanyName },
-            { "name": "Nº Apólice", "description": "Indique o Número", "type": "String", "fieldName": "insurancePolicyNumber", "field": insurancePolicyNumber },
-            { "name": "Data de Validade", "description": "Data de Validade", "type": "Date", "fieldName": "insuranceExpirationDate", "field": insuranceExpirationDate }
-          ]
-      ),
-      Item(
-          itemName: 'workAccidentInsurancePolicy',
-          headerValue: 'Apólice de seguro de Acidentes de trabalho',
-          expandedValue: 'Apólice de seguro de Acidentes de trabalho',
-          status: 'not approved',
-          fields: [
-            { "name": "Companhia de Seguros", "description": "Nome", "type": "String", "fieldName": "insuranceWorkAccidentCompanyName", "field": insuranceWorkAccidentCompanyName},
-            { "name": "Nº Apólice", "description": "Indique o Número", "type": "String", "fieldName": "insuranceWorkAccidentPolicyNumber", "field": insuranceWorkAccidentPolicyNumber},
-            { "name": "Data de Validade", "description": "Data de Validade", "type": "Date", "fieldName": "insuranceWorkAccidentExpirationDate", "field": insuranceWorkAccidentExpirationDate }
-          ]
-      ),
-      Item(
-          itemName: 'personalAccidentInsurancePolicy',
-          headerValue: 'Apólice de Seguro de Acidentes Pessoais',
-          expandedValue: 'Apólice de Seguro de Acidentes Pessoais',
-          status: 'not approved',
-          fields: [
-            { "name": "Companhia de Seguros", "description": "Nome", "type": "String", "fieldName": "insurancePersonalAccidentCompanyName", "field": insurancePersonalAccidentCompanyName},
-            { "name": "Nº Apólice", "description": "Indique o Número", "type": "String", "fieldName": "insurancePersonalAccidentPolicyNumber", "field": insurancePersonalAccidentPolicyNumber},
-            { "name": "Data de Validade", "description": "Data de Validade", "type": "Date", "fieldName": "insurancePersonalAccidentExpirationDate", "field": insurancePersonalAccidentExpirationDate }
-          ]
-      ),
-      Item(
-          itemName: 'vehicleData',
-          headerValue: 'Dados do Veículo',
-          expandedValue: 'Dados do Veículo',
-          status: 'not approved',
-          fields: [
-            { "name": "Matrícula", "description": "", "type": "String", "fieldName": "vehicleLicensePlate", "field": vehicleLicensePlate, "formatter": PlateFormatter() },
-            { "name": "Lugares", "description": "", "type": "List", "fieldName": "vehicleSeatsNumber", "field": vehicleSeatsNumber, "values": ["4","6"] },
-            { "name": "Veículo Eléctrico", "description": "", "type": "Boolean", "fieldName": "vehicleType", "field": vehicleType },
-            { "name": "Companhia de Seguros", "description": "Nome", "type": "String", "fieldName": "vehicleInsuranceCompanyName", "field": vehicleInsuranceCompanyName },
-            { "name": "Nº Apólice", "description": "Indique o Número", "type": "String", "fieldName": "vehicleInsurancePolicyNumber", "field": vehicleInsurancePolicyNumber },
-            { "name": "Data de Validade", "description": "Data de Validade", "type": "Date", "fieldName": "vehicleInsuranceExpirationDate", "field": vehicleInsuranceExpirationDate }
-          ]
-      )
-    ];
-  }
-
-  List<String> list = <String>['4', '6'];
-
   Future<void> _loadDocument() async {
     try {
-      final querySnapshot = await FirebaseFirestore.instance
+      final queryPersonalData = await FirebaseFirestore.instance
           .collection('users')
           .doc(FirebaseAuth.instance.currentUser?.uid)
-          .collection('documents')
+          .collection('personalData')
           .orderBy('submitDate', descending: true) // Sort by 'datetime' in descending order
           .limit(1) // Limit to 1 document
           .get();
 
-      if (querySnapshot.docs.isNotEmpty) {
-        setState(() {
-          Map<String, dynamic>? data = querySnapshot.docs.first.data();
-          for(Item item in _data) {
-            item.status = data.containsKey(item.itemName) ? data[item.itemName] : "not approved";
-            for(dynamic field in item.fields) {
-              if (data.containsKey(field["fieldName"])) {
-                if (field["type"] == 'String') {
-                  field["field"].text = data[field["fieldName"]];
-                } else if (field["type"] == 'Date') {
-                  field["field"] = data[field["fieldName"]].toDate();
-                } else if (field["type"] == 'Array') {
-                  field["field"] = data[field["fieldName"]].whereType<String>().toList();
-                  language = data[field["fieldName"]].whereType<String>().toList();
-                } else if (field["type"] == 'List') {
-                  field["field"] = data[field["fieldName"]];
-                  field["selectedIndex"] = field["values"].indexOf(data[field["fieldName"]].toString());
-                } else {
-                  field["field"] = data[field["fieldName"]];
-                }
-              }
-            }
-          }
-          _isLoading = false;
-        });
-      } else {
-        setState(() {
-          _isLoading = false;
-        });
-      }
+      final queryOrganizationData = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .collection('organizationData')
+          .orderBy('submitDate', descending: true) // Sort by 'datetime' in descending order
+          .limit(1) // Limit to 1 document
+          .get();
+
+      final queryWorkAccidentInsurance = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .collection('workAccidentInsurance')
+          .orderBy('submitDate', descending: true) // Sort by 'datetime' in descending order
+          .limit(1) // Limit to 1 document
+          .get();
+
+      final queryCriminalRecord = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .collection('criminalRecord')
+          .orderBy('submitDate', descending: true) // Sort by 'datetime' in descending order
+          .limit(1) // Limit to 1 document
+          .get();
+
+
+      setState(() {
+        if (queryPersonalData.docs.isNotEmpty) {
+          Map<String, dynamic>? personalData = queryPersonalData.docs.first.data();
+          language = personalData["language"].whereType<String>().toList();
+          identificationNumber.text = personalData["identificationNumber"];
+          identificationNumberExpirationDate = personalData["identificationNumberExpirationDate"]?.toDate();
+          drivingLicenseNumber.text = personalData["drivingLicenseNumber"];
+          drivingLicenseExpirationDate = personalData["drivingLicenseExpirationDate"]?.toDate();
+          personalDataStatus = personalData["status"];
+        }
+
+        if (queryWorkAccidentInsurance.docs.isNotEmpty) {
+          Map<String,dynamic>? workAccidentInsurance = queryWorkAccidentInsurance.docs.first.data();
+          insuranceWorkAccidentCompanyName.text = workAccidentInsurance["name"];
+          insuranceWorkAccidentPolicyNumber.text = workAccidentInsurance["number"];
+          insuranceWorkAccidentExpirationDate = workAccidentInsurance["expirationDate"]?.toDate();
+          useWorkAccidentOrganizationInsurance = workAccidentInsurance["useOrganizationInsurance"] ?? false;
+          workAccidentInsuranceStatus = workAccidentInsurance["status"];
+        }
+
+        if (queryOrganizationData.docs.isNotEmpty) {
+          Map<String, dynamic>? organizationData = queryOrganizationData.docs.first.data();
+          organizationCode.text = organizationData["code"];
+          organizationName = organizationData["name"] ?? "";
+          organizationStatus = organizationData["status"];
+        }
+
+        if (queryCriminalRecord.docs.isNotEmpty) {
+          Map<String, dynamic>? criminalRecord = queryCriminalRecord.docs.first.data();
+          criminalRecordStatus = criminalRecord["status"];
+        }
+
+        _isLoading = false;
+      });
     } catch (e) {
       setState(() {
         _error = 'Error: $e';
@@ -274,7 +204,20 @@ class _AccountState extends State<account> {
                             buttontext: "Submit Data",
                             onclick: () async {
                               AppUser user = userProvider.user!;
-                              bool resultOk = await user.submitAccountData(_data);
+                              print(identificationNumberExpirationDate);
+                              bool resultOk = await user.submitAccountData({
+                                "language": language,
+                                "identificationNumber": identificationNumber.text,
+                                "identificationNumberExpirationDate": identificationNumberExpirationDate,
+                                "drivingLicenseNumber": drivingLicenseNumber.text,
+                                "drivingLicenseExpirationDate": drivingLicenseExpirationDate,
+                                "insuranceWorkAccidentCompanyName": insuranceWorkAccidentCompanyName.text,
+                                "insuranceWorkAccidentPolicyNumber": insuranceWorkAccidentPolicyNumber.text,
+                                "insuranceWorkAccidentExpirationDate": insuranceWorkAccidentExpirationDate,
+                                "useWorkAccidentOrganizationInsurance": useWorkAccidentOrganizationInsurance,
+                                "organizationCode": organizationCode.text,
+                                "updateOrganizationCode": true
+                              });
                               if (resultOk) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
@@ -300,34 +243,344 @@ class _AccountState extends State<account> {
   }
 
   Widget _buildPanel() {
+
+    final panels = [
+      _personalDataPanel(0),
+      _organizationDataPanel(1),
+      _workAccidentInsurancePanel(2),
+      _criminalRecordPanel(3)
+    ];
     return ExpansionPanelList(
       expansionCallback: (int index, bool isExpanded) {
         setState(() {
-          _data[index].isExpanded = isExpanded;
+          expandedData[index] = isExpanded;
         });
       },
-      children: _data.map<ExpansionPanel>((Item item) {
-        return ExpansionPanel(
-          backgroundColor: getBackroundColorByStatus(item),
-          headerBuilder: (BuildContext context, bool isExpanded) {
-            return
-              ListTile(
-                title: Text(
-                  item.headerValue,
+      children: panels,
+    );
+  }
+
+  ExpansionPanel _personalDataPanel(index) {
+    return ExpansionPanel(
+      backgroundColor: getBackroundColorByStatus(personalDataStatus),
+      headerBuilder: (BuildContext context, bool isExpanded) {
+        return
+          ListTile(
+            title: Text(
+              "Dados Pessoais",
+              style: TextStyle(
+                  fontSize: 16,
+                  color: notifier.getwhiteblackcolor,
+                  fontFamily: "Gilroy Bold"),
+            ),
+          );
+      },
+      body: Padding(
+        padding: const EdgeInsets.only(left: 10, right: 10, bottom: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Linguas Faladas",
+              style: TextStyle(
+                  fontSize: 16,
+                  color: notifier.getwhiteblackcolor,
+                  fontFamily: "Gilroy Bold"),
+            ),
+            const SizedBox(height: 10),
+            selectDetail(
+                text: getSelectedLanguagesDescription(),
+                onclick: () {
+                  onLanguageClick();
+                },
+                notifier: notifier),
+            const SizedBox(height: 20),
+            Text("C.Cidadão / C.Residente / Passaporte",
+              style: TextStyle(
+                  fontSize: 15,
+                  color: notifier.getwhiteblackcolor,
+                  fontFamily: "Gilroy Bold"),
+            ),
+            const SizedBox(height: 10),
+            textField(
+                fieldColor: notifier.getdarkmodecolor,
+                hintColor: notifier.getdarkgreycolor,
+                controller: identificationNumber,
+                text: "Número do documento",
+                suffix: null),
+            const SizedBox(height: 10),
+            Text("Validade",
+              style: TextStyle(
+                  fontSize: 16,
+                  color: notifier.getwhiteblackcolor,
+                  fontFamily: "Gilroy Bold"),
+            ),
+            const SizedBox(height: 10),
+            selectDetail(
+                text: identificationNumberExpirationDate != null ? DateFormat('dd/MM/yyyy').format(identificationNumberExpirationDate!) : "Seleccionar Data",
+                icon: Icons.keyboard_arrow_down,
+                onclick: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => Calendar(selectedDate: identificationNumberExpirationDate),
+                  )).then((value) {
+                    setState(() {
+                      identificationNumberExpirationDate = value;
+                    });
+                  });
+                },
+                notifier: notifier
+            ),
+            const SizedBox(height: 20),
+            Text("Carta de condução",
+              style: TextStyle(
+                  fontSize: 16,
+                  color: notifier.getwhiteblackcolor,
+                  fontFamily: "Gilroy Bold"),
+            ),
+            const SizedBox(height: 10),
+            textField(
+                fieldColor: notifier.getdarkmodecolor,
+                hintColor: notifier.getdarkgreycolor,
+                controller: drivingLicenseNumber,
+                text: "Número do documento",
+                suffix: null),
+            const SizedBox(height: 10),
+            Text("Validade",
+              style: TextStyle(
+                  fontSize: 16,
+                  color: notifier.getwhiteblackcolor,
+                  fontFamily: "Gilroy Bold"),
+            ),
+            const SizedBox(height: 10),
+            selectDetail(
+                text: drivingLicenseExpirationDate != null ? DateFormat('dd/MM/yyyy').format(drivingLicenseExpirationDate!) : "Seleccionar Data",
+                icon: Icons.keyboard_arrow_down,
+                onclick: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => Calendar(selectedDate: drivingLicenseExpirationDate),
+                  )).then((value) {
+                    setState(() {
+                      drivingLicenseExpirationDate = value;
+                    });
+                  });
+                },
+                notifier: notifier
+            ),
+            const SizedBox(height: 25),
+            AppButton(
+                bgColor: notifier.getlogobgcolor,
+                textColor: WhiteColor,
+                buttontext: "Attach Document",
+                onclick: () async {
+
+                })
+          ])
+      ),
+      isExpanded: expandedData[index],
+    );
+  }
+
+  ExpansionPanel _organizationDataPanel(index) {
+    return ExpansionPanel(
+      backgroundColor: getBackroundColorByStatus(organizationStatus),
+      headerBuilder: (BuildContext context, bool isExpanded) {
+        return
+          ListTile(
+            title: Text(
+              "Dados da Empresa",
+              style: TextStyle(
+                  fontSize: 16,
+                  color: notifier.getwhiteblackcolor,
+                  fontFamily: "Gilroy Bold"),
+            ),
+          );
+      },
+      body: Padding(
+          padding: const EdgeInsets.only(left: 10, right: 10, bottom: 20),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Código",
                   style: TextStyle(
                       fontSize: 16,
                       color: notifier.getwhiteblackcolor,
                       fontFamily: "Gilroy Bold"),
                 ),
-              );
-          },
-          body: identificationDocumentWidget(notifier, context, item.fields),
-          isExpanded: item.isExpanded,
-        );
-      }).toList(),
+                const SizedBox(height: 10),
+                textField(
+                    fieldColor: notifier.getdarkmodecolor,
+                    hintColor: notifier.getdarkgreycolor,
+                    controller: organizationCode,
+                    text: "Código da Empresa",
+                    suffix: null,
+                    readOnly: organizationStatus == "approved"),
+                const SizedBox(height: 10),
+                Text("Nome",
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: notifier.getwhiteblackcolor,
+                      fontFamily: "Gilroy Bold"),
+                ),
+                const SizedBox(height: 10),
+                textField(
+                    fieldColor: notifier.getdarkmodecolor,
+                    hintColor: notifier.getdarkgreycolor,
+                    text: organizationName,
+                    suffix: null,
+                    readOnly: true),
+              ])
+      ),
+      isExpanded: expandedData[index],
     );
   }
 
+  ExpansionPanel _workAccidentInsurancePanel(index) {
+    return ExpansionPanel(
+      backgroundColor: getBackroundColorByStatus(workAccidentInsuranceStatus),
+      headerBuilder: (BuildContext context, bool isExpanded) {
+        return
+          ListTile(
+            title: Text(
+              'Apólice de Seguro de Acidentes de Trabalho',
+              style: TextStyle(
+                  fontSize: 16,
+                  color: notifier.getwhiteblackcolor,
+                  fontFamily: "Gilroy Bold"),
+            ),
+          );
+      },
+      body: Padding(
+          padding: const EdgeInsets.only(left: 10, right: 10, bottom: 20),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      "Está incluido na apólice da empresa",
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: notifier.getwhiteblackcolor,
+                          fontFamily: "Gilroy Bold"),
+                    ),
+                    CupertinoSwitch(
+                      value: useWorkAccidentOrganizationInsurance,
+                      thumbColor: notifier.getdarkwhitecolor,
+                      trackColor: notifier.getbuttoncolor,
+                      activeColor: notifier.getdarkbluecolor,
+                      onChanged: (value) {
+                        setState(() {
+                          useWorkAccidentOrganizationInsurance = value;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+                if (useWorkAccidentOrganizationInsurance)
+                  Text(
+                    "Atenção - A sua conta apenas será validada se na apólice enviada pela empresa constar o seu nome",
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: notifier.getlogobgcolor,
+                        fontFamily: "Gilroy Bold"),
+                  ),
+                if (!useWorkAccidentOrganizationInsurance)
+                  ...[
+                    const SizedBox(height: 10),
+                    Text("Companhia de Seguros",
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: notifier.getwhiteblackcolor,
+                          fontFamily: "Gilroy Bold"),
+                    ),
+                    const SizedBox(height: 10),
+                    textField(
+                        fieldColor: notifier.getdarkmodecolor,
+                        hintColor: notifier.getdarkgreycolor,
+                        controller: insuranceWorkAccidentCompanyName,
+                        text: "Número do documento",
+                        suffix: null),
+                    const SizedBox(height: 10),
+                    Text("Nº Apólice",
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: notifier.getwhiteblackcolor,
+                          fontFamily: "Gilroy Bold"),
+                    ),
+                    const SizedBox(height: 10),
+                    textField(
+                        fieldColor: notifier.getdarkmodecolor,
+                        hintColor: notifier.getdarkgreycolor,
+                        controller: insuranceWorkAccidentPolicyNumber,
+                        text: "Número do documento",
+                        suffix: null),
+                    const SizedBox(height: 10),
+                    Text("Validade",
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: notifier.getwhiteblackcolor,
+                          fontFamily: "Gilroy Bold"),
+                    ),
+                    const SizedBox(height: 10),
+                    selectDetail(
+                        text: insuranceWorkAccidentExpirationDate != null ? DateFormat('dd/MM/yyyy').format(insuranceWorkAccidentExpirationDate!) : "Seleccionar Data",
+                        icon: Icons.keyboard_arrow_down,
+                        onclick: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => Calendar(selectedDate: insuranceWorkAccidentExpirationDate),
+                          )).then((value) {
+                            setState(() {
+                              insuranceWorkAccidentExpirationDate = value;
+                            });
+                          });
+                        },
+                        notifier: notifier
+                    ),
+                    const SizedBox(height: 25),
+                    AppButton(
+                        bgColor: notifier.getlogobgcolor,
+                        textColor: WhiteColor,
+                        buttontext: "Attach Document",
+                        onclick: () async {
+
+                        })]
+              ])
+      ),
+      isExpanded: expandedData[index],
+    );
+  }
+
+  ExpansionPanel _criminalRecordPanel(index) {
+    return ExpansionPanel(
+      backgroundColor: getBackroundColorByStatus(criminalRecordStatus),
+      headerBuilder: (BuildContext context, bool isExpanded) {
+        return
+          ListTile(
+            title: Text(
+              'Registo Criminal',
+              style: TextStyle(
+                  fontSize: 16,
+                  color: notifier.getwhiteblackcolor,
+                  fontFamily: "Gilroy Bold"),
+            ),
+          );
+      },
+      body: Padding(
+          padding: const EdgeInsets.only(left: 10, right: 10, bottom: 20),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AppButton(
+                    bgColor: notifier.getlogobgcolor,
+                    textColor: WhiteColor,
+                    buttontext: "Attach Document",
+                    onclick: () async {
+
+                    })
+              ])
+      ),
+      isExpanded: expandedData[index],
+    );
+  }
 
   /*Future<void> uploadFile(String url, File file) async {
     var request = http.MultipartRequest('POST', Uri.parse(url));
@@ -403,7 +656,11 @@ class _AccountState extends State<account> {
                        builder: (context) => Calendar(selectedDate: item["field"]),
                      )).then((value) {
                        setState(() {
-                         item["field"] = value; // you receive here
+                         print(value);
+                         print(item["field"]);
+                         identificationNumberExpirationDate = value;
+                         print(item["field"]);
+                         print(identificationNumberExpirationDate);
                        });
                      });
                    },
@@ -459,8 +716,8 @@ class _AccountState extends State<account> {
     }
   }
 
-  getBackroundColorByStatus(Item item) {
-    if (item.status == 'approved') {
+  getBackroundColorByStatus(String status) {
+    if (status == 'approved') {
       return approved;
     }
 
