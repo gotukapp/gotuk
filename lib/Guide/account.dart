@@ -1,4 +1,6 @@
 // ignore_for_file: file_names
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:dm/Utils/Colors.dart';
@@ -7,9 +9,11 @@ import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../Domain/appUser.dart';
 import '../Login&ExtraDesign/calendar.dart';
@@ -73,6 +77,14 @@ class _AccountState extends State<account> {
   late UserProvider userProvider;
   late ColorNotifier notifier;
 
+  bool editPersonalData = false;
+  bool editOrganizationData = false;
+
+  List<String> personalDataImages = [];
+  List<String> organizationDataImages = [];
+  List<String> workAccidentInsuranceImages = [];
+  List<String> criminalRecordImages = [];
+
   @override
   void initState() {
     getdarkmodepreviousstate();
@@ -114,18 +126,22 @@ class _AccountState extends State<account> {
           .limit(1) // Limit to 1 document
           .get();
 
+      if (queryPersonalData.docs.isNotEmpty) {
+        Map<String, dynamic>? personalData = queryPersonalData.docs.first.data();
+        final loadedImages = await AppUser.loadImages("uploads/users/${FirebaseAuth.instance.currentUser?.uid}/personalData/${queryPersonalData.docs[0].id}");
 
-      setState(() {
-        if (queryPersonalData.docs.isNotEmpty) {
-          Map<String, dynamic>? personalData = queryPersonalData.docs.first.data();
+        setState(() {
           language = personalData["language"].whereType<String>().toList();
           identificationNumber.text = personalData["identificationNumber"];
           identificationNumberExpirationDate = personalData["identificationNumberExpirationDate"]?.toDate();
           drivingLicenseNumber.text = personalData["drivingLicenseNumber"];
           drivingLicenseExpirationDate = personalData["drivingLicenseExpirationDate"]?.toDate();
           personalDataStatus = personalData["status"];
-        }
+          personalDataImages = loadedImages;
+        });
+      }
 
+      setState(() {
         if (queryWorkAccidentInsurance.docs.isNotEmpty) {
           Map<String,dynamic>? workAccidentInsurance = queryWorkAccidentInsurance.docs.first.data();
           insuranceWorkAccidentCompanyName.text = workAccidentInsurance["name"];
@@ -166,7 +182,7 @@ class _AccountState extends State<account> {
   }
 
   String getSelectedLanguagesDescription() {
-    return language.isEmpty ? "Selecionar línguas faladas" : language.map((s) => s.toUpperCase()).join(', ');
+    return language.isEmpty ? AppLocalizations.of(context)!.selectLanguages : language.map((s) => s.toUpperCase()).join(', ');
   }
 
 
@@ -181,7 +197,7 @@ class _AccountState extends State<account> {
         backgroundColor: notifier.getblackwhitecolor,
         leading: BackButton(color: notifier.getwhiteblackcolor),
         title: Text(
-          "Account",
+          AppLocalizations.of(context)!.account,
           style: TextStyle(
               color: notifier.getwhiteblackcolor, fontFamily: "Gilroy Bold"),
         ),
@@ -196,45 +212,7 @@ class _AccountState extends State<account> {
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                   child: Column(
                       children: [
-                        _buildPanel(),
-                        SizedBox(height: MediaQuery.of(context).size.height * 0.06),
-                        AppButton(
-                            bgColor: notifier.getlogobgcolor,
-                            textColor: WhiteColor,
-                            buttontext: "Submit Data",
-                            onclick: () async {
-                              AppUser user = userProvider.user!;
-                              print(identificationNumberExpirationDate);
-                              bool resultOk = await user.submitAccountData({
-                                "language": language,
-                                "identificationNumber": identificationNumber.text,
-                                "identificationNumberExpirationDate": identificationNumberExpirationDate,
-                                "drivingLicenseNumber": drivingLicenseNumber.text,
-                                "drivingLicenseExpirationDate": drivingLicenseExpirationDate,
-                                "insuranceWorkAccidentCompanyName": insuranceWorkAccidentCompanyName.text,
-                                "insuranceWorkAccidentPolicyNumber": insuranceWorkAccidentPolicyNumber.text,
-                                "insuranceWorkAccidentExpirationDate": insuranceWorkAccidentExpirationDate,
-                                "useWorkAccidentOrganizationInsurance": useWorkAccidentOrganizationInsurance,
-                                "organizationCode": organizationCode.text,
-                                "updateOrganizationCode": true
-                              });
-                              if (resultOk) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                        "Account information submitted successfully!"),
-                                  ),
-                                );
-                                Navigator.of(context).pop();
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                        "Error submitting data!"),
-                                  ),
-                                );
-                              }
-                            })
+                        _buildPanel()
                       ]
                   )
               ),
@@ -243,7 +221,6 @@ class _AccountState extends State<account> {
   }
 
   Widget _buildPanel() {
-
     final panels = [
       _personalDataPanel(0),
       _organizationDataPanel(1),
@@ -260,6 +237,24 @@ class _AccountState extends State<account> {
     );
   }
 
+  List<File> previewPersonalDataImages = [];
+  List<File> previewOrganizationDataImages = [];
+  List<File> previewWorkAccidentInsuranceImages = [];
+  List<File> previewCriminalRecordImages = [];
+
+  Future<void> pickImages(imageList) async {
+    final List<XFile> pickedFiles = await ImagePicker().pickMultiImage();
+    setState(() {
+      imageList.addAll(pickedFiles.map((file) => File(file.path)).toList());
+    });
+  }
+
+  void removeImage(imageList, int index) {
+    setState(() {
+      imageList.removeAt(index);
+    });
+  }
+
   ExpansionPanel _personalDataPanel(index) {
     return ExpansionPanel(
       backgroundColor: getBackroundColorByStatus(personalDataStatus),
@@ -267,7 +262,7 @@ class _AccountState extends State<account> {
         return
           ListTile(
             title: Text(
-              "Dados Pessoais",
+              AppLocalizations.of(context)!.personalData,
               style: TextStyle(
                   fontSize: 16,
                   color: notifier.getwhiteblackcolor,
@@ -280,7 +275,7 @@ class _AccountState extends State<account> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Linguas Faladas",
+            Text(AppLocalizations.of(context)!.spokenLanguages,
               style: TextStyle(
                   fontSize: 16,
                   color: notifier.getwhiteblackcolor,
@@ -290,11 +285,13 @@ class _AccountState extends State<account> {
             selectDetail(
                 text: getSelectedLanguagesDescription(),
                 onclick: () {
-                  onLanguageClick();
+                  if (editPersonalData) {
+                    onLanguageClick();
+                  }
                 },
                 notifier: notifier),
             const SizedBox(height: 20),
-            Text("C.Cidadão / C.Residente / Passaporte",
+            Text(AppLocalizations.of(context)!.personalCard,
               style: TextStyle(
                   fontSize: 15,
                   color: notifier.getwhiteblackcolor,
@@ -305,10 +302,12 @@ class _AccountState extends State<account> {
                 fieldColor: notifier.getdarkmodecolor,
                 hintColor: notifier.getdarkgreycolor,
                 controller: identificationNumber,
-                text: "Número do documento",
-                suffix: null),
+                text: AppLocalizations.of(context)!.documentNumber,
+                suffix: null,
+                readOnly: !editPersonalData
+            ),
             const SizedBox(height: 10),
-            Text("Validade",
+            Text(AppLocalizations.of(context)!.expirationDate,
               style: TextStyle(
                   fontSize: 16,
                   color: notifier.getwhiteblackcolor,
@@ -316,21 +315,25 @@ class _AccountState extends State<account> {
             ),
             const SizedBox(height: 10),
             selectDetail(
-                text: identificationNumberExpirationDate != null ? DateFormat('dd/MM/yyyy').format(identificationNumberExpirationDate!) : "Seleccionar Data",
+                text: identificationNumberExpirationDate != null ? DateFormat('dd/MM/yyyy').format(identificationNumberExpirationDate!) : AppLocalizations.of(context)!.selectDate,
                 icon: Icons.keyboard_arrow_down,
                 onclick: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => Calendar(selectedDate: identificationNumberExpirationDate),
-                  )).then((value) {
-                    setState(() {
-                      identificationNumberExpirationDate = value;
+                  if (editPersonalData) {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) =>
+                          Calendar(
+                              selectedDate: identificationNumberExpirationDate),
+                    )).then((value) {
+                      setState(() {
+                        identificationNumberExpirationDate = value;
+                      });
                     });
-                  });
+                  }
                 },
                 notifier: notifier
             ),
             const SizedBox(height: 20),
-            Text("Carta de condução",
+            Text(AppLocalizations.of(context)!.drivingLicense,
               style: TextStyle(
                   fontSize: 16,
                   color: notifier.getwhiteblackcolor,
@@ -341,10 +344,11 @@ class _AccountState extends State<account> {
                 fieldColor: notifier.getdarkmodecolor,
                 hintColor: notifier.getdarkgreycolor,
                 controller: drivingLicenseNumber,
-                text: "Número do documento",
-                suffix: null),
+                text: AppLocalizations.of(context)!.documentNumber,
+                suffix: null,
+                readOnly: !editPersonalData),
             const SizedBox(height: 10),
-            Text("Validade",
+            Text(AppLocalizations.of(context)!.expirationDate,
               style: TextStyle(
                   fontSize: 16,
                   color: notifier.getwhiteblackcolor,
@@ -352,27 +356,95 @@ class _AccountState extends State<account> {
             ),
             const SizedBox(height: 10),
             selectDetail(
-                text: drivingLicenseExpirationDate != null ? DateFormat('dd/MM/yyyy').format(drivingLicenseExpirationDate!) : "Seleccionar Data",
+                text: drivingLicenseExpirationDate != null ? DateFormat('dd/MM/yyyy').format(drivingLicenseExpirationDate!) : AppLocalizations.of(context)!.selectDate,
                 icon: Icons.keyboard_arrow_down,
                 onclick: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => Calendar(selectedDate: drivingLicenseExpirationDate),
-                  )).then((value) {
-                    setState(() {
-                      drivingLicenseExpirationDate = value;
+                  if (editPersonalData) {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) =>
+                          Calendar(selectedDate: drivingLicenseExpirationDate),
+                    )).then((value) {
+                      setState(() {
+                        drivingLicenseExpirationDate = value;
+                      });
                     });
-                  });
+                  }
                 },
                 notifier: notifier
             ),
-            const SizedBox(height: 25),
-            AppButton(
-                bgColor: notifier.getlogobgcolor,
-                textColor: WhiteColor,
-                buttontext: "Attach Document",
-                onclick: () async {
-
-                })
+            const SizedBox(height: 15),
+            if (personalDataImages.isNotEmpty && !editPersonalData)
+              Wrap(
+                spacing: 10,
+                runSpacing: 10,
+                children: List.generate(personalDataImages.length, (index) {
+                  return Stack(
+                    children: [
+                      // Image Preview
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.network(personalDataImages[index], height: 100, width: 100, fit: BoxFit.cover),
+                      ),
+                    ],
+                  );
+                }),
+              ),
+            if (previewPersonalDataImages.isNotEmpty && editPersonalData)
+              previewImages(previewPersonalDataImages),
+            if (editPersonalData)
+              ...[const SizedBox(height: 25),
+                AppButton(
+                    bgColor: notifier.getlogobgcolor,
+                    textColor: WhiteColor,
+                    buttontext: AppLocalizations.of(context)!.attachDocument,
+                    onclick: () async {
+                      await pickImages(previewPersonalDataImages);
+                      editPersonalData = false;
+                    }),
+                const SizedBox(height: 25),
+                AppButton(
+                    bgColor: notifier.getlogobgcolor,
+                    textColor: WhiteColor,
+                    buttontext: AppLocalizations.of(context)!.submitData,
+                    onclick: () async {
+                      AppUser user = userProvider.user!;
+                      bool resultOk = await user.submitPersonalData({
+                        "language": language,
+                        "identificationNumber": identificationNumber.text,
+                        "identificationNumberExpirationDate": identificationNumberExpirationDate,
+                        "drivingLicenseNumber": drivingLicenseNumber.text,
+                        "drivingLicenseExpirationDate": drivingLicenseExpirationDate,
+                        "selectedImages": previewPersonalDataImages
+                      });
+                      if (resultOk) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                                AppLocalizations.of(context)!.accountDataSubmittedSuccessfully),
+                          ),
+                        );
+                        Navigator.of(context).pop();
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                                AppLocalizations.of(context)!.errorSubmittingData),
+                          ),
+                        );
+                      }
+                    })],
+            if (!editPersonalData)
+              ...[
+                const SizedBox(height: 25),
+                AppButton(
+                  bgColor: notifier.getlogobgcolor,
+                  textColor: WhiteColor,
+                  buttontext: AppLocalizations.of(context)!.newDocument,
+                  onclick: () async {
+                    setState(() {
+                      editPersonalData = true;
+                    });
+                  })]
           ])
       ),
       isExpanded: expandedData[index],
@@ -386,7 +458,7 @@ class _AccountState extends State<account> {
         return
           ListTile(
             title: Text(
-              "Dados da Empresa",
+              AppLocalizations.of(context)!.organizationData,
               style: TextStyle(
                   fontSize: 16,
                   color: notifier.getwhiteblackcolor,
@@ -399,7 +471,7 @@ class _AccountState extends State<account> {
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Código",
+                Text(AppLocalizations.of(context)!.code,
                   style: TextStyle(
                       fontSize: 16,
                       color: notifier.getwhiteblackcolor,
@@ -410,11 +482,11 @@ class _AccountState extends State<account> {
                     fieldColor: notifier.getdarkmodecolor,
                     hintColor: notifier.getdarkgreycolor,
                     controller: organizationCode,
-                    text: "Código da Empresa",
+                    text: AppLocalizations.of(context)!.organizationCode,
                     suffix: null,
-                    readOnly: organizationStatus == "approved"),
+                    readOnly: !editOrganizationData),
                 const SizedBox(height: 10),
-                Text("Nome",
+                Text(AppLocalizations.of(context)!.name,
                   style: TextStyle(
                       fontSize: 16,
                       color: notifier.getwhiteblackcolor,
@@ -427,6 +499,46 @@ class _AccountState extends State<account> {
                     text: organizationName,
                     suffix: null,
                     readOnly: true),
+                if (!editOrganizationData)
+                  ...[const SizedBox(height: 25),
+                    AppButton(
+                        bgColor: notifier.getlogobgcolor,
+                        textColor: WhiteColor,
+                        buttontext: AppLocalizations.of(context)!.changeOrganization,
+                        onclick: () async {
+                          setState(() {
+                            editOrganizationData = true;
+                          });
+                        })],
+                if (editOrganizationData)
+                  ...[const SizedBox(height: 25),
+                    AppButton(
+                      bgColor: notifier.getlogobgcolor,
+                      textColor: WhiteColor,
+                      buttontext: AppLocalizations.of(context)!.submitData,
+                      onclick: () async {
+                        AppUser user = userProvider.user!;
+                        bool resultOk = await user.submitOrganizationData({
+                          "organizationCode": organizationCode
+                        });
+                        if (resultOk) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(AppLocalizations.of(context)!.accountDataSubmittedSuccessfully),
+                            ),
+                          );
+                          setState(() {
+                            editOrganizationData = false;
+                          });
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                  AppLocalizations.of(context)!.errorSubmittingData),
+                            ),
+                          );
+                        }
+                    })]
               ])
       ),
       isExpanded: expandedData[index],
@@ -440,7 +552,7 @@ class _AccountState extends State<account> {
         return
           ListTile(
             title: Text(
-              'Apólice de Seguro de Acidentes de Trabalho',
+              AppLocalizations.of(context)!.workAccidentInsurance,
               style: TextStyle(
                   fontSize: 16,
                   color: notifier.getwhiteblackcolor,
@@ -456,9 +568,9 @@ class _AccountState extends State<account> {
                 Row(
                   children: [
                     Text(
-                      "Está incluido na apólice da empresa",
+                      AppLocalizations.of(context)!.includedInOrganizationPolicy,
                       style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 14,
                           color: notifier.getwhiteblackcolor,
                           fontFamily: "Gilroy Bold"),
                     ),
@@ -477,7 +589,7 @@ class _AccountState extends State<account> {
                 ),
                 if (useWorkAccidentOrganizationInsurance)
                   Text(
-                    "Atenção - A sua conta apenas será validada se na apólice enviada pela empresa constar o seu nome",
+                    AppLocalizations.of(context)!.workAccidentInsuranceWarning,
                     style: TextStyle(
                         fontSize: 14,
                         color: notifier.getlogobgcolor,
@@ -486,7 +598,7 @@ class _AccountState extends State<account> {
                 if (!useWorkAccidentOrganizationInsurance)
                   ...[
                     const SizedBox(height: 10),
-                    Text("Companhia de Seguros",
+                    Text(AppLocalizations.of(context)!.insuranceCompany,
                       style: TextStyle(
                           fontSize: 16,
                           color: notifier.getwhiteblackcolor,
@@ -497,10 +609,10 @@ class _AccountState extends State<account> {
                         fieldColor: notifier.getdarkmodecolor,
                         hintColor: notifier.getdarkgreycolor,
                         controller: insuranceWorkAccidentCompanyName,
-                        text: "Número do documento",
+                        text: AppLocalizations.of(context)!.name,
                         suffix: null),
                     const SizedBox(height: 10),
-                    Text("Nº Apólice",
+                    Text(AppLocalizations.of(context)!.policyNumber,
                       style: TextStyle(
                           fontSize: 16,
                           color: notifier.getwhiteblackcolor,
@@ -511,10 +623,10 @@ class _AccountState extends State<account> {
                         fieldColor: notifier.getdarkmodecolor,
                         hintColor: notifier.getdarkgreycolor,
                         controller: insuranceWorkAccidentPolicyNumber,
-                        text: "Número do documento",
+                        text: AppLocalizations.of(context)!.documentNumber,
                         suffix: null),
                     const SizedBox(height: 10),
-                    Text("Validade",
+                    Text(AppLocalizations.of(context)!.expirationDate,
                       style: TextStyle(
                           fontSize: 16,
                           color: notifier.getwhiteblackcolor,
@@ -522,7 +634,7 @@ class _AccountState extends State<account> {
                     ),
                     const SizedBox(height: 10),
                     selectDetail(
-                        text: insuranceWorkAccidentExpirationDate != null ? DateFormat('dd/MM/yyyy').format(insuranceWorkAccidentExpirationDate!) : "Seleccionar Data",
+                        text: insuranceWorkAccidentExpirationDate != null ? DateFormat('dd/MM/yyyy').format(insuranceWorkAccidentExpirationDate!) : AppLocalizations.of(context)!.selectDate,
                         icon: Icons.keyboard_arrow_down,
                         onclick: () {
                           Navigator.of(context).push(MaterialPageRoute(
@@ -535,14 +647,47 @@ class _AccountState extends State<account> {
                         },
                         notifier: notifier
                     ),
+                    const SizedBox(height: 15),
+                    if (previewWorkAccidentInsuranceImages.isNotEmpty)
+                      previewImages(previewWorkAccidentInsuranceImages),
                     const SizedBox(height: 25),
                     AppButton(
                         bgColor: notifier.getlogobgcolor,
                         textColor: WhiteColor,
-                        buttontext: "Attach Document",
+                        buttontext: AppLocalizations.of(context)!.attachDocument,
                         onclick: () async {
-
-                        })]
+                          await pickImages(previewWorkAccidentInsuranceImages);
+                        })],
+                const SizedBox(height: 25),
+                AppButton(
+                    bgColor: notifier.getlogobgcolor,
+                    textColor: WhiteColor,
+                    buttontext: AppLocalizations.of(context)!.submitData,
+                    onclick: () async {
+                      AppUser user = userProvider.user!;
+                      bool resultOk = await user.submitWorkAccidentInsurance({
+                        "useWorkAccidentOrganizationInsurance": useWorkAccidentOrganizationInsurance,
+                        "name": insuranceWorkAccidentCompanyName,
+                        "number": insuranceWorkAccidentPolicyNumber,
+                        "expirationDate": insuranceWorkAccidentExpirationDate,
+                        "selectedImages": previewWorkAccidentInsuranceImages
+                      });
+                      if (resultOk) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                                AppLocalizations.of(context)!.accountDataSubmittedSuccessfully),
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                                AppLocalizations.of(context)!.errorSubmittingData),
+                          ),
+                        );
+                      }
+                    })
               ])
       ),
       isExpanded: expandedData[index],
@@ -556,7 +701,7 @@ class _AccountState extends State<account> {
         return
           ListTile(
             title: Text(
-              'Registo Criminal',
+              AppLocalizations.of(context)!.criminalRecord,
               style: TextStyle(
                   fontSize: 16,
                   color: notifier.getwhiteblackcolor,
@@ -569,12 +714,41 @@ class _AccountState extends State<account> {
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                if (previewCriminalRecordImages.isNotEmpty)
+                  previewImages(previewCriminalRecordImages),
+                const SizedBox(height: 25),
                 AppButton(
                     bgColor: notifier.getlogobgcolor,
                     textColor: WhiteColor,
-                    buttontext: "Attach Document",
+                    buttontext: AppLocalizations.of(context)!.attachDocument,
                     onclick: () async {
-
+                      await pickImages(previewCriminalRecordImages);
+                    }),
+                const SizedBox(height: 25),
+                AppButton(
+                    bgColor: notifier.getlogobgcolor,
+                    textColor: WhiteColor,
+                    buttontext: AppLocalizations.of(context)!.submitData,
+                    onclick: () async {
+                      AppUser user = userProvider.user!;
+                      bool resultOk = await user.submitCriminalRecord({
+                        "selectedImages": previewCriminalRecordImages
+                      });
+                      if (resultOk) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                                AppLocalizations.of(context)!.accountDataSubmittedSuccessfully),
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                                AppLocalizations.of(context)!.errorSubmittingData),
+                          ),
+                        );
+                      }
                     })
               ])
       ),
@@ -722,5 +896,40 @@ class _AccountState extends State<account> {
     }
 
     return lightGrey;
+  }
+
+  previewImages(imageList) {
+    return Wrap(
+        spacing: 10,
+        runSpacing: 10,
+        children: List.generate(imageList.length, (index) {
+          return Stack(
+            children: [
+              // Image Preview
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.file(imageList[index], height: 100, width: 100, fit: BoxFit.cover),
+              ),
+
+              // ❌ Remove Button
+              Positioned(
+                top: 0,
+                right: 0,
+                child: GestureDetector(
+                  onTap: () => removeImage(imageList, index),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.red.withOpacity(0.8),
+                    ),
+                    padding: const EdgeInsets.all(5),
+                    child: const Icon(Icons.close, color: Colors.white, size: 18),
+                  ),
+                ),
+              ),
+            ],
+          );
+        }),
+      );
   }
 }

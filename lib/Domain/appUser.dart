@@ -5,8 +5,10 @@ import 'package:dm/Domain/tour.dart';
 import 'package:dm/Domain/trip.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:path/path.dart' as path;
 
 const int availableStatus = 0;
 const int unavailableStatus = 1;
@@ -150,7 +152,7 @@ class AppUser {
     return true;
   }
 
-  Future<bool> submitAccountData(data) async {
+  Future<bool> submitPersonalData(data) async {
     try {
       final personalDataDocRef = await FirebaseFirestore.instance
           .collection('users')
@@ -165,11 +167,53 @@ class AppUser {
         "submitDate": FieldValue.serverTimestamp()
       });
 
+      for(File image in data["selectedImages"]) {
+        await uploadImage("personalData", personalDataDocRef, image);
+      }
+
       await FirebaseFirestore.instance
           .collection('users')
           .doc(FirebaseAuth.instance.currentUser?.uid)
           .update({ "language": data["language"] });
 
+      return true;
+    } catch (e) {
+      await Sentry.captureException(e);
+      return false;
+    }
+  }
+
+  Future<bool> submitOrganizationData(data) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .collection('organizationData').add({
+        "code": data["organizationCode"],
+        "status": 'pending',
+        "submitDate": FieldValue.serverTimestamp()
+      });
+
+      final queryOrganizationData = await FirebaseFirestore.instance
+          .collection('organizations')
+          .where("code", isEqualTo: data["organizationCode"]).get();
+
+      if (queryOrganizationData.docs.isNotEmpty) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser?.uid)
+            .update({ "organizationRef": queryOrganizationData.docs[0]});
+      }
+
+      return true;
+    } catch (e) {
+      await Sentry.captureException(e);
+      return false;
+    }
+  }
+
+  Future<bool> submitWorkAccidentInsurance(data) async {
+    try {
       final workAccidentInsuranceDocRef = await FirebaseFirestore.instance
           .collection('users')
           .doc(FirebaseAuth.instance.currentUser?.uid)
@@ -182,40 +226,20 @@ class AppUser {
         "submitDate": FieldValue.serverTimestamp()
       });
 
-      final personalAccidentInsuranceDocRef = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser?.uid)
-          .collection('personalAccidentInsurance').add({
-        "name": data["insurancePersonalAccidentCompanyName"],
-        "number": data["insurancePersonalAccidentPolicyNumber"],
-        "expirationDate": data["insurancePersonalAccidentExpirationDate"],
-        "status": 'pending',
-        "submitDate": FieldValue.serverTimestamp()
-      });
-
-      if (data["updateOrganizationCode"]) {
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(FirebaseAuth.instance.currentUser?.uid)
-            .collection('organizationData').add({
-          "code": data["organizationCode"],
-          "status": 'pending',
-          "submitDate": FieldValue.serverTimestamp()
-        });
-
-        final queryOrganizationData = await FirebaseFirestore.instance
-            .collection('organizations')
-            .where("code", isEqualTo: data["organizationCode"]).get();
-
-        if (queryOrganizationData.docs.isNotEmpty) {
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(FirebaseAuth.instance.currentUser?.uid)
-              .update({ "organizationRef": queryOrganizationData.docs[0]});
-        }
+      for(File image in data["selectedImages"]) {
+        await uploadImage("workAccidentInsurance", workAccidentInsuranceDocRef, image);
       }
 
-      await FirebaseFirestore.instance
+      return true;
+    } catch (e) {
+      await Sentry.captureException(e);
+      return false;
+    }
+  }
+
+  Future<bool> submitCriminalRecord(data) async {
+    try {
+      final criminalRecordDocRef = await FirebaseFirestore.instance
           .collection('users')
           .doc(FirebaseAuth.instance.currentUser?.uid)
           .collection('criminalRecord').add({
@@ -223,10 +247,28 @@ class AppUser {
         "submitDate": FieldValue.serverTimestamp()
       });
 
+      for(File image in data["selectedImages"]) {
+        await uploadImage("criminalRecord", criminalRecordDocRef, image);
+      }
+
       return true;
     } catch (e) {
       await Sentry.captureException(e);
       return false;
+    }
+  }
+
+  Future<String?> uploadImage(String documentType, DocumentReference personalDataDocRef, File imageFile) async {
+    try {
+      String originalFileName = path.basename(imageFile.path);
+
+      String fileName = "uploads/users/$id/$documentType/${personalDataDocRef.id}/$originalFileName";
+      final ref = FirebaseStorage.instance.ref().child(fileName);
+      await ref.putFile(imageFile);
+      return await ref.getDownloadURL(); // Get the uploaded image URL
+    } catch (e) {
+      print("Upload error: $e");
+      return null;
     }
   }
 
@@ -346,6 +388,24 @@ class AppUser {
     });
 
     await batch.commit();
+  }
+
+  static Future<List<String>> loadImages(String folderPath) async {
+    final List<String> imageUrls = [];
+    final storageRef = FirebaseStorage.instance.ref().child(folderPath);
+
+    try {
+      final ListResult result = await storageRef.listAll(); // Get all files in folder
+
+      for (var fileRef in result.items) {
+        String url = await fileRef.getDownloadURL(); // Get download URL
+        imageUrls.add(url);
+      }
+    } catch (e) {
+      print("Error fetching images: $e");
+    }
+
+    return imageUrls;
   }
 }
 
