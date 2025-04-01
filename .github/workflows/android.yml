@@ -18,7 +18,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with: 
-          ref: 'bdd08b7337db45aa04f93e612c77e0f680c95231'
+          ref: 'b1b8f97b82e0fdb50b3105d86aa604d024000ee7'
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
