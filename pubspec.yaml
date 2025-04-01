@@ -41,7 +41,6 @@ dependencies:
   table_calendar: ^3.0.6
   onboarding: ^4.0.2
   syncfusion_flutter_datepicker: ^25.2.7
-  flutter_sms: ^2.3.3
   custom_pop_up_menu: ^1.2.4
   swipe_cards: ^2.0.0+1
   shared_preferences: ^2.0.15
