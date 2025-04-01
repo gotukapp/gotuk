@@ -23,5 +23,5 @@ jobs:
           channel: stable
           flutter-version-file: pubspec.yaml # path to pubspec.yaml
       - run: flutter gen-l10n
-      - run: flutter build android
+      - run: flutter build appbundle
 
