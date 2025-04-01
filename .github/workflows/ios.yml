@@ -30,8 +30,8 @@ jobs:
         with:
           channel: stable
           flutter-version-file: pubspec.yaml # path to pubspec.yaml
+      - run: flutter clean
       - run: flutter gen-l10n
-      - run: pod repo update
       - run: flutter build ios
       - name: fastlane
         if: always()
