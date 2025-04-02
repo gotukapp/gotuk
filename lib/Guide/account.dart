@@ -486,21 +486,22 @@ class _AccountState extends State<account> {
                     suffix: null,
                     readOnly: !editOrganizationData),
                 const SizedBox(height: 10),
-                Text(AppLocalizations.of(context)!.name,
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: notifier.getwhiteblackcolor,
-                      fontFamily: "Gilroy Bold"),
-                ),
-                const SizedBox(height: 10),
-                textField(
-                    fieldColor: notifier.getdarkmodecolor,
-                    hintColor: notifier.getdarkgreycolor,
-                    text: organizationName,
-                    suffix: null,
-                    readOnly: true),
                 if (!editOrganizationData)
-                  ...[const SizedBox(height: 25),
+                  ...[
+                    Text(AppLocalizations.of(context)!.name,
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: notifier.getwhiteblackcolor,
+                          fontFamily: "Gilroy Bold"),
+                    ),
+                    const SizedBox(height: 10),
+                    textField(
+                        fieldColor: notifier.getdarkmodecolor,
+                        hintColor: notifier.getdarkgreycolor,
+                        text: organizationName,
+                        suffix: null,
+                        readOnly: true),
+                    const SizedBox(height: 25),
                     AppButton(
                         bgColor: notifier.getlogobgcolor,
                         textColor: WhiteColor,
@@ -519,7 +520,7 @@ class _AccountState extends State<account> {
                       onclick: () async {
                         AppUser user = userProvider.user!;
                         bool resultOk = await user.submitOrganizationData({
-                          "organizationCode": organizationCode
+                          "organizationCode": organizationCode.text
                         });
                         if (resultOk) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -667,8 +668,8 @@ class _AccountState extends State<account> {
                       AppUser user = userProvider.user!;
                       bool resultOk = await user.submitWorkAccidentInsurance({
                         "useWorkAccidentOrganizationInsurance": useWorkAccidentOrganizationInsurance,
-                        "name": insuranceWorkAccidentCompanyName,
-                        "number": insuranceWorkAccidentPolicyNumber,
+                        "name": insuranceWorkAccidentCompanyName.text,
+                        "number": insuranceWorkAccidentPolicyNumber.text,
                         "expirationDate": insuranceWorkAccidentExpirationDate,
                         "selectedImages": previewWorkAccidentInsuranceImages
                       });
