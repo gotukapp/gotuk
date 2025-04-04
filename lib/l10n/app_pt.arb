@@ -18,7 +18,7 @@
     "reschedule": "Reagendar",
     "hello": "Olá",
     "letsFindTour": "Vamos procurar um tour para ti",
-    "welcomeGotuk": "Bem-vindo à Gotuk",
+    "welcomeGotuk": "Bem-vindo à GoTuk",
     "pleaseLogin": "Por favor faça login na sua conta",
     "phoneNumber": "Telemóvel",
     "loginAsGuide": "LOGIN COMO GUIA",
@@ -92,6 +92,7 @@
     "code": "Código",
     "organizationCode": "Código da Empresa",
     "name": "Nome",
+    "nameRequired": "Deve preencher o nome.",
     "changeOrganization": "Mudar Empresa",
     "submitData": "Submeter Dados",
     "accountDataSubmittedSuccessfully": "Informação submetida com sucesso!",
@@ -101,5 +102,14 @@
     "workAccidentInsuranceWarning": "Atenção - A sua conta apenas será validada se na apólice enviada pela empresa constar o seu nome",
     "insuranceCompany": "Companhia de Seguros",
     "policyNumber": "Nº Apólice",
-    "criminalRecord": "Registo Criminal"
+    "criminalRecord": "Registo Criminal",
+    "gotukGuide": "GoTuk Guide",
+    "letsCreateYourAccount": "Vamos primeiro criar a sua conta",
+    "enterYourEmail": "Indique o seu Email",
+    "dataProtectionPolicy": "Política de Proteção de Dados",
+    "termsAndConditions": "Termos e Condições",
+    "acceptDataProtectionPolicyAndTermsAndConditions": "Precisa de aceitar os Termos e Condições e a Política de Proteção de Dados para prosseguir.",
+    "agreeAndContinue": "Aceitar & Continuar",
+    "haveAnAccount": "Já tem uma conta?",
+    "unableToCreateAccount": "Não foi possível criar a conta."
 }

@@ -22,17 +22,19 @@ class AppUser {
   final String? phone;
   final String? firebaseToken;
   final bool accountValidated;
+  final bool accountAccepted;
   final DocumentReference? organizationRef;
   num? rating;
   List<String>? languages;
 
-  AppUser(this.id, this.name, this.email, this.phone, this.accountValidated, this.rating, this.languages, this.firebaseToken, this.organizationRef);
+  AppUser(this.id, this.name, this.email, this.phone, this.accountValidated, this.accountAccepted, this.rating, this.languages, this.firebaseToken, this.organizationRef);
 
   factory AppUser.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot,
       SnapshotOptions? options,) {
     final data = snapshot.data();
+
     return AppUser(snapshot.id, data?['name'], data?['email'],
-        data?['phone'], data?['accountValidated'],
+        data?['phone'], data?['accountValidated'] ?? false, data?['accountAccepted'] ?? false,
         data?['rating'], data?['languages'], data?['firebaseToken'],
         data?['organizationRef']);
   }
@@ -43,6 +45,7 @@ class AppUser {
       "email": email,
       "phone": phone,
       "accountValidated": accountValidated,
+      "accountAccepted": accountAccepted,
       "rating": rating,
       "languages": languages,
       "firebaseToken": firebaseToken
@@ -196,7 +199,7 @@ class AppUser {
 
       final queryOrganizationData = await FirebaseFirestore.instance
           .collection('organizations')
-          .where("code", isEqualTo: data["organizationCode"]).get();
+          .where("orgCode", isEqualTo: data["organizationCode"]).get();
 
       if (queryOrganizationData.docs.isNotEmpty) {
         await FirebaseFirestore.instance
@@ -416,18 +419,20 @@ Future<bool> userExists(String phone) async {
 }
 
 Future<AppUser> getUserFirebaseInstance(bool guideMode, User user) async {
+  AppUser? appUser;
   final ref = FirebaseFirestore.instance.collection("users").doc(user.uid)
       .withConverter(
     fromFirestore: AppUser.fromFirestore,
     toFirestore: (AppUser user, _) => user.toFirestore(),
   );
   final docSnap = await ref.get();
-  AppUser? appUser = docSnap.data();
-  if (appUser == null) {
-    appUser = AppUser(user.uid, user.displayName, user.email, user.phoneNumber, false, 0.0, null, null, null);
+  if (!docSnap.exists) {
+    appUser = AppUser(user.uid, user.displayName, user.email, user.phoneNumber, false, false, 3, [], null, null);
     FirebaseFirestore.instance.collection("users")
         .doc(user.uid)
         .set(appUser.toFirestore());
+  } else {
+    appUser = docSnap.data();
   }
 
   if (guideMode) {
@@ -442,7 +447,7 @@ Future<AppUser> getUserFirebaseInstance(bool guideMode, User user) async {
         .update({"clientMode": true});
   }
 
-  return appUser;
+  return appUser!;
 }
 
 final List<Map<String, String>> dataProtectionPolicy = [

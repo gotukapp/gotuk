@@ -132,9 +132,9 @@ class _AccountState extends State<account> {
 
         setState(() {
           language = personalData["language"].whereType<String>().toList();
-          identificationNumber.text = personalData["identificationNumber"];
+          identificationNumber.text = personalData["identificationNumber"] ?? "";
           identificationNumberExpirationDate = personalData["identificationNumberExpirationDate"]?.toDate();
-          drivingLicenseNumber.text = personalData["drivingLicenseNumber"];
+          drivingLicenseNumber.text = personalData["drivingLicenseNumber"] ?? "";
           drivingLicenseExpirationDate = personalData["drivingLicenseExpirationDate"]?.toDate();
           personalDataStatus = personalData["status"];
           personalDataImages = loadedImages;
@@ -144,8 +144,8 @@ class _AccountState extends State<account> {
       setState(() {
         if (queryWorkAccidentInsurance.docs.isNotEmpty) {
           Map<String,dynamic>? workAccidentInsurance = queryWorkAccidentInsurance.docs.first.data();
-          insuranceWorkAccidentCompanyName.text = workAccidentInsurance["name"];
-          insuranceWorkAccidentPolicyNumber.text = workAccidentInsurance["number"];
+          insuranceWorkAccidentCompanyName.text = workAccidentInsurance["name"] ?? "";
+          insuranceWorkAccidentPolicyNumber.text = workAccidentInsurance["number"] ?? "";
           insuranceWorkAccidentExpirationDate = workAccidentInsurance["expirationDate"]?.toDate();
           useWorkAccidentOrganizationInsurance = workAccidentInsurance["useOrganizationInsurance"] ?? false;
           workAccidentInsuranceStatus = workAccidentInsurance["status"];
@@ -153,7 +153,7 @@ class _AccountState extends State<account> {
 
         if (queryOrganizationData.docs.isNotEmpty) {
           Map<String, dynamic>? organizationData = queryOrganizationData.docs.first.data();
-          organizationCode.text = organizationData["code"];
+          organizationCode.text = organizationData["code"] ?? "";
           organizationName = organizationData["name"] ?? "";
           organizationStatus = organizationData["status"];
         }
@@ -831,11 +831,7 @@ class _AccountState extends State<account> {
                        builder: (context) => Calendar(selectedDate: item["field"]),
                      )).then((value) {
                        setState(() {
-                         print(value);
-                         print(item["field"]);
                          identificationNumberExpirationDate = value;
-                         print(item["field"]);
-                         print(identificationNumberExpirationDate);
                        });
                      });
                    },

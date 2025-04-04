@@ -18,7 +18,7 @@
     "reschedule": "Reschedule",
     "hello": "Hello",
     "letsFindTour": "Let’s find you a tour",
-    "welcomeGotuk": "Welcome to Gotuk",
+    "welcomeGotuk": "Welcome to GoTuk",
     "pleaseLogin": "Please login to your account",
     "phoneNumber": "Phone Number",
     "loginAsGuide": "Login as a guide",
@@ -92,6 +92,7 @@
     "code": "Code",
     "organizationCode": "Organization Code",
     "name": "Name",
+    "nameRequired": "Name is required.",
     "changeOrganization": "Change Organization",
     "submitData": "Submit Data",
     "accountDataSubmittedSuccessfully": "Account data submitted successfully!",
@@ -101,5 +102,14 @@
     "workAccidentInsuranceWarning": "Attention - Your account will only be validated if the policy sent by the company contains your name",
     "insuranceCompany": "Insurance Company",
     "policyNumber": "Policy Number",
-    "criminalRecord": "Criminal Record"
+    "criminalRecord": "Criminal Record",
+    "gotukGuide": "Guia na GoTuk",
+    "letsCreateYourAccount": "Let’s create your account first",
+    "enterYourEmail": "Enter your email",
+    "dataProtectionPolicy": "Data Protection Policy",
+    "termsAndConditions": "Terms and Conditions",
+    "acceptDataProtectionPolicyAndTermsAndConditions": "You need to accept the Terms and Conditions and the Data Protection Policy to proceed.",
+    "agreeAndContinue": "Agree & Continue",
+    "haveAnAccount": "Have an account?",
+    "unableToCreateAccount": "Unable to create the account."
 }
