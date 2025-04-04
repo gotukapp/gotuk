@@ -132,9 +132,9 @@ class _AccountState extends State<account> {
 
         setState(() {
           language = personalData["language"].whereType<String>().toList();
-          identificationNumber.text = personalData["identificationNumber"];
+          identificationNumber.text = personalData["identificationNumber"] ?? "";
           identificationNumberExpirationDate = personalData["identificationNumberExpirationDate"]?.toDate();
-          drivingLicenseNumber.text = personalData["drivingLicenseNumber"];
+          drivingLicenseNumber.text = personalData["drivingLicenseNumber"] ?? "";
           drivingLicenseExpirationDate = personalData["drivingLicenseExpirationDate"]?.toDate();
           personalDataStatus = personalData["status"];
           personalDataImages = loadedImages;
@@ -144,8 +144,8 @@ class _AccountState extends State<account> {
       setState(() {
         if (queryWorkAccidentInsurance.docs.isNotEmpty) {
           Map<String,dynamic>? workAccidentInsurance = queryWorkAccidentInsurance.docs.first.data();
-          insuranceWorkAccidentCompanyName.text = workAccidentInsurance["name"];
-          insuranceWorkAccidentPolicyNumber.text = workAccidentInsurance["number"];
+          insuranceWorkAccidentCompanyName.text = workAccidentInsurance["name"] ?? "";
+          insuranceWorkAccidentPolicyNumber.text = workAccidentInsurance["number"] ?? "";
           insuranceWorkAccidentExpirationDate = workAccidentInsurance["expirationDate"]?.toDate();
           useWorkAccidentOrganizationInsurance = workAccidentInsurance["useOrganizationInsurance"] ?? false;
           workAccidentInsuranceStatus = workAccidentInsurance["status"];
@@ -153,7 +153,7 @@ class _AccountState extends State<account> {
 
         if (queryOrganizationData.docs.isNotEmpty) {
           Map<String, dynamic>? organizationData = queryOrganizationData.docs.first.data();
-          organizationCode.text = organizationData["code"];
+          organizationCode.text = organizationData["code"] ?? "";
           organizationName = organizationData["name"] ?? "";
           organizationStatus = organizationData["status"];
         }
@@ -486,21 +486,22 @@ class _AccountState extends State<account> {
                     suffix: null,
                     readOnly: !editOrganizationData),
                 const SizedBox(height: 10),
-                Text(AppLocalizations.of(context)!.name,
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: notifier.getwhiteblackcolor,
-                      fontFamily: "Gilroy Bold"),
-                ),
-                const SizedBox(height: 10),
-                textField(
-                    fieldColor: notifier.getdarkmodecolor,
-                    hintColor: notifier.getdarkgreycolor,
-                    text: organizationName,
-                    suffix: null,
-                    readOnly: true),
                 if (!editOrganizationData)
-                  ...[const SizedBox(height: 25),
+                  ...[
+                    Text(AppLocalizations.of(context)!.name,
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: notifier.getwhiteblackcolor,
+                          fontFamily: "Gilroy Bold"),
+                    ),
+                    const SizedBox(height: 10),
+                    textField(
+                        fieldColor: notifier.getdarkmodecolor,
+                        hintColor: notifier.getdarkgreycolor,
+                        text: organizationName,
+                        suffix: null,
+                        readOnly: true),
+                    const SizedBox(height: 25),
                     AppButton(
                         bgColor: notifier.getlogobgcolor,
                         textColor: WhiteColor,
@@ -519,7 +520,7 @@ class _AccountState extends State<account> {
                       onclick: () async {
                         AppUser user = userProvider.user!;
                         bool resultOk = await user.submitOrganizationData({
-                          "organizationCode": organizationCode
+                          "organizationCode": organizationCode.text
                         });
                         if (resultOk) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -667,8 +668,8 @@ class _AccountState extends State<account> {
                       AppUser user = userProvider.user!;
                       bool resultOk = await user.submitWorkAccidentInsurance({
                         "useWorkAccidentOrganizationInsurance": useWorkAccidentOrganizationInsurance,
-                        "name": insuranceWorkAccidentCompanyName,
-                        "number": insuranceWorkAccidentPolicyNumber,
+                        "name": insuranceWorkAccidentCompanyName.text,
+                        "number": insuranceWorkAccidentPolicyNumber.text,
                         "expirationDate": insuranceWorkAccidentExpirationDate,
                         "selectedImages": previewWorkAccidentInsuranceImages
                       });
@@ -830,11 +831,7 @@ class _AccountState extends State<account> {
                        builder: (context) => Calendar(selectedDate: item["field"]),
                      )).then((value) {
                        setState(() {
-                         print(value);
-                         print(item["field"]);
                          identificationNumberExpirationDate = value;
-                         print(item["field"]);
-                         print(identificationNumberExpirationDate);
                        });
                      });
                    },

@@ -7,17 +7,18 @@ import 'package:dm/CreatAccount/login.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../Utils/dark_lightmode.dart';
 
-class verifyaccount extends StatefulWidget {
-  const verifyaccount({super.key});
+class verifyAccount extends StatefulWidget {
+  const verifyAccount({super.key});
 
   @override
-  State<verifyaccount> createState() => _verifyaccountState();
+  State<verifyAccount> createState() => _verifyAccountState();
 }
 
-class _verifyaccountState extends State<verifyaccount> {
+class _verifyAccountState extends State<verifyAccount> {
   final codeController = TextEditingController();
 
   @override
@@ -56,8 +57,7 @@ class _verifyaccountState extends State<verifyaccount> {
             padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(
-                "Verify Your Account",
+              Text(AppLocalizations.of(context)!.verifyYourAccount,
                 style: TextStyle(
                     fontSize: 24,
                     fontFamily: "Gilroy Bold",
@@ -66,7 +66,7 @@ class _verifyaccountState extends State<verifyaccount> {
               const SizedBox(
                 height: 10,
               ),
-              Text("We’ve send verification code to",
+              Text(AppLocalizations.of(context)!.sendVerificationCode,
                   style: TextStyle(
                       fontSize: 16,
                       color: WhiteColor,
@@ -74,7 +74,7 @@ class _verifyaccountState extends State<verifyaccount> {
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.025,
               ),
-              Text("Verify your code",
+              Text(AppLocalizations.of(context)!.verifyYourCode,
                   style: TextStyle(
                       fontSize: 17,
                       fontFamily: "Gilroy Medium",
@@ -83,7 +83,7 @@ class _verifyaccountState extends State<verifyaccount> {
               textField(
                 fieldColor: notifier.getdarkmodecolor,
                 hintColor: notifier.getgreycolor,
-                text: 'Verification Code',
+                text: AppLocalizations.of(context)!.verificationCode,
                 controller: codeController),
               SizedBox(
                 height: MediaQuery.of(context).size.height *0.05,
@@ -91,21 +91,26 @@ class _verifyaccountState extends State<verifyaccount> {
               AppButton(
                 bgColor: notifier.getblackwhitecolor,
                 textColor: notifier.getwhitelogocolor,
-                buttontext: "VERIFY ACCOUNT",
+                buttontext: AppLocalizations.of(context)!.verifyAccount.toUpperCase(),
                 onclick: () => {
                   Navigator.pop(context, codeController.text)
                 },
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.3),
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Text("Didn’t receive the code? ",
+                Text(AppLocalizations.of(context)!.didNotReceiveTheCode,
                     style: TextStyle(
                         fontSize: 15,
                         fontFamily: "Gilroy Medium",
                         color: WhiteColor)),
+                const SizedBox(
+                  width: 6,
+                ),
                 InkWell(
-                  onTap: () {},
-                  child: Text("Resend",
+                  onTap: () {
+
+                  },
+                  child: Text(AppLocalizations.of(context)!.resend,
                       style: TextStyle(
                           fontSize: 16,
                           color: greyColor,
