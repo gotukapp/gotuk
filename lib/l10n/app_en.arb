@@ -111,5 +111,12 @@
     "acceptDataProtectionPolicyAndTermsAndConditions": "You need to accept the Terms and Conditions and the Data Protection Policy to proceed.",
     "agreeAndContinue": "Agree & Continue",
     "haveAnAccount": "Have an account?",
-    "unableToCreateAccount": "Unable to create the account."
+    "unableToCreateAccount": "Unable to create the account.",
+    "verifyYourAccount": "Verify Your Account",
+    "sendVerificationCode": "We’ve send verification code",
+    "verifyYourCode": "Verify your code",
+    "verificationCode": "Verification Code",
+    "verifyAccount": "Verify Account",
+    "didNotReceiveTheCode": "Didn’t receive the code?",
+    "resend": "Resend"
 }

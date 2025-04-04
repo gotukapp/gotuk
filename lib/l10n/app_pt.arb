@@ -111,5 +111,12 @@
     "acceptDataProtectionPolicyAndTermsAndConditions": "Precisa de aceitar os Termos e Condições e a Política de Proteção de Dados para prosseguir.",
     "agreeAndContinue": "Aceitar & Continuar",
     "haveAnAccount": "Já tem uma conta?",
-    "unableToCreateAccount": "Não foi possível criar a conta."
+    "unableToCreateAccount": "Não foi possível criar a conta.",
+    "verifyYourAccount": "Verificação da Conta",
+    "sendVerificationCode": "Enviámos um código de verificação",
+    "verifyYourCode": "Verifica o teu código",
+    "verificationCode": "Código de Verificação",
+    "verifyAccount": "Verificar Conta",
+    "didNotReceiveTheCode": "Não recebeu o código?",
+    "resend": "Reenviar"
 }
