@@ -118,5 +118,11 @@
     "verificationCode": "Código de Verificação",
     "verifyAccount": "Verificar Conta",
     "didNotReceiveTheCode": "Não recebeu o código?",
-    "resend": "Reenviar"
+    "resend": "Reenviar",
+    "notificationSettings": "Configuração de Notificações",
+    "promotionsSubTitle": "Obtém as mais recentes promoções",
+    "bookings": "Marcações",
+    "bookingsSubTitle": "Informações sobre as tuas marcações",
+    "invoiceAndPayment": "Faturas e Pagamentos",
+    "invoiceAndPaymentSubTitle": "Informações sobre os teus pagamentos"
 }

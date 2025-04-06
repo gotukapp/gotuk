@@ -118,5 +118,11 @@
     "verificationCode": "Verification Code",
     "verifyAccount": "Verify Account",
     "didNotReceiveTheCode": "Didn’t receive the code?",
-    "resend": "Resend"
+    "resend": "Resend",
+    "notificationSettings": "Notification Settings",
+    "promotionsSubTitle": "Get info newest promotion",
+    "bookings": "Bookings",
+    "bookingsSubTitle": "Information about your booking",
+    "invoiceAndPayment": "Invoice and Payment",
+    "invoiceAndPaymentSubTitle": "Information about your payment"
 }
