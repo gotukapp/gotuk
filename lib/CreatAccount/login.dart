@@ -53,7 +53,7 @@ class _loginscreenState extends State<loginscreen> {
               ActionIcon: null,
               bgcolor: notifier.getlogobgcolor,
               actioniconcolor: notifier.getwhiteblackcolor,
-              leadingiconcolor: notifier.getwhiteblackcolor)),
+              leadingiconcolor: null)),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -284,13 +284,7 @@ class _loginscreenState extends State<loginscreen> {
       if (await userExists(phoneNumber)) {
         await signInWithPhoneNumber(context, phoneNumber, (UserCredential? credential) async {
           if (credential != null) {
-            AppUser user = await getUserFirebaseInstance(
-                guideMode, credential.user!);
-            userProvider.setUser(user);
-            user.setFirebaseToken();
-            Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-                builder: (context) => const homepage()),
-                    (route) => false);
+            await credentialsOk(credential);
           }
           setState(() {
             _isLoading = false;
@@ -314,6 +308,16 @@ class _loginscreenState extends State<loginscreen> {
         ),
       );
     }
+  }
+
+  Future<void> credentialsOk(UserCredential credential) async {
+    AppUser user = await getUserFirebaseInstance(
+        guideMode, credential.user!);
+    userProvider.setUser(user);
+    user.setFirebaseToken();
+    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+        builder: (context) => const homepage()),
+            (route) => false);
   }
 
   Future<AppUser?> signInWithGoogle() async {

@@ -427,7 +427,7 @@ Future<AppUser> getUserFirebaseInstance(bool guideMode, User user) async {
   );
   final docSnap = await ref.get();
   if (!docSnap.exists) {
-    appUser = AppUser(user.uid, user.displayName, user.email, user.phoneNumber, false, false, 3, [], null, null);
+    appUser = AppUser(user.uid, user.displayName, user.email, user.phoneNumber, false, false, 3, null, null, null);
     FirebaseFirestore.instance.collection("users")
         .doc(user.uid)
         .set(appUser.toFirestore());

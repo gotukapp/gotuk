@@ -10,10 +10,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:provider/provider.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../Domain/appUser.dart';
+import '../Login&ExtraDesign/homepage.dart';
+import '../Providers/userProvider.dart';
 import '../Utils/authentication.dart';
 
 class createScreen extends StatefulWidget {
@@ -26,6 +29,7 @@ class createScreen extends StatefulWidget {
 class _createScreenState extends State<createScreen> {
   bool termsAndConditionsAccepted = false;
   bool dataProtectionPolicyAccepted = false;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -36,6 +40,7 @@ class _createScreenState extends State<createScreen> {
     super.initState();
   }
 
+  late UserProvider userProvider;
   late ColorNotifier notifier;
   late bool guideMode = false;
   bool showPassword = false;
@@ -47,6 +52,7 @@ class _createScreenState extends State<createScreen> {
 
   @override
   Widget build(BuildContext context) {
+    userProvider = Provider.of<UserProvider>(context);
     notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
       backgroundColor: notifier.getbgcolor,
@@ -57,7 +63,7 @@ class _createScreenState extends State<createScreen> {
               ActionIcon: null,
               bgcolor: notifier.getlogobgcolor,
               actioniconcolor: notifier.getwhiteblackcolor,
-              leadingiconcolor: notifier.getwhiteblackcolor)),
+              leadingiconcolor: WhiteColor)),
       body: SingleChildScrollView(
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -187,7 +193,9 @@ class _createScreenState extends State<createScreen> {
                         SizedBox(
                           height: MediaQuery.of(context).size.height * 0.03,
                         ),
-                        AppButton(
+                        _isLoading
+                            ? Center(child: CircularProgressIndicator(color: WhiteColor)) // Show spinner when loading
+                            : AppButton(
                           bgColor: notifier.getlogowhitecolor,
                           textColor: notifier.getwhiteblackcolor,
                           onclick: () async {
@@ -210,10 +218,10 @@ class _createScreenState extends State<createScreen> {
                                 ),
                               );
                             } else {
-                              createUser();
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (
-                                      context) => const loginscreen()));
+                              setState(() {
+                                _isLoading = true;
+                              });
+                              await createUser();
                             }
                           },
                           buttontext: AppLocalizations.of(context)!.agreeAndContinue.toUpperCase(),
@@ -259,19 +267,51 @@ class _createScreenState extends State<createScreen> {
   Future<void> createUser() async {
     try {
       String phoneNumber = "+$countryCode${phoneNumberController.text}";
-      await signInWithPhoneNumber(context, phoneNumber, (UserCredential credential) {
-        FirebaseFirestore.instance
-            .collection("users")
-            .doc(credential.user?.uid)
-            .set({
-          "email": emailController.text,
-          "name": nameController.text,
-          "phone": phoneNumber,
-          "accountValidated": false,
-          "accountAccepted": false,
-          "languages": [],
-          "rating": 3
-        });
+      await signInWithPhoneNumber(context, phoneNumber, (UserCredential? credential) async {
+        if (credential != null) {
+          try {
+            FirebaseFirestore.instance
+                .collection("users")
+                .doc(credential.user?.uid)
+                .set({
+              "email": emailController.text,
+              "name": nameController.text,
+              "phone": phoneNumber,
+              "accountValidated": false,
+              "accountAccepted": false,
+              "languages": null,
+              "rating": 3
+            });
+
+            await credentialsOk(credential);
+
+            await accountCreated();
+
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => const homepage()),
+                  (route) => false,
+            );
+          } catch(e) {
+            await Sentry.captureException(e);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(AppLocalizations.of(context)!.unableToCreateAccount),
+              ),
+            );
+            setState(() {
+              _isLoading = false;
+            });
+          }
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(AppLocalizations.of(context)!.unableToCreateAccount),
+            ),
+          );
+          setState(() {
+            _isLoading = false;
+          });
+        }
       });
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -288,6 +328,108 @@ class _createScreenState extends State<createScreen> {
     }
   }
 
+  Future<void> credentialsOk(UserCredential credential) async {
+    AppUser user = await getUserFirebaseInstance(
+        guideMode, credential.user!);
+    userProvider.setUser(user);
+    user.setFirebaseToken();
+  }
+
+  accountCreated() {
+    return showModalBottomSheet(
+        context: context,
+        backgroundColor: notifier.getbgcolor,
+        elevation: 2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        builder: (BuildContext context) {
+          return SizedBox(
+            height: 600,
+            child: Column(
+              children: [
+                Stack(
+                  alignment: Alignment.topCenter,
+                  children: [
+                    Positioned(
+                      top: 30,
+                      child: CircleAvatar(
+                        radius: 70,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(200),
+                          child: Image.asset('assets/images/Illustration.png'),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      left: 55,
+                      top: -18,
+                      child: Image.asset(
+                        'assets/images/Success.png',
+                        height: 160,
+                      ),
+                    ),
+                    Positioned(
+                      bottom: MediaQuery.of(context).size.height * 0.16,
+                      child: Column(
+                        children: [
+                          Center(
+                            child: Text(
+                              AppLocalizations.of(context)!.accountCreated,
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontFamily: "Gilroy Bold",
+                                  color: notifier.getwhiteblackcolor),
+                            ),
+                          ),
+                          SizedBox(
+                              height:
+                              MediaQuery.of(context).size.height * 0.02),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.90,
+                            child: Text(
+                              AppLocalizations.of(context)!.accountCreatesSuccessfully,
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontFamily: "Gilroy Medium",
+                                  color: notifier.getdarkgreycolor),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.pop(context, true);
+                      },
+                      child: Container(
+                        margin: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height * 0.45,
+                            left: 20,
+                            right: 20),
+                        height: 50,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                          color: notifier.getwhitelogocolor,
+                        ),
+                        child: Center(
+                            child: GestureDetector(
+                                child: Text(AppLocalizations.of(context)!.onboardingContinue,
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        color: notifier.getblackwhitecolor,
+                                        fontFamily: "Gilroy Bold")))),
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          );
+        });
+  }
 
   getdarkmodepreviousstate() async {
     final prefs = await SharedPreferences.getInstance();

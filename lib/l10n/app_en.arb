@@ -124,5 +124,8 @@
     "bookings": "Bookings",
     "bookingsSubTitle": "Information about your booking",
     "invoiceAndPayment": "Invoice and Payment",
-    "invoiceAndPaymentSubTitle": "Information about your payment"
+    "invoiceAndPaymentSubTitle": "Information about your payment",
+    "invalidVerificationCode": "Invalid or expired code. Please try again.",
+    "accountCreatesSuccessfully": "Congratulations! Start booking with GoTuk.",
+    "accountCreated": "Account Created"
 }

@@ -124,5 +124,8 @@
     "bookings": "Marcações",
     "bookingsSubTitle": "Informações sobre as tuas marcações",
     "invoiceAndPayment": "Faturas e Pagamentos",
-    "invoiceAndPaymentSubTitle": "Informações sobre os teus pagamentos"
+    "invoiceAndPaymentSubTitle": "Informações sobre os teus pagamentos",
+    "invalidVerificationCode": "Código inválido ou expirado. Tente novamente.",
+    "accountCreatesSuccessfully": "Parabéns! Comece a fazer reservas com a GoTuk.",
+    "accountCreated": "Conta Criada"
 }

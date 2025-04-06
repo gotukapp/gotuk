@@ -51,7 +51,7 @@ class _verifyAccountState extends State<verifyAccount> {
                 ActionIcon: null,
                 bgcolor: notifier.getlogobgcolor,
                 actioniconcolor: notifier.getwhiteblackcolor,
-                leadingiconcolor: notifier.getwhiteblackcolor)),
+                leadingiconcolor: WhiteColor)),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
@@ -120,104 +120,6 @@ class _verifyAccountState extends State<verifyAccount> {
             ]),
           ),
         ));
-  }
-
-  bottomsheet() {
-    return showModalBottomSheet(
-        context: context,
-        backgroundColor: notifier.getbgcolor,
-        elevation: 2,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        builder: (BuildContext context) {
-          return SizedBox(
-            height: 600,
-            child: Column(
-              children: [
-                Stack(
-                  alignment: Alignment.topCenter,
-                  children: [
-                    Positioned(
-                      top: 30,
-                      child: CircleAvatar(
-                        radius: 70,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(200),
-                          child: Image.asset('assets/images/Illustration.png'),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      left: 55,
-                      top: -18,
-                      child: Image.asset(
-                        'assets/images/Success.png',
-                        height: 160,
-                      ),
-                    ),
-                    Positioned(
-                      bottom: MediaQuery.of(context).size.height * 0.16,
-                      child: Column(
-                        children: [
-                          Center(
-                            child: Text(
-                              "Account Created",
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  fontFamily: "Gilroy Bold",
-                                  color: notifier.getwhiteblackcolor),
-                            ),
-                          ),
-                          SizedBox(
-                              height:
-                                  MediaQuery.of(context).size.height * 0.02),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.90,
-                            child: Text(
-                              "Congratulations! Book your next tour.",
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  fontFamily: "Gilroy Medium",
-                                  color: notifier.getdarkgreycolor),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        Navigator.pop(context);
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const loginscreen()));
-                      },
-                      child: Container(
-                        margin: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height * 0.45,
-                            left: 20,
-                            right: 20),
-                        height: 50,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          color: Darkblue,
-                        ),
-                        child: Center(
-                            child: GestureDetector(
-                                child: Text("Login",
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        color: WhiteColor,
-                                        fontFamily: "Gilroy Bold")))),
-                      ),
-                    )
-                  ],
-                ),
-              ],
-            ),
-          );
-        });
   }
 
   getdarkmodepreviousstate() async {
