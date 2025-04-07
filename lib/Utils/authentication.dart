@@ -10,17 +10,15 @@ Future<UserCredential?> signInWithPhoneNumber(BuildContext context, String phone
   await FirebaseAuth.instance.verifyPhoneNumber(
     phoneNumber: phoneNumber,
     verificationCompleted: (PhoneAuthCredential credential) async {
+      await Sentry.captureMessage("signInWithPhoneNumber: phoneNumber:$phoneNumber verificationCompleted $credential");
       userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
       callback.call(userCredential);
     },
     verificationFailed: (FirebaseAuthException e) async {
-      await Sentry.captureException(e,stackTrace: e.stackTrace);
+      await Sentry.captureException(e, stackTrace: e.stackTrace);
       callback.call(null);
     },
     codeSent: (String verificationId, int? resendToken) async {
-      // Code has been sent to the phone number
-      print("Verification code sent to $phoneNumber.");
-
       String? smsCode = await Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => const verifyAccount()));
 
@@ -32,22 +30,22 @@ Future<UserCredential?> signInWithPhoneNumber(BuildContext context, String phone
         );
 
         try {
-          userCredential =
-          await FirebaseAuth.instance.signInWithCredential(credential);
+          userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
           callback.call(userCredential);
         } catch (e) {
+          await Sentry.captureException(e);
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(
-                AppLocalizations.of(context)!.invalidVerificationCode)),
+            SnackBar(content: Text(AppLocalizations.of(context)!.invalidVerificationCode)),
           );
           callback.call(null);
         }
       } else {
+        await Sentry.captureMessage("signInWithPhoneNumber: phoneNumber:$phoneNumber smsCode null verificationId:$verificationId");
         callback.call(null);
       }
     },
-    codeAutoRetrievalTimeout: (String verificationId) {
-      print("Auto retrieval timeout, verification ID: $verificationId");
+    codeAutoRetrievalTimeout: (String verificationId) async {
+      await Sentry.captureMessage("signInWithPhoneNumber: phoneNumber:$phoneNumber codeAutoRetrievalTimeout verificationId:$verificationId");
     },
   );
   return userCredential;

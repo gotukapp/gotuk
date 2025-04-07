@@ -281,26 +281,14 @@ class _loginscreenState extends State<loginscreen> {
         _isLoading = true;
       });
       String phoneNumber = "+$countryCode${phoneNumberController.text}";
-      if (await userExists(phoneNumber)) {
-        await signInWithPhoneNumber(context, phoneNumber, (UserCredential? credential) async {
-          if (credential != null) {
-            await credentialsOk(credential);
-          }
-          setState(() {
-            _isLoading = false;
-          });
-        });
-      } else {
+      await signInWithPhoneNumber(context, phoneNumber, (UserCredential? credential) async {
+        if (credential != null) {
+          await credentialsOk(credential);
+        }
         setState(() {
           _isLoading = false;
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-                AppLocalizations.of(context)!.warningPhoneNumberAccountNotFound),
-          ),
-        );
-      }
+      });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
