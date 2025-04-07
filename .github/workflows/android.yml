@@ -30,13 +30,16 @@ jobs:
           flutter-version-file: pubspec.yaml # path to pubspec.yaml
       - run: flutter gen-l10n
       - run: flutter build appbundle
+      - run: flutter build apk
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - run: |
           mkdir -pv public
           cp -v build/app/outputs/bundle/release/app-release.aab "public/app-${{ github.run_number }}.aab"
-          echo "<h1>Download the APK ${{ github.run_number }} from the link below:<h1>" > public/index.html
+          cp -v build/app/outputs/apk/release/app-release.apk "public/app-${{ github.run_number }}.apk"
+          echo "<h1>Download run number ${{ github.run_number }} from the links below:<h1>" > public/index.html
           echo "<h1><a href='app-${{ github.run_number }}.aab'>Download APK ${{ github.run_number }}</a></h1>" >> public/index.html
+          echo "<h1><a href='app-${{ github.run_number }}.aab'>Download AAB ${{ github.run_number }}</a></h1>" >> public/index.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
