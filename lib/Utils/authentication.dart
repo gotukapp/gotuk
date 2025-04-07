@@ -5,9 +5,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../CreatAccount/verifyAccount.dart';
 
-Future<UserCredential?> signInWithPhoneNumber(BuildContext context, String phoneNumber, Function callback) async {
+Future<void> signInWithPhoneNumber(BuildContext context, String phoneNumber, Function callback) {
   UserCredential? userCredential;
-  await FirebaseAuth.instance.verifyPhoneNumber(
+  return FirebaseAuth.instance.verifyPhoneNumber(
     phoneNumber: phoneNumber,
     verificationCompleted: (PhoneAuthCredential credential) async {
       await Sentry.captureMessage("signInWithPhoneNumber: phoneNumber:$phoneNumber verificationCompleted $credential");
@@ -48,6 +48,5 @@ Future<UserCredential?> signInWithPhoneNumber(BuildContext context, String phone
       await Sentry.captureMessage("signInWithPhoneNumber: phoneNumber:$phoneNumber codeAutoRetrievalTimeout verificationId:$verificationId");
     },
   );
-  return userCredential;
 }
 

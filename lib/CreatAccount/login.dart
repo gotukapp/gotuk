@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:provider/provider.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -281,14 +282,24 @@ class _loginscreenState extends State<loginscreen> {
         _isLoading = true;
       });
       String phoneNumber = "+$countryCode${phoneNumberController.text}";
-      await signInWithPhoneNumber(context, phoneNumber, (UserCredential? credential) async {
-        if (credential != null) {
-          await credentialsOk(credential);
-        }
-        setState(() {
-          _isLoading = false;
+      try {
+        await signInWithPhoneNumber(
+            context, phoneNumber, (UserCredential? credential) async {
+          if (credential != null) {
+            await credentialsOk(credential);
+          }
+          setState(() {
+            _isLoading = false;
+          });
         });
-      });
+      } catch(e) {
+        await Sentry.captureException(e);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("$e"),
+          ),
+        );
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -309,22 +320,16 @@ class _loginscreenState extends State<loginscreen> {
   }
 
   Future<AppUser?> signInWithGoogle() async {
-    try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      final GoogleSignInAuthentication? googleAuth =
-      await googleUser?.authentication;
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth?.accessToken,
-        idToken: googleAuth?.idToken,
-      );
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication? googleAuth =
+    await googleUser?.authentication;
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
 
-      UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-      return await getUserFirebaseInstance(guideMode, userCredential.user!);
-    } on Exception catch (e) {
-      print('exception->$e');
-    }
-
-    return null;
+    UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+    return await getUserFirebaseInstance(guideMode, userCredential.user!);
   }
 
   getdarkmodepreviousstate() async {
