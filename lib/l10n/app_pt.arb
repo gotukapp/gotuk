@@ -127,5 +127,8 @@
     "invoiceAndPaymentSubTitle": "Informações sobre os teus pagamentos",
     "invalidVerificationCode": "Código inválido ou expirado. Tente novamente.",
     "accountCreatesSuccessfully": "Parabéns! Comece a fazer reservas com a GoTuk.",
-    "accountCreated": "Conta Criada"
+    "accountCreated": "Conta Criada",
+    "takePhoto": "Tirar foto",
+    "fromGallery": "Escolher da galeria",
+    "profileChangesSaved": "Alterações ao perfil guardadas com sucesso!"
 }

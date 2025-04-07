@@ -26,8 +26,9 @@ class AppUser {
   final DocumentReference? organizationRef;
   num? rating;
   List<String>? languages;
+  final String? profilePhoto;
 
-  AppUser(this.id, this.name, this.email, this.phone, this.accountValidated, this.accountAccepted, this.rating, this.languages, this.firebaseToken, this.organizationRef);
+  AppUser(this.id, this.name, this.email, this.phone, this.accountValidated, this.accountAccepted, this.rating, this.languages, this.firebaseToken, this.organizationRef, this.profilePhoto);
 
   factory AppUser.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot,
       SnapshotOptions? options,) {
@@ -36,7 +37,7 @@ class AppUser {
     return AppUser(snapshot.id, data?['name'], data?['email'],
         data?['phone'], data?['accountValidated'] ?? false, data?['accountAccepted'] ?? false,
         data?['rating'], data?['languages'], data?['firebaseToken'],
-        data?['organizationRef']);
+        data?['organizationRef'], data?['profilePhoto']);
   }
 
   Map<String, dynamic> toFirestore() {
@@ -48,7 +49,8 @@ class AppUser {
       "accountAccepted": accountAccepted,
       "rating": rating,
       "languages": languages,
-      "firebaseToken": firebaseToken
+      "firebaseToken": firebaseToken,
+      "profilePhoto": profilePhoto
     };
   }
 
@@ -275,17 +277,6 @@ class AppUser {
     }
   }
 
-  void update(String name) {
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser?.uid)
-        .update({
-      "name": name
-    });
-
-    this.name = name;
-  }
-
   void setFirebaseToken() async {
     try {
       if (Platform.isIOS) {
@@ -427,7 +418,7 @@ Future<AppUser> getUserFirebaseInstance(bool guideMode, User user) async {
   );
   final docSnap = await ref.get();
   if (!docSnap.exists) {
-    appUser = AppUser(user.uid, user.displayName, user.email, user.phoneNumber, false, false, 3, null, null, null);
+    appUser = AppUser(user.uid, user.displayName, user.email, user.phoneNumber, false, false, 3, null, null, null, null);
     FirebaseFirestore.instance.collection("users")
         .doc(user.uid)
         .set(appUser.toFirestore());

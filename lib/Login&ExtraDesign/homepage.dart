@@ -303,6 +303,8 @@ class _homepageState extends State<homepage> {
 
     userListener = usersStream.listen((docSnapshot) async {
       if (docSnapshot.exists) {
+        AppUser user = AppUser.fromFirestore(docSnapshot, null);
+        userProvider.setUser(user);
         if (docSnapshot.data()!.containsKey('needSelectTukTuk') && docSnapshot.get("needSelectTukTuk")) {
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => const SelectTukTuk()));
