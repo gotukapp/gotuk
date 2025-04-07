@@ -36,7 +36,7 @@ jobs:
           mkdir -pv public
           cp -v build/app/outputs/bundle/release/app-release.aab "public/app-${{ github.run_number }}.aab"
           echo "<h1>Download the APK ${{ github.run_number }} from the link below:<h1>" > public/index.html
-          echo "<h1><a href='app-${{ github.run_number }}.apk'>Download APK ${{ github.run_number }}</a></h1>" >> public/index.html
+          echo "<h1><a href='app-${{ github.run_number }}.aab'>Download APK ${{ github.run_number }}</a></h1>" >> public/index.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
