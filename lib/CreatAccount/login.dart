@@ -287,18 +287,21 @@ class _loginscreenState extends State<loginscreen> {
             context, phoneNumber, (UserCredential? credential) async {
           if (credential != null) {
             await credentialsOk(credential);
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("Login failed, please try again"),
+              ),
+            );
           }
-          setState(() {
-            _isLoading = false;
-          });
+          setState(() { _isLoading = false; });
         });
       } catch(e) {
         await Sentry.captureException(e);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("$e"),
-          ),
+          SnackBar(content: Text("$e")),
         );
+        setState(() { _isLoading = false; });
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

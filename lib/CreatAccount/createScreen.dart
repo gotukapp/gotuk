@@ -313,13 +313,8 @@ class _createScreenState extends State<createScreen> {
           });
         }
       });
-    } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context)!.unableToCreateAccount),
-        ),
-      );
-    } on Exception {
+    } on Exception catch (e) {
+      await Sentry.captureException(e);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(AppLocalizations.of(context)!.unableToCreateAccount),
