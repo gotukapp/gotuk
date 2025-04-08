@@ -518,24 +518,45 @@ class _AccountState extends State<account> {
                       textColor: WhiteColor,
                       buttontext: AppLocalizations.of(context)!.submitData,
                       onclick: () async {
-                        AppUser user = userProvider.user!;
-                        bool resultOk = await user.submitOrganizationData({
-                          "organizationCode": organizationCode.text
-                        });
-                        if (resultOk) {
+                        try {
+                          final queryOrganizationData = await FirebaseFirestore
+                              .instance
+                              .collection('organizations')
+                              .where(
+                              "orgCode", isEqualTo: organizationCode.text)
+                              .get();
+
+                          if (queryOrganizationData.docs.isNotEmpty) {
+                            AppUser user = userProvider.user!;
+                            await user.submitOrganizationData({
+                              "organizationCode": organizationCode.text,
+                              "organizationName": queryOrganizationData.docs[0].get("name"),
+                              "organizationRef": queryOrganizationData.docs[0].reference
+                            });
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(AppLocalizations.of(context)!
+                                    .accountDataSubmittedSuccessfully),
+                              ),
+                            );
+                            setState(() {
+                              organizationName = queryOrganizationData.docs[0].get("name");
+                              editOrganizationData = false;
+                            });
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  content: Text(AppLocalizations.of(context)!
+                                      .warningOrganizationNotFound),
+                                  duration: const Duration(seconds: 6)
+                              ),
+                            );
+                          }
+                        } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text(AppLocalizations.of(context)!.accountDataSubmittedSuccessfully),
-                            ),
-                          );
-                          setState(() {
-                            editOrganizationData = false;
-                          });
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                  AppLocalizations.of(context)!.errorSubmittingData),
+                                content: Text("$e"),
+                                duration: const Duration(seconds: 6)
                             ),
                           );
                         }
