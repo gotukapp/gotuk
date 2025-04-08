@@ -31,7 +31,7 @@ jobs:
       - name: Build
         run: |
           flutter gen-l10n
-          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > /home/runner/keystore
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > keystore
           flutter build appbundle
           flutter build apk
       - name: Setup Pages
