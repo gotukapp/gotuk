@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../Providers/userProvider.dart';
 import '../Utils/customwidget .dart';
 import 'Payments.dart';
 
@@ -32,10 +33,13 @@ class _SettingsState extends State<Settings> {
 
   bool switchValue = false;
   late ColorNotifier notifier;
+  late UserProvider userProvider;
 
   @override
   Widget build(BuildContext context) {
     notifier = Provider.of<ColorNotifier>(context, listen: true);
+    userProvider = Provider.of<UserProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -109,9 +113,10 @@ class _SettingsState extends State<Settings> {
                   image: "assets/images/language.png",
                   text: AppLocalizations.of(context)!.language,
                   icon: Icons.keyboard_arrow_right,
-                  onclick: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => Language(languages: appLanguages)));
+                  onclick: () async {
+                    String selectedLanguage = await Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => Language(languages: appLanguages))) as String;
+                    userProvider.user?.updateAppLanguage(selectedLanguage);
                   },
                   boxcolor: notifier.getdarkmodecolor,
                   iconcolor: notifier.getwhiteblackcolor,

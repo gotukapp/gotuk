@@ -280,6 +280,7 @@ class _createScreenState extends State<createScreen> {
               "accountValidated": false,
               "accountAccepted": false,
               "language": null,
+              "appLanguage": Localizations.localeOf(context).toString(),
               "rating": 3,
               "disabled": false
             });

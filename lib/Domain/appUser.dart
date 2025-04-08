@@ -401,6 +401,13 @@ class AppUser {
 
     return imageUrls;
   }
+
+  void updateAppLanguage(String value) {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(id)
+        .update({"appLanguage": value});
+  }
 }
 
 Future<bool> userExists(String phone) async {
