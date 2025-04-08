@@ -30,7 +30,7 @@ class home extends StatefulWidget {
 }
 
 class _homeState extends State<home> {
-  List<Trip>? bookedTrips = [];
+  List<Trip> bookedTrips = [];
   StreamSubscription<QuerySnapshot<Object?>>? listener;
 
   @override
@@ -49,10 +49,11 @@ class _homeState extends State<home> {
           .orderBy("date");
 
       pendingTrips.get().then( (querySnapshot) {
+          if (!mounted) return;
           setState(() {
-            bookedTrips?.clear();
+            bookedTrips.clear();
             for (var docSnapshot in querySnapshot.docs) {
-              bookedTrips!.add(Trip.fromFirestore(docSnapshot, null));
+              bookedTrips.add(Trip.fromFirestore(docSnapshot, null));
             }
           });
       });
@@ -61,10 +62,10 @@ class _homeState extends State<home> {
         for (var doc in querySnapshot.docs) {
           setState(() {
             try {
-              Trip? trip = bookedTrips!.firstWhere((t) => t.id == doc.id);
+              Trip? trip = bookedTrips.firstWhere((t) => t.id == doc.id);
               trip.status = doc.get("status");
             } catch (e) {
-              bookedTrips?.add(Trip.fromFirestore(doc, null));
+              bookedTrips.add(Trip.fromFirestore(doc, null));
             }
           });
         }
@@ -126,7 +127,7 @@ class _homeState extends State<home> {
                       ),
                       Row(
                         children: [
-                          if (bookedTrips!.isNotEmpty)
+                          if (bookedTrips.isNotEmpty)
                             InkWell(
                               onTap: () {
                                 Navigator.of(context).push(MaterialPageRoute(
@@ -223,7 +224,7 @@ class _homeState extends State<home> {
                               ),
                             ),
                           ),
-                          if (bookedTrips!.isNotEmpty)
+                          if (bookedTrips.isNotEmpty)
                             ...[SizedBox( height: MediaQuery.of(context).size.height * 0.025),
                                 Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -255,11 +256,11 @@ class _homeState extends State<home> {
                                   height: 160,
                                   child: ListView.builder(
                                     scrollDirection: Axis.horizontal,
-                                    itemCount: bookedTrips!.length,
+                                    itemCount: bookedTrips.length,
                                     itemBuilder: (BuildContext context, int index) {
                                       return Padding(
                                           padding: const EdgeInsets.symmetric(horizontal: 10),
-                                          child: clientTripLayout(context, notifier, bookedTrips![index])
+                                          child: clientTripLayout(context, notifier, bookedTrips[index])
                                       );
                                     },
                                   )),],
