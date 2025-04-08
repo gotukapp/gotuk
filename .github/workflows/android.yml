@@ -36,7 +36,8 @@ jobs:
           flutter build apk
       - name: Setup Pages
         uses: actions/configure-pages@v5
-      - run: |
+      - name: build
+        run: |
           mkdir -pv public
           cp -v build/app/outputs/bundle/release/app-release.aab "public/app-${{ github.run_number }}.aab"
           cp -v build/app/outputs/apk/release/app-release.apk "public/app-${{ github.run_number }}.apk"
