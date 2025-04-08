@@ -33,6 +33,10 @@ def keystorePropertiesFile = rootProject.file("key.properties")
 
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+    println "Using keystore file: ${keystoreProperties['storeFile']}"
+    println "Using key alias: ${keystoreProperties['keyAlias']}"
+} else {
+    println "**** Keystore properties file not found! *****"
 }
 
 android {
