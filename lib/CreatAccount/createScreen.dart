@@ -280,7 +280,8 @@ class _createScreenState extends State<createScreen> {
               "accountValidated": false,
               "accountAccepted": false,
               "languages": null,
-              "rating": 3
+              "rating": 3,
+              "disabled": false
             });
 
             await credentialsOk(credential);

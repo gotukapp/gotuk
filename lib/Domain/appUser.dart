@@ -207,7 +207,7 @@ class AppUser {
         await FirebaseFirestore.instance
             .collection('users')
             .doc(FirebaseAuth.instance.currentUser?.uid)
-            .update({ "organizationRef": queryOrganizationData.docs[0]});
+            .update({ "organizationRef": queryOrganizationData.docs[0].reference});
       }
 
       return true;
