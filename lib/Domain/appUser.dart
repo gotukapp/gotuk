@@ -48,7 +48,7 @@ class AppUser {
       "accountValidated": accountValidated,
       "accountAccepted": accountAccepted,
       "rating": rating,
-      "languages": languages,
+      "language": languages,
       "firebaseToken": firebaseToken,
       "profilePhoto": profilePhoto
     };
