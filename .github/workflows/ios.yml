@@ -3,8 +3,6 @@ name: iOS starter workflow
 on:
   push:
     branches: [ "ios" ]
-  pull_request:
-    branches: [ "ios" ]
 
 env:
   APP_STORE_CONNECT_API_KEY_KEY: "${{vars.APP_STORE_CONNECT_API_KEY_KEY}}"
