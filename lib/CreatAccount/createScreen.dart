@@ -317,7 +317,8 @@ class _createScreenState extends State<createScreen> {
       await Sentry.captureException(e);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(AppLocalizations.of(context)!.unableToCreateAccount),
+          content: Text("$e"),
+          duration: const Duration(seconds: 5)
         ),
       );
     }

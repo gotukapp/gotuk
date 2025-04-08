@@ -33,6 +33,20 @@ def keystorePropertiesFile = rootProject.file("key.properties")
 
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+    println "Using keystore file: ${keystoreProperties['storeFile']}"
+    println "Using key alias: ${keystoreProperties['keyAlias']}"
+
+    def keystorePath = keystoreProperties['storeFile']
+    def keystoreFile = file(keystorePath)
+
+    if (keystoreFile.exists()) {
+        println "✅ Keystore file found at: ${keystoreFile.absolutePath}"
+    } else {
+        println "❌ Keystore file not found at: ${keystoreFile.absolutePath}"
+    }
+
+} else {
+    println "**** Keystore properties file not found! *****"
 }
 
 android {
@@ -76,7 +90,7 @@ android {
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
         }
     }
 }

@@ -35,7 +35,6 @@ class _onbordingState extends State<onbording> {
     super.initState();
 
     Future.microtask(() async {
-      await FirebaseAuth.instance.currentUser?.reload();
       if (FirebaseAuth.instance.currentUser != null) {
           try {
             AppUser? user = await getUserFirebaseInstance(

@@ -312,7 +312,10 @@ class _loginscreenState extends State<loginscreen> {
       } catch(e) {
         await Sentry.captureException(e);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("$e")),
+          SnackBar(
+              content: Text("$e"),
+              duration: const Duration(seconds: 5)
+          ),
         );
         setState(() { _isLoading = false; });
       }
