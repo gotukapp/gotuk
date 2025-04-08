@@ -35,27 +35,28 @@ class _onbordingState extends State<onbording> {
     super.initState();
 
     Future.microtask(() async {
+      await FirebaseAuth.instance.currentUser?.reload();
       if (FirebaseAuth.instance.currentUser != null) {
-            try {
-              AppUser? user = await getUserFirebaseInstance(
-                  guideMode, FirebaseAuth.instance.currentUser!);
-              Provider.of<UserProvider>(context, listen: false).setUser(user);
-              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-                  builder: (context) => const homepage()),
-                      (route) => false);
-            } catch (exception, stackTrace) {
-                await Sentry.captureException(
-                exception,
-                stackTrace: stackTrace,
-                );
+          try {
+            AppUser? user = await getUserFirebaseInstance(
+                guideMode, FirebaseAuth.instance.currentUser!);
+            Provider.of<UserProvider>(context, listen: false).setUser(user);
+            Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                builder: (context) => const homepage()),
+                    (route) => false);
+          } catch (exception, stackTrace) {
+              await Sentry.captureException(
+              exception,
+              stackTrace: stackTrace,
+              );
 
-                Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (context) => const BoardingPage()));
-            }
-          } else {
-            Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (context) => const BoardingPage()));
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (context) => const BoardingPage()));
           }
+        } else {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => const BoardingPage()));
+        }
       },
    );
   }

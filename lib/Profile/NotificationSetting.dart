@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class NotificationSetting extends StatefulWidget {
   const NotificationSetting({super.key});
@@ -21,9 +22,9 @@ class _NotificationSettingState extends State<NotificationSetting> {
     super.initState();
   }
 
-  bool status1 = true;
-  bool status2 = false;
-  bool status3 = true;
+  bool promotions = false;
+  bool bookings = true;
+  bool payments = true;
   bool switchValue = false;
   late ColorNotifier notifier;
   @override
@@ -36,9 +37,11 @@ class _NotificationSettingState extends State<NotificationSetting> {
         backgroundColor: notifier.getdarkscolor,
         leading: BackButton(color: notifier.getwhiteblackcolor),
         title: Text(
-          "Notification Settings",
+          AppLocalizations.of(context)!.notificationSettings,
           style: TextStyle(
-              color: notifier.getwhiteblackcolor, fontFamily: "Gilroy Bold"),
+              fontSize: 17,
+              color: notifier.getwhiteblackcolor,
+              fontFamily: "Gilroy Bold"),
         ),
       ),
       backgroundColor: notifier.getdarkscolor,
@@ -47,34 +50,34 @@ class _NotificationSettingState extends State<NotificationSetting> {
         child: Column(
           children: [
             NotificationSetting(
-              title: "Newesletter",
-              subtitle: "Alerts for the most important stories",
-              status: status1,
-              toggel: (bool? value) {
-                setState(() {
-                  status1 = value!;
-                });
-              },
-            ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-            NotificationSetting(
-              title: "Recommendation",
-              subtitle: "Get info newest promotion",
-              status: status2,
+              title: AppLocalizations.of(context)!.promotions,
+              subtitle: AppLocalizations.of(context)!.promotionsSubTitle,
+              status: promotions,
               toggel: (bool? value1) {
                 setState(() {
-                  status2 = value1!;
+                  promotions = value1!;
                 });
               },
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.04),
             NotificationSetting(
-              title: "Invoice and Payment",
-              subtitle: "Information about your payment",
-              status: status3,
+              title: AppLocalizations.of(context)!.bookings,
+              subtitle: AppLocalizations.of(context)!.bookingsSubTitle,
+              status: bookings,
               toggel: (bool? value2) {
                 setState(() {
-                  status3 = value2!;
+                  bookings = value2!;
+                });
+              },
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+            NotificationSetting(
+              title: AppLocalizations.of(context)!.invoiceAndPayment,
+              subtitle: AppLocalizations.of(context)!.invoiceAndPaymentSubTitle,
+              status: payments,
+              toggel: (bool? value2) {
+                setState(() {
+                  payments = value2!;
                 });
               },
             ),

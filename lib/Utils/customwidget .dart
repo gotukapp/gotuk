@@ -26,7 +26,7 @@ CustomAppbar(
     ActionIcon,
     bgcolor,
     Color? actioniconcolor,
-    leadingiconcolor,
+    Color? leadingiconcolor,
     titlecolor}) {
   return AppBar(
       actions: [
@@ -45,11 +45,11 @@ CustomAppbar(
           style: TextStyle(color: titlecolor, fontFamily: "Gilroy Bold"),
         ),
       ),
-      leading: Padding(
+      leading: leadingiconcolor != null ? Padding(
           padding: const EdgeInsets.only(top: 25),
           child: BackButton(
             color: leadingiconcolor,
-          )),
+          )) : null,
       elevation: 0,
       backgroundColor: bgcolor);
 }

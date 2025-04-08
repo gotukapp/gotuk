@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [ "android" ]
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 env:
   AAAA: "${{vars.AAA}}"
 
@@ -23,8 +28,30 @@ jobs:
         with:
           channel: stable
           flutter-version-file: pubspec.yaml # path to pubspec.yaml
-      - run: flutter gen-l10n
-      - run: flutter build appbundle
+      - name: Build
+        run: |
+          flutter gen-l10n
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > /home/runner/keystore
+          flutter build appbundle
+          flutter build apk
       - name: Setup Pages
         uses: actions/configure-pages@v5
+      - name: build
+        run: |
+          mkdir -pv public
+          cp -v build/app/outputs/bundle/release/app-release.aab "public/app-${{ github.run_number }}.aab"
+          cp -v build/app/outputs/apk/release/app-release.apk "public/app-${{ github.run_number }}.apk"
+          echo "<html><head><meta name="viewport" content="width=device-width, initial-scale=1"></head>
+          <h1>Download run number ${{ github.run_number }} from the links below:</h1>" > public/index.html
+          echo "<h1><a href='app-${{ github.run_number }}.apk'>Download APK ${{ github.run_number }}</a></h1>" >> public/index.html
+          echo "<h1><a href='app-${{ github.run_number }}.aab'>Download AAB ${{ github.run_number }}</a></h1>" >> public/index.html
+          echo "</head></html>" >> public/index.html
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'public'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+      
 

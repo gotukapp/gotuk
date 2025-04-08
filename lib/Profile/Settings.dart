@@ -15,6 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../Utils/customwidget .dart';
+import 'Payments.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -90,8 +91,8 @@ class _SettingsState extends State<Settings> {
                   text: AppLocalizations.of(context)!.payments,
                   icon: Icons.keyboard_arrow_right,
                   onclick: () {
-                    // Navigator.of(context).push(
-                    //     MaterialPageRoute(builder: (context) => Favourite()));
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => const Payments()));
                   },
                   boxcolor: notifier.getdarkmodecolor,
                   ImageColor: notifier.getwhiteblackcolor,
@@ -196,6 +197,21 @@ class _SettingsState extends State<Settings> {
                     Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
                         builder: (context) => const loginscreen()),
                             (route) => false);
+                  },
+                  boxcolor: notifier.getdarkmodecolor,
+                  iconcolor: notifier.getwhiteblackcolor,
+                  ImageColor: RedColor,
+                  TextColor: RedColor),
+              const SizedBox(height: 10),
+              AccountSetting(
+                  image: "assets/images/delete.png",
+                  text: AppLocalizations.of(context)!.deleteAccount,
+                  icon: null,
+                  onclick: () async {
+                    showConfirmationMessage(context,
+                        AppLocalizations.of(context)!.deleteAccount,
+                        AppLocalizations.of(context)!.deleteAccountConfirmation,
+                            () {}, () {}, AppLocalizations.of(context)!.yes, AppLocalizations.of(context)!.no);
                   },
                   boxcolor: notifier.getdarkmodecolor,
                   iconcolor: notifier.getwhiteblackcolor,
