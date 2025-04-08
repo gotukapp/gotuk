@@ -3,8 +3,6 @@ name: android starter workflow
 on:
   push:
     branches: [ "android" ]
-  pull_request:
-    branches: [ "android" ]
 
 permissions:
   contents: read
