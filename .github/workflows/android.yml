@@ -11,9 +11,6 @@ permissions:
   pages: write
   id-token: write
 
-env:
-  AAAA: "${{vars.AAA}}"
-
 jobs:
   build:
     name: Build
@@ -27,17 +24,19 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version-file: pubspec.yaml # path to pubspec.yaml
+          flutter-version-file: pubspec.yaml
+
       - name: Build
         run: |
           flutter gen-l10n
-          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > /home/runner/work/gotuk/gotuk/android/app/keystore
-          base64 -i /home/runner/work/gotuk/gotuk/android/app/keystore
+          echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > /home/runner/work/gotuk/gotuk/android/app/keystore          
           flutter build appbundle
           flutter build apk
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
-      - name: build
+
+      - name: Create artifact
         run: |
           mkdir -pv public
           cp -v build/app/outputs/bundle/release/app-release.aab "public/app-${{ github.run_number }}.aab"
@@ -47,12 +46,22 @@ jobs:
           echo "<h1><a href='app-${{ github.run_number }}.apk'>Download APK ${{ github.run_number }}</a></h1>" >> public/index.html
           echo "<h1><a href='app-${{ github.run_number }}.aab'>Download AAB ${{ github.run_number }}</a></h1>" >> public/index.html
           echo "</head></html>" >> public/index.html
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: 'public'
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-      
+
+      - name: Upload to Play Store
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_AUTH }}
+          packageName: com.gotuk.dm
+          releaseFiles: build/app/outputs/bundle/release/app-release.aab
+          track: beta
+
 

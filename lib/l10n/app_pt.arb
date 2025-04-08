@@ -134,5 +134,6 @@
     "deleteAccount": "Apagar Conta",
     "deleteAccountConfirmation": "Tem a certeza que pretende apagar esta conta?",
     "yes": "Sim",
-    "no": "Não"
+    "no": "Não",
+    "warningOrganizationNotFound": "Não existe nenhuma empresa com esse código"
 }

@@ -46,8 +46,11 @@ class _LanguageState extends State<Language> {
         leading: BackButton(
             color: notifier.getwhiteblackcolor,
             onPressed: () {
-              // Return the selected values when back button is pressed
-              Navigator.pop(context, selectedLanguages);
+              if (widget.multiple) {
+                Navigator.pop(context, selectedLanguages);
+              } else {
+                Navigator.pop(context, language);
+              }
             }),
         title: Text(
           AppLocalizations.of(context)!.language,

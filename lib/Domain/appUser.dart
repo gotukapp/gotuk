@@ -48,7 +48,7 @@ class AppUser {
       "accountValidated": accountValidated,
       "accountAccepted": accountAccepted,
       "rating": rating,
-      "languages": languages,
+      "language": languages,
       "firebaseToken": firebaseToken,
       "profilePhoto": profilePhoto
     };
@@ -188,33 +188,21 @@ class AppUser {
     }
   }
 
-  Future<bool> submitOrganizationData(data) async {
-    try {
-      await FirebaseFirestore.instance
+  Future<void> submitOrganizationData(data) async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection('organizationData').add({
+      "code": data["organizationCode"],
+      "name": data["organizationName"],
+      "status": 'pending',
+      "submitDate": FieldValue.serverTimestamp()
+    });
+
+    await FirebaseFirestore.instance
           .collection('users')
           .doc(FirebaseAuth.instance.currentUser?.uid)
-          .collection('organizationData').add({
-        "code": data["organizationCode"],
-        "status": 'pending',
-        "submitDate": FieldValue.serverTimestamp()
-      });
-
-      final queryOrganizationData = await FirebaseFirestore.instance
-          .collection('organizations')
-          .where("orgCode", isEqualTo: data["organizationCode"]).get();
-
-      if (queryOrganizationData.docs.isNotEmpty) {
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(FirebaseAuth.instance.currentUser?.uid)
-            .update({ "organizationRef": queryOrganizationData.docs[0]});
-      }
-
-      return true;
-    } catch (e) {
-      await Sentry.captureException(e);
-      return false;
-    }
+          .update({ "organizationRef": data["organizationRef"]});
   }
 
   Future<bool> submitWorkAccidentInsurance(data) async {
@@ -400,6 +388,13 @@ class AppUser {
     }
 
     return imageUrls;
+  }
+
+  void updateAppLanguage(String value) {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(id)
+        .update({"appLanguage": value});
   }
 }
 

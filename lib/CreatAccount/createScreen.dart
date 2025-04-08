@@ -279,8 +279,10 @@ class _createScreenState extends State<createScreen> {
               "phone": phoneNumber,
               "accountValidated": false,
               "accountAccepted": false,
-              "languages": null,
-              "rating": 3
+              "language": null,
+              "appLanguage": Localizations.localeOf(context).toString(),
+              "rating": 3,
+              "disabled": false
             });
 
             await credentialsOk(credential);
