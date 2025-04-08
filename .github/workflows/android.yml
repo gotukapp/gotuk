@@ -32,7 +32,7 @@ jobs:
         run: |
           flutter gen-l10n
           echo "${{ secrets.ANDROID_KEYSTORE }}" | base64 --decode > keystore
-          flutter build appbundle
+          flutter build appbundle -v
           flutter build apk
       - name: Setup Pages
         uses: actions/configure-pages@v5
