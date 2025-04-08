@@ -15,8 +15,7 @@ Future<void> signInWithPhoneNumber(BuildContext context, String phoneNumber, Fun
       callback.call(userCredential);
     },
     verificationFailed: (FirebaseAuthException e) async {
-      await Sentry.captureException(e, stackTrace: e.stackTrace);
-      callback.call(null);
+      throw e;
     },
     codeSent: (String verificationId, int? resendToken) async {
       String? smsCode = await Navigator.of(context).push(MaterialPageRoute(
