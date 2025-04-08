@@ -201,6 +201,21 @@ class _SettingsState extends State<Settings> {
                   boxcolor: notifier.getdarkmodecolor,
                   iconcolor: notifier.getwhiteblackcolor,
                   ImageColor: RedColor,
+                  TextColor: RedColor),
+              const SizedBox(height: 10),
+              AccountSetting(
+                  image: "assets/images/delete.png",
+                  text: AppLocalizations.of(context)!.deleteAccount,
+                  icon: null,
+                  onclick: () async {
+                    showConfirmationMessage(context,
+                        AppLocalizations.of(context)!.deleteAccount,
+                        AppLocalizations.of(context)!.deleteAccountConfirmation,
+                            () {}, () {}, AppLocalizations.of(context)!.yes, AppLocalizations.of(context)!.no);
+                  },
+                  boxcolor: notifier.getdarkmodecolor,
+                  iconcolor: notifier.getwhiteblackcolor,
+                  ImageColor: RedColor,
                   TextColor: RedColor)
             ],
           ),

@@ -130,5 +130,9 @@
     "accountCreated": "Account Created",
     "takePhoto": "Take Photo",
     "fromGallery": "Choose from gallery",
-    "profileChangesSaved": "Profile changes saved successfully!"
+    "profileChangesSaved": "Profile changes saved successfully!",
+    "deleteAccount": "Delete Account",
+    "deleteAccountConfirmation": "Are you sure you want to delete this account?",
+    "yes": "Yes",
+    "no": "No"
 }

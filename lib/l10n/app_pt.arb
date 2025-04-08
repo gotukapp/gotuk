@@ -130,5 +130,9 @@
     "accountCreated": "Conta Criada",
     "takePhoto": "Tirar foto",
     "fromGallery": "Escolher da galeria",
-    "profileChangesSaved": "Alterações ao perfil guardadas com sucesso!"
+    "profileChangesSaved": "Alterações ao perfil guardadas com sucesso!",
+    "deleteAccount": "Apagar Conta",
+    "deleteAccountConfirmation": "Tem a certeza que pretende apagar esta conta?",
+    "yes": "Sim",
+    "no": "Não"
 }
