@@ -53,8 +53,8 @@ class _loginscreenState extends State<loginscreen> {
               centertext: "",
               ActionIcon: null,
               bgcolor: notifier.getlogobgcolor,
-              actioniconcolor: notifier.getwhiteblackcolor,
-              leadingiconcolor: null)),
+              actioniconcolor: notifier.getblackwhitecolor,
+              leadingiconcolor: notifier.getblackwhitecolor)),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -182,22 +182,35 @@ class _loginscreenState extends State<loginscreen> {
                             ),
                           )),
                       Container(
+                          padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                          ),
+                              borderRadius: BorderRadius.circular(50),
+                              color: notifier.getdarkmodecolor),
                           // margin: EdgeInsets.only(top: 12),
                           height: 45,
                           width: MediaQuery.of(context).size.width / 2.5,
                           child: InkWell(
-                            onTap: () {
-
+                            onTap: () async {
 
                             },
                             child: ClipRRect(
-                              borderRadius:
-                              const BorderRadius.all(Radius.circular(50)),
-                              child: Image.asset("assets/images/facebook.png",
-                                  fit: BoxFit.fitWidth),
+                              borderRadius: const BorderRadius.all(Radius.circular(50)),
+                              child: Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Image.asset("assets/images/apple.png",
+                                        fit: BoxFit.fill),
+                                    Text(
+                                      "Apple",
+                                      style: TextStyle(
+                                          fontSize: 17,
+                                          fontFamily: "Gilroy Medium",
+                                          color: notifier.getwhiteblackcolor),
+                                    )
+                                  ],
+                                ),
+                              ),
                             ),
                           )),
                     ],
