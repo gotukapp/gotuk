@@ -3,8 +3,6 @@ name: iOS starter workflow
 on:
   push:
     branches: [ "ios" ]
-  pull_request:
-    branches: [ "ios" ]
 
 env:
   APP_STORE_CONNECT_API_KEY_KEY: "${{vars.APP_STORE_CONNECT_API_KEY_KEY}}"
@@ -19,7 +17,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - run: |
+      - name: Fastlane match
+        run: |
           echo '${{ secrets.GOOGLE_CLOUD_AUTH }}' > gc_keys.json
           gem install bundler
           bundle install
