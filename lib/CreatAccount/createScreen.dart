@@ -267,7 +267,7 @@ class _createScreenState extends State<createScreen> {
   Future<void> createUser() async {
     try {
       String phoneNumber = "+$countryCode${phoneNumberController.text}";
-      await signInWithPhoneNumber(context, phoneNumber, (UserCredential? credential) async {
+      await signInWithPhoneNumber(context, phoneNumber, (UserCredential? credential, Exception? e) async {
         if (credential != null) {
           try {
             FirebaseFirestore.instance
@@ -293,11 +293,12 @@ class _createScreenState extends State<createScreen> {
               MaterialPageRoute(builder: (context) => const homepage()),
                   (route) => false,
             );
-          } catch(e) {
+          } catch (e) {
             await Sentry.captureException(e);
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(AppLocalizations.of(context)!.unableToCreateAccount),
+                content: Text(e.toString()),
+                backgroundColor: RedColor
               ),
             );
             setState(() {
@@ -307,8 +308,9 @@ class _createScreenState extends State<createScreen> {
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(AppLocalizations.of(context)!.unableToCreateAccount),
-            ),
+              content: Text(e != null ? e.toString() : AppLocalizations.of(context)!.unableToCreateAccount),
+              backgroundColor: RedColor
+            )
           );
           setState(() {
             _isLoading = false;

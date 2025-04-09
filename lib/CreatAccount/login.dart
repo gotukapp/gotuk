@@ -304,13 +304,15 @@ class _loginscreenState extends State<loginscreen> {
       String phoneNumber = "+$countryCode${phoneNumberController.text}";
       try {
         await signInWithPhoneNumber(
-            context, phoneNumber, (UserCredential? credential) async {
+            context, phoneNumber, (UserCredential? credential, Exception? e) async {
           if (credential != null) {
             await credentialsOk(credential);
           } else {
+            await Sentry.captureException(e);
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text("Login failed, please try again"),
+              SnackBar(
+                content: Text(e != null ? e.toString() : "Login failed, please try again"),
+                backgroundColor: RedColor
               ),
             );
           }
