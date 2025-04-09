@@ -363,6 +363,7 @@ class _loginscreenState extends State<loginscreen> {
     UserCredential userCredential = kIsWeb ?
       await FirebaseAuth.instance.signInWithPopup(appleProvider) :
       await FirebaseAuth.instance.signInWithProvider(appleProvider);
+    Sentry.captureMessage(userCredential.toString());
     return await getUserFirebaseInstance(guideMode, userCredential.user!);
   }
 
