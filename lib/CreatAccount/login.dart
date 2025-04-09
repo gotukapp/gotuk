@@ -6,6 +6,7 @@ import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
@@ -191,7 +192,13 @@ class _loginscreenState extends State<loginscreen> {
                           width: MediaQuery.of(context).size.width / 2.5,
                           child: InkWell(
                             onTap: () async {
-
+                              AppUser? user = await signInWithApple();
+                              if(user != null) {
+                                userProvider.setUser(user);
+                                Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                                    builder: (context) => const homepage()),
+                                        (route) => false);
+                              }
                             },
                             child: ClipRRect(
                               borderRadius: const BorderRadius.all(Radius.circular(50)),
@@ -350,6 +357,15 @@ class _loginscreenState extends State<loginscreen> {
     UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
     return await getUserFirebaseInstance(guideMode, userCredential.user!);
   }
+
+  Future<AppUser?> signInWithApple() async {
+    final appleProvider = AppleAuthProvider();
+    UserCredential userCredential = kIsWeb ?
+      await FirebaseAuth.instance.signInWithPopup(appleProvider) :
+      await FirebaseAuth.instance.signInWithProvider(appleProvider);
+    return await getUserFirebaseInstance(guideMode, userCredential.user!);
+  }
+
 
   getdarkmodepreviousstate() async {
     final prefs = await SharedPreferences.getInstance();
