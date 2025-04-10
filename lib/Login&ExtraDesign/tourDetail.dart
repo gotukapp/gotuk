@@ -42,6 +42,12 @@ class _TourDetailState extends State<TourDetail> {
     setState(() => _currentPage = page);
   }
 
+  bool isTablet(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final shortestSide = size.shortestSide;
+    return shortestSide >= 600; // standard threshold for tablets
+  }
+
   int _currentPage = 0;
   late ColorNotifier notifier;
   @override
@@ -165,7 +171,7 @@ class _TourDetailState extends State<TourDetail> {
           pinned: _pinned,
           snap: _snap,
           floating: _floating,
-          expandedHeight: 255,
+          expandedHeight: isTablet(context) ? 320 : 255,
           flexibleSpace: FlexibleSpaceBar(
             background: PageView(
               controller: _pageController,

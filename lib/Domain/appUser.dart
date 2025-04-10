@@ -272,8 +272,7 @@ class AppUser {
       }
 
       String? token = await FirebaseMessaging.instance.getToken();
-      print('FCM Token: $token');
-      if (token != null) {
+      if (token != null && token != firebaseToken) {
         FirebaseFirestore.instance
             .collection('users')
             .doc(FirebaseAuth.instance.currentUser?.uid)
@@ -421,6 +420,8 @@ Future<AppUser> getUserFirebaseInstance(bool guideMode, User user) async {
     appUser = docSnap.data();
   }
 
+  appUser!.setFirebaseToken();
+
   if (guideMode) {
     FirebaseFirestore.instance.collection("users")
         .doc(user.uid)
@@ -433,7 +434,7 @@ Future<AppUser> getUserFirebaseInstance(bool guideMode, User user) async {
         .update({"clientMode": true});
   }
 
-  return appUser!;
+  return appUser;
 }
 
 final List<Map<String, String>> dataProtectionPolicy = [
