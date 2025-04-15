@@ -11,10 +11,11 @@ class ColorNotifier with ChangeNotifier {
   get getIsDark => isDark;
   get getwhitegrey => isDark ? greyColor : bgcolor;
   get getbgcolor => isDark ? darkmode : bgcolor; //background color
-  get getlogobgcolor => isDark ? darkmode : LogoColor; //background color
+  get getlogobgcolor => isDark ? LogoColor : LogoColor; //background color
   get getdarkmodecolor => isDark ? boxcolor : WhiteColor; //containar color
   get getlightblackcolor => isDark ? boxcolor : lightBlack;
   get getdarklightgreycolor => isDark ? darkGrey : lightGrey;
+  get getlightdarkgreycolor => isDark ? lightGrey : darkGrey;
 
   get getwhiteblackcolor => isDark ? WhiteColor : BlackColor; //text defultsystemicon imageicon color
 
