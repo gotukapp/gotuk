@@ -135,5 +135,11 @@
     "deleteAccountConfirmation": "Tem a certeza que pretende apagar esta conta?",
     "yes": "Sim",
     "no": "Não",
-    "warningOrganizationNotFound": "Não existe nenhuma empresa com esse código"
+    "warningOrganizationNotFound": "Não existe nenhuma empresa com esse código",
+    "selectTuk": "Seleccionar um TukTuk",
+    "tukSelectedSuccessfully": "TukTuk seleccionado com sucesso",
+    "tukSelectedByAnotherGuide": "O Tuk seleccionado já está ocupado por outro guia",
+    "selectTukConfirmation": "Tem a certeza que pretende seleccionar o tuktuk {licensePlate}?",
+    "back": "Voltar",
+    "noTuksAvailable": "Não existem Tuks disponíveis"
 }

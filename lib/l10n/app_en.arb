@@ -135,5 +135,11 @@
     "deleteAccountConfirmation": "Are you sure you want to delete this account?",
     "yes": "Yes",
     "no": "No",
-    "warningOrganizationNotFound": "No organization were found with this code"
+    "warningOrganizationNotFound": "No organization were found with this code",
+    "selectTuk": "Select TukTuk",
+    "tukSelectedSuccessfully": "TukTuk selected successfully",
+    "tukSelectedByAnotherGuide": "The selected TukTuk is already selected by another guide",
+    "selectTukConfirmation": "Are you sure you want to select the tuktuk {licensePlate}?",
+    "back": "Back",
+    "noTuksAvailable": "No tuks available"
 }

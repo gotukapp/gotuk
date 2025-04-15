@@ -323,7 +323,7 @@ class AppUser {
     });
   }
 
-  Future<void> associateTukTuk(DocumentReference<Map<String, dynamic>> reference) async {
+  Future<bool> associateTukTuk(DocumentReference<Map<String, dynamic>> reference) async {
     String date = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
     var tuktuk = await reference.get();
@@ -350,13 +350,37 @@ class AppUser {
         .collection('users')
         .doc(id);
 
-    batch.set(userTukTukDoc, {
-      "tuktukRef": reference
-    });
+    final docSnapshot = await tuktukGuideDoc.get();
+    if (!docSnapshot.exists) {
+      batch.set(userTukTukDoc, {
+        "tuktukRef": reference
+      });
+    } else {
+      return false;
+    }
 
     batch.set(tuktukGuideDoc, {
       "userRef": userRefDoc
     });
+
+
+    DocumentReference tuktukActivityDoc = await FirebaseFirestore.instance
+        .collection('organizations')
+        .doc(organizationRef!.id)
+        .collection('tuktukActivity')
+        .doc(date);
+
+    final tuktukActivitySnapshot = await tuktukActivityDoc.get();
+
+    if (!tuktukActivitySnapshot.exists) {
+      batch.set(tuktukActivityDoc, {
+        'tuktuks': [reference]
+      });
+    } else {
+      batch.update(tuktukActivityDoc, {
+        'tuktuks': FieldValue.arrayUnion([reference])
+      });
+    }
 
     batch.update(userDoc, {
       "tuktukLicensePlate": tuktuk.get("licensePlate"),
@@ -369,6 +393,8 @@ class AppUser {
     });
 
     await batch.commit();
+
+    return true;
   }
 
   static Future<List<String>> loadImages(String folderPath) async {
