@@ -102,7 +102,7 @@ class _SelectTukTukState extends State<SelectTukTuk> {
                       horizontal: 20, vertical: 12),
                   child:
                     processing ?
-                     Center(child: CircularProgressIndicator(color: WhiteColor))
+                     Center(child: CircularProgressIndicator(color: LogoColor))
                     : (availableTuktuks.isNotEmpty ?
                         SingleChildScrollView(
                           child: Column(
@@ -124,10 +124,8 @@ class _SelectTukTukState extends State<SelectTukTuk> {
                                           try {
                                             final navigator = Navigator.of(context);
                                             final messenger = ScaffoldMessenger.of(context);
+                                            final localization = AppLocalizations.of(context);
 
-                                            setState(() {
-                                              processing = false;
-                                            });
                                             bool resultYes = await showConfirmationMessage( context,
                                               AppLocalizations.of(context)!.selectTuk,
                                               AppLocalizations.of(context)!.selectTukConfirmation(availableTuktuks[index].get("licensePlate")),
@@ -136,18 +134,21 @@ class _SelectTukTukState extends State<SelectTukTuk> {
                                               AppLocalizations.of(context)!.no);
 
                                             if (resultYes) {
+                                              setState(() {
+                                                processing = true;
+                                              });
                                               bool ok = await userProvider.user!.associateTukTuk(availableTuktuks[index].reference);
                                               if (ok) {
                                                 messenger.showSnackBar(
                                                   SnackBar(
-                                                      content: Text(AppLocalizations.of(context)!.tukSelectedSuccessfully),
+                                                      content: Text(localization!.tukSelectedSuccessfully),
                                                   ),
                                                 );
                                                 navigator.pop();
                                               } else {
                                                 messenger.showSnackBar(
                                                   SnackBar(
-                                                      content: Text(AppLocalizations.of(context)!.tukSelectedByAnotherGuide),
+                                                      content: Text(localization!.tukSelectedByAnotherGuide),
                                                       backgroundColor: RedColor
                                                   ),
                                                 );
