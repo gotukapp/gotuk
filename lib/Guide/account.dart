@@ -265,7 +265,7 @@ class _AccountState extends State<account> {
               AppLocalizations.of(context)!.personalData,
               style: TextStyle(
                   fontSize: 16,
-                  color: notifier.getwhiteblackcolor,
+                  color: BlackColor,
                   fontFamily: "Gilroy Bold"),
             ),
           );
@@ -278,7 +278,7 @@ class _AccountState extends State<account> {
             Text(AppLocalizations.of(context)!.spokenLanguages,
               style: TextStyle(
                   fontSize: 16,
-                  color: notifier.getwhiteblackcolor,
+                  color: BlackColor,
                   fontFamily: "Gilroy Bold"),
             ),
             const SizedBox(height: 10),
@@ -294,7 +294,7 @@ class _AccountState extends State<account> {
             Text(AppLocalizations.of(context)!.personalCard,
               style: TextStyle(
                   fontSize: 15,
-                  color: notifier.getwhiteblackcolor,
+                  color: BlackColor,
                   fontFamily: "Gilroy Bold"),
             ),
             const SizedBox(height: 10),
@@ -310,7 +310,7 @@ class _AccountState extends State<account> {
             Text(AppLocalizations.of(context)!.expirationDate,
               style: TextStyle(
                   fontSize: 16,
-                  color: notifier.getwhiteblackcolor,
+                  color: BlackColor,
                   fontFamily: "Gilroy Bold"),
             ),
             const SizedBox(height: 10),
@@ -336,7 +336,7 @@ class _AccountState extends State<account> {
             Text(AppLocalizations.of(context)!.drivingLicense,
               style: TextStyle(
                   fontSize: 16,
-                  color: notifier.getwhiteblackcolor,
+                  color: BlackColor,
                   fontFamily: "Gilroy Bold"),
             ),
             const SizedBox(height: 10),
@@ -351,7 +351,7 @@ class _AccountState extends State<account> {
             Text(AppLocalizations.of(context)!.expirationDate,
               style: TextStyle(
                   fontSize: 16,
-                  color: notifier.getwhiteblackcolor,
+                  color: BlackColor,
                   fontFamily: "Gilroy Bold"),
             ),
             const SizedBox(height: 10),
@@ -461,7 +461,7 @@ class _AccountState extends State<account> {
               AppLocalizations.of(context)!.organizationData,
               style: TextStyle(
                   fontSize: 16,
-                  color: notifier.getwhiteblackcolor,
+                  color: BlackColor,
                   fontFamily: "Gilroy Bold"),
             ),
           );
@@ -474,7 +474,7 @@ class _AccountState extends State<account> {
                 Text(AppLocalizations.of(context)!.code,
                   style: TextStyle(
                       fontSize: 16,
-                      color: notifier.getwhiteblackcolor,
+                      color: BlackColor,
                       fontFamily: "Gilroy Bold"),
                 ),
                 const SizedBox(height: 10),
@@ -491,7 +491,7 @@ class _AccountState extends State<account> {
                     Text(AppLocalizations.of(context)!.name,
                       style: TextStyle(
                           fontSize: 16,
-                          color: notifier.getwhiteblackcolor,
+                          color: BlackColor,
                           fontFamily: "Gilroy Bold"),
                     ),
                     const SizedBox(height: 10),
@@ -577,7 +577,7 @@ class _AccountState extends State<account> {
               AppLocalizations.of(context)!.workAccidentInsurance,
               style: TextStyle(
                   fontSize: 16,
-                  color: notifier.getwhiteblackcolor,
+                  color: BlackColor,
                   fontFamily: "Gilroy Bold"),
             ),
           );
@@ -593,7 +593,7 @@ class _AccountState extends State<account> {
                       AppLocalizations.of(context)!.includedInOrganizationPolicy,
                       style: TextStyle(
                           fontSize: 14,
-                          color: notifier.getwhiteblackcolor,
+                          color: BlackColor,
                           fontFamily: "Gilroy Bold"),
                     ),
                     CupertinoSwitch(
@@ -623,7 +623,7 @@ class _AccountState extends State<account> {
                     Text(AppLocalizations.of(context)!.insuranceCompany,
                       style: TextStyle(
                           fontSize: 16,
-                          color: notifier.getwhiteblackcolor,
+                          color: BlackColor,
                           fontFamily: "Gilroy Bold"),
                     ),
                     const SizedBox(height: 10),
@@ -637,7 +637,7 @@ class _AccountState extends State<account> {
                     Text(AppLocalizations.of(context)!.policyNumber,
                       style: TextStyle(
                           fontSize: 16,
-                          color: notifier.getwhiteblackcolor,
+                          color: BlackColor,
                           fontFamily: "Gilroy Bold"),
                     ),
                     const SizedBox(height: 10),
@@ -651,7 +651,7 @@ class _AccountState extends State<account> {
                     Text(AppLocalizations.of(context)!.expirationDate,
                       style: TextStyle(
                           fontSize: 16,
-                          color: notifier.getwhiteblackcolor,
+                          color: BlackColor,
                           fontFamily: "Gilroy Bold"),
                     ),
                     const SizedBox(height: 10),
@@ -726,7 +726,7 @@ class _AccountState extends State<account> {
               AppLocalizations.of(context)!.criminalRecord,
               style: TextStyle(
                   fontSize: 16,
-                  color: notifier.getwhiteblackcolor,
+                  color: BlackColor,
                   fontFamily: "Gilroy Bold"),
             ),
           );

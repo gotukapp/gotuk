@@ -58,7 +58,7 @@
     "enterYourName": "Enter your Name",
     "email": "Email",
     "saveChanges": "Save Changes",
-    "supportTicket": "Support Ticket de Suporte",
+    "supportTicket": "Support Ticket",
     "createSupportTicket": "Create Support Ticket",
     "withoutAccount": "Don’t have an account?",
     "register": "REGISTER",
@@ -135,5 +135,18 @@
     "deleteAccountConfirmation": "Are you sure you want to delete this account?",
     "yes": "Yes",
     "no": "No",
-    "warningOrganizationNotFound": "No organization were found with this code"
+    "warningOrganizationNotFound": "No organization were found with this code",
+    "selectTuk": "Select TukTuk",
+    "tukSelectedSuccessfully": "TukTuk selected successfully",
+    "tukSelectedByAnotherGuide": "The selected TukTuk is already selected by another guide",
+    "selectTukConfirmation": "Are you sure you want to select the tuktuk {licensePlate}?",
+    "back": "Back",
+    "noTuksAvailable": "No tuks available",
+    "regulations": "Internal Regulations",
+    "contacts": "Contacts",
+    "selectCategory": "Select Category",
+    "pleaseSelectCategory": "Please select a category",
+    "selectReason": "Select Reason",
+    "pleaseSelectReason": "Please select a reason",
+    "createTicketWarning": "You have to select a Category and a Reason to create a ticket"
 }
