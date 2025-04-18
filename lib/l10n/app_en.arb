@@ -148,5 +148,15 @@
     "pleaseSelectCategory": "Please select a category",
     "selectReason": "Select Reason",
     "pleaseSelectReason": "Please select a reason",
-    "createTicketWarning": "You have to select a Category and a Reason to create a ticket"
+    "createTicketWarning": "You have to select a Category and a Reason to create a ticket",
+    "goodToursWithGoTuk": "Good tours with GoTuk",
+    "pendingTours": "Pending Tours",
+    "accountBlockedWarning": "Your account is not active.\nYou will not receive new tours.\nPlease check your account details.",
+    "completedTours": "Completed Tours",
+    "nextTours": "Next Tours",
+    "currentTour": "Current Tour",
+    "todayTours": "Today Tours",
+    "today": "Today",
+    "last7Days": "Last 7 days",
+    "last30Days": "Last 30 days"
 }

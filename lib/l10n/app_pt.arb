@@ -148,5 +148,15 @@
     "pleaseSelectCategory": "Por favor seleccione uma categoria",
     "selectReason": "Seleccionar Motivo",
     "pleaseSelectReason": "Por favor seleccione um motivo",
-    "createTicketWarning": "Tem de seleccinar uma Categoria e um Motivo para criar o pedido de suporte"
+    "createTicketWarning": "Tem de seleccinar uma Categoria e um Motivo para criar o pedido de suporte",
+    "goodToursWithGoTuk": "Bons tours com a GoTuk",
+    "pendingTours": "Tours Pendentes",
+    "accountBlockedWarning": "A tua conta não está activa.\nNão receberá novos tours.\nPor favor verifica os dados da tua conta.",
+    "completedTours": "Tours Terminados",
+    "nextTours": "Próximos Tours",
+    "currentTour": "Tour Actual",
+    "todayTours": "Tours de Hoje",
+    "today": "Hoje",
+    "last7Days": "Ultímos 7 dias",
+    "last30Days": "Ultímos 30 dias"
 }
