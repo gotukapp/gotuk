@@ -131,6 +131,7 @@
     "takePhoto": "Take Photo",
     "fromGallery": "Choose from gallery",
     "profileChangesSaved": "Profile changes saved successfully!",
+    "privacySettingsChangesSaved": "Privacy settings changes saved successfully!",
     "deleteAccount": "Delete Account",
     "deleteAccountConfirmation": "Are you sure you want to delete this account?",
     "yes": "Yes",
@@ -158,5 +159,8 @@
     "todayTours": "Today Tours",
     "today": "Today",
     "last7Days": "Last 7 days",
-    "last30Days": "Last 30 days"
+    "last30Days": "Last 30 days",
+    "accept": "Accept",
+    "cookiesPolicy": "Cookies Policy",
+    "acceptAll": "To continue you must accept all documents"
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../Utils/customwidget .dart';
 import '../Utils/dark_lightmode.dart';
@@ -51,7 +52,7 @@ class TermsAndConditions extends StatelessWidget {
               onclick: () {
                 Navigator.pop(context, true);
               },
-              buttontext: "Accept",
+              buttontext: AppLocalizations.of(context)!.accept,
             ),
             const SizedBox(height: 30)
           ],
