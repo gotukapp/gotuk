@@ -94,41 +94,14 @@ class _AccountState extends State<account> {
 
   Future<void> _loadDocument() async {
     try {
-      final queryPersonalData = await FirebaseFirestore.instance
+      FirebaseFirestore.instance
           .collection('users')
           .doc(FirebaseAuth.instance.currentUser?.uid)
           .collection('personalData')
           .orderBy('submitDate', descending: true) // Sort by 'datetime' in descending order
-          .limit(1) // Limit to 1 document
-          .get();
-
-      final queryOrganizationData = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser?.uid)
-          .collection('organizationData')
-          .orderBy('submitDate', descending: true) // Sort by 'datetime' in descending order
-          .limit(1) // Limit to 1 document
-          .get();
-
-      final queryWorkAccidentInsurance = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser?.uid)
-          .collection('workAccidentInsurance')
-          .orderBy('submitDate', descending: true) // Sort by 'datetime' in descending order
-          .limit(1) // Limit to 1 document
-          .get();
-
-      final queryCriminalRecord = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser?.uid)
-          .collection('criminalRecord')
-          .orderBy('submitDate', descending: true) // Sort by 'datetime' in descending order
-          .limit(1) // Limit to 1 document
-          .get();
-
-      if (queryPersonalData.docs.isNotEmpty) {
-        Map<String, dynamic>? personalData = queryPersonalData.docs.first.data();
-        final loadedImages = await AppUser.loadImages("uploads/users/${FirebaseAuth.instance.currentUser?.uid}/personalData/${queryPersonalData.docs[0].id}");
+          .limit(1).snapshots().listen((querySnapshot) async {
+        Map<String, dynamic>? personalData = querySnapshot.docs.first.data();
+        final loadedImages = await AppUser.loadImages("uploads/users/${FirebaseAuth.instance.currentUser?.uid}/personalData/${querySnapshot.docs.first.id}");
 
         setState(() {
           language = personalData["language"].whereType<String>().toList();
@@ -139,30 +112,53 @@ class _AccountState extends State<account> {
           personalDataStatus = personalData["status"];
           personalDataImages = loadedImages;
         });
-      }
+      });
 
-      setState(() {
-        if (queryWorkAccidentInsurance.docs.isNotEmpty) {
-          Map<String,dynamic>? workAccidentInsurance = queryWorkAccidentInsurance.docs.first.data();
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .collection('organizationData')
+          .orderBy('submitDate', descending: true) // Sort by 'datetime' in descending order
+          .limit(1).snapshots().listen((querySnapshot) async {
+        Map<String, dynamic>? organizationData = querySnapshot.docs.first.data();
+        setState(() {
+          organizationCode.text = organizationData["code"] ?? "";
+          organizationName = organizationData["name"] ?? "";
+          organizationStatus = organizationData["status"];
+        });
+
+      });
+
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .collection('workAccidentInsurance')
+          .orderBy('submitDate', descending: true) // Sort by 'datetime' in descending order
+          .limit(1).snapshots().listen((querySnapshot) async {
+        Map<String,dynamic>? workAccidentInsurance = querySnapshot.docs.first.data();
+        setState(() {
           insuranceWorkAccidentCompanyName.text = workAccidentInsurance["name"] ?? "";
           insuranceWorkAccidentPolicyNumber.text = workAccidentInsurance["number"] ?? "";
           insuranceWorkAccidentExpirationDate = workAccidentInsurance["expirationDate"]?.toDate();
           useWorkAccidentOrganizationInsurance = workAccidentInsurance["useOrganizationInsurance"] ?? false;
           workAccidentInsuranceStatus = workAccidentInsurance["status"];
-        }
+        });
+      });
 
-        if (queryOrganizationData.docs.isNotEmpty) {
-          Map<String, dynamic>? organizationData = queryOrganizationData.docs.first.data();
-          organizationCode.text = organizationData["code"] ?? "";
-          organizationName = organizationData["name"] ?? "";
-          organizationStatus = organizationData["status"];
-        }
-
-        if (queryCriminalRecord.docs.isNotEmpty) {
-          Map<String, dynamic>? criminalRecord = queryCriminalRecord.docs.first.data();
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .collection('criminalRecord')
+          .orderBy('submitDate', descending: true) // Sort by 'datetime' in descending order
+          .limit(1).snapshots().listen((querySnapshot) async {
+        Map<String, dynamic>? criminalRecord = querySnapshot.docs.first.data();
+        setState(() {
           criminalRecordStatus = criminalRecord["status"];
-        }
+        });
 
+      });
+
+      setState(() {
         _isLoading = false;
       });
     } catch (e) {
@@ -399,7 +395,6 @@ class _AccountState extends State<account> {
                     buttontext: AppLocalizations.of(context)!.attachDocument,
                     onclick: () async {
                       await pickImages(previewPersonalDataImages);
-                      editPersonalData = false;
                     }),
                 const SizedBox(height: 25),
                 AppButton(
@@ -423,7 +418,9 @@ class _AccountState extends State<account> {
                                 AppLocalizations.of(context)!.accountDataSubmittedSuccessfully),
                           ),
                         );
-                        Navigator.of(context).pop();
+                        setState(() {
+                          editPersonalData = false;
+                        });
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(

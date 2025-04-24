@@ -29,7 +29,6 @@ class _onbordingState extends State<onbording> {
 
   @override
   void initState() {
-    print("init onboarding");
     getdarkmodepreviousstate();
     getAppModeState();
     super.initState();
