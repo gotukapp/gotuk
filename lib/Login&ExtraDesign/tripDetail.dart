@@ -227,6 +227,15 @@ class _TripDetailState extends State<TripDetail> {
                                   height: 30,
                                   color: notifier.getgreycolor,
                                 ),
+                                if (!guideMode && trip.status == 'canceled')
+                                  Center(
+                                    child: Text(AppLocalizations.of(context)!.tripStatus(trip.status),
+                                      style: TextStyle(
+                                        fontSize: 24,
+                                        color: notifier.getlogobgcolor,
+                                        fontFamily: "Gilroy Medium")
+                                      ),
+                                  ),
                                 if (trip.guideRef != null && !guideMode
                                     && trip.status != 'canceled' && trip.status != 'pending')
                                   ...[StreamBuilder(
