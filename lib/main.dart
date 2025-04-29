@@ -21,7 +21,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  Stripe.publishableKey = 'pk_test_51RIoFlGbItOQiRFn9ZjV88q7lWpVpNl9eIlRe5og2UgF5m3WFtr7LM1d2QWSm1TbgtkqYaQd4gIkUAzbDL8hxrEO00dvv30h2J'; // your publishable key
+  Stripe.publishableKey = 'pk_test_51RBeSARmeXtsxkGheJiqmblH1mSC3I2qUevJynwRiaXumAvOWUsL9IldsHzsxbr3Ej1JfKkkbdl0w7HbKweu4l3500I4JDQMBh';
 
   await Stripe.instance.applySettings();
 
