@@ -26,7 +26,7 @@ CustomAppbar(
     ActionIcon,
     bgcolor,
     Color? actioniconcolor,
-    leadingiconcolor,
+    Color? leadingiconcolor,
     titlecolor}) {
   return AppBar(
       actions: [
@@ -45,11 +45,11 @@ CustomAppbar(
           style: TextStyle(color: titlecolor, fontFamily: "Gilroy Bold"),
         ),
       ),
-      leading: Padding(
+      leading: leadingiconcolor != null ? Padding(
           padding: const EdgeInsets.only(top: 25),
           child: BackButton(
             color: leadingiconcolor,
-          )),
+          )) : null,
       elevation: 0,
       backgroundColor: bgcolor);
 }
@@ -383,7 +383,7 @@ guideTripLayout(BuildContext context, ColorNotifier notifier, Trip trip, bool sh
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Total Price",
+                        Text(AppLocalizations.of(context)!.totalPrice,
                             style: TextStyle(
                                 fontSize: 15, color: notifier.getwhiteblackcolor, fontFamily: "Gilroy Medium")),
                         const SizedBox(height: 4),
@@ -397,14 +397,14 @@ guideTripLayout(BuildContext context, ColorNotifier notifier, Trip trip, bool sh
                         onTap: () {
                           if (trip.status == "booked") {
                             showConfirmationMessage(context,
-                                "Start Tour",
-                                "Are you sure you want to start this tour?",
+                                AppLocalizations.of(context)!.startTour,
+                                AppLocalizations.of(context)!.startTourConfirmation,
                                 () async => await trip.startTour(),
                                 () {}, null, null);
                           } else if (trip.status == "started") {
                             showConfirmationMessage(context,
-                                "Finish Tour",
-                                "Are you sure you want to finish this tour?",
+                                AppLocalizations.of(context)!.finishTour,
+                                AppLocalizations.of(context)!.finishTourConfirmation,
                                     () async => await trip.finishTour(),
                                     () {}, null, null);
                           } else if (trip.status == "pending") {
@@ -611,7 +611,7 @@ clientTripLayout(BuildContext context, ColorNotifier notifier, Trip trip) {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("Total Price",
+                              Text(AppLocalizations.of(context)!.totalPrice,
                                   style: TextStyle(
                                       fontSize: 12, color: notifier.getwhiteblackcolor, fontFamily: "Gilroy Medium")),
                               Text("${trip.price}€",
@@ -679,7 +679,7 @@ Future<void> setClientReady(BuildContext context, Trip trip) async {
   if (context.mounted) {
     showConfirmationMessage(context,
         AppLocalizations.of(context)!.letsGo,
-        "Do you want to send a message to the guide notifying him that you are ready for the tour?",
+        AppLocalizations.of(context)!.sendGuideMessageConfirmation,
             () async {
               await trip.sendChatMessage("Hi, just to let you know that i'm already at the pickup location.", userProvider.user!, appUser);
               trip.setClientIsReady();
@@ -688,7 +688,7 @@ Future<void> setClientReady(BuildContext context, Trip trip) async {
                 builder: (context) => Chatting(trip: trip, sendTo: snapshot.data()!)));
               }
             },
-            () {}, "Yes", "No");
+            () {}, AppLocalizations.of(context)!.yes, AppLocalizations.of(context)!.no);
   }
 }
 
@@ -930,7 +930,7 @@ showTripAcceptResultMessage(BuildContext context, bool result) {
         SnackBar(
           backgroundColor: lightGrey,
           content: Text(
-              "Tour booking accepted!",
+              AppLocalizations.of(context)!.bookingAccepted,
               style: TextStyle(
                   fontSize: 14,
                   fontFamily: "Gilroy Medium",
@@ -942,7 +942,7 @@ showTripAcceptResultMessage(BuildContext context, bool result) {
     ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: lightGrey,
-          content: Text("This tour has already been accepted by another Guide!",
+          content: Text(AppLocalizations.of(context)!.bookingAlreadyAcceptedWarning,
               style: TextStyle(
                   fontSize: 14,
                   fontFamily: "Gilroy Medium",
@@ -1009,31 +1009,31 @@ Widget selectDetail({heading, image, text, icon, onclick, notifier}) {
 List guideLanguages = [
   {
     "code": "EN",
-    "name": "English"
+    "name": "english"
   },
   {
     "code": "FR",
-    "name": "French"
+    "name": "french"
   },
   {
     "code": "DE",
-    "name": "German"
+    "name": "german"
   },
   {
     "code": "JP",
-    "name": "Japanese"
+    "name": "japanese"
   },
   {
     "code": "PT",
-    "name": "Portuguese"
+    "name": "portuguese"
   },
   {
     "code": "ES",
-    "name": "Spanish"
+    "name": "spanish"
   },
   {
     "code": "IT",
-    "name": "Italian"
+    "name": "italian"
   }
 ];
 

@@ -9,9 +9,11 @@ import 'package:dm/Domain/trip.dart';
 import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:intl/intl.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:provider/provider.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -20,6 +22,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../Domain/appUser.dart';
 import '../Domain/tour.dart';
 import '../Providers/userProvider.dart';
+import '../Utils/stripe.dart';
 import '../Utils/util.dart';
 
 class checkout extends StatefulWidget {
@@ -45,6 +48,7 @@ class _checkoutState extends State<checkout> {
   List checkedLanguages = List<Object>.generate(guideLanguages.length, (i) => { ...guideLanguages[i], "value": false });
   final taxNumberController = TextEditingController();
   String? pickupPointSelected;
+  bool executingPayment = false;
 
   Color smallPriceColor = LogoColor;
   Color highPriceColor = greyColor;
@@ -63,6 +67,7 @@ class _checkoutState extends State<checkout> {
   Tour? tour;
   List<Tour> tours = [];
   int carrosselDefaultPage = 0;
+  String? newTripId;
 
   DocumentReference? selectedGuideRef;
 
@@ -111,7 +116,7 @@ class _checkoutState extends State<checkout> {
       appBar: PreferredSize(
           preferredSize: const Size.fromHeight(75),
           child: CustomAppbar(
-              centertext: "Checkout${widget.goNow ? " - GoNow" : ""}" ,
+              centertext: widget.goNow ? AppLocalizations.of(context)!.goNow : AppLocalizations.of(context)!.bookTour ,
               bgcolor: notifier.getbgcolor,
               actioniconcolor: notifier.getwhiteblackcolor,
               leadingiconcolor: notifier.getwhiteblackcolor,
@@ -176,7 +181,7 @@ class _checkoutState extends State<checkout> {
               else
                 tourInfo(context, notifier, tour!),
               if (!widget.goNow && selectedDate != null)
-                Text("Guides available: $guidesAvailable",
+                Text("${AppLocalizations.of(context)!.guidesAvailable} $guidesAvailable",
                     style: TextStyle(
                         fontSize: 18,
                         fontFamily: "Gilroy Bold",
@@ -266,9 +271,9 @@ class _checkoutState extends State<checkout> {
               if (!widget.goNow)
                 ...[ const SizedBox(height: 5),
                 selectDetail(
-                  heading: "Date",
+                  heading: AppLocalizations.of(context)!.date,
                   image: "assets/images/calendar.png",
-                  text: selectedDate != null ? DateFormat('yyyy-MM-dd').format(selectedDate!) : "Select Dates",
+                  text: selectedDate != null ? DateFormat('yyyy-MM-dd').format(selectedDate!) : AppLocalizations.of(context)!.selectDate,
                   icon: Icons.keyboard_arrow_down,
                   onclick: () {
                     Navigator.of(context).push(MaterialPageRoute(
@@ -286,13 +291,13 @@ class _checkoutState extends State<checkout> {
                 )],
               const SizedBox(height: 10),
               selectDetail(
-                  heading: "Time",
+                  heading: AppLocalizations.of(context)!.time,
                   image: "assets/images/timer.png",
                   text: timeSaved
                       ? "$hourSliderValue:${minutesSliderValue == 0
                       ? "00"
                       : minutesSliderValue.toString()}"
-                      : "Select Time",
+                      : AppLocalizations.of(context)!.selectTime,
                   icon: Icons.keyboard_arrow_down,
                   onclick: () {
                     if (selectedDate != null || widget.goNow) {
@@ -302,9 +307,9 @@ class _checkoutState extends State<checkout> {
                   notifier: notifier),
               const SizedBox(height: 10),
               selectDetail(
-                  heading: "Guide Features",
+                  heading: AppLocalizations.of(context)!.guideFeatures,
                   image: "assets/images/guest.png",
-                  text: guideFeaturesSaved ? getAllSelectedLanguages() : "Select Guide Features",
+                  text: guideFeaturesSaved ? getAllSelectedLanguages() : AppLocalizations.of(context)!.selectGuideFeatures,
                   icon: Icons.keyboard_arrow_down,
                   onclick: () {
                     guideBottomSheet().then((value) {
@@ -320,7 +325,7 @@ class _checkoutState extends State<checkout> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Invoice with tax number",
+                      AppLocalizations.of(context)!.invoiceWithTaxNumber,
                       style: TextStyle(
                           fontSize: 16,
                           fontFamily: "Gilroy Bold",
@@ -350,7 +355,7 @@ class _checkoutState extends State<checkout> {
                     controller: taxNumberController,
                     fieldColor: notifier.getfieldcolor,
                     hintColor: notifier.gettextfieldcolor,
-                    text: 'Tax number',
+                    text: AppLocalizations.of(context)!.taxNumber,
                     suffix: null),
                 ],
               Divider(
@@ -361,7 +366,7 @@ class _checkoutState extends State<checkout> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Payment Details",
+                  Text(AppLocalizations.of(context)!.paymentDetails,
                       style: TextStyle(
                           fontSize: 16,
                           color: LogoColor,
@@ -371,7 +376,7 @@ class _checkoutState extends State<checkout> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Tour (Payment made to the guide)",
+                        AppLocalizations.of(context)!.tourPrice,
                         style: TextStyle(
                             fontSize: 14,
                             fontFamily: "Gilroy Medium",
@@ -390,7 +395,7 @@ class _checkoutState extends State<checkout> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Booking Fee",
+                      Text(AppLocalizations.of(context)!.bookingPrice,
                           style: TextStyle(
                               fontSize: 14,
                               fontFamily: "Gilroy Medium",
@@ -406,7 +411,7 @@ class _checkoutState extends State<checkout> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Total (EUR)",
+                      Text(AppLocalizations.of(context)!.totalPrice,
                           style: TextStyle(
                               fontSize: 16,
                               fontFamily: "Gilroy Bold",
@@ -421,40 +426,54 @@ class _checkoutState extends State<checkout> {
                   const SizedBox(height: 25),
                   InkWell(
                     onTap: () {
-                      if (selectedDate == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Please select a date to proceed.'),
-                          )
-                        );
-                      } else if (selectedGuideRef == null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('There is no guide available for this date/time. Please review the date/time or guide features so we can find a guide for you.'),
-                            )
-                        );
-                      } else {
-                        Query<Map<String, dynamic>> pendingTours = Trip.getPendingTours();
-                        pendingTours.get().then((result) async {
-                          List<QueryDocumentSnapshot<Map<String, dynamic>>> tours = result.docs;
-                          DateTime tripDate = selectedDate!.copyWith(
-                              hour: hourSliderValue, minute: minutesSliderValue, second: 0, millisecond: 0, microsecond: 0);
-                          final docs = tours.where((d) {
-                            Trip t = Trip.fromFirestore(d, null);
-                            return t.date.difference(tripDate).inMinutes.abs() <= 120;
-                          });
-                          if (docs.isNotEmpty) {
-                            bool resultYes = await showConfirmationMessage(context,
-                                "Booking Tour",
-                                "It looks like you already have a tour booked at this time. Are you sure you want to continue?",
-                                    () {}, () {}, 'Yes', 'No');
-                            if (resultYes) {
+                      if (!executingPayment) {
+                        if (selectedDate == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(AppLocalizations.of(context)!.selectDateWarning),
+                              )
+                          );
+                        } else if (selectedGuideRef == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(AppLocalizations.of(context)!.noGuideAvailableWarning),
+                              )
+                          );
+                        } else {
+                          Query<Map<String, dynamic>> pendingTours = Trip
+                              .getPendingTours();
+                          pendingTours.get().then((result) async {
+                            List<QueryDocumentSnapshot<
+                                Map<String, dynamic>>> tours = result.docs;
+                            DateTime tripDate = selectedDate!.copyWith(
+                                hour: hourSliderValue,
+                                minute: minutesSliderValue,
+                                second: 0,
+                                millisecond: 0,
+                                microsecond: 0);
+                            final docs = tours.where((d) {
+                              Trip t = Trip.fromFirestore(d, null);
+                              return t.date
+                                  .difference(tripDate)
+                                  .inMinutes
+                                  .abs() <= 120;
+                            });
+                            if (docs.isNotEmpty) {
+                              bool resultYes = await showConfirmationMessage(
+                                  context,
+                                  AppLocalizations.of(context)!.bookingTour,
+                                  AppLocalizations.of(context)!.duplicatedTourWarning,
+                                      () {}, () {},
+                                  AppLocalizations.of(context)!.yes,
+                                  AppLocalizations.of(context)!.no);
+                              if (resultYes) {
+                                paymentModelBottomSheet(selectedGuideRef!);
+                              }
+                            } else {
                               paymentModelBottomSheet(selectedGuideRef!);
                             }
-                          } else {
-                            paymentModelBottomSheet(selectedGuideRef!);
-                          }
-                        });
+                          });
+                        }
                       }
                     },
                     child: Container(
@@ -464,11 +483,21 @@ class _checkoutState extends State<checkout> {
                           borderRadius: BorderRadius.circular(50),
                           color:Darkblue),
                       child: Center(
-                        child: Text("Select Payment",
-                            style: TextStyle(
-                                fontSize: 16,
-                                color: WhiteColor,
-                                fontFamily: "Gilroy Bold")),
+                        child:
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              if (executingPayment)
+                                ...[CircularProgressIndicator(color: WhiteColor),
+                                  const SizedBox(width: 10),
+                                ],
+                              Text(AppLocalizations.of(context)!.proceedToPayment,
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: WhiteColor,
+                                      fontFamily: "Gilroy Bold"))
+                            ],
+                          ),
                       ),
                     ),
                   ),
@@ -555,7 +584,7 @@ class _checkoutState extends State<checkout> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "Guide Features",
+                          AppLocalizations.of(context)!.guideFeatures,
                           style: TextStyle(
                               fontFamily: "Gilroy Bold",
                               fontSize: 18,
@@ -576,9 +605,9 @@ class _checkoutState extends State<checkout> {
                     SizedBox(
                         height: MediaQuery.of(context).size.height * 0.01),
                     selectDetail(
-                        heading: "Preferred language",
+                        heading: AppLocalizations.of(context)!.preferredLanguage,
                         image: "assets/images/language.png",
-                        text: guideFeaturesSaved ? getAllSelectedLanguages() : "Select Language",
+                        text: guideFeaturesSaved ? getAllSelectedLanguages() : AppLocalizations.of(context)!.selectLanguages,
                         icon: Icons.keyboard_arrow_right,
                         onclick: languagesBottomSheet,
                         notifier: notifier),
@@ -591,7 +620,7 @@ class _checkoutState extends State<checkout> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Vehicle Type",
+                              AppLocalizations.of(context)!.vehicleType,
                               style: TextStyle(
                                   fontSize: 16,
                                   color: notifier.getwhiteblackcolor,
@@ -599,7 +628,7 @@ class _checkoutState extends State<checkout> {
                             ),
                             const SizedBox(height: 6),
                             Text(
-                              "Only Electric vehicles (EV)",
+                              AppLocalizations.of(context)!.onlyElectricVehicles,
                               style: TextStyle(
                                   fontSize: 13,
                                   color: greyColor,
@@ -634,7 +663,7 @@ class _checkoutState extends State<checkout> {
                       height: MediaQuery.of(context).size.height * 0.03,
                     ),
                     AppButton(
-                        buttontext: "Continue",
+                        buttontext: AppLocalizations.of(context)!.proceed,
                         onclick: () {
                           Navigator.pop(context, true);
                         })
@@ -666,8 +695,7 @@ class _checkoutState extends State<checkout> {
                           children: [
                             Column(
                               children: [
-                                Text(
-                                  "Hours",
+                                Text(AppLocalizations.of(context)!.hours,
                                   style: TextStyle(
                                       fontSize: 16,
                                       color: BlackColor,
@@ -684,7 +712,7 @@ class _checkoutState extends State<checkout> {
                             Column(
                             children: [
                               Text(
-                                "Minutes",
+                                AppLocalizations.of(context)!.minutes,
                                 style: TextStyle(
                                     fontSize: 16,
                                     color: BlackColor,
@@ -716,7 +744,7 @@ class _checkoutState extends State<checkout> {
                             width: MediaQuery.of(context).size.width * 0.93,
                             child: Center(
                                 child: Text(
-                              "Continue",
+                                  AppLocalizations.of(context)!.proceed,
                               style: TextStyle(
                                   fontSize: 16,
                                   color: WhiteColor,
@@ -755,7 +783,7 @@ class _checkoutState extends State<checkout> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "Preferred Languages",
+                                  AppLocalizations.of(context)!.preferredLanguage,
                                   style: TextStyle(
                                       fontSize: 18,
                                       fontFamily: "Gilroy Bold",
@@ -784,7 +812,7 @@ class _checkoutState extends State<checkout> {
                                   children: [
                                     const SizedBox(height: 8),
                                     language(
-                                      text: checkedLanguages[index]["name"],
+                                      text: AppLocalizations.of(context)!.countryLanguage(checkedLanguages[index]["name"]),
                                       CheckValue: checkedLanguages[index]["value"],
                                       OnChange: (value) {
                                         setState(() {
@@ -810,7 +838,7 @@ class _checkoutState extends State<checkout> {
                                 width: MediaQuery.of(context).size.width * 0.93,
                                 child: Center(
                                     child: Text(
-                                      "Continue",
+                                      AppLocalizations.of(context)!.proceed,
                                       style: TextStyle(
                                           fontSize: 16,
                                           color: WhiteColor,
@@ -859,7 +887,7 @@ class _checkoutState extends State<checkout> {
                 ),
               ),
               CupertinoButton(
-                child: const Text('Confirm'),
+                child: Text(AppLocalizations.of(context)!.confirm),
                 onPressed: () {
                   setState(() {
                     pickupPointSelected = pickupPoints[selectedIndex];
@@ -874,188 +902,39 @@ class _checkoutState extends State<checkout> {
     );
   }
 
-  paymentModelBottomSheet(DocumentReference guideRef) {
-    showModalBottomSheet(
-        isScrollControlled: true,
-        backgroundColor: notifier.getbgcolor,
-        context: context,
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-        builder: (context) {
-          return StatefulBuilder(
-                    builder: (BuildContext context, StateSetter setState) {
-                      return Container(
-                        height: MediaQuery.of(context).size.height * 0.65,
-                        child: Padding(
-                          padding:
-                          const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                          child: Stack(
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "Payment Method",
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            fontFamily: "Gilroy Bold",
-                                            color: notifier.getwhiteblackcolor),
-                                      ),
-                                      InkWell(
-                                          onTap: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: Icon(
-                                            Icons.close,
-                                            color: notifier.getwhiteblackcolor,
-                                          ))
-                                    ],
-                                  ),
-                                  const SizedBox(height: 20),
-                                  Container(
-                                    height: 60,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(12),
-                                        color: notifier.getdarkmodecolor),
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 6),
-                                      child: Row(
-                                        children: [
-                                          Image.asset(
-                                            "assets/images/mastercard.png",
-                                            height: 25,
-                                          ),
-                                          const SizedBox(width: 25),
-                                          Text(
-                                            "Master Card",
-                                            style: TextStyle(
-                                                fontSize: 15,
-                                                fontFamily: "Gilroy Bold",
-                                                color: notifier.getwhiteblackcolor),
-                                          ),
-                                          SizedBox(
-                                              width: MediaQuery.of(context).size.width /
-                                                  2.82),
-                                          Theme(
-                                            data: ThemeData(
-                                                unselectedWidgetColor:
-                                                notifier.getdarkwhitecolor),
-                                            child: Checkbox(
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(5)),
-                                              value: masterCard,
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  masterCard = value!;
-                                                });
-                                              },
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                      height: MediaQuery.of(context).size.height * 0.03),
-                                  Container(
-                                    height: 60,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(12),
-                                        color: notifier.getdarkmodecolor),
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 6),
-                                      child: Row(
-                                        children: [
-                                          Image.asset(
-                                            "assets/images/Visa.png",
-                                            height: 25,
-                                          ),
-                                          const SizedBox(width: 27),
-                                          Text(
-                                            "Visa",
-                                            style: TextStyle(
-                                                fontSize: 15,
-                                                fontFamily: "Gilroy Bold",
-                                                color: notifier.getwhiteblackcolor),
-                                          ),
-                                          SizedBox(
-                                              width: MediaQuery.of(context).size.width /
-                                                  1.98),
-                                          Theme(
-                                            data: ThemeData(
-                                                unselectedWidgetColor:
-                                                notifier.getdarkwhitecolor),
-                                            child: Checkbox(
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(5)),
-                                              value: visa,
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  visa = value!;
-                                                });
-                                              },
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                      height: MediaQuery.of(context).size.height * 0.03),
-                                  Container(
-                                    height: 60,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(12),
-                                        color: notifier.getdarkmodecolor),
-                                    child: Row(
-                                      children: [
-                                        const SizedBox(width: 10),
-                                        Container(
-                                          height: 40,
-                                          width: 40,
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(12),
-                                              color: notifier.getgreycolor),
-                                          child: Center(
-                                            child: CircleAvatar(
-                                                backgroundColor:
-                                                notifier.getdarkbluecolor,
-                                                radius: 14,
-                                                child: Image.asset(
-                                                    "assets/images/add.png",
-                                                    height: 25)),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 33),
-                                        Text("Add Debit Card",
-                                            style: TextStyle(
-                                                fontSize: 15,
-                                                fontFamily: "Gilroy Bold",
-                                                color: notifier.getwhiteblackcolor)),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(
-                                      height: MediaQuery.of(context).size.height * 0.12),
-                                  AppButton(
-                                      buttontext: "Confirm and Pay",
-                                      onclick: () async {
-                                        bool resultOk = await bookTour();
-                                        if (resultOk) {
-                                          return bookingSuccessfully(guideRef);
-                                        }
-                                      })
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    });
-        });
+  paymentModelBottomSheet(DocumentReference guideRef) async {
+    setState(() {
+      executingPayment = true;
+    });
+    try {
+      var paymentIntent = await createStripPayment(
+        amount: (tour!.getFeePrice(smallPriceSelected) * 100).toInt(),
+        currency: "eur"
+      );
+      await Stripe.instance.initPaymentSheet(
+        paymentSheetParameters: SetupPaymentSheetParameters(
+          paymentIntentClientSecret: paymentIntent,
+          merchantDisplayName: "GoTuk",
+        ),
+      );
+
+      await Stripe.instance.presentPaymentSheet();
+      bool resultOk = await bookTour();
+      if (resultOk) {
+        return bookingSuccessfully(guideRef);
+      }
+      setState(() {
+        executingPayment = false;
+      });
+    } catch (error) {
+      await Sentry.captureException(error);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(error.toString())),
+      );
+      setState(() {
+        executingPayment = false;
+      });
+    }
   }
 
   bookingSuccessfully(DocumentReference guideRef) {
@@ -1100,7 +979,7 @@ class _checkoutState extends State<checkout> {
                           children: [
                             Center(
                               child: Text(
-                                "Booking Successfull",
+                                AppLocalizations.of(context)!.bookingConfirmation,
                                 style: TextStyle(
                                     fontSize: 20,
                                     fontFamily: "Gilroy Bold",
@@ -1113,7 +992,7 @@ class _checkoutState extends State<checkout> {
                             SizedBox(
                               width: MediaQuery.of(context).size.width * 1,
                               child: Text(
-                                "Congratulations! Enjoy your trip!",
+                                AppLocalizations.of(context)!.bookingCongratulations,
                                 style: TextStyle(
                                     fontSize: 14,
                                     color: notifier.getgreycolor,
@@ -1126,7 +1005,11 @@ class _checkoutState extends State<checkout> {
                       ),
                       InkWell(
                         onTap: () {
-                          Navigator.of(context).pop();
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (context) => TripDetail(newTripId!)),
+                                (Route<dynamic> route) => route.isFirst, // Keep only the homepage
+                          );
                         },
                         child: Container(
                           margin: const EdgeInsets.only(
@@ -1138,7 +1021,7 @@ class _checkoutState extends State<checkout> {
                             color: Darkblue,
                           ),
                           child: Center(
-                              child: Text("Close",
+                              child: Text(AppLocalizations.of(context)!.proceed,
                                   style: TextStyle(
                                       fontSize: 16,
                                       color: WhiteColor,
@@ -1262,11 +1145,7 @@ class _checkoutState extends State<checkout> {
           tour!.getTourPrice(smallPriceSelected)
           );
 
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => TripDetail(docRef.id)),
-            (Route<dynamic> route) => route.isFirst, // Keep only the homepage
-      );
+      newTripId = docRef.id;
 
       if (!widget.goNow) {
         await AppUser.updateUserUnavailability(selectedGuideRef!.id, tour!, selectedDate!, hourSliderValue, minutesSliderValue, false);

@@ -2,49 +2,40 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
-import '../CreatAccount/verifyaccount.dart';
+import '../CreatAccount/verifyAccount.dart';
 
-Future<UserCredential?> signInWithPhoneNumber(BuildContext context, String phoneNumber, Function callback) async {
+Future<void> signInWithPhoneNumber(BuildContext context, String phoneNumber, Function callback) {
   UserCredential? userCredential;
-  await FirebaseAuth.instance.verifyPhoneNumber(
+  return FirebaseAuth.instance.verifyPhoneNumber(
     phoneNumber: phoneNumber,
     verificationCompleted: (PhoneAuthCredential credential) async {
-      // This callback is triggered when verification is completed automatically
+      await Sentry.captureMessage("signInWithPhoneNumber: phoneNumber:$phoneNumber verificationCompleted $credential");
       userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-      print("User signed in automatically with phone credentials.");
+      callback.call(userCredential, null);
     },
     verificationFailed: (FirebaseAuthException e) async {
-      await Sentry.captureException(e,stackTrace: e.stackTrace);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.message != null ? e.message! : ''),
-        ),
-      );
-      callback.call(null);
-      print("Phone number verification failed. Code: ${e.code}. Message: ${e.message}");
+      callback.call(null, e);
     },
     codeSent: (String verificationId, int? resendToken) async {
-      // Code has been sent to the phone number
-      print("Verification code sent to $phoneNumber.");
+      try {
+        String smsCode = await Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => const verifyAccount()));
 
-      String smsCode = await Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => const verifyaccount()));;
-
-      // Create a PhoneAuthCredential using the code and the verificationId
-      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+        // Create a PhoneAuthCredential using the code and the verificationId
+        PhoneAuthCredential credential = PhoneAuthProvider.credential(
         verificationId: verificationId,
         smsCode: smsCode,
-      );
+        );
 
-      // Sign in with the credential
-      userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-      print("User signed in with the provided verification code.");
-      callback.call(userCredential);
+        userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+        callback.call(userCredential, null);
+      } catch (e) {
+        callback.call(null, e);
+      }
     },
-    codeAutoRetrievalTimeout: (String verificationId) {
-      print("Auto retrieval timeout, verification ID: $verificationId");
+    codeAutoRetrievalTimeout: (String verificationId) async {
+      await Sentry.captureMessage("signInWithPhoneNumber: phoneNumber:$phoneNumber codeAutoRetrievalTimeout verificationId:$verificationId");
     },
   );
-  return userCredential;
 }
 

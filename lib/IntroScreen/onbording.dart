@@ -29,33 +29,32 @@ class _onbordingState extends State<onbording> {
 
   @override
   void initState() {
-    print("init onboarding");
     getdarkmodepreviousstate();
     getAppModeState();
     super.initState();
 
     Future.microtask(() async {
       if (FirebaseAuth.instance.currentUser != null) {
-            try {
-              AppUser? user = await getUserFirebaseInstance(
-                  guideMode, FirebaseAuth.instance.currentUser!);
-              Provider.of<UserProvider>(context, listen: false).setUser(user);
-              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-                  builder: (context) => const homepage()),
-                      (route) => false);
-            } catch (exception, stackTrace) {
-                await Sentry.captureException(
-                exception,
-                stackTrace: stackTrace,
-                );
+          try {
+            AppUser? user = await getUserFirebaseInstance(
+                guideMode, FirebaseAuth.instance.currentUser!);
+            Provider.of<UserProvider>(context, listen: false).setUser(user);
+            Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                builder: (context) => const homepage()),
+                    (route) => false);
+          } catch (exception, stackTrace) {
+              await Sentry.captureException(
+              exception,
+              stackTrace: stackTrace,
+              );
 
-                Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (context) => const BoardingPage()));
-            }
-          } else {
-            Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (context) => const BoardingPage()));
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (context) => const BoardingPage()));
           }
+        } else {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => const BoardingPage()));
+        }
       },
    );
   }
@@ -276,7 +275,7 @@ class _BoardingScreenState extends State<BoardingPage> {
                               width: double.infinity,
                               child: Center(
                                 child: Text(
-                                  AppLocalizations.of(context)!.onboardingContinue.toUpperCase(),
+                                  AppLocalizations.of(context)!.proceed.toUpperCase(),
                                   style: TextStyle(
                                       fontSize: 16,
                                       color: WhiteColor,

@@ -22,19 +22,22 @@ class AppUser {
   final String? phone;
   final String? firebaseToken;
   final bool accountValidated;
+  final bool accountAccepted;
   final DocumentReference? organizationRef;
   num? rating;
   List<String>? languages;
+  final String? profilePhoto;
 
-  AppUser(this.id, this.name, this.email, this.phone, this.accountValidated, this.rating, this.languages, this.firebaseToken, this.organizationRef);
+  AppUser(this.id, this.name, this.email, this.phone, this.accountValidated, this.accountAccepted, this.rating, this.languages, this.firebaseToken, this.organizationRef, this.profilePhoto);
 
   factory AppUser.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot,
       SnapshotOptions? options,) {
     final data = snapshot.data();
+
     return AppUser(snapshot.id, data?['name'], data?['email'],
-        data?['phone'], data?['accountValidated'],
+        data?['phone'], data?['accountValidated'] ?? false, data?['accountAccepted'] ?? false,
         data?['rating'], data?['languages'], data?['firebaseToken'],
-        data?['organizationRef']);
+        data?['organizationRef'], data?['profilePhoto']);
   }
 
   Map<String, dynamic> toFirestore() {
@@ -43,9 +46,11 @@ class AppUser {
       "email": email,
       "phone": phone,
       "accountValidated": accountValidated,
+      "accountAccepted": accountAccepted,
       "rating": rating,
-      "languages": languages,
-      "firebaseToken": firebaseToken
+      "language": languages,
+      "firebaseToken": firebaseToken,
+      "profilePhoto": profilePhoto
     };
   }
 
@@ -183,33 +188,21 @@ class AppUser {
     }
   }
 
-  Future<bool> submitOrganizationData(data) async {
-    try {
-      await FirebaseFirestore.instance
+  Future<void> submitOrganizationData(data) async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection('organizationData').add({
+      "code": data["organizationCode"],
+      "name": data["organizationName"],
+      "status": 'pending',
+      "submitDate": FieldValue.serverTimestamp()
+    });
+
+    await FirebaseFirestore.instance
           .collection('users')
           .doc(FirebaseAuth.instance.currentUser?.uid)
-          .collection('organizationData').add({
-        "code": data["organizationCode"],
-        "status": 'pending',
-        "submitDate": FieldValue.serverTimestamp()
-      });
-
-      final queryOrganizationData = await FirebaseFirestore.instance
-          .collection('organizations')
-          .where("code", isEqualTo: data["organizationCode"]).get();
-
-      if (queryOrganizationData.docs.isNotEmpty) {
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(FirebaseAuth.instance.currentUser?.uid)
-            .update({ "organizationRef": queryOrganizationData.docs[0]});
-      }
-
-      return true;
-    } catch (e) {
-      await Sentry.captureException(e);
-      return false;
-    }
+          .update({ "organizationRef": data["organizationRef"]});
   }
 
   Future<bool> submitWorkAccidentInsurance(data) async {
@@ -272,17 +265,6 @@ class AppUser {
     }
   }
 
-  void update(String name) {
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser?.uid)
-        .update({
-      "name": name
-    });
-
-    this.name = name;
-  }
-
   void setFirebaseToken() async {
     try {
       if (Platform.isIOS) {
@@ -290,8 +272,7 @@ class AppUser {
       }
 
       String? token = await FirebaseMessaging.instance.getToken();
-      print('FCM Token: $token');
-      if (token != null) {
+      if (token != null && token != firebaseToken) {
         FirebaseFirestore.instance
             .collection('users')
             .doc(FirebaseAuth.instance.currentUser?.uid)
@@ -342,7 +323,7 @@ class AppUser {
     });
   }
 
-  Future<void> associateTukTuk(DocumentReference<Map<String, dynamic>> reference) async {
+  Future<bool> associateTukTuk(DocumentReference<Map<String, dynamic>> reference) async {
     String date = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
     var tuktuk = await reference.get();
@@ -369,13 +350,37 @@ class AppUser {
         .collection('users')
         .doc(id);
 
-    batch.set(userTukTukDoc, {
-      "tuktukRef": reference
-    });
+    final docSnapshot = await tuktukGuideDoc.get();
+    if (!docSnapshot.exists) {
+      batch.set(userTukTukDoc, {
+        "tuktukRef": reference
+      });
+    } else {
+      return false;
+    }
 
     batch.set(tuktukGuideDoc, {
       "userRef": userRefDoc
     });
+
+
+    DocumentReference tuktukActivityDoc = await FirebaseFirestore.instance
+        .collection('organizations')
+        .doc(organizationRef!.id)
+        .collection('tuktukActivity')
+        .doc(date);
+
+    final tuktukActivitySnapshot = await tuktukActivityDoc.get();
+
+    if (!tuktukActivitySnapshot.exists) {
+      batch.set(tuktukActivityDoc, {
+        'tuktuks': [reference]
+      });
+    } else {
+      batch.update(tuktukActivityDoc, {
+        'tuktuks': FieldValue.arrayUnion([reference])
+      });
+    }
 
     batch.update(userDoc, {
       "tuktukLicensePlate": tuktuk.get("licensePlate"),
@@ -388,6 +393,8 @@ class AppUser {
     });
 
     await batch.commit();
+
+    return true;
   }
 
   static Future<List<String>> loadImages(String folderPath) async {
@@ -407,6 +414,13 @@ class AppUser {
 
     return imageUrls;
   }
+
+  void updateAppLanguage(String value) {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(id)
+        .update({"appLanguage": value});
+  }
 }
 
 Future<bool> userExists(String phone) async {
@@ -416,19 +430,23 @@ Future<bool> userExists(String phone) async {
 }
 
 Future<AppUser> getUserFirebaseInstance(bool guideMode, User user) async {
+  AppUser? appUser;
   final ref = FirebaseFirestore.instance.collection("users").doc(user.uid)
       .withConverter(
     fromFirestore: AppUser.fromFirestore,
     toFirestore: (AppUser user, _) => user.toFirestore(),
   );
   final docSnap = await ref.get();
-  AppUser? appUser = docSnap.data();
-  if (appUser == null) {
-    appUser = AppUser(user.uid, user.displayName, user.email, user.phoneNumber, false, 0.0, null, null, null);
+  if (!docSnap.exists) {
+    appUser = AppUser(user.uid, user.displayName, user.email, user.phoneNumber, false, false, 3, null, null, null, null);
     FirebaseFirestore.instance.collection("users")
         .doc(user.uid)
         .set(appUser.toFirestore());
+  } else {
+    appUser = docSnap.data();
   }
+
+  appUser!.setFirebaseToken();
 
   if (guideMode) {
     FirebaseFirestore.instance.collection("users")

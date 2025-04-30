@@ -3,8 +3,6 @@ name: iOS starter workflow
 on:
   push:
     branches: [ "ios" ]
-  pull_request:
-    branches: [ "ios" ]
 
 env:
   APP_STORE_CONNECT_API_KEY_KEY: "${{vars.APP_STORE_CONNECT_API_KEY_KEY}}"
@@ -19,7 +17,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - run: |
+      - name: Fastlane match
+        run: |
           echo '${{ secrets.GOOGLE_CLOUD_AUTH }}' > gc_keys.json
           gem install bundler
           bundle install
@@ -30,7 +29,12 @@ jobs:
         with:
           channel: stable
           flutter-version-file: pubspec.yaml # path to pubspec.yaml
-      - run: flutter gen-l10n
+      - name: Gen l18n, update build number in pubspec.yaml
+        run: |
+          BUILD_NUMBER=${{ github.run_number }}
+          sed -i '' -E "s/^version: ([0-9]+\.[0-9]+\.[0-9]+)\+[0-9]+/version: \1+${BUILD_NUMBER}/" pubspec.yaml
+          cat pubspec.yaml
+          flutter gen-l10n
       - run: flutter build ios
       - name: fastlane
         if: always()

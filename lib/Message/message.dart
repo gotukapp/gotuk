@@ -1,7 +1,6 @@
 // ignore_for_file: camel_case_types
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dm/Message/ShowMassage.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -67,21 +66,7 @@ class _messageState extends State<message> {
                       fontSize: 18,
                       color: notifier.getwhiteblackcolor,
                       fontFamily: "Gilroy bold"),
-                ),
-                CircleAvatar(
-                    radius: 22,
-                    backgroundColor: notifier.getdarkmodecolor,
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const ShowMassage()));
-                      },
-                      child: Image.asset(
-                        "assets/images/notification.png",
-                        height: 25,
-                        color: notifier.getwhiteblackcolor,
-                      ),
-                    ))
+                )
               ],
             ),
             const SizedBox(height: 15),

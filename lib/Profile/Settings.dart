@@ -4,6 +4,7 @@ import 'package:dm/CreatAccount/login.dart';
 import 'package:dm/Profile/Language.dart';
 import 'package:dm/Profile/MyProfile.dart';
 import 'package:dm/Profile/NotificationSetting.dart';
+import 'package:dm/Profile/privacySettings.dart';
 import 'package:dm/Profile/support.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
@@ -14,7 +15,9 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../Providers/userProvider.dart';
 import '../Utils/customwidget .dart';
+import 'Payments.dart';
 
 class Settings extends StatefulWidget {
   const Settings({super.key});
@@ -31,10 +34,13 @@ class _SettingsState extends State<Settings> {
 
   bool switchValue = false;
   late ColorNotifier notifier;
+  late UserProvider userProvider;
 
   @override
   Widget build(BuildContext context) {
     notifier = Provider.of<ColorNotifier>(context, listen: true);
+    userProvider = Provider.of<UserProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -90,8 +96,8 @@ class _SettingsState extends State<Settings> {
                   text: AppLocalizations.of(context)!.payments,
                   icon: Icons.keyboard_arrow_right,
                   onclick: () {
-                    // Navigator.of(context).push(
-                    //     MaterialPageRoute(builder: (context) => Favourite()));
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => const Payments()));
                   },
                   boxcolor: notifier.getdarkmodecolor,
                   ImageColor: notifier.getwhiteblackcolor,
@@ -108,9 +114,10 @@ class _SettingsState extends State<Settings> {
                   image: "assets/images/language.png",
                   text: AppLocalizations.of(context)!.language,
                   icon: Icons.keyboard_arrow_right,
-                  onclick: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => Language(languages: appLanguages)));
+                  onclick: () async {
+                    String selectedLanguage = await Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => Language(languages: appLanguages))) as String;
+                    userProvider.user?.updateAppLanguage(selectedLanguage);
                   },
                   boxcolor: notifier.getdarkmodecolor,
                   iconcolor: notifier.getwhiteblackcolor,
@@ -160,8 +167,8 @@ class _SettingsState extends State<Settings> {
                   text: AppLocalizations.of(context)!.privacySettings,
                   icon: Icons.keyboard_arrow_right,
                   onclick: () {
-                    // Navigator.of(context).push(
-                    //     MaterialPageRoute(builder: (context) => Favourite()));
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => PrivacySettings()));
                   },
                   boxcolor: notifier.getdarkmodecolor,
                   ImageColor: notifier.getwhiteblackcolor,
@@ -196,6 +203,21 @@ class _SettingsState extends State<Settings> {
                     Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
                         builder: (context) => const loginscreen()),
                             (route) => false);
+                  },
+                  boxcolor: notifier.getdarkmodecolor,
+                  iconcolor: notifier.getwhiteblackcolor,
+                  ImageColor: RedColor,
+                  TextColor: RedColor),
+              const SizedBox(height: 10),
+              AccountSetting(
+                  image: "assets/images/delete.png",
+                  text: AppLocalizations.of(context)!.deleteAccount,
+                  icon: null,
+                  onclick: () async {
+                    showConfirmationMessage(context,
+                        AppLocalizations.of(context)!.deleteAccount,
+                        AppLocalizations.of(context)!.deleteAccountConfirmation,
+                            () {}, () {}, AppLocalizations.of(context)!.yes, AppLocalizations.of(context)!.no);
                   },
                   boxcolor: notifier.getdarkmodecolor,
                   iconcolor: notifier.getwhiteblackcolor,

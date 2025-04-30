@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../Domain/ticket.dart';
 import '../Domain/trip.dart';
 import '../Utils/customwidget .dart';
@@ -45,7 +46,7 @@ class _SupportTicketState extends State<SupportTicket> {
       backgroundColor: notifier.getblackwhitecolor,
       appBar: AppBar(
         backgroundColor: notifier.getblackwhitecolor,
-        title: const Text('Support Ticket'),
+        title: Text(AppLocalizations.of(context)!.supportTicket),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -64,7 +65,7 @@ class _SupportTicketState extends State<SupportTicket> {
                     color: BlackColor2,
                     fontSize: 16,
                     fontFamily: "Gilroy Bold"),
-                hint: const Text('Select Category',
+                hint: Text(AppLocalizations.of(context)!.selectCategory,
                     style: TextStyle(
                         fontSize: 18,
                         fontFamily: "Gilroy Bold")),
@@ -88,7 +89,7 @@ class _SupportTicketState extends State<SupportTicket> {
                     child: Text(category),
                   );
                 }).toList(),
-                validator: (value) => value == null ? 'Please select a category' : null,
+                validator: (value) => value == null ? AppLocalizations.of(context)!.pleaseSelectCategory : null,
               )
               ),
               const SizedBox(height: 10),
@@ -103,7 +104,7 @@ class _SupportTicketState extends State<SupportTicket> {
                         color: BlackColor,
                         fontSize: 16,
                         fontFamily: "Gilroy Bold"),
-                      hint: Text('Select Reason',
+                      hint: Text(AppLocalizations.of(context)!.selectReason,
                           style: TextStyle(
                               color: lightBlack,
                               fontSize: 18,
@@ -129,7 +130,7 @@ class _SupportTicketState extends State<SupportTicket> {
                           child: Text(reason),
                         );
                       }).toList(),
-                      validator: (value) => value == null ? 'Please select a reason' : null,
+                      validator: (value) => value == null ? AppLocalizations.of(context)!.pleaseSelectReason : null,
                     )
               ),
               const SizedBox(height: 30),
@@ -139,14 +140,14 @@ class _SupportTicketState extends State<SupportTicket> {
                   child: AppButton(
                       bgColor: notifier.getwhitelogocolor,
                       textColor: notifier.getblackwhitecolor,
-                      buttontext: "Create Ticket",
+                      buttontext: AppLocalizations.of(context)!.createSupportTicket,
                       onclick: () async {
                         if (_selectedCategory != null && _selectedReason != null) {
                           _sendEmail();
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("You have to select a Category and a Reason to create a ticket."),
+                            SnackBar(
+                              content: Text(AppLocalizations.of(context)!.createTicketWarning),
                             ),
                           );
                         }

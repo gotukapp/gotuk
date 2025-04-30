@@ -39,6 +39,14 @@ class _profileState extends State<profile> {
   Widget build(BuildContext context) {
     notifier = Provider.of<ColorNotifier>(context, listen: true);
     userProvider = Provider.of<UserProvider>(context);
+
+    ImageProvider imageProvider;
+    if (userProvider.user!.profilePhoto != null) {
+      imageProvider =  NetworkImage(userProvider.user!.profilePhoto!);
+    } else {
+      imageProvider = const AssetImage("assets/images/avatar.png");
+    }
+
     return SafeArea(
       child: Scaffold(
           backgroundColor: notifier.getblackwhitecolor,
@@ -77,8 +85,7 @@ class _profileState extends State<profile> {
                         CircleAvatar(
                           radius: 60,
                           backgroundColor: notifier.getwhiteblackcolor,
-                          backgroundImage:
-                              const AssetImage("assets/images/avatar.png"),
+                          backgroundImage: imageProvider,
                         ),
                         const SizedBox(height: 20),
                         Text(

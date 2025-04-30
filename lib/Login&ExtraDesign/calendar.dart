@@ -4,11 +4,11 @@ import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:flutter/material.dart';
-// ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Calendar extends StatefulWidget {
   final DateTime? selectedDate;
@@ -65,7 +65,7 @@ class CalendarState extends State<Calendar> {
             appBar: PreferredSize(
                 preferredSize: const Size.fromHeight(60),
                 child: CustomAppbar(
-                    centertext: "Calendar",
+                    centertext: AppLocalizations.of(context)!.calendar,
                     ActionIcon: Icons.more_vert,
                     bgcolor: notifier.getbgcolor,
                     actioniconcolor: notifier.getwhiteblackcolor,
@@ -90,7 +90,7 @@ class CalendarState extends State<Calendar> {
                           ),
                           child: Center(
                             child: Text(
-                              "Continue",
+                              AppLocalizations.of(context)!.proceed,
                               style: TextStyle(
                                   fontSize: 16,
                                   color: WhiteColor,
@@ -120,6 +120,7 @@ class CalendarState extends State<Calendar> {
                         minDate: widget.minDate,
                         maxDate: widget.maxDate,
                         rangeTextStyle: TextStyle(color: WhiteColor),
+                        view: DateRangePickerView.month,
                         toggleDaySelection: true,
                         endRangeSelectionColor: Darkblue,
                         startRangeSelectionColor: Darkblue,

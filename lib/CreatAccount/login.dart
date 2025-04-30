@@ -6,10 +6,12 @@ import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:provider/provider.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -52,8 +54,8 @@ class _loginscreenState extends State<loginscreen> {
               centertext: "",
               ActionIcon: null,
               bgcolor: notifier.getlogobgcolor,
-              actioniconcolor: notifier.getwhiteblackcolor,
-              leadingiconcolor: notifier.getwhiteblackcolor)),
+              actioniconcolor: notifier.getblackwhitecolor,
+              leadingiconcolor: notifier.getblackwhitecolor)),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -181,19 +183,41 @@ class _loginscreenState extends State<loginscreen> {
                             ),
                           )),
                       Container(
+                          padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                          ),
+                              borderRadius: BorderRadius.circular(50),
+                              color: notifier.getdarkmodecolor),
                           // margin: EdgeInsets.only(top: 12),
                           height: 45,
                           width: MediaQuery.of(context).size.width / 2.5,
                           child: InkWell(
-                            onTap: () {},
+                            onTap: () async {
+                              AppUser? user = await signInWithApple();
+                              if(user != null) {
+                                userProvider.setUser(user);
+                                Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                                    builder: (context) => const homepage()),
+                                        (route) => false);
+                              }
+                            },
                             child: ClipRRect(
-                              borderRadius:
-                              const BorderRadius.all(Radius.circular(50)),
-                              child: Image.asset("assets/images/facebook.png",
-                                  fit: BoxFit.fitWidth),
+                              borderRadius: const BorderRadius.all(Radius.circular(50)),
+                              child: Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Image.asset("assets/images/apple.png",
+                                        fit: BoxFit.fill),
+                                    Text(
+                                      "Apple",
+                                      style: TextStyle(
+                                          fontSize: 17,
+                                          fontFamily: "Gilroy Medium",
+                                          color: notifier.getwhiteblackcolor),
+                                    )
+                                  ],
+                                ),
+                              ),
                             ),
                           )),
                     ],
@@ -278,31 +302,31 @@ class _loginscreenState extends State<loginscreen> {
         _isLoading = true;
       });
       String phoneNumber = "+$countryCode${phoneNumberController.text}";
-      if (await userExists(phoneNumber)) {
-        await signInWithPhoneNumber(context, phoneNumber, (UserCredential? credential) async {
+      try {
+        await signInWithPhoneNumber(
+            context, phoneNumber, (UserCredential? credential, Exception? e) async {
           if (credential != null) {
-            AppUser user = await getUserFirebaseInstance(
-                guideMode, credential.user!);
-            userProvider.setUser(user);
-            user.setFirebaseToken();
-            Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-                builder: (context) => const homepage()),
-                    (route) => false);
+            await credentialsOk(credential);
+          } else {
+            await Sentry.captureException(e);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(e != null ? e.toString() : "Login failed, please try again"),
+                backgroundColor: RedColor
+              ),
+            );
           }
-          setState(() {
-            _isLoading = false;
-          });
+          setState(() { _isLoading = false; });
         });
-      } else {
-        setState(() {
-          _isLoading = false;
-        });
+      } catch(e) {
+        await Sentry.captureException(e);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-                AppLocalizations.of(context)!.warningPhoneNumberAccountNotFound),
+              content: Text("$e"),
+              duration: const Duration(seconds: 5)
           ),
         );
+        setState(() { _isLoading = false; });
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -313,24 +337,37 @@ class _loginscreenState extends State<loginscreen> {
     }
   }
 
-  Future<AppUser?> signInWithGoogle() async {
-    try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      final GoogleSignInAuthentication? googleAuth =
-      await googleUser?.authentication;
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth?.accessToken,
-        idToken: googleAuth?.idToken,
-      );
-
-      UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-      return await getUserFirebaseInstance(guideMode, userCredential.user!);
-    } on Exception catch (e) {
-      print('exception->$e');
-    }
-
-    return null;
+  Future<void> credentialsOk(UserCredential credential) async {
+    AppUser user = await getUserFirebaseInstance(
+        guideMode, credential.user!);
+    userProvider.setUser(user);
+    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+        builder: (context) => const homepage()),
+            (route) => false);
   }
+
+  Future<AppUser?> signInWithGoogle() async {
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication? googleAuth =
+    await googleUser?.authentication;
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+    return await getUserFirebaseInstance(guideMode, userCredential.user!);
+  }
+
+  Future<AppUser?> signInWithApple() async {
+    final appleProvider = AppleAuthProvider();
+    UserCredential userCredential = kIsWeb ?
+      await FirebaseAuth.instance.signInWithPopup(appleProvider) :
+      await FirebaseAuth.instance.signInWithProvider(appleProvider);
+    Sentry.captureMessage(userCredential.toString());
+    return await getUserFirebaseInstance(guideMode, userCredential.user!);
+  }
+
 
   getdarkmodepreviousstate() async {
     final prefs = await SharedPreferences.getInstance();

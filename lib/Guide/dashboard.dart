@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dm/Guide/tripsList.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -155,8 +154,7 @@ class _DashboardState extends State<Dashboard> {
                                                   .of(context)
                                                   .size
                                                   .height * 0.0001),
-                                          Text(
-                                            "Good tours with GoTuk",
+                                          Text(AppLocalizations.of(context)!.goodToursWithGoTuk,
                                             style: TextStyle(
                                                 fontSize: 16,
                                                 color: LogoColor,
@@ -175,7 +173,7 @@ class _DashboardState extends State<Dashboard> {
                                                   return InkWell(
                                                     onTap: () {
                                                       Navigator.of(context).push(MaterialPageRoute(
-                                                          builder: (context) => TripsList(title:"Pending Tours", trips:pendingTrips)));
+                                                          builder: (context) => TripsList(title:AppLocalizations.of(context)!.pendingTours, trips:pendingTrips)));
                                                     },
                                                     child: CircleAvatar(
                                                         backgroundColor: notifier.getdarkmodecolor,
@@ -230,10 +228,7 @@ class _DashboardState extends State<Dashboard> {
                                         child: Padding(
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 10, vertical: 10),
-                                          child: Text(
-                                              "Your account is not active."
-                                              "\nYou will not receive new tours."
-                                              "\nPlease check your account details.",
+                                          child: Text(AppLocalizations.of(context)!.accountBlockedWarning,
                                               softWrap: true,
                                               textAlign: TextAlign.justify,
                                               style: TextStyle(
@@ -270,8 +265,7 @@ class _DashboardState extends State<Dashboard> {
                                         )
                                   ,
                                   const SizedBox(height: 10),
-                                  Text(
-                                    "Completed Tours",
+                                  Text(AppLocalizations.of(context)!.completedTours,
                                     style: TextStyle(
                                         fontSize: 14,
                                         color: LogoColor,
@@ -306,9 +300,9 @@ class _DashboardState extends State<Dashboard> {
                                                   Row(
                                                   mainAxisAlignment: MainAxisAlignment .spaceBetween,
                                                   children: [
-                                                    dashboardValue(title: "Today", trips:finishedTripsToday),
-                                                    dashboardValue(title: "Last 7 days", trips:finishedTripsThisWeek),
-                                                    dashboardValue(title: "Last 30 days", trips:finishedTripsThisMonth),
+                                                    dashboardValue(title: AppLocalizations.of(context)!.today, trips:finishedTripsToday),
+                                                    dashboardValue(title: AppLocalizations.of(context)!.last7Days, trips:finishedTripsThisWeek),
+                                                    dashboardValue(title: AppLocalizations.of(context)!.last30Days, trips:finishedTripsThisMonth),
                                                   ],
                                                 ),
                                             ]
@@ -322,8 +316,7 @@ class _DashboardState extends State<Dashboard> {
                                       .of(context)
                                       .size
                                       .height * 0.025),
-                                  Text(
-                                    "Next Tours",
+                                  Text(AppLocalizations.of(context)!.nextTours,
                                     style: TextStyle(
                                         fontSize: 14,
                                         color: LogoColor,
@@ -361,9 +354,9 @@ class _DashboardState extends State<Dashboard> {
                                                 mainAxisAlignment: MainAxisAlignment
                                                     .spaceBetween,
                                                 children: [
-                                                  dashboardValue(title: "Today", trips:bookedTripsToday),
-                                                  dashboardValue(title: "Next 7 days", trips:bookedTripsThisWeek),
-                                                  dashboardValue(title: "Next 30 days", trips:bookedTripsThisMonth),
+                                                  dashboardValue(title: AppLocalizations.of(context)!.today, trips:bookedTripsToday),
+                                                  dashboardValue(title: AppLocalizations.of(context)!.last7Days, trips:bookedTripsThisWeek),
+                                                  dashboardValue(title: AppLocalizations.of(context)!.last30Days, trips:bookedTripsThisMonth),
                                                 ],
                                               ),
                                             ]
@@ -372,7 +365,7 @@ class _DashboardState extends State<Dashboard> {
                                     );
                                   }),
                                   const SizedBox(height: 30),
-                                  Text("Current Tour",
+                                  Text(AppLocalizations.of(context)!.currentTour,
                                       style: TextStyle(
                                           fontSize: 16,
                                           color: LogoColor,
@@ -391,7 +384,7 @@ class _DashboardState extends State<Dashboard> {
                                     return const SizedBox();
                                   }),
                                   const SizedBox(height: 20),
-                                  Text("Today Tours",
+                                  Text(AppLocalizations.of(context)!.todayTours,
                                       style: TextStyle(
                                           fontSize: 16,
                                           color: LogoColor,

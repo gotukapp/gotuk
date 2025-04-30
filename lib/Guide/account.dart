@@ -94,75 +94,71 @@ class _AccountState extends State<account> {
 
   Future<void> _loadDocument() async {
     try {
-      final queryPersonalData = await FirebaseFirestore.instance
+      FirebaseFirestore.instance
           .collection('users')
           .doc(FirebaseAuth.instance.currentUser?.uid)
           .collection('personalData')
           .orderBy('submitDate', descending: true) // Sort by 'datetime' in descending order
-          .limit(1) // Limit to 1 document
-          .get();
-
-      final queryOrganizationData = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser?.uid)
-          .collection('organizationData')
-          .orderBy('submitDate', descending: true) // Sort by 'datetime' in descending order
-          .limit(1) // Limit to 1 document
-          .get();
-
-      final queryWorkAccidentInsurance = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser?.uid)
-          .collection('workAccidentInsurance')
-          .orderBy('submitDate', descending: true) // Sort by 'datetime' in descending order
-          .limit(1) // Limit to 1 document
-          .get();
-
-      final queryCriminalRecord = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser?.uid)
-          .collection('criminalRecord')
-          .orderBy('submitDate', descending: true) // Sort by 'datetime' in descending order
-          .limit(1) // Limit to 1 document
-          .get();
-
-      if (queryPersonalData.docs.isNotEmpty) {
-        Map<String, dynamic>? personalData = queryPersonalData.docs.first.data();
-        final loadedImages = await AppUser.loadImages("uploads/users/${FirebaseAuth.instance.currentUser?.uid}/personalData/${queryPersonalData.docs[0].id}");
+          .limit(1).snapshots().listen((querySnapshot) async {
+        Map<String, dynamic>? personalData = querySnapshot.docs.first.data();
+        final loadedImages = await AppUser.loadImages("uploads/users/${FirebaseAuth.instance.currentUser?.uid}/personalData/${querySnapshot.docs.first.id}");
 
         setState(() {
           language = personalData["language"].whereType<String>().toList();
-          identificationNumber.text = personalData["identificationNumber"];
+          identificationNumber.text = personalData["identificationNumber"] ?? "";
           identificationNumberExpirationDate = personalData["identificationNumberExpirationDate"]?.toDate();
-          drivingLicenseNumber.text = personalData["drivingLicenseNumber"];
+          drivingLicenseNumber.text = personalData["drivingLicenseNumber"] ?? "";
           drivingLicenseExpirationDate = personalData["drivingLicenseExpirationDate"]?.toDate();
           personalDataStatus = personalData["status"];
           personalDataImages = loadedImages;
         });
-      }
+      });
 
-      setState(() {
-        if (queryWorkAccidentInsurance.docs.isNotEmpty) {
-          Map<String,dynamic>? workAccidentInsurance = queryWorkAccidentInsurance.docs.first.data();
-          insuranceWorkAccidentCompanyName.text = workAccidentInsurance["name"];
-          insuranceWorkAccidentPolicyNumber.text = workAccidentInsurance["number"];
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .collection('organizationData')
+          .orderBy('submitDate', descending: true) // Sort by 'datetime' in descending order
+          .limit(1).snapshots().listen((querySnapshot) async {
+        Map<String, dynamic>? organizationData = querySnapshot.docs.first.data();
+        setState(() {
+          organizationCode.text = organizationData["code"] ?? "";
+          organizationName = organizationData["name"] ?? "";
+          organizationStatus = organizationData["status"];
+        });
+
+      });
+
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .collection('workAccidentInsurance')
+          .orderBy('submitDate', descending: true) // Sort by 'datetime' in descending order
+          .limit(1).snapshots().listen((querySnapshot) async {
+        Map<String,dynamic>? workAccidentInsurance = querySnapshot.docs.first.data();
+        setState(() {
+          insuranceWorkAccidentCompanyName.text = workAccidentInsurance["name"] ?? "";
+          insuranceWorkAccidentPolicyNumber.text = workAccidentInsurance["number"] ?? "";
           insuranceWorkAccidentExpirationDate = workAccidentInsurance["expirationDate"]?.toDate();
           useWorkAccidentOrganizationInsurance = workAccidentInsurance["useOrganizationInsurance"] ?? false;
           workAccidentInsuranceStatus = workAccidentInsurance["status"];
-        }
+        });
+      });
 
-        if (queryOrganizationData.docs.isNotEmpty) {
-          Map<String, dynamic>? organizationData = queryOrganizationData.docs.first.data();
-          organizationCode.text = organizationData["code"];
-          organizationName = organizationData["name"] ?? "";
-          organizationStatus = organizationData["status"];
-        }
-
-        if (queryCriminalRecord.docs.isNotEmpty) {
-          Map<String, dynamic>? criminalRecord = queryCriminalRecord.docs.first.data();
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .collection('criminalRecord')
+          .orderBy('submitDate', descending: true) // Sort by 'datetime' in descending order
+          .limit(1).snapshots().listen((querySnapshot) async {
+        Map<String, dynamic>? criminalRecord = querySnapshot.docs.first.data();
+        setState(() {
           criminalRecordStatus = criminalRecord["status"];
-        }
+        });
 
+      });
+
+      setState(() {
         _isLoading = false;
       });
     } catch (e) {
@@ -265,7 +261,7 @@ class _AccountState extends State<account> {
               AppLocalizations.of(context)!.personalData,
               style: TextStyle(
                   fontSize: 16,
-                  color: notifier.getwhiteblackcolor,
+                  color: BlackColor,
                   fontFamily: "Gilroy Bold"),
             ),
           );
@@ -278,7 +274,7 @@ class _AccountState extends State<account> {
             Text(AppLocalizations.of(context)!.spokenLanguages,
               style: TextStyle(
                   fontSize: 16,
-                  color: notifier.getwhiteblackcolor,
+                  color: BlackColor,
                   fontFamily: "Gilroy Bold"),
             ),
             const SizedBox(height: 10),
@@ -294,7 +290,7 @@ class _AccountState extends State<account> {
             Text(AppLocalizations.of(context)!.personalCard,
               style: TextStyle(
                   fontSize: 15,
-                  color: notifier.getwhiteblackcolor,
+                  color: BlackColor,
                   fontFamily: "Gilroy Bold"),
             ),
             const SizedBox(height: 10),
@@ -310,7 +306,7 @@ class _AccountState extends State<account> {
             Text(AppLocalizations.of(context)!.expirationDate,
               style: TextStyle(
                   fontSize: 16,
-                  color: notifier.getwhiteblackcolor,
+                  color: BlackColor,
                   fontFamily: "Gilroy Bold"),
             ),
             const SizedBox(height: 10),
@@ -336,7 +332,7 @@ class _AccountState extends State<account> {
             Text(AppLocalizations.of(context)!.drivingLicense,
               style: TextStyle(
                   fontSize: 16,
-                  color: notifier.getwhiteblackcolor,
+                  color: BlackColor,
                   fontFamily: "Gilroy Bold"),
             ),
             const SizedBox(height: 10),
@@ -351,7 +347,7 @@ class _AccountState extends State<account> {
             Text(AppLocalizations.of(context)!.expirationDate,
               style: TextStyle(
                   fontSize: 16,
-                  color: notifier.getwhiteblackcolor,
+                  color: BlackColor,
                   fontFamily: "Gilroy Bold"),
             ),
             const SizedBox(height: 10),
@@ -399,7 +395,6 @@ class _AccountState extends State<account> {
                     buttontext: AppLocalizations.of(context)!.attachDocument,
                     onclick: () async {
                       await pickImages(previewPersonalDataImages);
-                      editPersonalData = false;
                     }),
                 const SizedBox(height: 25),
                 AppButton(
@@ -423,7 +418,9 @@ class _AccountState extends State<account> {
                                 AppLocalizations.of(context)!.accountDataSubmittedSuccessfully),
                           ),
                         );
-                        Navigator.of(context).pop();
+                        setState(() {
+                          editPersonalData = false;
+                        });
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -461,7 +458,7 @@ class _AccountState extends State<account> {
               AppLocalizations.of(context)!.organizationData,
               style: TextStyle(
                   fontSize: 16,
-                  color: notifier.getwhiteblackcolor,
+                  color: BlackColor,
                   fontFamily: "Gilroy Bold"),
             ),
           );
@@ -474,7 +471,7 @@ class _AccountState extends State<account> {
                 Text(AppLocalizations.of(context)!.code,
                   style: TextStyle(
                       fontSize: 16,
-                      color: notifier.getwhiteblackcolor,
+                      color: BlackColor,
                       fontFamily: "Gilroy Bold"),
                 ),
                 const SizedBox(height: 10),
@@ -486,21 +483,22 @@ class _AccountState extends State<account> {
                     suffix: null,
                     readOnly: !editOrganizationData),
                 const SizedBox(height: 10),
-                Text(AppLocalizations.of(context)!.name,
-                  style: TextStyle(
-                      fontSize: 16,
-                      color: notifier.getwhiteblackcolor,
-                      fontFamily: "Gilroy Bold"),
-                ),
-                const SizedBox(height: 10),
-                textField(
-                    fieldColor: notifier.getdarkmodecolor,
-                    hintColor: notifier.getdarkgreycolor,
-                    text: organizationName,
-                    suffix: null,
-                    readOnly: true),
                 if (!editOrganizationData)
-                  ...[const SizedBox(height: 25),
+                  ...[
+                    Text(AppLocalizations.of(context)!.name,
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: BlackColor,
+                          fontFamily: "Gilroy Bold"),
+                    ),
+                    const SizedBox(height: 10),
+                    textField(
+                        fieldColor: notifier.getdarkmodecolor,
+                        hintColor: notifier.getdarkgreycolor,
+                        text: organizationName,
+                        suffix: null,
+                        readOnly: true),
+                    const SizedBox(height: 25),
                     AppButton(
                         bgColor: notifier.getlogobgcolor,
                         textColor: WhiteColor,
@@ -517,24 +515,45 @@ class _AccountState extends State<account> {
                       textColor: WhiteColor,
                       buttontext: AppLocalizations.of(context)!.submitData,
                       onclick: () async {
-                        AppUser user = userProvider.user!;
-                        bool resultOk = await user.submitOrganizationData({
-                          "organizationCode": organizationCode
-                        });
-                        if (resultOk) {
+                        try {
+                          final queryOrganizationData = await FirebaseFirestore
+                              .instance
+                              .collection('organizations')
+                              .where(
+                              "orgCode", isEqualTo: organizationCode.text)
+                              .get();
+
+                          if (queryOrganizationData.docs.isNotEmpty) {
+                            AppUser user = userProvider.user!;
+                            await user.submitOrganizationData({
+                              "organizationCode": organizationCode.text,
+                              "organizationName": queryOrganizationData.docs[0].get("name"),
+                              "organizationRef": queryOrganizationData.docs[0].reference
+                            });
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(AppLocalizations.of(context)!
+                                    .accountDataSubmittedSuccessfully),
+                              ),
+                            );
+                            setState(() {
+                              organizationName = queryOrganizationData.docs[0].get("name");
+                              editOrganizationData = false;
+                            });
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  content: Text(AppLocalizations.of(context)!
+                                      .warningOrganizationNotFound),
+                                  duration: const Duration(seconds: 6)
+                              ),
+                            );
+                          }
+                        } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text(AppLocalizations.of(context)!.accountDataSubmittedSuccessfully),
-                            ),
-                          );
-                          setState(() {
-                            editOrganizationData = false;
-                          });
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                  AppLocalizations.of(context)!.errorSubmittingData),
+                                content: Text("$e"),
+                                duration: const Duration(seconds: 6)
                             ),
                           );
                         }
@@ -555,7 +574,7 @@ class _AccountState extends State<account> {
               AppLocalizations.of(context)!.workAccidentInsurance,
               style: TextStyle(
                   fontSize: 16,
-                  color: notifier.getwhiteblackcolor,
+                  color: BlackColor,
                   fontFamily: "Gilroy Bold"),
             ),
           );
@@ -571,7 +590,7 @@ class _AccountState extends State<account> {
                       AppLocalizations.of(context)!.includedInOrganizationPolicy,
                       style: TextStyle(
                           fontSize: 14,
-                          color: notifier.getwhiteblackcolor,
+                          color: BlackColor,
                           fontFamily: "Gilroy Bold"),
                     ),
                     CupertinoSwitch(
@@ -601,7 +620,7 @@ class _AccountState extends State<account> {
                     Text(AppLocalizations.of(context)!.insuranceCompany,
                       style: TextStyle(
                           fontSize: 16,
-                          color: notifier.getwhiteblackcolor,
+                          color: BlackColor,
                           fontFamily: "Gilroy Bold"),
                     ),
                     const SizedBox(height: 10),
@@ -615,7 +634,7 @@ class _AccountState extends State<account> {
                     Text(AppLocalizations.of(context)!.policyNumber,
                       style: TextStyle(
                           fontSize: 16,
-                          color: notifier.getwhiteblackcolor,
+                          color: BlackColor,
                           fontFamily: "Gilroy Bold"),
                     ),
                     const SizedBox(height: 10),
@@ -629,7 +648,7 @@ class _AccountState extends State<account> {
                     Text(AppLocalizations.of(context)!.expirationDate,
                       style: TextStyle(
                           fontSize: 16,
-                          color: notifier.getwhiteblackcolor,
+                          color: BlackColor,
                           fontFamily: "Gilroy Bold"),
                     ),
                     const SizedBox(height: 10),
@@ -667,8 +686,8 @@ class _AccountState extends State<account> {
                       AppUser user = userProvider.user!;
                       bool resultOk = await user.submitWorkAccidentInsurance({
                         "useWorkAccidentOrganizationInsurance": useWorkAccidentOrganizationInsurance,
-                        "name": insuranceWorkAccidentCompanyName,
-                        "number": insuranceWorkAccidentPolicyNumber,
+                        "name": insuranceWorkAccidentCompanyName.text,
+                        "number": insuranceWorkAccidentPolicyNumber.text,
                         "expirationDate": insuranceWorkAccidentExpirationDate,
                         "selectedImages": previewWorkAccidentInsuranceImages
                       });
@@ -704,7 +723,7 @@ class _AccountState extends State<account> {
               AppLocalizations.of(context)!.criminalRecord,
               style: TextStyle(
                   fontSize: 16,
-                  color: notifier.getwhiteblackcolor,
+                  color: BlackColor,
                   fontFamily: "Gilroy Bold"),
             ),
           );
@@ -830,11 +849,7 @@ class _AccountState extends State<account> {
                        builder: (context) => Calendar(selectedDate: item["field"]),
                      )).then((value) {
                        setState(() {
-                         print(value);
-                         print(item["field"]);
                          identificationNumberExpirationDate = value;
-                         print(item["field"]);
-                         print(identificationNumberExpirationDate);
                        });
                      });
                    },

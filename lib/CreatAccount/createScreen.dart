@@ -10,9 +10,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:provider/provider.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../Domain/appUser.dart';
+import '../Login&ExtraDesign/homepage.dart';
+import '../Providers/userProvider.dart';
 import '../Utils/authentication.dart';
 
 class createScreen extends StatefulWidget {
@@ -25,6 +29,7 @@ class createScreen extends StatefulWidget {
 class _createScreenState extends State<createScreen> {
   bool termsAndConditionsAccepted = false;
   bool dataProtectionPolicyAccepted = false;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -35,6 +40,7 @@ class _createScreenState extends State<createScreen> {
     super.initState();
   }
 
+  late UserProvider userProvider;
   late ColorNotifier notifier;
   late bool guideMode = false;
   bool showPassword = false;
@@ -46,6 +52,7 @@ class _createScreenState extends State<createScreen> {
 
   @override
   Widget build(BuildContext context) {
+    userProvider = Provider.of<UserProvider>(context);
     notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
       backgroundColor: notifier.getbgcolor,
@@ -56,7 +63,7 @@ class _createScreenState extends State<createScreen> {
               ActionIcon: null,
               bgcolor: notifier.getlogobgcolor,
               actioniconcolor: notifier.getwhiteblackcolor,
-              leadingiconcolor: notifier.getwhiteblackcolor)),
+              leadingiconcolor: WhiteColor)),
       body: SingleChildScrollView(
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,7 +76,7 @@ class _createScreenState extends State<createScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          guideMode ? "GoTuk Guide" : "Welcome to GoTuk",
+                          guideMode ? AppLocalizations.of(context)!.gotukGuide : AppLocalizations.of(context)!.welcomeGotuk,
                           style: TextStyle(
                               fontSize: 22,
                               fontFamily: "Gilroy Bold",
@@ -78,13 +85,13 @@ class _createScreenState extends State<createScreen> {
                         const SizedBox(
                           height: 6,
                         ),
-                        Text("Let’s create your account first",
+                        Text(AppLocalizations.of(context)!.letsCreateYourAccount,
                             style: TextStyle(
                                 fontSize: 16,
                                 color: WhiteColor,
                                 fontFamily: "Gilroy Medium")),
                         SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-                        Text("Name",
+                        Text(AppLocalizations.of(context)!.name,
                             style: TextStyle(
                                 fontSize: 16,
                                 fontFamily: "Gilroy Medium",
@@ -93,12 +100,12 @@ class _createScreenState extends State<createScreen> {
                         textField(
                             fieldColor: notifier.getfieldcolor,
                             hintColor: notifier.gettextfieldcolor,
-                            text: 'Enter your name',
+                            text: AppLocalizations.of(context)!.enterYourName,
                             suffix: null,
                             controller: nameController),
                         const SizedBox(height: 25),
                         Text(
-                          "Phone Number",
+                          AppLocalizations.of(context)!.phoneNumber,
                           style: TextStyle(
                               fontFamily: "Gilroy Medium",
                               fontSize: 16,
@@ -107,7 +114,7 @@ class _createScreenState extends State<createScreen> {
                         SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                         IntlPhoneField(
                           decoration: InputDecoration(
-                              hintText: "Phone Number",
+                              hintText: AppLocalizations.of(context)!.phoneNumber,
                               labelStyle: const TextStyle(fontSize: 16, color: Colors.white),
                               hintStyle: TextStyle(fontSize: 16, color: notifier.gettextfieldcolor, fontFamily: "Gilroy Medium"),
                               filled: true,
@@ -126,10 +133,9 @@ class _createScreenState extends State<createScreen> {
                           controller: phoneNumberController,
                           onCountryChanged: (country) {
                             countryCode = country.dialCode;
-                            print('Country changed to: ' + country.name);
                           }
                         ),
-                        Text("Email",
+                        Text(AppLocalizations.of(context)!.email,
                             style: TextStyle(
                                 fontSize: 16,
                                 fontFamily: "Gilroy Medium",
@@ -138,7 +144,7 @@ class _createScreenState extends State<createScreen> {
                         textField(
                             fieldColor: notifier.getfieldcolor,
                             hintColor: notifier.gettextfieldcolor,
-                            text: 'Enter your email',
+                            text: AppLocalizations.of(context)!.enterYourEmail,
                             controller: emailController,
                             suffix: null),
                         SizedBox(
@@ -148,7 +154,7 @@ class _createScreenState extends State<createScreen> {
                           onPressed: () async {
                             final bool accepted = await Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => TermsAndConditions(title: 'Data Protection Policy', info: dataProtectionPolicy)),
+                              MaterialPageRoute(builder: (context) => TermsAndConditions(title: AppLocalizations.of(context)!.dataProtectionPolicy, info: dataProtectionPolicy)),
                             );
                             setState(() {
                               dataProtectionPolicyAccepted = accepted;
@@ -157,8 +163,8 @@ class _createScreenState extends State<createScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text('Data Protection Policy',
-                                style: TextStyle(fontSize: 16, color: Colors.white)),
+                              Text(AppLocalizations.of(context)!.dataProtectionPolicy,
+                                style: const TextStyle(fontSize: 16, color: Colors.white)),
                               Image.asset(dataProtectionPolicyAccepted ? "assets/images/square-check-regular.png" : "assets/images/square-regular.png",
                                 height: 20,
                                 color: Colors.white)]
@@ -168,7 +174,7 @@ class _createScreenState extends State<createScreen> {
                           onPressed: () async {
                             final bool accepted = await Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => TermsAndConditions(title: 'Terms and Conditions', info: termsAndConditions)),
+                              MaterialPageRoute(builder: (context) => TermsAndConditions(title: AppLocalizations.of(context)!.termsAndConditions, info: termsAndConditions)),
                             );
                             setState(() {
                               termsAndConditionsAccepted = accepted;
@@ -177,8 +183,8 @@ class _createScreenState extends State<createScreen> {
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text('Terms and Conditions',
-                                    style: TextStyle(fontSize: 16, color: Colors.white)),
+                                Text(AppLocalizations.of(context)!.termsAndConditions,
+                                    style: const TextStyle(fontSize: 16, color: Colors.white)),
                                 Image.asset(termsAndConditionsAccepted ? "assets/images/square-check-regular.png" : "assets/images/square-regular.png",
                                     height: 20,
                                     color: Colors.white)]
@@ -187,33 +193,38 @@ class _createScreenState extends State<createScreen> {
                         SizedBox(
                           height: MediaQuery.of(context).size.height * 0.03,
                         ),
-                        AppButton(
+                        _isLoading
+                            ? Center(child: CircularProgressIndicator(color: WhiteColor)) // Show spinner when loading
+                            : AppButton(
                           bgColor: notifier.getlogowhitecolor,
                           textColor: notifier.getwhiteblackcolor,
                           onclick: () async {
                             if (phoneNumberController.text.isEmpty) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Phone number is required."),
+                                SnackBar(
+                                  content: Text(AppLocalizations.of(context)!.phoneNumberRequired),
                                 ),
                               );
                             } else if (nameController.text.isEmpty) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Name is required."),
+                                SnackBar(
+                                  content: Text(AppLocalizations.of(context)!.nameRequired),
                                 ),
                               );
                             } else if (!termsAndConditionsAccepted || !dataProtectionPolicyAccepted) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("You need to accept the Terms and Conditions and the Data Protection Policy to proceed."),
+                                SnackBar(
+                                  content: Text(AppLocalizations.of(context)!.acceptDataProtectionPolicyAndTermsAndConditions),
                                 ),
                               );
                             } else {
-                              createUser();
+                              setState(() {
+                                _isLoading = true;
+                              });
+                              await createUser();
                             }
                           },
-                          buttontext: "AGREE & CONTINUE",
+                          buttontext: AppLocalizations.of(context)!.agreeAndContinue.toUpperCase(),
                         ),
                         SizedBox(
                           height: MediaQuery.of(context).size.height * 0.02,
@@ -229,7 +240,7 @@ class _createScreenState extends State<createScreen> {
                   padding: const EdgeInsets.only(left: 25, right: 25, top: 8, bottom: 30),
                   child: Column(
                 children: [
-                  Text("Have an account?",
+                  Text(AppLocalizations.of(context)!.haveAnAccount,
                       style: TextStyle(
                           fontSize: 15,
                           fontFamily: "Gilroy Medium",
@@ -242,7 +253,7 @@ class _createScreenState extends State<createScreen> {
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => const loginscreen()));
                     },
-                    buttontext: "LOGIN",
+                    buttontext: AppLocalizations.of(context)!.login.toUpperCase(),
                   )
                 ],
               )
@@ -256,38 +267,169 @@ class _createScreenState extends State<createScreen> {
   Future<void> createUser() async {
     try {
       String phoneNumber = "+$countryCode${phoneNumberController.text}";
-      await signInWithPhoneNumber(context, phoneNumber, (UserCredential credential) {
-        FirebaseFirestore.instance
-            .collection("users")
-            .doc(credential.user?.uid)
-            .set({
-          "email": emailController.text,
-          "name": nameController.text,
-          "phone": phoneNumber,
-          "accountValidated": false,
-          "accountAccepted": false,
-          "rating": 3
-        });
+      await signInWithPhoneNumber(context, phoneNumber, (UserCredential? credential, Exception? e) async {
+        if (credential != null) {
+          try {
+            FirebaseFirestore.instance
+                .collection("users")
+                .doc(credential.user?.uid)
+                .set({
+              "email": emailController.text,
+              "name": nameController.text,
+              "phone": phoneNumber,
+              "accountValidated": false,
+              "accountAccepted": false,
+              "language": null,
+              "appLanguage": Localizations.localeOf(context).toString(),
+              "rating": 3,
+              "disabled": false
+            });
 
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (
-                context) => const loginscreen()));
+            await credentialsOk(credential);
+
+            await accountCreated();
+
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => const homepage()),
+                  (route) => false,
+            );
+          } catch (e) {
+            await Sentry.captureException(e);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(e.toString()),
+                backgroundColor: RedColor
+              ),
+            );
+            setState(() {
+              _isLoading = false;
+            });
+          }
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(e != null ? e.toString() : AppLocalizations.of(context)!.unableToCreateAccount),
+              backgroundColor: RedColor
+            )
+          );
+          setState(() {
+            _isLoading = false;
+          });
+        }
       });
-    } on FirebaseAuthException catch (e) {
+    } on Exception catch (e) {
+      await Sentry.captureException(e);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Unable to create user.'),
-        ),
-      );
-    } on Exception {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Unable to create user.'),
+        SnackBar(
+          content: Text("$e"),
+          duration: const Duration(seconds: 5)
         ),
       );
     }
   }
 
+  Future<void> credentialsOk(UserCredential credential) async {
+    AppUser user = await getUserFirebaseInstance(
+        guideMode, credential.user!);
+    userProvider.setUser(user);
+    user.setFirebaseToken();
+  }
+
+  accountCreated() {
+    return showModalBottomSheet(
+        context: context,
+        backgroundColor: notifier.getbgcolor,
+        elevation: 2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        builder: (BuildContext context) {
+          return SizedBox(
+            height: 600,
+            child: Column(
+              children: [
+                Stack(
+                  alignment: Alignment.topCenter,
+                  children: [
+                    Positioned(
+                      top: 30,
+                      child: CircleAvatar(
+                        radius: 70,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(200),
+                          child: Image.asset('assets/images/Illustration.png'),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      left: 55,
+                      top: -18,
+                      child: Image.asset(
+                        'assets/images/Success.png',
+                        height: 160,
+                      ),
+                    ),
+                    Positioned(
+                      bottom: MediaQuery.of(context).size.height * 0.16,
+                      child: Column(
+                        children: [
+                          Center(
+                            child: Text(
+                              AppLocalizations.of(context)!.accountCreated,
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontFamily: "Gilroy Bold",
+                                  color: notifier.getwhiteblackcolor),
+                            ),
+                          ),
+                          SizedBox(
+                              height:
+                              MediaQuery.of(context).size.height * 0.02),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.90,
+                            child: Text(
+                              AppLocalizations.of(context)!.accountCreatesSuccessfully,
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontFamily: "Gilroy Medium",
+                                  color: notifier.getdarkgreycolor),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.pop(context, true);
+                      },
+                      child: Container(
+                        margin: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height * 0.45,
+                            left: 20,
+                            right: 20),
+                        height: 50,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                          color: notifier.getwhitelogocolor,
+                        ),
+                        child: Center(
+                            child: GestureDetector(
+                                child: Text(AppLocalizations.of(context)!.proceed,
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        color: notifier.getblackwhitecolor,
+                                        fontFamily: "Gilroy Bold")))),
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          );
+        });
+  }
 
   getdarkmodepreviousstate() async {
     final prefs = await SharedPreferences.getInstance();
