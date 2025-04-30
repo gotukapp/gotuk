@@ -116,7 +116,7 @@ class _checkoutState extends State<checkout> {
       appBar: PreferredSize(
           preferredSize: const Size.fromHeight(75),
           child: CustomAppbar(
-              centertext: "Checkout${widget.goNow ? " - GoNow" : ""}" ,
+              centertext: widget.goNow ? AppLocalizations.of(context)!.goNow : AppLocalizations.of(context)!.bookTour ,
               bgcolor: notifier.getbgcolor,
               actioniconcolor: notifier.getwhiteblackcolor,
               leadingiconcolor: notifier.getwhiteblackcolor,
@@ -181,7 +181,7 @@ class _checkoutState extends State<checkout> {
               else
                 tourInfo(context, notifier, tour!),
               if (!widget.goNow && selectedDate != null)
-                Text("Guides available: $guidesAvailable",
+                Text("${AppLocalizations.of(context)!.guidesAvailable} $guidesAvailable",
                     style: TextStyle(
                         fontSize: 18,
                         fontFamily: "Gilroy Bold",
@@ -271,9 +271,9 @@ class _checkoutState extends State<checkout> {
               if (!widget.goNow)
                 ...[ const SizedBox(height: 5),
                 selectDetail(
-                  heading: "Date",
+                  heading: AppLocalizations.of(context)!.date,
                   image: "assets/images/calendar.png",
-                  text: selectedDate != null ? DateFormat('yyyy-MM-dd').format(selectedDate!) : "Select Dates",
+                  text: selectedDate != null ? DateFormat('yyyy-MM-dd').format(selectedDate!) : AppLocalizations.of(context)!.selectDate,
                   icon: Icons.keyboard_arrow_down,
                   onclick: () {
                     Navigator.of(context).push(MaterialPageRoute(
@@ -291,13 +291,13 @@ class _checkoutState extends State<checkout> {
                 )],
               const SizedBox(height: 10),
               selectDetail(
-                  heading: "Time",
+                  heading: AppLocalizations.of(context)!.time,
                   image: "assets/images/timer.png",
                   text: timeSaved
                       ? "$hourSliderValue:${minutesSliderValue == 0
                       ? "00"
                       : minutesSliderValue.toString()}"
-                      : "Select Time",
+                      : AppLocalizations.of(context)!.selectTime,
                   icon: Icons.keyboard_arrow_down,
                   onclick: () {
                     if (selectedDate != null || widget.goNow) {
@@ -307,9 +307,9 @@ class _checkoutState extends State<checkout> {
                   notifier: notifier),
               const SizedBox(height: 10),
               selectDetail(
-                  heading: "Guide Features",
+                  heading: AppLocalizations.of(context)!.guideFeatures,
                   image: "assets/images/guest.png",
-                  text: guideFeaturesSaved ? getAllSelectedLanguages() : "Select Guide Features",
+                  text: guideFeaturesSaved ? getAllSelectedLanguages() : AppLocalizations.of(context)!.selectGuideFeatures,
                   icon: Icons.keyboard_arrow_down,
                   onclick: () {
                     guideBottomSheet().then((value) {
@@ -325,7 +325,7 @@ class _checkoutState extends State<checkout> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Invoice with tax number",
+                      AppLocalizations.of(context)!.invoiceWithTaxNumber,
                       style: TextStyle(
                           fontSize: 16,
                           fontFamily: "Gilroy Bold",
@@ -355,7 +355,7 @@ class _checkoutState extends State<checkout> {
                     controller: taxNumberController,
                     fieldColor: notifier.getfieldcolor,
                     hintColor: notifier.gettextfieldcolor,
-                    text: 'Tax number',
+                    text: AppLocalizations.of(context)!.taxNumber,
                     suffix: null),
                 ],
               Divider(
@@ -366,7 +366,7 @@ class _checkoutState extends State<checkout> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Payment Details",
+                  Text(AppLocalizations.of(context)!.paymentDetails,
                       style: TextStyle(
                           fontSize: 16,
                           color: LogoColor,
@@ -376,7 +376,7 @@ class _checkoutState extends State<checkout> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Tour (Payment made to the guide)",
+                        AppLocalizations.of(context)!.tourPrice,
                         style: TextStyle(
                             fontSize: 14,
                             fontFamily: "Gilroy Medium",
@@ -395,7 +395,7 @@ class _checkoutState extends State<checkout> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Booking Fee",
+                      Text(AppLocalizations.of(context)!.bookingPrice,
                           style: TextStyle(
                               fontSize: 14,
                               fontFamily: "Gilroy Medium",
@@ -411,7 +411,7 @@ class _checkoutState extends State<checkout> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Total (EUR)",
+                      Text(AppLocalizations.of(context)!.totalPrice,
                           style: TextStyle(
                               fontSize: 16,
                               fontFamily: "Gilroy Bold",
@@ -429,16 +429,14 @@ class _checkoutState extends State<checkout> {
                       if (!executingPayment) {
                         if (selectedDate == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                    'Please select a date to proceed.'),
+                              SnackBar(
+                                content: Text(AppLocalizations.of(context)!.selectDateWarning),
                               )
                           );
                         } else if (selectedGuideRef == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                    'There is no guide available for this date/time. Please review the date/time or guide features so we can find a guide for you.'),
+                              SnackBar(
+                                content: Text(AppLocalizations.of(context)!.noGuideAvailableWarning),
                               )
                           );
                         } else {
@@ -463,11 +461,11 @@ class _checkoutState extends State<checkout> {
                             if (docs.isNotEmpty) {
                               bool resultYes = await showConfirmationMessage(
                                   context,
-                                  "Booking Tour",
-                                  "It looks like you already have a tour booked at this time. Are you sure you want to continue?",
+                                  AppLocalizations.of(context)!.bookingTour,
+                                  AppLocalizations.of(context)!.duplicatedTourWarning,
                                       () {}, () {},
-                                  'Yes',
-                                  'No');
+                                  AppLocalizations.of(context)!.yes,
+                                  AppLocalizations.of(context)!.no);
                               if (resultYes) {
                                 paymentModelBottomSheet(selectedGuideRef!);
                               }
@@ -493,7 +491,7 @@ class _checkoutState extends State<checkout> {
                                 ...[CircularProgressIndicator(color: WhiteColor),
                                   const SizedBox(width: 10),
                                 ],
-                              Text("Select Payment",
+                              Text(AppLocalizations.of(context)!.proceedToPayment,
                                   style: TextStyle(
                                       fontSize: 16,
                                       color: WhiteColor,
@@ -586,7 +584,7 @@ class _checkoutState extends State<checkout> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "Guide Features",
+                          AppLocalizations.of(context)!.guideFeatures,
                           style: TextStyle(
                               fontFamily: "Gilroy Bold",
                               fontSize: 18,
@@ -607,9 +605,9 @@ class _checkoutState extends State<checkout> {
                     SizedBox(
                         height: MediaQuery.of(context).size.height * 0.01),
                     selectDetail(
-                        heading: "Preferred language",
+                        heading: AppLocalizations.of(context)!.preferredLanguage,
                         image: "assets/images/language.png",
-                        text: guideFeaturesSaved ? getAllSelectedLanguages() : "Select Language",
+                        text: guideFeaturesSaved ? getAllSelectedLanguages() : AppLocalizations.of(context)!.selectLanguages,
                         icon: Icons.keyboard_arrow_right,
                         onclick: languagesBottomSheet,
                         notifier: notifier),
@@ -622,7 +620,7 @@ class _checkoutState extends State<checkout> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Vehicle Type",
+                              AppLocalizations.of(context)!.vehicleType,
                               style: TextStyle(
                                   fontSize: 16,
                                   color: notifier.getwhiteblackcolor,
@@ -630,7 +628,7 @@ class _checkoutState extends State<checkout> {
                             ),
                             const SizedBox(height: 6),
                             Text(
-                              "Only Electric vehicles (EV)",
+                              AppLocalizations.of(context)!.onlyElectricVehicles,
                               style: TextStyle(
                                   fontSize: 13,
                                   color: greyColor,
@@ -665,7 +663,7 @@ class _checkoutState extends State<checkout> {
                       height: MediaQuery.of(context).size.height * 0.03,
                     ),
                     AppButton(
-                        buttontext: "Continue",
+                        buttontext: AppLocalizations.of(context)!.proceed,
                         onclick: () {
                           Navigator.pop(context, true);
                         })
@@ -697,8 +695,7 @@ class _checkoutState extends State<checkout> {
                           children: [
                             Column(
                               children: [
-                                Text(
-                                  "Hours",
+                                Text(AppLocalizations.of(context)!.hours,
                                   style: TextStyle(
                                       fontSize: 16,
                                       color: BlackColor,
@@ -715,7 +712,7 @@ class _checkoutState extends State<checkout> {
                             Column(
                             children: [
                               Text(
-                                "Minutes",
+                                AppLocalizations.of(context)!.minutes,
                                 style: TextStyle(
                                     fontSize: 16,
                                     color: BlackColor,
@@ -747,7 +744,7 @@ class _checkoutState extends State<checkout> {
                             width: MediaQuery.of(context).size.width * 0.93,
                             child: Center(
                                 child: Text(
-                              "Continue",
+                                  AppLocalizations.of(context)!.proceed,
                               style: TextStyle(
                                   fontSize: 16,
                                   color: WhiteColor,
@@ -786,7 +783,7 @@ class _checkoutState extends State<checkout> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "Preferred Languages",
+                                  AppLocalizations.of(context)!.preferredLanguage,
                                   style: TextStyle(
                                       fontSize: 18,
                                       fontFamily: "Gilroy Bold",
@@ -815,7 +812,7 @@ class _checkoutState extends State<checkout> {
                                   children: [
                                     const SizedBox(height: 8),
                                     language(
-                                      text: checkedLanguages[index]["name"],
+                                      text: AppLocalizations.of(context)!.countryLanguage(checkedLanguages[index]["name"]),
                                       CheckValue: checkedLanguages[index]["value"],
                                       OnChange: (value) {
                                         setState(() {
@@ -841,7 +838,7 @@ class _checkoutState extends State<checkout> {
                                 width: MediaQuery.of(context).size.width * 0.93,
                                 child: Center(
                                     child: Text(
-                                      "Continue",
+                                      AppLocalizations.of(context)!.proceed,
                                       style: TextStyle(
                                           fontSize: 16,
                                           color: WhiteColor,
@@ -890,7 +887,7 @@ class _checkoutState extends State<checkout> {
                 ),
               ),
               CupertinoButton(
-                child: const Text('Confirm'),
+                child: Text(AppLocalizations.of(context)!.confirm),
                 onPressed: () {
                   setState(() {
                     pickupPointSelected = pickupPoints[selectedIndex];
@@ -982,7 +979,7 @@ class _checkoutState extends State<checkout> {
                           children: [
                             Center(
                               child: Text(
-                                "Booking Successfull",
+                                AppLocalizations.of(context)!.bookingConfirmation,
                                 style: TextStyle(
                                     fontSize: 20,
                                     fontFamily: "Gilroy Bold",
@@ -995,7 +992,7 @@ class _checkoutState extends State<checkout> {
                             SizedBox(
                               width: MediaQuery.of(context).size.width * 1,
                               child: Text(
-                                "Congratulations! Enjoy your trip!",
+                                AppLocalizations.of(context)!.bookingCongratulations,
                                 style: TextStyle(
                                     fontSize: 14,
                                     color: notifier.getgreycolor,
@@ -1024,7 +1021,7 @@ class _checkoutState extends State<checkout> {
                             color: Darkblue,
                           ),
                           child: Center(
-                              child: Text("Close",
+                              child: Text(AppLocalizations.of(context)!.proceed,
                                   style: TextStyle(
                                       fontSize: 16,
                                       color: WhiteColor,

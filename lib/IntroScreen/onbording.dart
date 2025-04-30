@@ -275,7 +275,7 @@ class _BoardingScreenState extends State<BoardingPage> {
                               width: double.infinity,
                               child: Center(
                                 child: Text(
-                                  AppLocalizations.of(context)!.onboardingContinue.toUpperCase(),
+                                  AppLocalizations.of(context)!.proceed.toUpperCase(),
                                   style: TextStyle(
                                       fontSize: 16,
                                       color: WhiteColor,

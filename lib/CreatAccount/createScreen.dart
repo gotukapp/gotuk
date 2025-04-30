@@ -416,7 +416,7 @@ class _createScreenState extends State<createScreen> {
                         ),
                         child: Center(
                             child: GestureDetector(
-                                child: Text(AppLocalizations.of(context)!.onboardingContinue,
+                                child: Text(AppLocalizations.of(context)!.proceed,
                                     style: TextStyle(
                                         fontSize: 18,
                                         color: notifier.getblackwhitecolor,
