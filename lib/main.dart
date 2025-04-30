@@ -4,6 +4,7 @@ import 'package:dm/IntroScreen/onbording.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../Providers/userProvider.dart';
@@ -19,6 +20,10 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  Stripe.publishableKey = 'pk_test_51RBeSARmeXtsxkGheJiqmblH1mSC3I2qUevJynwRiaXumAvOWUsL9IldsHzsxbr3Ej1JfKkkbdl0w7HbKweu4l3500I4JDQMBh';
+
+  await Stripe.instance.applySettings();
 
   await SentryFlutter.init(
         (options) {

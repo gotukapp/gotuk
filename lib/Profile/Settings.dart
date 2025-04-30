@@ -4,6 +4,7 @@ import 'package:dm/CreatAccount/login.dart';
 import 'package:dm/Profile/Language.dart';
 import 'package:dm/Profile/MyProfile.dart';
 import 'package:dm/Profile/NotificationSetting.dart';
+import 'package:dm/Profile/privacySettings.dart';
 import 'package:dm/Profile/support.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
@@ -166,8 +167,8 @@ class _SettingsState extends State<Settings> {
                   text: AppLocalizations.of(context)!.privacySettings,
                   icon: Icons.keyboard_arrow_right,
                   onclick: () {
-                    // Navigator.of(context).push(
-                    //     MaterialPageRoute(builder: (context) => Favourite()));
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => PrivacySettings()));
                   },
                   boxcolor: notifier.getdarkmodecolor,
                   ImageColor: notifier.getwhiteblackcolor,

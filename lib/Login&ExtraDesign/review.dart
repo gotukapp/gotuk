@@ -7,6 +7,7 @@ import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../Domain/tour.dart';
 
@@ -36,8 +37,7 @@ class _reviewState extends State<review> {
       appBar: PreferredSize(
           preferredSize: const Size.fromHeight(75),
           child: CustomAppbar(
-              centertext: "Reviews",
-              ActionIcon: Icons.more_vert,
+              centertext: AppLocalizations.of(context)!.reviews,
               bgcolor: notifier.getblackwhitecolor)),
       backgroundColor: notifier.getblackwhitecolor,
       body: SingleChildScrollView(

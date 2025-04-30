@@ -83,7 +83,7 @@ class _TourDetailState extends State<TourDetail> {
                       borderRadius: BorderRadius.circular(50), color: LogoColor),
                   child: Center(
                     child: Text(
-                      "Book Tour",
+                      AppLocalizations.of(context)!.bookTour,
                       style: TextStyle(
                           color: WhiteColor,
                           fontSize: 18,
@@ -106,7 +106,7 @@ class _TourDetailState extends State<TourDetail> {
                       borderRadius: BorderRadius.circular(50), color: LogoColor),
                   child: Center(
                     child: Text(
-                      "Go Now",
+                      AppLocalizations.of(context)!.goNow,
                       style: TextStyle(
                           color: WhiteColor,
                           fontSize: 18,
@@ -222,7 +222,7 @@ class _TourDetailState extends State<TourDetail> {
                                   ),
                                   const SizedBox(width: 10),
                                   Text(
-                                    "(${reviews?.length} Reviews)",
+                                    "(${reviews?.length} ${AppLocalizations.of(context)!.reviews})",
                                     style: TextStyle(
                                         fontSize: 14,
                                         color: notifier.getwhiteblackcolor,
@@ -289,7 +289,7 @@ class _TourDetailState extends State<TourDetail> {
                                               fontFamily: "Gilroy Bold"),
                                         ),
                                         Text(
-                                          " (Price per person ${(tour!.lowPrice/3).toStringAsFixed(1)}€)",
+                                          " (${AppLocalizations.of(context)!.pricePerPerson} ${(tour!.lowPrice/3).toStringAsFixed(1)}€)",
                                           style: TextStyle(
                                               fontFamily: "Gilroy Medium",
                                               fontSize: 14,
@@ -316,7 +316,7 @@ class _TourDetailState extends State<TourDetail> {
                                             fontFamily: "Gilroy Bold"),
                                       ),
                                       Text(
-                                        " (Price per person ${(tour!.highPrice/6).toStringAsFixed(1)}€)",
+                                        " (${AppLocalizations.of(context)!.pricePerPerson} ${(tour!.highPrice/6).toStringAsFixed(1)}€)",
                                         style: TextStyle(
                                             fontFamily: "Gilroy Medium",
                                             fontSize: 14,
@@ -381,7 +381,7 @@ class _TourDetailState extends State<TourDetail> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Reviews",
+                                AppLocalizations.of(context)!.reviews,
                                 style: TextStyle(
                                     fontSize: 16,
                                     fontFamily: "Gilroy Bold",
