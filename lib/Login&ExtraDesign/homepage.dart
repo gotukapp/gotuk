@@ -305,7 +305,10 @@ class _homepageState extends State<homepage> {
       if (docSnapshot.exists) {
         AppUser user = AppUser.fromFirestore(docSnapshot, null);
         userProvider.setUser(user);
-        if (docSnapshot.data()!.containsKey('needSelectTukTuk') && docSnapshot.get("needSelectTukTuk")) {
+        if (user.accountValidated &&
+            user.accountAccepted &&
+            docSnapshot.data()!.containsKey('needSelectTukTuk') &&
+            docSnapshot.get("needSelectTukTuk")) {
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => const SelectTukTuk()));
         }
