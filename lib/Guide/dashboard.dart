@@ -242,29 +242,53 @@ class _DashboardState extends State<Dashboard> {
                                       .of(context)
                                       .size
                                       .height * 0.001),
-                                  Padding(
-                                            padding: const EdgeInsets.symmetric(vertical: 10),
-                                            child: Row(
-                                              children: [
-                                                Image.asset(
-                                                  "assets/images/tuktuk.png",
-                                                  height: 20,
-                                                  width: 20,
-                                                  color: LogoColor,
-                                                ),
-                                                const SizedBox(width: 10),
-                                                Text(
-                                                  guide != null && guide["tuktukLicensePlate"] != null ? guide["tuktukLicensePlate"] : '------',
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      color: notifier.getwhiteblackcolor,
-                                                      fontFamily: "Gilroy Medium"),
-                                                )
-                                              ],
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                    Padding(padding: const EdgeInsets.symmetric(vertical: 10),
+                                        child: Row(
+                                          children: [
+                                            Image.asset(
+                                              "assets/images/tuktuk.png",
+                                              height: 22,
+                                              width: 22,
+                                              color: LogoColor,
+                                            ),
+                                            const SizedBox(width: 10),
+                                            Text(
+                                              guide != null && guide["tuktukLicensePlate"] != null ? guide["tuktukLicensePlate"] : '------',
+                                              style: TextStyle(
+                                                  fontSize: 17,
+                                                  color: notifier.getwhiteblackcolor,
+                                                  fontFamily: "Gilroy Medium"),
                                             )
+                                          ],
                                         )
-                                  ,
-                                  const SizedBox(height: 10),
+                                    ),
+                                    Row(
+                                      children: [
+                                        const SizedBox(width: 150),
+                                        Image.asset(
+                                          "assets/images/star.png",
+                                          height: 22,
+                                        ),
+                                        const SizedBox(width: 2),
+                                        Padding(
+                                          padding: const EdgeInsets.only(top: 1),
+                                          child: Row(
+                                            children: [
+                                              Text(guide != null && guide["rating"] != null ? guide["rating"].toString() : "-",
+                                                style: TextStyle(
+                                                    fontSize: 17,
+                                                    color: notifier.getdarkbluecolor,
+                                                    fontWeight: FontWeight.bold),
+                                              )
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    )
+                                  ]),
                                   Text(AppLocalizations.of(context)!.completedTours,
                                     style: TextStyle(
                                         fontSize: 14,
