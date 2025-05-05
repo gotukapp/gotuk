@@ -578,7 +578,7 @@ class _TripDetailState extends State<TripDetail> {
                                                             color: LogoColor,
                                                           ),
                                                           const SizedBox(width: 5),
-                                                          Text("Preferred language",
+                                                          Text(AppLocalizations.of(context)!.preferredLanguage,
                                                             style: TextStyle(
                                                                 fontSize: 14,
                                                                 color: notifier.getwhiteblackcolor,
@@ -613,7 +613,7 @@ class _TripDetailState extends State<TripDetail> {
                                                             color: LogoColor,
                                                           ),
                                                           const SizedBox(width: 5),
-                                                          Text("Persons",
+                                                          Text(AppLocalizations.of(context)!.persons,
                                                             style: TextStyle(
                                                                 fontSize: 14,
                                                                 color: notifier.getwhiteblackcolor,
@@ -650,7 +650,7 @@ class _TripDetailState extends State<TripDetail> {
                                           borderRadius: BorderRadius.circular(50), color: notifier.getwhitelogocolor),
                                       child: Center(
                                         child: Text(
-                                          "ACCEPT TOUR",
+                                          AppLocalizations.of(context)!.acceptTour,
                                           style: TextStyle(
                                               color: notifier.getblackwhitecolor,
                                               fontSize: 18,
@@ -678,7 +678,7 @@ class _TripDetailState extends State<TripDetail> {
                                             borderRadius: BorderRadius.circular(50), color: greyColor),
                                         child: Center(
                                           child: Text(
-                                            "CANCEL TOUR",
+                                            AppLocalizations.of(context)!.cancelTour,
                                             style: TextStyle(
                                                 color: WhiteColor,
                                                 fontSize: 18,

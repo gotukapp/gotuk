@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../Domain/trip.dart';
 import '../Utils/Colors.dart';
@@ -47,7 +48,7 @@ class _RateTourState extends State<RateTour> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
           backgroundColor: lightGrey,
-          content: Text("Thank you for rating the tour!",
+          content: Text(AppLocalizations.of(context)!.rateTourConfirmation,
           style: TextStyle(
               fontSize: 14,
               fontFamily: "Gilroy Medium",
@@ -69,7 +70,7 @@ class _RateTourState extends State<RateTour> {
         automaticallyImplyLeading: false,
         centerTitle: true,
         backgroundColor: notifier.getblackwhitecolor,
-        title: Text("Rate Your Tour",
+        title: Text(AppLocalizations.of(context)!.rateYourTour,
             style: TextStyle(color: notifier.getwhiteblackcolor,
                 fontFamily: "Gilroy Bold")),
       ),
@@ -79,8 +80,8 @@ class _RateTourState extends State<RateTour> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text("How was your tour?",
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+            Text(AppLocalizations.of(context)!.rateTourQuestion,
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
             const SizedBox(height: 15),
             RatingBar.builder(
               initialRating: _ratingTour,
@@ -104,15 +105,15 @@ class _RateTourState extends State<RateTour> {
             TextField(
               controller: _commentTourController,
               maxLines: 3,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: "Leave a comment",
-                hintText: "Tell us about your experience...",
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                labelText: AppLocalizations.of(context)!.leaveComment,
+                hintText: AppLocalizations.of(context)!.leaveCommentHint,
               ),
             ),
             const SizedBox(height: 20),
-            const Text("How was your Guide?",
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+            Text(AppLocalizations.of(context)!.rateGuideQuestion,
+                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
             const SizedBox(height: 15),
             RatingBar.builder(
               initialRating: _ratingGuide,
@@ -136,10 +137,10 @@ class _RateTourState extends State<RateTour> {
             TextField(
               controller: _commentGuideController,
               maxLines: 3,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: "Leave a comment)",
-                hintText: "Tell us about your experience...",
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                labelText: AppLocalizations.of(context)!.leaveComment,
+                hintText: AppLocalizations.of(context)!.leaveCommentHint,
               ),
             ),
             const SizedBox(height: 50),
@@ -148,7 +149,7 @@ class _RateTourState extends State<RateTour> {
             child: AppButton(
                 bgColor: notifier.getwhitelogocolor,
                 textColor: notifier.getblackwhitecolor,
-                buttontext: "Submit",
+                buttontext: AppLocalizations.of(context)!.submit,
                 onclick: () async {
                   submitRating();
                 })

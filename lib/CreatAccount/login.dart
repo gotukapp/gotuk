@@ -70,7 +70,7 @@ class _loginscreenState extends State<loginscreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "${AppLocalizations.of(context)!.welcomeGotuk}${guideMode ? " Guide" : ""}",
+                        "${AppLocalizations.of(context)!.welcomeGotuk}${guideMode ? " ${AppLocalizations.of(context)!.guide}" : ""}",
                         style: TextStyle(
                           fontSize: 24,
                           fontFamily: "Gilroy Bold",

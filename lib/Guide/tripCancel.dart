@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../Domain/trip.dart';
 import '../Utils/Colors.dart';
@@ -35,7 +36,7 @@ class _TripCancelState extends State<TripCancel> {
     return Scaffold(
       backgroundColor: notifier.getblackwhitecolor,
       appBar: AppBar(
-          title: const Text("Cancel Tour"),
+          title: Text(AppLocalizations.of(context)!.cancelTour),
           backgroundColor: notifier.getblackwhitecolor,
       ),
       body: Padding(
@@ -44,30 +45,23 @@ class _TripCancelState extends State<TripCancel> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             guideTripLayout(context, notifier, widget.trip, false), // Display tour info
-
             const SizedBox(height: 20),
-
             // Warning message
-            const Text(
-              "Canceling this tour will negatively impact your rating. "
-                  "Please provide a valid reason for the cancellation.",
-              softWrap: true,
-              textAlign: TextAlign.justify,
-              style: TextStyle(
+            Text(
+              AppLocalizations.of(context)!.cancelTourWarning,
+              style: const TextStyle(
                   fontSize: 16,
                   fontFamily: "Gilroy Medium",
                   color: Colors.red),
             ),
-
             const SizedBox(height: 20),
-
             // Reason input field
             TextField(
               controller: _reasonController,
               decoration: InputDecoration(
-                labelText: "Cancellation Reason",
+                labelText: AppLocalizations.of(context)!.cancellationReason,
                 border: const OutlineInputBorder(),
-                errorText: _isButtonEnabled ? null : "Reason is required",
+                errorText: _isButtonEnabled ? null : AppLocalizations.of(context)!.cancellationReasonRequired,
               ),
               maxLines: 3,
               onChanged: (value) {
@@ -76,9 +70,7 @@ class _TripCancelState extends State<TripCancel> {
                 });
               },
             ),
-
             const SizedBox(height: 40),
-
             InkWell(
               onTap: () {
                 widget.trip.cancelTour(_reasonController.text);
@@ -91,7 +83,7 @@ class _TripCancelState extends State<TripCancel> {
                     borderRadius: BorderRadius.circular(50), color: greyColor),
                 child: Center(
                   child: Text(
-                    "CANCEL TOUR",
+                    AppLocalizations.of(context)!.cancelTour,
                     style: TextStyle(
                         color: WhiteColor,
                         fontSize: 18,

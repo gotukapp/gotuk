@@ -215,7 +215,7 @@ class _homeState extends State<home> {
                                   borderRadius: BorderRadius.circular(50), color: LogoColor),
                               child: Center(
                                 child: Text(
-                                  "Go Now",
+                                  AppLocalizations.of(context)!.goNow,
                                   style: TextStyle(
                                       color: WhiteColor,
                                       fontSize: 18,
