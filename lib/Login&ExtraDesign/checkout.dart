@@ -130,14 +130,14 @@ class _checkoutState extends State<checkout> {
               if (widget.goNow)
                 ...[
                   if (DateTime.now().hour >= 19)
-                    Text("Reservation for tomorrow",
+                    Text(AppLocalizations.of(context)!.bookingForTomorrow,
                         style: TextStyle(
                             fontSize: 16,
                             color: LogoColor,
                             fontFamily: "Gilroy Bold")
                     )
                   else
-                    Text("Reservation for today",
+                    Text(AppLocalizations.of(context)!.bookingForToday,
                         style: TextStyle(
                           fontSize: 16,
                           color: LogoColor,
@@ -145,7 +145,7 @@ class _checkoutState extends State<checkout> {
                     ),
                   Row(
                     children: [
-                      Text("Date: ",
+                      Text("${AppLocalizations.of(context)!.date}:",
                       style: TextStyle(
                           fontSize: 16,
                           color: notifier.getwhiteblackcolor,
