@@ -8,6 +8,7 @@ import 'package:flutter_timetable/flutter_timetable.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../Domain/trip.dart';
 import '../Utils/Colors.dart';
@@ -132,7 +133,7 @@ class _TimeTableState extends State<TimeTable> {
                           appBar: PreferredSize(
                               preferredSize: const Size.fromHeight(75),
                               child: CustomAppbar(
-                                  centertext: "Calendar",
+                                  centertext: AppLocalizations.of(context)!.calendar,
                                   ActionIcon: null,
                                   bgcolor: notifier.getbgcolor,
                                   actioniconcolor: notifier.getwhiteblackcolor,
@@ -155,7 +156,7 @@ class _TimeTableState extends State<TimeTable> {
                                       ),
                                       const SizedBox(height: 8),
                                       Text(
-                                        "Updating calendar: $progressCount / $totalSlots",
+                                        "${AppLocalizations.of(context)!.updatingCalendar}: $progressCount / $totalSlots",
                                         style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                                       ),
                                     ],

@@ -13,6 +13,7 @@ import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../Domain/appUser.dart';
 import '../Domain/trip.dart';
@@ -71,7 +72,7 @@ class _notificationState extends State<notification> {
                     Row(
                       children: [
                         Text(
-                          "Recent",
+                          AppLocalizations.of(context)!.recent,
                           style: TextStyle(
                               fontSize: 16,
                               color: notifier.getwhiteblackcolor,
@@ -92,7 +93,7 @@ class _notificationState extends State<notification> {
                           clearAllNotifications();
                         },
                         child: Text(
-                          "Clear All",
+                          AppLocalizations.of(context)!.clearAll,
                           style: TextStyle(
                               color: notifier.getwhitelogocolor,
                               fontFamily: "Gilroy Bold"),
@@ -253,7 +254,7 @@ class _notificationState extends State<notification> {
         elevation: 0,
         backgroundColor: notifier.getblackwhitecolor,
         title: Text(
-          "Notification",
+          AppLocalizations.of(context)!.notification,
           style: TextStyle(
               fontSize: 20,
               color: notifier.getwhiteblackcolor,
@@ -282,19 +283,19 @@ class _notificationState extends State<notification> {
 
   String getTitleByType(String type) {
     if (type.startsWith("message")) {
-      return 'Chat Message';
+      return AppLocalizations.of(context)!.chatMessage;
     }
 
     if (type.startsWith("trip booked")) {
-      return 'New Tour Booked';
+      return AppLocalizations.of(context)!.newTourBooked;
     }
 
     if (type.startsWith("trip started")) {
-      return 'Tour Started';
+      return AppLocalizations.of(context)!.tourStarted;
     }
 
     if (type.startsWith("trip finished")) {
-      return 'Tour Finished';
+      return AppLocalizations.of(context)!.tourFinished;
     }
 
     return '';
