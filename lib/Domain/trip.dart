@@ -193,7 +193,7 @@ class Trip {
         WriteBatch batch = FirebaseFirestore.instance.batch();
         batch.set(eventRef, {
           "creationDate": FieldValue.serverTimestamp(),
-          "action": "started",
+          "action": "accepted",
           "reason": "",
           "notes": "",
           "createdBy": FirebaseAuth.instance.currentUser!.uid
