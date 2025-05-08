@@ -1,7 +1,6 @@
 // ignore_for_file: file_names, use_key_in_widget_constructors, unused_field
 
 import 'package:dm/Utils/Colors.dart';
-import 'package:dm/Utils/customwidget%20.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -64,13 +63,21 @@ class CalendarState extends State<Calendar> {
         home: Scaffold(
             appBar: PreferredSize(
                 preferredSize: const Size.fromHeight(60),
-                child: CustomAppbar(
-                    centertext: AppLocalizations.of(context)!.calendar,
-                    ActionIcon: Icons.more_vert,
-                    bgcolor: notifier.getbgcolor,
-                    actioniconcolor: notifier.getwhiteblackcolor,
-                    leadingiconcolor: notifier.getwhiteblackcolor,
-                    titlecolor: notifier.getwhiteblackcolor)),
+                child: AppBar(
+                  elevation: 0,
+                  centerTitle: true,
+                  backgroundColor: notifier.getbgcolor,
+                  leading: BackButton(
+                      color: notifier.getwhiteblackcolor,
+                      onPressed: () {
+                        Navigator.pop(context);
+                      }),
+                  title: Text(
+                    AppLocalizations.of(context)!.calendar,
+                    style: TextStyle(
+                        color: notifier.getwhiteblackcolor, fontFamily: "Gilroy Bold"),
+                  ),
+                )),
             backgroundColor: notifier.getbgcolor,
             // ignore: sized_box_for_whitespace
             bottomNavigationBar: Container(
@@ -82,6 +89,7 @@ class CalendarState extends State<Calendar> {
                         onTap: () {
                           Navigator.pop(context, _selectedDate);
                         },
+                    enableFeedback: true,
                         child: Container(
                           height: 70,
                           decoration: BoxDecoration(

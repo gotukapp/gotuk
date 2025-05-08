@@ -27,9 +27,9 @@ import '../Utils/util.dart';
 
 class checkout extends StatefulWidget {
   final String tourId;
-  final bool goNow;
+  final bool fromHome;
 
-  const checkout({super.key,required this.tourId,required this.goNow});
+  const checkout({super.key,required this.tourId, required this.fromHome});
 
   @override
   State<checkout> createState() => _checkoutState();
@@ -39,6 +39,7 @@ class _checkoutState extends State<checkout> {
   late ColorNotifier notifier;
   late UserProvider userProvider;
 
+  bool goNow = false;
   bool masterCard = false;
   bool visa = false;
   bool withTaxNumber = false;
@@ -58,7 +59,7 @@ class _checkoutState extends State<checkout> {
   int minutesSliderValue = 0;
   int minimumHourSlider = 9;
   int maximumHourSlider = 19;
-  DateTime minimumDate = DateTime.now().add(const Duration(days: 1));
+  DateTime minimumDate = DateTime.now();
   DateTime maximumDate = DateTime.now().add(const Duration(days: 32));
 
   bool timeSaved = false;
@@ -94,19 +95,11 @@ class _checkoutState extends State<checkout> {
 
   @override
   Widget build(BuildContext context) {
-    if(widget.goNow){
-      tours.addAll(Tour.availableTours);
-      carrosselDefaultPage = Tour.availableTours.indexOf(tour!);
-      if (DateTime.now().hour >= 19) {
-        selectedDate = DateTime.now().add(const Duration(hours: 24));
-      } else {
-        minimumHourSlider = DateTime.now().hour + 1;
-        selectedDate = DateTime.now();
-      }
-    } else {
-      if (DateTime.now().hour >= 19) {
-        minimumDate = DateTime.now().add(const Duration(days: 2));
-      }
+    tours.addAll(Tour.availableTours);
+    carrosselDefaultPage = Tour.availableTours.indexOf(tour!);
+
+    if (DateTime.now().hour >= 19) {
+      minimumDate = DateTime.now().add(const Duration(days: 1));
     }
 
     userProvider = Provider.of<UserProvider>(context);
@@ -116,7 +109,7 @@ class _checkoutState extends State<checkout> {
       appBar: PreferredSize(
           preferredSize: const Size.fromHeight(75),
           child: CustomAppbar(
-              centertext: widget.goNow ? AppLocalizations.of(context)!.goNow : AppLocalizations.of(context)!.bookTour ,
+              centertext: AppLocalizations.of(context)!.bookTour ,
               bgcolor: notifier.getbgcolor,
               actioniconcolor: notifier.getwhiteblackcolor,
               leadingiconcolor: notifier.getwhiteblackcolor,
@@ -127,38 +120,7 @@ class _checkoutState extends State<checkout> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (widget.goNow)
-                ...[
-                  if (DateTime.now().hour >= 19)
-                    Text(AppLocalizations.of(context)!.bookingForTomorrow,
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: LogoColor,
-                            fontFamily: "Gilroy Bold")
-                    )
-                  else
-                    Text(AppLocalizations.of(context)!.bookingForToday,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: LogoColor,
-                          fontFamily: "Gilroy Bold")
-                    ),
-                  Row(
-                    children: [
-                      Text("${AppLocalizations.of(context)!.date}:",
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: notifier.getwhiteblackcolor,
-                          fontFamily: "Gilroy Bold")),
-                      Text(DateFormat('yyyy-MM-dd').format(selectedDate!),
-                          style: TextStyle(
-                              fontSize: 18,
-                              color: notifier.getwhiteblackcolor,
-                              fontFamily: "Gilroy Medium"))
-                    ]),
-                  const SizedBox(height: 10)
-                ],
-              if (widget.goNow)
+              if (widget.fromHome)
                 CarouselSlider(
                 options: CarouselOptions(
                     height: 110.0,
@@ -180,7 +142,7 @@ class _checkoutState extends State<checkout> {
               )
               else
                 tourInfo(context, notifier, tour!),
-              if (!widget.goNow && selectedDate != null)
+              if (timeSaved)
                 Text("${AppLocalizations.of(context)!.guidesAvailable} $guidesAvailable",
                     style: TextStyle(
                         fontSize: 18,
@@ -256,21 +218,8 @@ class _checkoutState extends State<checkout> {
                   ),
                 ],
               ),
-              if (widget.goNow)
-                ...[const SizedBox(height: 10),
-                  selectDetail(
-                    heading: AppLocalizations.of(context)!.pickupPoint,
-                    image: "assets/images/location.png",
-                    text: pickupPointSelected ?? "Select Pickup Point",
-                    icon: Icons.keyboard_arrow_down,
-                    onclick: () {
-                      pickupPointBottomSheet(tour!.pickupPoints);
-                    },
-                    notifier: notifier
-                )],
-              if (!widget.goNow)
-                ...[ const SizedBox(height: 5),
-                selectDetail(
+              const SizedBox(height: 5),
+              selectDetail(
                   heading: AppLocalizations.of(context)!.date,
                   image: "assets/images/calendar.png",
                   text: selectedDate != null ? DateFormat('yyyy-MM-dd').format(selectedDate!) : AppLocalizations.of(context)!.selectDate,
@@ -278,17 +227,19 @@ class _checkoutState extends State<checkout> {
                   onclick: () {
                     Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => Calendar(selectedDate: selectedDate,
-                              minDate: minimumDate,
-                              maxDate: maximumDate),
+                          minDate: minimumDate,
+                          maxDate: maximumDate),
                     )).then((value) {
-                      checkGuidesAvailability();
-                      setState(() {
-                        selectedDate = value; // you receive here
-                      });
+                      if (value != null) {
+                        setState(() {
+                          goNow = isGoNow(value);
+                          selectedDate = value;
+                        });
+                      }
                     });
                   },
                   notifier: notifier
-                )],
+              ),
               const SizedBox(height: 10),
               selectDetail(
                   heading: AppLocalizations.of(context)!.time,
@@ -300,11 +251,23 @@ class _checkoutState extends State<checkout> {
                       : AppLocalizations.of(context)!.selectTime,
                   icon: Icons.keyboard_arrow_down,
                   onclick: () {
-                    if (selectedDate != null || widget.goNow) {
+                    if (selectedDate != null) {
                       timerBottomSheet();
                     }
                   },
                   notifier: notifier),
+              if (goNow)
+                ...[const SizedBox(height: 10),
+                  selectDetail(
+                      heading: AppLocalizations.of(context)!.pickupPoint,
+                      image: "assets/images/location.png",
+                      text: pickupPointSelected ?? "Select Pickup Point",
+                      icon: Icons.keyboard_arrow_down,
+                      onclick: () {
+                        pickupPointBottomSheet(tour!.pickupPoints);
+                      },
+                      notifier: notifier
+                  )],
               const SizedBox(height: 10),
               selectDetail(
                   heading: AppLocalizations.of(context)!.guideFeatures,
@@ -427,19 +390,8 @@ class _checkoutState extends State<checkout> {
                   InkWell(
                     onTap: () {
                       if (!executingPayment) {
-                        if (selectedDate == null) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(AppLocalizations.of(context)!.selectDateWarning),
-                              )
-                          );
-                        } else if (selectedGuideRef == null) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(AppLocalizations.of(context)!.noGuideAvailableWarning),
-                              )
-                          );
-                        } else {
+                        bool isOK = validateBookingParameters(context);
+                        if (isOK) {
                           Query<Map<String, dynamic>> pendingTours = Trip
                               .getPendingTours();
                           pendingTours.get().then((result) async {
@@ -676,7 +628,7 @@ class _checkoutState extends State<checkout> {
   }
 
   timerBottomSheet() {
-    hourSliderValue = hourSliderValue < minimumHourSlider ? minimumHourSlider : hourSliderValue;
+    validateHoursRange();
     showModalBottomSheet(
         backgroundColor: notifier.getbgcolor,
         context: context,
@@ -1037,41 +989,6 @@ class _checkoutState extends State<checkout> {
         });
   }
 
-
-  // PaymentCard(
-  //     {Function(bool?)? OnChage, String? image, CardName, bool? check}) {
-  //   return Row(
-  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //     children: [
-  //       Row(
-  //         mainAxisAlignment: MainAxisAlignment.spaceAround,
-  //         children: [
-  //           Image.asset(
-  //             image!,
-  //             height: 25,
-  //           ),
-  //           Text(
-  //             CardName,
-  //             style: TextStyle(fontSize: 15, fontFamily: "Gilroy Bold"),
-  //           ),
-  //         ],
-  //       ),
-  //       SizedBox(width: 25),
-
-  //       // SizedBox(width: MediaQuery.of(context).size.width / 2.61),
-  //       Row(
-  //         children: [
-  //           Checkbox(
-  //               shape: RoundedRectangleBorder(
-  //                   borderRadius: BorderRadius.circular(5)),
-  //               value: check,
-  //               activeColor: Darkblue,
-  //               onChanged: OnChage!),
-  //         ],
-  //       ),
-  //     ],
-  //   );
-  // }
   getdarkmodepreviousstate() async {
     final prefs = await SharedPreferences.getInstance();
     bool? previusstate = prefs.getBool("setIsDark");
@@ -1129,25 +1046,25 @@ class _checkoutState extends State<checkout> {
           hour: hourSliderValue, minute: minutesSliderValue, second: 0, millisecond: 0, microsecond: 0);
 
       DocumentReference docRef = await Trip.addTrip(
-          widget.goNow ? null : selectedGuideRef,
+          goNow ? null : selectedGuideRef,
           tour!.id,
           tripDate,
           smallPriceSelected ? 4 : 6,
-          widget.goNow ? 'pending' : 'booked',
+          goNow ? 'pending' : 'booked',
           getAllSelectedLanguages(),
           masterCard ? 'mastercard' : 'visa',
           '',
           withTaxNumber,
           taxNumberController.text,
           onlyElectricVehicles,
-          widget.goNow ? 'gonow' : 'booking',
+          goNow ? 'gonow' : 'booking',
           tour!.getFeePrice(smallPriceSelected),
           tour!.getTourPrice(smallPriceSelected)
           );
 
       newTripId = docRef.id;
 
-      if (!widget.goNow) {
+      if (!goNow) {
         await AppUser.updateUserUnavailability(selectedGuideRef!.id, tour!, selectedDate!, hourSliderValue, minutesSliderValue, false);
       }
 
@@ -1158,5 +1075,54 @@ class _checkoutState extends State<checkout> {
       );
       return false;
     }
+  }
+
+  bool isGoNow(value) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final tomorrow = today.add(const Duration(days: 1));
+    final inputDate = DateTime(value.year, value.month, value.day);
+
+    if (inputDate == today && now.hour <= 19) {
+      return true;
+    } else if (inputDate == tomorrow && now.hour >= 19) {
+      return true;
+    }
+    return false;
+  }
+
+  void validateHoursRange() {
+    if (isGoNow(selectedDate) && DateTime.now().hour <= 19) {
+      minimumHourSlider = DateTime.now().hour + 1;
+    } else {
+      minimumHourSlider = 9;
+    }
+    hourSliderValue = hourSliderValue < minimumHourSlider ? minimumHourSlider : hourSliderValue;
+  }
+
+  bool validateBookingParameters(BuildContext context) {
+    if (selectedDate == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.selectDateWarning),
+          )
+      );
+      return false;
+    } else if (!timeSaved) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.selectTimeWarning),
+          )
+      );
+      return false;
+    } else if (selectedGuideRef == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.noGuideAvailableWarning),
+          )
+      );
+      return false;
+    }
+    return true;
   }
 }
