@@ -31,16 +31,20 @@ void main() async {
       options.tracesSampleRate = 1.0;
       options.profilesSampleRate = 1.0;
     },
-    appRunner: () => runApp(
-      MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (_) => ColorNotifier()),
-          ChangeNotifierProvider(create: (_) => UserProvider())
-        ],
-        child: BoardingScreen(),
-      ),
-    )
-  );
+    appRunner: () async
+    {
+      await Stripe.instance.applySettings();
+
+      runApp(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (_) => ColorNotifier()),
+            ChangeNotifierProvider(create: (_) => UserProvider())
+          ],
+          child: BoardingScreen(),
+        ),
+      );
+    });
 }
 
 class BoardingScreen extends StatelessWidget {

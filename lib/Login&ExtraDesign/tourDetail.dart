@@ -65,58 +65,29 @@ class _TourDetailState extends State<TourDetail> {
       bottomNavigationBar: Container(
         color: notifier.getblackwhitecolor,
         child: Padding(
-          padding: const EdgeInsets.only(left: 12, right: 12, top: 10, bottom: 30),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              InkWell(
-                onTap: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(
-                      builder: (context) => checkout(tourId: tour!.id, goNow: false)))
-                      .then((value) => print('ok Navigat'));
-                },
-                child: Container(
-                  height: 50,
-                  width: MediaQuery.of(context).size.width * 0.4,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50), color: LogoColor),
-                  child: Center(
-                    child: Text(
-                      AppLocalizations.of(context)!.bookTour,
-                      style: TextStyle(
-                          color: WhiteColor,
-                          fontSize: 18,
-                          fontFamily: "Gilroy Bold"),
-                    ),
-                  ),
+          padding: const EdgeInsets.only(left: 12, right: 12, top: 10, bottom: 40),
+          child: InkWell(
+            onTap: () {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(
+                  builder: (context) => checkout(tourId: tour!.id, fromHome: false)))
+                  .then((value) => print('ok Navigat'));
+            },
+            child: Container(
+              height: 50,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50), color: LogoColor),
+              child: Center(
+                child: Text(
+                  AppLocalizations.of(context)!.goNow,
+                  style: TextStyle(
+                      color: WhiteColor,
+                      fontSize: 18,
+                      fontFamily: "Gilroy Bold"),
                 ),
               ),
-              InkWell(
-                onTap: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(
-                          builder: (context) => checkout(tourId: tour!.id, goNow: true)))
-                      .then((value) => print('ok Navigat'));
-                },
-                child: Container(
-                  height: 50,
-                  width: MediaQuery.of(context).size.width * 0.4,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50), color: LogoColor),
-                  child: Center(
-                    child: Text(
-                      AppLocalizations.of(context)!.goNow,
-                      style: TextStyle(
-                          color: WhiteColor,
-                          fontSize: 18,
-                          fontFamily: "Gilroy Bold"),
-                    ),
-                  ),
-                ),
-              )
-            ],
-          ),
+            ),
+          )
         ),
       ),
       backgroundColor: notifier.getblackwhitecolor,
@@ -274,7 +245,7 @@ class _TourDetailState extends State<TourDetail> {
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Text(
-                                          "1-3",
+                                          "1-4",
                                           style: TextStyle(
                                               fontSize: 16,
                                               color: notifier.getwhiteblackcolor,
@@ -301,7 +272,7 @@ class _TourDetailState extends State<TourDetail> {
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "4-6",
+                                        "5-6",
                                         style: TextStyle(
                                             fontSize: 16,
                                             color: notifier.getwhiteblackcolor,
