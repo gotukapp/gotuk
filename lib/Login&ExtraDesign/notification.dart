@@ -298,6 +298,10 @@ class _notificationState extends State<notification> {
       return AppLocalizations.of(context)!.tourFinished;
     }
 
+    if (type.startsWith("trip canceled")) {
+      return AppLocalizations.of(context)!.tourCanceled;
+    }
+
     return '';
   }
 
