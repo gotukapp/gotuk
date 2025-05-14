@@ -260,7 +260,7 @@ class _TourDetailState extends State<TourDetail> {
                                               fontFamily: "Gilroy Bold"),
                                         ),
                                         Text(
-                                          " (${AppLocalizations.of(context)!.pricePerPerson} ${(tour!.lowPrice/3).toStringAsFixed(1)}€)",
+                                          " (${AppLocalizations.of(context)!.pricePerPerson} ${(tour!.lowPrice/4).toStringAsFixed(1)}€)",
                                           style: TextStyle(
                                               fontFamily: "Gilroy Medium",
                                               fontSize: 14,
@@ -319,7 +319,7 @@ class _TourDetailState extends State<TourDetail> {
                               )
                             ],
                           ),
-                          /*
+
                           const SizedBox(height: 15),
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -334,7 +334,7 @@ class _TourDetailState extends State<TourDetail> {
                               InkWell(
                                   onTap: () {
                                     Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => const FullMap(),
+                                      builder: (context) => FullMap(tour!.id),
                                     ));
                                   },
                                   child: Text(
@@ -346,7 +346,7 @@ class _TourDetailState extends State<TourDetail> {
                                   )
                               )
                             ],
-                          ),*/
+                          ),
                           SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -190,7 +190,7 @@
     "selectTimeWarning": "Por favor selecciona uma hora para prosseguir.",
     "noGuideAvailableWarning": "Não existe nenhum guia disponível para a data e hora seleccionadas. Revê a data/hora ou as características do guia para que possamos encontrar um guia para ti.",
     "bookingTour": "Reserva de Tour",
-    "duplicatedTourWarning": "Parece que já tens um tour reservado para esta data. Tem a certeza que queres prosseguir?",
+    "duplicatedTourWarning": "Parece que já tens um tour reservado para esta data. Tens a certeza que queres prosseguir?",
     "proceedToPayment": "Prosseguir para Pagamento",
     "hours": "Horas",
     "minutes": "Minutos",
@@ -232,5 +232,6 @@
     "tourCanceled": "Tour Cancelado",
     "cancellationReason": "Motivo do Cancelamento",
     "cancellationReasonRequired": "Obrigatório indicar o motivo",
-    "cancelTourWarning": "Cancelar este tour terá impacto negativo na tua classificação.\nPor favor apresenta um motivo válido para o cancelamento."
+    "cancelTourWarning": "Cancelar este tour terá impacto negativo na tua classificação.\nPor favor apresenta um motivo válido para o cancelamento.",
+    "tourHistory": "Histórico de Tours"
 }
