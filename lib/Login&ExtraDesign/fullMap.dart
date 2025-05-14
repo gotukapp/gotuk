@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
@@ -11,17 +13,10 @@ import '../Utils/customwidget .dart';
 import '../Utils/dark_lightmode.dart';
 import '../Domain/tour.dart';
 
-class FullMapPage extends StatelessWidget {
-  const FullMapPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const FullMap();
-  }
-}
-
 class FullMap extends StatefulWidget {
-  const FullMap({super.key});
+  final String tourId;
+
+  const FullMap(this.tourId, {super.key});
 
   @override
   State createState() => FullMapState();
@@ -32,11 +27,10 @@ class FullMapState extends State<FullMap> {
   var isLight = true;
   late ColorNotifier notifier;
   late Circle circle;
-  late Timer routeTimer;
   late Timer showStarPoint;
   bool showStarPointIsActive = false;
   int index = 0;
-  late OverlayEntry overlayEntry;
+  List<LatLng> routeCoordinates = [];
 
   Future<void> addImageFromAsset(String name, String assetName) async {
     final bytes = await rootBundle.load(assetName);
@@ -44,180 +38,148 @@ class FullMapState extends State<FullMap> {
     return mapController!.addImage(name, list);
   }
 
-  _onMapCreated(MapLibreMapController controller) {
-    mapController = controller;
-    Tour tour1 = Tour.availableTours[0];
-    if (tour1.coords != null) {
-      List<LatLng> lineCoordinates = tour1.coords!
-          .map((c) => LatLng(c["lat"], c["lng"]))
-          .toList();
+  double markerProgress = 0.0;
 
-      if (lineCoordinates.isNotEmpty) {
-        LatLngBounds bounds = LatLngBounds(
-          southwest: lineCoordinates.reduce((a, b) =>
-              LatLng(a.latitude < b.latitude ? a.latitude : b.latitude,
-                  a.longitude < b.longitude ? a.longitude : b.longitude)),
-          northeast: lineCoordinates.reduce((a, b) =>
-              LatLng(a.latitude > b.latitude ? a.latitude : b.latitude,
-                  a.longitude > b.longitude ? a.longitude : b.longitude)),
-        );
-        mapController!.moveCamera(CameraUpdate.newLatLngBounds(bounds));
-      }
-    }
-  }
+  List<List<double>> rawCoords = [];
+  Future<void> uploadRoute(String tourId) async {
+    final routeRef = FirebaseFirestore.instance
+        .collection('tours')
+        .doc(tourId)
+        .collection('route');
 
-
-
-  rotateCamera(position) async {
-    print(position);
-    await mapController?.animateCamera(CameraUpdate.newCameraPosition(
-      CameraPosition( target: LatLng(position["lat"], position["lng"]),
-        zoom: 17,
-        bearing: position["course"].toDouble(),
-        tilt: 60)
-    ));
-  }
-
-  _onStyleLoadedCallback() async {
-    Tour tour1 = Tour.availableTours[0];
-    if (tour1.coords != null && tour1.starPoints != null) {
-      addImageFromAsset("star-marker", "assets/images/star.png");
-      mapController?.addLine(
-        LineOptions(
-            draggable: false,
-            lineColor: "#ff0000",
-            lineWidth: 4.0,
-            lineOpacity: 0.7,
-            geometry: tour1.coords!
-                .map((c) => LatLng(c["lat"], c["lng"]))
-                .toList()
-        ),
-      );
-
-      late List points = [];
-      for (var a in tour1.starPoints!) {
-        points.add({
-          "type": "Feature",
-          "id": a["index"],
-          "properties": {
-            "name": a["name"],
-          },
-          "geometry": {
-            "type": "Point",
-            "coordinates": [
-              tour1.coords![a["index"]]["lng"],
-              tour1.coords![a["index"]]["lat"]
-            ]
-          }
-        });
-      }
-      dynamic _points = {
-        "type": "FeatureCollection",
-        "features": points
-      };
-
-      await mapController!.addGeoJsonSource("points", _points);
-
-      await mapController!.addSymbolLayer(
-        "points",
-        "symbols",
-        const SymbolLayerProperties(
-            iconImage: "star-marker",
-            //  "{type}-15",
-            iconSize: 0.8,
-            iconAllowOverlap: true,
-            textField: [Expressions.get, "name"],
-            textSize: 13,
-            textAllowOverlap: true,
-            textFont: ['DIN Offc Pro Bold', 'Arial Unicode MS Regular'],
-            textAnchor: 'top',
-            textOffset: [ Expressions.literal, [0, 0.8]],
-            textColor: '#000000',
-            textHaloBlur: 1,
-            textHaloColor: '#ffffff',
-            textHaloWidth: 0.8
-        ),
-      );
-
-      circle = await mapController!.addCircle(
-        CircleOptions(
-            geometry: LatLng(tour1.coords![0]["lat"], tour1.coords![0]["lng"]),
-            circleColor: BlackColor.toString()),
-      );
-      showStarPointImage(tour1.starPoints![0]["img"]);
-
-      List<dynamic> startPointsIndex = tour1.starPoints!
-          .map((a) => a["index"])
-          .toList();
-      routeTimer = Timer.periodic(const Duration(milliseconds: 1000), (t) {
-        if (!showStarPointIsActive) {
-          index = index + 1;
-        }
-
-        if (index == tour1.coords!.length) {
-          index = 0;
-        }
-
-        if (!showStarPointIsActive) {
-          _updateSelectedCircle(CircleOptions(
-              geometry: LatLng(
-                  tour1.coords![index]["lat"], tour1.coords![index]["lng"]),
-              circleColor: BlackColor.toString()));
-
-          rotateCamera(tour1.coords![index]);
-        }
-
-        if (startPointsIndex.contains(index)) {
-          dynamic starPoint = tour1.starPoints!.firstWhere((a) =>
-          a["index"] == index);
-
-          overlayEntry.remove();
-          showStarPointImage(starPoint["img"]);
-
-          if (!showStarPointIsActive) {
-            showStarPointIsActive = true;
-            showStarPoint = Timer(const Duration(seconds: 5), () {
-              showStarPointIsActive = false;
-            });
-          }
-        }
+    for (int i = 0; i < rawCoords.length; i++) {
+      final coord = rawCoords[i];
+      await routeRef.add({
+        'order': i,
+        'coordinates': GeoPoint(coord[1], coord[0]), // lat, lng
       });
     }
   }
 
-  void showStarPointImage(String img) {
-    overlayEntry = OverlayEntry(
-        builder: (context) => Positioned(
-          bottom: 0,
-          child: Material(
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height * 0.3,
-              color: WhiteColor,
-              child: Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(img),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  child: null
-              ),
-            ),
+  Future<void> loadRoute() async {
+    final tourId = widget.tourId;
+    final snapshot = await FirebaseFirestore.instance
+        .collection('tours')
+        .doc(tourId)
+        .collection('route')
+        .orderBy('order') // ensure correct sequence
+        .get();
+
+    setState(() {
+      routeCoordinates = snapshot.docs.map((doc) {
+        final geoPoint = doc['coordinates'] as GeoPoint;
+        return LatLng(geoPoint.latitude, geoPoint.longitude);
+      }).toList();
+    });
+  }
+
+  _onMapCreated(MapLibreMapController controller) async {
+    mapController = controller;
+  }
+
+  Future<void> followRoute(
+      List<LatLng> route,
+      {double zoom = 17, double tilt = 60, Duration stepDuration = const Duration(milliseconds: 500)}
+      ) async {
+    if (route.length < 2) return;
+
+    for (int i = 0; i < route.length - 1; i++) {
+      final current = route[i];
+      final next = route[i + 1];
+
+      final bearing = _calculateBearing(current, next);
+
+      await mapController?.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(
+            target: next,
+            zoom: zoom,
+            bearing: bearing,
+            tilt: tilt,
           ),
-        )
-    );
+        ),
+        duration: stepDuration,
+      );
 
-    Overlay.of(context).insert(overlayEntry);
+      await Future.delayed(stepDuration);
+    }
   }
 
-  void _updateSelectedCircle(CircleOptions changes) {
-    mapController?.updateCircle(circle, changes);
+  double _calculateBearing(LatLng from, LatLng to) {
+    final lat1 = from.latitude * (pi / 180);
+    final lat2 = to.latitude * (pi / 180);
+    final lon1 = from.longitude * (pi / 180);
+    final lon2 = to.longitude * (pi / 180);
+    final dLon = lon2 - lon1;
+
+    final y = sin(dLon) * cos(lat2);
+    final x = cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(dLon);
+    final bearing = atan2(y, x) * (180 / pi);
+    return (bearing + 360) % 360;
   }
 
-  static const CameraPosition _kInitialPosition = CameraPosition(
+  rotateCamera(position, bearing, duration, zoom) async {
+      await mapController?.animateCamera(CameraUpdate.newCameraPosition(
+          CameraPosition(
+            target: position,
+            zoom: zoom,
+            bearing: bearing,
+            tilt: 60,)
+      ), duration: Duration(seconds: duration));
+  }
+
+  LatLng getSouthWest(List<LatLng> points) {
+    double minLat = points.map((p) => p.latitude).reduce((a, b) => a < b ? a : b);
+    double minLng = points.map((p) => p.longitude).reduce((a, b) => a < b ? a : b);
+    return LatLng(minLat, minLng);
+  }
+
+  LatLng getNorthEast(List<LatLng> points) {
+    double maxLat = points.map((p) => p.latitude).reduce((a, b) => a > b ? a : b);
+    double maxLng = points.map((p) => p.longitude).reduce((a, b) => a > b ? a : b);
+    return LatLng(maxLat, maxLng);
+  }
+
+  Symbol? movingSymbol;
+
+
+  _onStyleLoadedCallback() async {
+    await loadRoute();
+    if (routeCoordinates.isNotEmpty) {
+      addImageFromAsset("star-marker", "assets/images/star.png");
+      final routeLine = <LatLng>[...routeCoordinates];
+      mapController?.addLine(
+        LineOptions(
+            draggable: false,
+            lineColor: "#ff0000",
+            lineWidth: 6.0,
+            lineOpacity: 0.7,
+            geometry: routeLine
+        ),
+      );
+
+      if (routeLine.isNotEmpty) {
+        await mapController?.animateCamera(
+          CameraUpdate.newLatLngBounds(
+            LatLngBounds(
+              southwest: getSouthWest(routeLine),
+              northeast: getNorthEast(routeLine),
+            ),
+            left: 24,
+            top: 24,
+            right: 24,
+            bottom: 24,
+          )
+        , duration: const Duration(seconds: 3));
+
+        await tourRoute(widget.tourId);
+      }
+    }
+  }
+
+  CameraPosition kInitialPosition = const CameraPosition(
     target: LatLng(38.7100, -9.1307),
-    zoom: 13,
+    zoom: 10,
   );
 
   @override
@@ -237,15 +199,13 @@ class FullMapState extends State<FullMap> {
       body: MapLibreMap(
         styleString: 'https://api.maptiler.com/maps/satellite/style.json?key=c9mafO6rAK56K3BOW5w1',
         onMapCreated: _onMapCreated,
-        initialCameraPosition: _kInitialPosition,
+        initialCameraPosition: kInitialPosition,
         onStyleLoadedCallback: _onStyleLoadedCallback,
       ));
   }
 
   @override
   void dispose() {
-    overlayEntry.remove();
-    routeTimer.cancel();
     super.dispose();
   }
 
@@ -257,6 +217,53 @@ class FullMapState extends State<FullMap> {
       notifier.setIsDark = false;
     } else {
       notifier.setIsDark = previusstate;
+    }
+  }
+
+
+
+  Future<void> tourRoute(String tourId) async {
+    if (tourId == 'iFeHZGf61ZR6RsCxZFUf') {
+      await rotateCamera(routeCoordinates[2], 160.0, 4, 17.0);
+      rotateCamera(routeCoordinates[105], 260.0, 9, 15.0);
+      await Future.delayed(const Duration(seconds: 6));
+      rotateCamera(routeCoordinates[225], 250.0, 8, 14.0);
+      await Future.delayed(const Duration(seconds: 6));
+      rotateCamera(routeCoordinates[300], 250.0, 10, 16.0);
+      await Future.delayed(const Duration(seconds: 8));
+      rotateCamera(routeCoordinates[330], 80.0, 7, 15.0);
+      await Future.delayed(const Duration(seconds: 4));
+      rotateCamera(routeCoordinates[360], 85.0, 6, 13.5);
+    }
+
+    if (tourId == 'iPvTzM9QAK99KjlmWOQc') {
+      await rotateCamera(routeCoordinates[2], 310.0, 4, 17.0);
+      rotateCamera(routeCoordinates[60], 300.0, 9, 16.0);
+      await Future.delayed(const Duration(seconds: 6));
+      rotateCamera(routeCoordinates[90], 250.0, 8, 15.0);
+      await Future.delayed(const Duration(seconds: 6));
+      rotateCamera(routeCoordinates[120], 310.0, 8, 15.0);
+      await Future.delayed(const Duration(seconds: 6));
+      rotateCamera(routeCoordinates[140], 310.0, 8, 16.0);
+      await Future.delayed(const Duration(seconds: 6));
+      rotateCamera(routeCoordinates[110], 70.0, 8, 14.0);
+    }
+
+    if (tourId == 'lrBbhAD64JMbq81yjUAF') {
+      await rotateCamera(routeCoordinates[2], 80.0, 4, 17.0);
+      rotateCamera(routeCoordinates[45], 280.0, 9, 16.0);
+      await Future.delayed(const Duration(seconds: 8));
+      rotateCamera(routeCoordinates[95], 200.0, 8, 16.0);
+      await Future.delayed(const Duration(seconds: 6));
+      rotateCamera(routeCoordinates[170], 320.0, 8, 16.0);
+      await Future.delayed(const Duration(seconds: 6));
+      rotateCamera(routeCoordinates[210], 5.0, 8, 16.0);
+      await Future.delayed(const Duration(seconds: 6));
+      rotateCamera(routeCoordinates[305], 5.0, 8, 16.0);
+      await Future.delayed(const Duration(seconds: 6));
+      rotateCamera(routeCoordinates[320], 100.0, 8, 15.0);
+      await Future.delayed(const Duration(seconds: 6));
+      rotateCamera(routeCoordinates[315], 190.0, 8, 14.0);
     }
   }
 }
