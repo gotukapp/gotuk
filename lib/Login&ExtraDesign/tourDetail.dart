@@ -338,7 +338,7 @@ class _TourDetailState extends State<TourDetail> {
                                     ));
                                   },
                                   child: Text(
-                                    "View Route Details",
+                                    AppLocalizations.of(context)!.viewRouteDetails,
                                     style: TextStyle(
                                         fontSize: 16,
                                         color: notifier.getdarkbluecolor,

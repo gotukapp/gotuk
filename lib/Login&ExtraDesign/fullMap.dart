@@ -8,10 +8,8 @@ import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../Utils/Colors.dart';
 import '../Utils/customwidget .dart';
 import '../Utils/dark_lightmode.dart';
-import '../Domain/tour.dart';
 
 class FullMap extends StatefulWidget {
   final String tourId;
@@ -197,7 +195,7 @@ class FullMapState extends State<FullMap> {
               titlecolor: notifier.getwhiteblackcolor)),
       backgroundColor: notifier.getblackwhitecolor,
       body: MapLibreMap(
-        styleString: 'https://api.maptiler.com/maps/satellite/style.json?key=c9mafO6rAK56K3BOW5w1',
+        styleString: 'https://maps.geo.eu-south-2.amazonaws.com/maps/v0/maps/gotuk/style-descriptor?key=v1.public.eyJqdGkiOiIxNTc3NWE1NS00NjJmLTQzMGUtOTkxZS0zMjM4ODVjMjc3ZWIifbXmeDGXMAZqEl2sUE6KYfKX_E4EqSN4RpOtV84uQDoivjwmekY429E6K4EYjOxYDLhdXwpOO-qR4-zHkDsuzb_Eb6BbKLzkr6nO27fG13B59qntX34q7FXlFnrKpTMNNLE2uQNBq0DmsU6loGCTooT6wYnytCorv5JJ7z7sMCgULmR_e2fiMcasLKSaQkt5fDzh7TAVz4-22ENzJCt7xdXGGuv6gEeqSmuCer8B7ewj73f-7AdHZNmOuupQu3ExoApvY4WEe5WjolGv18qqL9x1PfKFp_mx3UQjhYwkbtSbcTy29QTaTsMsxpsE4015Nt--JbyKG73cj0mP6MaCMHs.MmMzNmNhMzctMTc3ZC00YTI2LWIwOTItZWE3NGI0OWVhMWM1',
         onMapCreated: _onMapCreated,
         initialCameraPosition: kInitialPosition,
         onStyleLoadedCallback: _onStyleLoadedCallback,

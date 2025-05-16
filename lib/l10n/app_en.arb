@@ -233,5 +233,8 @@
     "cancellationReason": "Cancellation Reason",
     "cancellationReasonRequired": "Reason is required",
     "cancelTourWarning": "Canceling this tour will negatively impact your rating.\nPlease provide a valid reason for the cancellation.",
-    "tourHistory": "Tours History"
+    "tourHistory": "Tours History",
+    "viewRouteDetails": "View route details",
+    "selectPickupPoint": "Select Pickup Point",
+    "selectPickupPointWarning": "Please select a pickup point to proceed."
 }

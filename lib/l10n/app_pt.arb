@@ -233,5 +233,8 @@
     "cancellationReason": "Motivo do Cancelamento",
     "cancellationReasonRequired": "Obrigatório indicar o motivo",
     "cancelTourWarning": "Cancelar este tour terá impacto negativo na tua classificação.\nPor favor apresenta um motivo válido para o cancelamento.",
-    "tourHistory": "Histórico de Tours"
+    "tourHistory": "Histórico de Tours",
+    "viewRouteDetails": "Ver destalhes da rota",
+    "selectPickupPoint": "Seleccionar Ponto de Encontro",
+    "selectPickupPointWarning": "Por favor selecciona um ponto de recolha para prosseguir."
 }

@@ -1,6 +1,10 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 DocumentReference? selectGuide(List<QueryDocumentSnapshot<Object?>> filteredGuides, int seats) {
   if (filteredGuides.length > 1) {
@@ -50,3 +54,28 @@ QueryDocumentSnapshot weightedRandomSelection(List<QueryDocumentSnapshot> items,
   // Fallback (shouldn't happen if logic is correct)
   throw StateError("No item selected. Check the weights and logic.");
 }
+
+Future<void> openNavigationOptions(BuildContext context, double latitude, double longitude) async {
+  final googleMapsUrl = Uri.parse("google.navigation:q=$latitude,$longitude&mode=d");
+  final appleMapsUrl = Uri.parse("https://maps.apple.com/?daddr=$latitude,$longitude");
+  final wazeUrl = Uri.parse("waze://?ll=$latitude,$longitude&navigate=yes");
+  final browserFallbackUrl = Uri.parse("https://www.google.com/maps/dir/?api=1&destination=$latitude,$longitude");
+
+  print(googleMapsUrl);
+
+  if (await canLaunchUrl(googleMapsUrl)) {
+    await launchUrl(googleMapsUrl);
+  } else if (await canLaunchUrl(wazeUrl)) {
+    await launchUrl(wazeUrl);
+  } else if (Platform.isIOS && await canLaunchUrl(appleMapsUrl)) {
+    await launchUrl(appleMapsUrl);
+  } else if (await canLaunchUrl(browserFallbackUrl)) {
+    await launchUrl(browserFallbackUrl, mode: LaunchMode.externalApplication);
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Could not open any navigation app or browser."))
+    );
+  }
+}
+
+
