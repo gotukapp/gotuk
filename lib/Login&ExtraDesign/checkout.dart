@@ -598,8 +598,12 @@ class _checkoutState extends State<checkout> {
                               child: CupertinoSwitch(
                                 value: onlyElectricVehicles,
                                 thumbColor: notifier.getdarkwhitecolor,
-                                inactiveTrackColor: notifier.getbuttoncolor,
-                                activeTrackColor: notifier.getdarkbluecolor,
+                                //keep this with deprecated attribute
+                                //Error: No named parameter with the name 'inactiveTrackColor'.
+                                //inactiveTrackColor: notifier.getbuttoncolor
+                                //We need to update CupertinoSwitch
+                                trackColor: notifier.getbuttoncolor,
+                                activeColor: notifier.getdarkbluecolor,
                                 onChanged: (value) {
                                   setState(() {
                                     onlyElectricVehicles = value;
