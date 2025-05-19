@@ -111,6 +111,45 @@ class _SupportState extends State<Support> {
                       fontSize: 18,
                       color: notifier.getwhitelogocolor,
                       fontFamily: "Gilroy Medium")),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    "assets/images/email.png",
+                    color: notifier.getwhiteblackcolor,
+                    height: 25,
+                  ),
+                  const SizedBox(width: 10),
+                  Text("suporte@gotuk.pt",
+                      style: TextStyle(
+                          fontSize: 18,
+                          color: notifier.getwhiteblackcolor,
+                          fontFamily: "Gilroy Medium"))
+                ],
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    "assets/images/whatsapp.png",
+                    color: notifier.getwhiteblackcolor,
+                    height: 25,
+                  ),
+                  const SizedBox(width: 10),
+                  InkWell(
+                    onTap: () {
+                      openWhatsApp("+351917773031");
+                    },
+                    child: Text("+351 917773031",
+                        style: TextStyle(
+                            fontSize: 18,
+                            color: notifier.getwhiteblackcolor,
+                            fontFamily: "Gilroy Medium")),
+                  )
+                ],
+              )
             ],
           )
         ),
@@ -129,6 +168,16 @@ class _SupportState extends State<Support> {
             backgroundColor: RedColor
         ),
       );
+    }
+  }
+
+  void openWhatsApp(String phoneNumber) async {
+    final url = Uri.parse("https://wa.me/$phoneNumber");
+
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Could not open $url';
     }
   }
 

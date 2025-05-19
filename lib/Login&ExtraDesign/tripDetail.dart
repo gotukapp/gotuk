@@ -9,15 +9,18 @@ import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../Domain/appUser.dart';
+import '../Domain/point.dart';
 import '../Domain/ticket.dart';
 import '../Domain/trip.dart';
 import '../Message/chatting.dart';
 import '../Profile/supportTicket.dart';
 import '../Utils/customwidget .dart';
+import '../Utils/util.dart';
 
 class TripDetail extends StatefulWidget {
   final String tripId;
@@ -174,19 +177,28 @@ class _TripDetailState extends State<TripDetail> {
                                         ),
                                         const SizedBox(width: 5),
                                         Text(AppLocalizations.of(context)!.pickupPoint,
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color: notifier.getwhiteblackcolor,
-                                              fontFamily: "Gilroy"),
-                                        )
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  color: notifier.getwhiteblackcolor,
+                                                  fontFamily: "Gilroy"),
+                                            )
                                       ],
                                     ),
-                                    Text(
-                                      trip.tour.pickupPoint,
-                                      style: TextStyle(
-                                          color: notifier.getwhiteblackcolor,
-                                          fontSize: 18,
-                                          fontFamily: "Gilroy Medium"),
+                                    InkWell(
+                                      onTap: () async {
+                                          try {
+                                            Point p = trip.tour.pickupPoints!.firstWhere((p) => p.name == (trip.pickupPoint ?? trip.tour.pickupPoint));
+                                            openNavigationOptions(context, p.coordinates.latitude, p.coordinates.longitude);
+                                          } catch (e) {
+                                            await Sentry.captureException(e);
+                                          }
+                                        },
+                                      child: Text(trip.pickupPoint ?? trip.tour.pickupPoint,
+                                        style: TextStyle(
+                                            color: notifier.getwhiteblackcolor,
+                                            fontSize: 18,
+                                            fontFamily: "Gilroy Medium"),
+                                        )
                                     )
                                   ],
                                 ),
