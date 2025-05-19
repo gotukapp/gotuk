@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../Utils/customwidget .dart';
 import '../Utils/dark_lightmode.dart';
@@ -144,7 +145,6 @@ class FullMapState extends State<FullMap> {
   _onStyleLoadedCallback() async {
     await loadRoute();
     if (routeCoordinates.isNotEmpty) {
-      addImageFromAsset("star-marker", "assets/images/star.png");
       final routeLine = <LatLng>[...routeCoordinates];
       mapController?.addLine(
         LineOptions(
@@ -187,7 +187,7 @@ class FullMapState extends State<FullMap> {
       appBar: PreferredSize(
           preferredSize: const Size.fromHeight(75),
           child: CustomAppbar(
-              centertext: "Tour Details",
+              centertext: AppLocalizations.of(context)!.tourDetails,
               ActionIcon: null,
               bgcolor: notifier.getblackwhitecolor,
               actioniconcolor: notifier.getwhiteblackcolor,
@@ -222,6 +222,10 @@ class FullMapState extends State<FullMap> {
 
   Future<void> tourRoute(String tourId) async {
     if (tourId == 'iFeHZGf61ZR6RsCxZFUf') {
+      addImageFromAsset("star-marker", "assets/images/star.png");
+
+
+
       await rotateCamera(routeCoordinates[2], 160.0, 4, 17.0);
       rotateCamera(routeCoordinates[105], 260.0, 9, 15.0);
       await Future.delayed(const Duration(seconds: 6));

@@ -236,5 +236,6 @@
     "tourHistory": "Tours History",
     "viewRouteDetails": "View route details",
     "selectPickupPoint": "Select Pickup Point",
-    "selectPickupPointWarning": "Please select a pickup point to proceed."
+    "selectPickupPointWarning": "Please select a pickup point to proceed.",
+    "tourDetails": "Tour Details"
 }
