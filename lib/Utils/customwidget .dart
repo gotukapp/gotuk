@@ -77,9 +77,14 @@ textField({String? text, suffix, Color? hintColor, fieldColor, TextEditingContro
               borderRadius: BorderRadius.all(Radius.circular(15))),
           enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: fieldColor,
+                color: LogoColor,
               ),
               borderRadius: BorderRadius.circular(15)),
+          focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: LogoColor,
+              ),
+              borderRadius: BorderRadius.circular(15))
         ),
       ));
 }

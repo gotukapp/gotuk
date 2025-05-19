@@ -30,12 +30,13 @@ class Trip {
   String? reservationType;
   double? feePrice;
   double? tourPrice;
+  String? pickupPoint;
 
 
   Trip(this.id, this.tourRef, this.date, this.persons, this.status, this.clientRef,
       this.guideRef, this.guideLang, this.paymentMethod, this.creditCardId,
       this.withTaxNumber, this.taxNumber, this.reservationId, this.rateSubmitted, this.onlyElectricVehicles,
-      this.clientIsReady, this.reservationType, this.feePrice, this.tourPrice);
+      this.clientIsReady, this.reservationType, this.feePrice, this.tourPrice, this.pickupPoint);
 
   factory Trip.fromFirestore(
       DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -60,7 +61,8 @@ class Trip {
         data?['clientIsReady'],
         data?['reservationType'],
         data?['feePrice'],
-        data?['tourPrice']
+        data?['tourPrice'],
+        data?['pickupPoint']
     );
     t.showStartButton = t.allowStart();
     t.showEndButton = t.allowFinish();
@@ -92,7 +94,8 @@ class Trip {
   static Future<DocumentReference<Map<String, dynamic>>> addTrip(DocumentReference? guideRef, String tourId,
       DateTime date, int persons, String status,
       String guideLang, String paymentMethod, String creditCardId,
-      bool withTaxNumber, String taxNumber, bool onlyElectricVehicles, String reservationType, double feePrice, double tourPrice) async {
+      bool withTaxNumber, String taxNumber, bool onlyElectricVehicles, String reservationType,
+      double feePrice, double tourPrice, String selectedPickupPoint) async {
     DocumentReference<Map<String, dynamic>> trip = await FirebaseFirestore.instance
         .collection('trips')
         .add(<String, dynamic>{
@@ -113,7 +116,8 @@ class Trip {
       'onlyElectricVehicles': onlyElectricVehicles,
       'reservationType': reservationType,
       'feePrice': feePrice,
-      'tourPrice': tourPrice
+      'tourPrice': tourPrice,
+      'pickupPoint': selectedPickupPoint
     });
 
     DocumentReference eventRef = FirebaseFirestore.instance

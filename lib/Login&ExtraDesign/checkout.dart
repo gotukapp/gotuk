@@ -21,6 +21,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../Domain/appUser.dart';
 import '../Domain/tour.dart';
+import '../Domain/point.dart';
 import '../Providers/userProvider.dart';
 import '../Utils/stripe.dart';
 import '../Utils/util.dart';
@@ -48,7 +49,7 @@ class _checkoutState extends State<checkout> {
   bool guideFeaturesSaved = false;
   List checkedLanguages = List<Object>.generate(guideLanguages.length, (i) => { ...guideLanguages[i], "value": false });
   final taxNumberController = TextEditingController();
-  String? pickupPointSelected;
+  String? selectedPickupPointName;
   bool executingPayment = false;
 
   Color smallPriceColor = LogoColor;
@@ -128,7 +129,7 @@ class _checkoutState extends State<checkout> {
                     viewportFraction: 0.9,
                     onPageChanged: (index, reason) {
                       setState(() {
-                        pickupPointSelected = null;
+                        selectedPickupPointName = null;
                         tour = Tour.availableTours[index%4];
                       });
                     }),
@@ -256,18 +257,17 @@ class _checkoutState extends State<checkout> {
                     }
                   },
                   notifier: notifier),
-              if (goNow)
-                ...[const SizedBox(height: 10),
-                  selectDetail(
-                      heading: AppLocalizations.of(context)!.pickupPoint,
-                      image: "assets/images/location.png",
-                      text: pickupPointSelected ?? "Select Pickup Point",
-                      icon: Icons.keyboard_arrow_down,
-                      onclick: () {
-                        pickupPointBottomSheet(tour!.pickupPoints);
-                      },
-                      notifier: notifier
-                  )],
+              const SizedBox(height: 10),
+              selectDetail(
+                  heading: AppLocalizations.of(context)!.pickupPoint,
+                  image: "assets/images/location.png",
+                  text: selectedPickupPointName ?? AppLocalizations.of(context)!.selectPickupPoint,
+                  icon: Icons.keyboard_arrow_down,
+                  onclick: () {
+                    pickupPointBottomSheet(tour!.pickupPoints!);
+                  },
+                  notifier: notifier
+              ),
               const SizedBox(height: 10),
               selectDetail(
                   heading: AppLocalizations.of(context)!.guideFeatures,
@@ -316,8 +316,8 @@ class _checkoutState extends State<checkout> {
                 ...[
                   textField(
                     controller: taxNumberController,
-                    fieldColor: notifier.getfieldcolor,
-                    hintColor: notifier.gettextfieldcolor,
+                    fieldColor: WhiteColor,
+                    hintColor: notifier.getdarkgreycolor,
                     text: AppLocalizations.of(context)!.taxNumber,
                     suffix: null),
                 ],
@@ -598,8 +598,8 @@ class _checkoutState extends State<checkout> {
                               child: CupertinoSwitch(
                                 value: onlyElectricVehicles,
                                 thumbColor: notifier.getdarkwhitecolor,
-                                trackColor: notifier.getbuttoncolor,
-                                activeColor: notifier.getdarkbluecolor,
+                                inactiveTrackColor: notifier.getbuttoncolor,
+                                activeTrackColor: notifier.getdarkbluecolor,
                                 onChanged: (value) {
                                   setState(() {
                                     onlyElectricVehicles = value;
@@ -808,8 +808,9 @@ class _checkoutState extends State<checkout> {
         }).then((value) => setState(() { guideFeaturesSaved = value; }));
   }
 
-  pickupPointBottomSheet(List<String> pickupPoints) {
-    int selectedIndex = pickupPointSelected != null ? pickupPoints.indexOf(pickupPointSelected!) : 0;
+  pickupPointBottomSheet(List<Point> pickupPoints) {
+    List<String> pickupPointsNames = pickupPoints.map((p) => p.name).toList();
+    int selectedIndex = selectedPickupPointName != null ? pickupPointsNames.indexOf(selectedPickupPointName!) : 0;
     return showCupertinoModalPopup(
       context: context,
       builder: (BuildContext context) {
@@ -831,7 +832,7 @@ class _checkoutState extends State<checkout> {
                   children: List<Widget>.generate(pickupPoints.length, (int index) {
                     return Center(
                       child: Text(
-                        pickupPoints[index],
+                        pickupPointsNames[index],
                         style: const TextStyle(fontSize: 20),
                       ),
                     );
@@ -842,7 +843,7 @@ class _checkoutState extends State<checkout> {
                 child: Text(AppLocalizations.of(context)!.confirm),
                 onPressed: () {
                   setState(() {
-                    pickupPointSelected = pickupPoints[selectedIndex];
+                    selectedPickupPointName = pickupPointsNames[selectedIndex];
                   });
                   Navigator.of(context).pop();
                 },
@@ -1059,8 +1060,8 @@ class _checkoutState extends State<checkout> {
           onlyElectricVehicles,
           goNow ? 'gonow' : 'booking',
           tour!.getFeePrice(smallPriceSelected),
-          tour!.getTourPrice(smallPriceSelected)
-          );
+          tour!.getTourPrice(smallPriceSelected),
+          selectedPickupPointName!);
 
       newTripId = docRef.id;
 
@@ -1112,6 +1113,13 @@ class _checkoutState extends State<checkout> {
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.selectTimeWarning),
+          )
+      );
+      return false;
+    } else if (selectedPickupPointName != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.selectPickupPointWarning),
           )
       );
       return false;
