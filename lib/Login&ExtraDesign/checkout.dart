@@ -1120,7 +1120,7 @@ class _checkoutState extends State<checkout> {
           )
       );
       return false;
-    } else if (selectedPickupPointName != null) {
+    } else if (selectedPickupPointName == null) {
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.selectPickupPointWarning),
