@@ -11,7 +11,7 @@ import 'package:dm/Login&ExtraDesign/tripDetail.dart';
 import 'package:dm/Login&ExtraDesign/tripFinished.dart';
 import 'package:dm/Profile/profile.dart';
 import 'package:dm/Utils/Colors.dart';
-import 'package:dm/Utils/customwidget%20.dart';
+import 'package:dm/Utils/customwidget.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:dm/Domain/trip.dart';
 import 'package:firebase_auth/firebase_auth.dart';

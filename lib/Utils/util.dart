@@ -6,6 +6,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'Colors.dart';
+
 DocumentReference? selectGuide(List<QueryDocumentSnapshot<Object?>> filteredGuides, int seats) {
   if (filteredGuides.length > 1) {
     // Use only the top 5 guides if the list has more than 5
@@ -78,4 +80,17 @@ Future<void> openNavigationOptions(BuildContext context, double latitude, double
   }
 }
 
+Future<void> openUrl(String url, BuildContext context) async {
+  final pdfUrl = Uri.parse(url);
+  if (await canLaunchUrl(pdfUrl)) {
+    await launchUrl(pdfUrl, mode: LaunchMode.externalApplication);
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+          content: const Text("Could not open URL."),
+          backgroundColor: RedColor
+      ),
+    );
+  }
+}
 

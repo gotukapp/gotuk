@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Domain/trip.dart';
-import '../Utils/customwidget .dart';
+import '../Utils/customwidget.dart';
 
 
 class TripsList extends StatefulWidget {

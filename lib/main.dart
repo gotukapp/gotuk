@@ -21,7 +21,8 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  Stripe.publishableKey = 'pk_live_51RBeS1Deaim5Yl16fKW8HuUfqwcCz0WtYL7tGnnwDHC95oSdakh3NmrmgYLOZKk7WzzDm4Efw2MS8DNNcBvP8lHs007NQDkrxp';
+  //Stripe.publishableKey = 'pk_live_51RBeS1Deaim5Yl16fKW8HuUfqwcCz0WtYL7tGnnwDHC95oSdakh3NmrmgYLOZKk7WzzDm4Efw2MS8DNNcBvP8lHs007NQDkrxp';
+  Stripe.publishableKey = 'pk_test_51RRUKlFMhm7qZENEb6CwzRNQARJBJeeHBJcBTEtWbp5f6vQpwdNtynsQ55pfWEL8b06yMLTTyPCMycvSgvwOjEk600qIAIrw4k';
 
   await Stripe.instance.applySettings();
 

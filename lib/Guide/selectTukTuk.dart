@@ -11,7 +11,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../Providers/userProvider.dart';
 import '../Utils/Colors.dart';
-import '../Utils/customwidget .dart';
+import '../Utils/customwidget.dart';
 
 
 class SelectTukTuk extends StatefulWidget {

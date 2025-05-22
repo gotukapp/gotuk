@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:dm/CreatAccount/login.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
+import 'package:dm/Utils/util.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -125,7 +126,7 @@ class _BoardingScreenState extends State<BoardingPage> {
         children: <Widget>[
           SizedBox(
               height: MediaQuery.of(context).size.height *
-                  0.04), //upar thi jagiya mukeli che
+                  0.04),
           // ignore: sized_box_for_whitespace
           Container(
             height: MediaQuery.of(context).size.height / 2.2, //imagee size
@@ -346,7 +347,7 @@ class _loginpageState extends State<loginpage> {
         padding: const EdgeInsets.symmetric(horizontal: 12),
         child: Column(
           children: [
-            SizedBox(height: MediaQuery.of(context).size.height / 6.5),
+            SizedBox(height: MediaQuery.of(context).size.height / 10),
             Center(
               child: Image.asset(
                 "assets/images/applogo.png",
@@ -354,7 +355,7 @@ class _loginpageState extends State<loginpage> {
                 width: 220,
               ),
             ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
             Text(
               AppLocalizations.of(context)!.welcome,
               style: TextStyle(
@@ -406,7 +407,7 @@ class _loginpageState extends State<loginpage> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(50))),
             ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -450,6 +451,23 @@ class _loginpageState extends State<loginpage> {
                   ),
                 ),
               ],
+            ),
+            const SizedBox(height: 10),
+            Text("Tens uma empresa de Tuk-Tuks?",
+                style: TextStyle(
+                    fontSize: 18,
+                    color: notifier.getwhitelogocolor,
+                    fontFamily: "Gilroy Bold")),
+            InkWell(
+              onTap: () {
+                String url = 'https://business.gotuk.pt';
+                openUrl(url, context);
+              },
+              child: Text("Regista-te aqui!",
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: Darkblue,
+                      fontFamily: "Gilroy Bold"))
             ),
           ],
         ),

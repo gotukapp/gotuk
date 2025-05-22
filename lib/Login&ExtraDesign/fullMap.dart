@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../Utils/customwidget .dart';
+import '../Utils/customwidget.dart';
 import '../Utils/dark_lightmode.dart';
 
 class FullMap extends StatefulWidget {

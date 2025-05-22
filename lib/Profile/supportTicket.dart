@@ -6,7 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../Domain/ticket.dart';
 import '../Domain/trip.dart';
-import '../Utils/customwidget .dart';
+import '../Utils/customwidget.dart';
 import '../Utils/dark_lightmode.dart';
 
 class SupportTicket extends StatefulWidget {

@@ -5,7 +5,8 @@ Future<String?> createStripPayment({
   required int amount,
   required String currency
 }) async {
-  final url = Uri.parse('https://createstripepayment-m4ti3eo3ua-uc.a.run.app');
+  // final url = Uri.parse('https://createstripepayment-m4ti3eo3ua-uc.a.run.app');
+  final url = Uri.parse('https://createteststripepayment-m4ti3eo3ua-uc.a.run.app'); //TEST URL
 
   final headers = {
     'Content-Type': 'application/json'

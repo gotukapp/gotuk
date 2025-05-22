@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../Utils/Colors.dart';
+import '../Utils/util.dart';
 
 class Support extends StatefulWidget {
   const Support({super.key});
@@ -155,20 +155,6 @@ class _SupportState extends State<Support> {
         ),
       ),
     );
-  }
-
-  Future<void> openUrl(String url, BuildContext context) async {
-    final pdfUrl = Uri.parse(url);
-    if (await canLaunchUrl(pdfUrl)) {
-      await launchUrl(pdfUrl, mode: LaunchMode.externalApplication);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: const Text("Could not open PDF with client FAQs."),
-            backgroundColor: RedColor
-        ),
-      );
-    }
   }
 
   void openWhatsApp(String phoneNumber) async {
