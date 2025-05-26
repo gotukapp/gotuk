@@ -6,9 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:url_launcher/url_launcher.dart';
-
-import '../Utils/util.dart';
+import 'package:dm/Utils/util.dart';
 
 class Support extends StatefulWidget {
   const Support({super.key});
@@ -155,16 +153,6 @@ class _SupportState extends State<Support> {
         ),
       ),
     );
-  }
-
-  void openWhatsApp(String phoneNumber) async {
-    final url = Uri.parse("https://wa.me/$phoneNumber");
-
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url, mode: LaunchMode.externalApplication);
-    } else {
-      throw 'Could not open $url';
-    }
   }
 
   getdarkmodepreviousstate() async {

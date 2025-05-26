@@ -94,3 +94,26 @@ Future<void> openUrl(String url, BuildContext context) async {
   }
 }
 
+void openWhatsApp(String phoneNumber) async {
+  final url = Uri.parse("https://wa.me/$phoneNumber");
+
+  if (await canLaunchUrl(url)) {
+    await launchUrl(url, mode: LaunchMode.externalApplication);
+  } else {
+    throw 'Could not open $url';
+  }
+}
+
+void sendEmail(String email, String subject, String body) async {
+  String subjectEncoded = Uri.encodeComponent(subject);
+  String bodyEncoded = Uri.encodeComponent(body);
+
+  final Uri emailUri = Uri.parse('mailto:$email?subject=$subjectEncoded&body=$bodyEncoded');
+
+  if (await canLaunchUrl(emailUri)) {
+    await launchUrl(emailUri);
+  } else {
+    throw 'Could not launch $emailUri';
+  }
+}
+

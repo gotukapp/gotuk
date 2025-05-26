@@ -19,6 +19,7 @@ import '../Domain/appUser.dart';
 import '../Utils/Colors.dart';
 import '../Providers/userProvider.dart';
 import '../Utils/authentication.dart';
+import '../Utils/util.dart';
 
 class loginscreen extends StatefulWidget {
   const loginscreen({super.key});
@@ -288,6 +289,67 @@ class _loginscreenState extends State<loginscreen> {
                     ),
                   ],
                 ),
+                const SizedBox(height: 10),
+                Text(AppLocalizations.of(context)!.doYouHaveTukTukCompany,
+                    style: TextStyle(
+                        fontSize: 18,
+                        color: notifier.getwhitelogocolor,
+                        fontFamily: "Gilroy Bold")),
+                InkWell(
+                    onTap: () {
+                      String url = 'https://business.gotuk.pt';
+                      openUrl(url, context);
+                    },
+                    child: Text(AppLocalizations.of(context)!.registerHere,
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: Darkblue,
+                            fontFamily: "Gilroy Bold"))
+                ),
+                const SizedBox(height: 30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      "assets/images/email.png",
+                      color: notifier.getwhiteblackcolor,
+                      height: 18,
+                    ),
+                    const SizedBox(width: 10),
+                    InkWell(
+                      onTap: () {
+                        sendEmail("suporte@gotuk.pt", "", "");
+                      },
+                      child: Text("suporte@gotuk.pt",
+                          style: TextStyle(
+                              fontSize: 14,
+                              color: notifier.getwhiteblackcolor,
+                              fontFamily: "Gilroy Medium")),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 5),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      "assets/images/whatsapp.png",
+                      color: notifier.getwhiteblackcolor,
+                      height: 18,
+                    ),
+                    const SizedBox(width: 10),
+                    InkWell(
+                      onTap: () {
+                        openWhatsApp("+351917773031");
+                      },
+                      child: Text("+351 917773031",
+                          style: TextStyle(
+                              fontSize: 14,
+                              color: notifier.getwhiteblackcolor,
+                              fontFamily: "Gilroy Medium")),
+                    )
+                  ],
+                )
               ],
             )
             )

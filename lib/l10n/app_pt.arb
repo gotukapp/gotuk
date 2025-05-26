@@ -237,5 +237,7 @@
     "viewRouteDetails": "Ver destalhes da rota",
     "selectPickupPoint": "Seleccionar Ponto de Encontro",
     "selectPickupPointWarning": "Por favor selecciona um ponto de recolha para prosseguir.",
-    "tourDetails": "Detalhes do Tour"
+    "tourDetails": "Detalhes do Tour",
+    "doYouHaveTukTukCompany": "Tens uma empresa de Tuk-Tuks?",
+    "registerHere": "Regista-te aqui!"
 }

@@ -353,7 +353,7 @@ class _loginpageState extends State<loginpage> {
                 "assets/images/applogo.png",
                 height: 170,
                 width: 220,
-              ),
+              )
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.02),
             Text(
@@ -453,7 +453,7 @@ class _loginpageState extends State<loginpage> {
               ],
             ),
             const SizedBox(height: 10),
-            Text("Tens uma empresa de Tuk-Tuks?",
+            Text(AppLocalizations.of(context)!.doYouHaveTukTukCompany,
                 style: TextStyle(
                     fontSize: 18,
                     color: notifier.getwhitelogocolor,
@@ -463,12 +463,56 @@ class _loginpageState extends State<loginpage> {
                 String url = 'https://business.gotuk.pt';
                 openUrl(url, context);
               },
-              child: Text("Regista-te aqui!",
+              child: Text(AppLocalizations.of(context)!.registerHere,
                   style: TextStyle(
                       fontSize: 16,
                       color: Darkblue,
                       fontFamily: "Gilroy Bold"))
             ),
+            const SizedBox(height: 35),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  "assets/images/email.png",
+                  color: notifier.getwhiteblackcolor,
+                  height: 18,
+                ),
+                const SizedBox(width: 10),
+                InkWell(
+                  onTap: () {
+                    sendEmail("suporte@gotuk.pt", "", "");
+                  },
+                  child: Text("suporte@gotuk.pt",
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: notifier.getwhiteblackcolor,
+                          fontFamily: "Gilroy Medium")),
+                )
+              ],
+            ),
+            const SizedBox(height: 5),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  "assets/images/whatsapp.png",
+                  color: notifier.getwhiteblackcolor,
+                  height: 18,
+                ),
+                const SizedBox(width: 10),
+                InkWell(
+                  onTap: () {
+                    openWhatsApp("+351917773031");
+                  },
+                  child: Text("+351 917773031",
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: notifier.getwhiteblackcolor,
+                          fontFamily: "Gilroy Medium")),
+                )
+              ],
+            )
           ],
         ),
       ),
