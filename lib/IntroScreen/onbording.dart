@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:dm/CreatAccount/login.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
+import 'package:dm/Utils/util.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -125,7 +126,7 @@ class _BoardingScreenState extends State<BoardingPage> {
         children: <Widget>[
           SizedBox(
               height: MediaQuery.of(context).size.height *
-                  0.04), //upar thi jagiya mukeli che
+                  0.04),
           // ignore: sized_box_for_whitespace
           Container(
             height: MediaQuery.of(context).size.height / 2.2, //imagee size
@@ -346,15 +347,15 @@ class _loginpageState extends State<loginpage> {
         padding: const EdgeInsets.symmetric(horizontal: 12),
         child: Column(
           children: [
-            SizedBox(height: MediaQuery.of(context).size.height / 6.5),
+            SizedBox(height: MediaQuery.of(context).size.height / 10),
             Center(
               child: Image.asset(
                 "assets/images/applogo.png",
                 height: 170,
                 width: 220,
-              ),
+              )
             ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
             Text(
               AppLocalizations.of(context)!.welcome,
               style: TextStyle(
@@ -406,7 +407,7 @@ class _loginpageState extends State<loginpage> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(50))),
             ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -451,6 +452,67 @@ class _loginpageState extends State<loginpage> {
                 ),
               ],
             ),
+            const SizedBox(height: 10),
+            Text(AppLocalizations.of(context)!.doYouHaveTukTukCompany,
+                style: TextStyle(
+                    fontSize: 18,
+                    color: notifier.getwhitelogocolor,
+                    fontFamily: "Gilroy Bold")),
+            InkWell(
+              onTap: () {
+                String url = 'https://business.gotuk.pt';
+                openUrl(url, context);
+              },
+              child: Text(AppLocalizations.of(context)!.registerHere,
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: Darkblue,
+                      fontFamily: "Gilroy Bold"))
+            ),
+            const SizedBox(height: 35),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  "assets/images/email.png",
+                  color: notifier.getwhiteblackcolor,
+                  height: 18,
+                ),
+                const SizedBox(width: 10),
+                InkWell(
+                  onTap: () {
+                    sendEmail("suporte@gotuk.pt", "", "");
+                  },
+                  child: Text("suporte@gotuk.pt",
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: notifier.getwhiteblackcolor,
+                          fontFamily: "Gilroy Medium")),
+                )
+              ],
+            ),
+            const SizedBox(height: 5),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  "assets/images/whatsapp.png",
+                  color: notifier.getwhiteblackcolor,
+                  height: 18,
+                ),
+                const SizedBox(width: 10),
+                InkWell(
+                  onTap: () {
+                    openWhatsApp("+351917773031");
+                  },
+                  child: Text("+351 917773031",
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: notifier.getwhiteblackcolor,
+                          fontFamily: "Gilroy Medium")),
+                )
+              ],
+            )
           ],
         ),
       ),

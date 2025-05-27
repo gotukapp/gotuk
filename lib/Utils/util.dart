@@ -6,6 +6,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'Colors.dart';
+
 DocumentReference? selectGuide(List<QueryDocumentSnapshot<Object?>> filteredGuides, int seats) {
   if (filteredGuides.length > 1) {
     // Use only the top 5 guides if the list has more than 5
@@ -78,4 +80,40 @@ Future<void> openNavigationOptions(BuildContext context, double latitude, double
   }
 }
 
+Future<void> openUrl(String url, BuildContext context) async {
+  final pdfUrl = Uri.parse(url);
+  if (await canLaunchUrl(pdfUrl)) {
+    await launchUrl(pdfUrl, mode: LaunchMode.externalApplication);
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+          content: const Text("Could not open URL."),
+          backgroundColor: RedColor
+      ),
+    );
+  }
+}
+
+void openWhatsApp(String phoneNumber) async {
+  final url = Uri.parse("https://wa.me/$phoneNumber");
+
+  if (await canLaunchUrl(url)) {
+    await launchUrl(url, mode: LaunchMode.externalApplication);
+  } else {
+    throw 'Could not open $url';
+  }
+}
+
+void sendEmail(String email, String subject, String body) async {
+  String subjectEncoded = Uri.encodeComponent(subject);
+  String bodyEncoded = Uri.encodeComponent(body);
+
+  final Uri emailUri = Uri.parse('mailto:$email?subject=$subjectEncoded&body=$bodyEncoded');
+
+  if (await canLaunchUrl(emailUri)) {
+    await launchUrl(emailUri);
+  } else {
+    throw 'Could not launch $emailUri';
+  }
+}
 

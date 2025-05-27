@@ -237,5 +237,7 @@
     "viewRouteDetails": "View route details",
     "selectPickupPoint": "Select Pickup Point",
     "selectPickupPointWarning": "Please select a pickup point to proceed.",
-    "tourDetails": "Tour Details"
+    "tourDetails": "Tour Details",
+    "doYouHaveTukTukCompany": "Do you have a Tuk-Tuk company?",
+    "registerHere": "Register here!"
 }

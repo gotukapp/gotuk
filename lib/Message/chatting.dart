@@ -15,7 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../Domain/appUser.dart';
 import '../Domain/trip.dart';
 import '../Providers/userProvider.dart';
-import '../Utils/customwidget .dart';
+import '../Utils/customwidget.dart';
 
 class Chatting extends StatefulWidget {
   final Trip trip;

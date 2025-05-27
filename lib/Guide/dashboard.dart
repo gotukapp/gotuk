@@ -11,7 +11,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../Login&ExtraDesign/notification.dart';
 import '../Providers/userProvider.dart';
 import '../Utils/Colors.dart';
-import '../Utils/customwidget .dart';
+import '../Utils/customwidget.dart';
 import '../Domain/trip.dart';
 import '../Utils/dark_lightmode.dart';
 

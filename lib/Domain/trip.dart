@@ -95,7 +95,7 @@ class Trip {
       DateTime date, int persons, String status,
       String guideLang, String paymentMethod, String creditCardId,
       bool withTaxNumber, String taxNumber, bool onlyElectricVehicles, String reservationType,
-      double feePrice, double tourPrice, String selectedPickupPoint) async {
+      double feePrice, double tourPrice, String selectedPickupPoint, String paymentId) async {
     DocumentReference<Map<String, dynamic>> trip = await FirebaseFirestore.instance
         .collection('trips')
         .add(<String, dynamic>{
@@ -117,7 +117,8 @@ class Trip {
       'reservationType': reservationType,
       'feePrice': feePrice,
       'tourPrice': tourPrice,
-      'pickupPoint': selectedPickupPoint
+      'pickupPoint': selectedPickupPoint,
+      'paymentId': paymentId
     });
 
     DocumentReference eventRef = FirebaseFirestore.instance
