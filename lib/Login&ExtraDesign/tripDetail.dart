@@ -19,7 +19,7 @@ import '../Domain/ticket.dart';
 import '../Domain/trip.dart';
 import '../Message/chatting.dart';
 import '../Profile/supportTicket.dart';
-import '../Utils/customwidget .dart';
+import '../Utils/customwidget.dart';
 import '../Utils/util.dart';
 
 class TripDetail extends StatefulWidget {

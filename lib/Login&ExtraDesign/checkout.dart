@@ -6,7 +6,7 @@ import 'package:dm/Login&ExtraDesign/homepage.dart';
 import 'package:dm/Login&ExtraDesign/tripDetail.dart';
 import 'package:dm/Utils/Colors.dart';
 import 'package:dm/Domain/trip.dart';
-import 'package:dm/Utils/customwidget%20.dart';
+import 'package:dm/Utils/customwidget.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -868,6 +868,7 @@ class _checkoutState extends State<checkout> {
         amount: (tour!.getFeePrice(smallPriceSelected) * 100).toInt(),
         currency: "eur"
       );
+
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
           paymentIntentClientSecret: paymentIntent,
@@ -876,7 +877,7 @@ class _checkoutState extends State<checkout> {
       );
 
       await Stripe.instance.presentPaymentSheet();
-      bool resultOk = await bookTour();
+      bool resultOk = await bookTour(getPaymentIntentId(paymentIntent!));
       if (resultOk) {
         return bookingSuccessfully(guideRef);
       }
@@ -1043,7 +1044,7 @@ class _checkoutState extends State<checkout> {
     return selectedLanguages;
   }
 
-  Future<bool> bookTour() async {
+  Future<bool> bookTour(paymentId) async {
     try {
       selectedIndex = 0;
 
@@ -1065,7 +1066,8 @@ class _checkoutState extends State<checkout> {
           goNow ? 'gonow' : 'booking',
           tour!.getFeePrice(smallPriceSelected),
           tour!.getTourPrice(smallPriceSelected),
-          selectedPickupPointName!);
+          selectedPickupPointName!,
+          paymentId);
 
       newTripId = docRef.id;
 
@@ -1136,5 +1138,9 @@ class _checkoutState extends State<checkout> {
       return false;
     }
     return true;
+  }
+
+  getPaymentIntentId(String paymentIntent) {
+    return paymentIntent.substring(0, paymentIntent.indexOf("_secret_"));
   }
 }

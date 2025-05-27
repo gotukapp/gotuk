@@ -2,7 +2,7 @@
 
 import 'dart:async';
 import 'package:dm/Utils/Colors.dart';
-import 'package:dm/Utils/customwidget%20.dart';
+import 'package:dm/Utils/customwidget.dart';
 import 'package:dm/CreatAccount/login.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

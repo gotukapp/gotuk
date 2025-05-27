@@ -2,7 +2,7 @@
 
 import 'package:dm/Login&ExtraDesign/tourDetail.dart';
 import 'package:dm/Utils/Colors.dart';
-import 'package:dm/Utils/customwidget%20.dart';
+import 'package:dm/Utils/customwidget.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:dm/Domain/tour.dart';
 import 'package:flutter/material.dart';

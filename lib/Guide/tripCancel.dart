@@ -5,7 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../Domain/trip.dart';
 import '../Utils/Colors.dart';
-import '../Utils/customwidget .dart';
+import '../Utils/customwidget.dart';
 import '../Utils/dark_lightmode.dart';
 
 class TripCancel extends StatefulWidget {

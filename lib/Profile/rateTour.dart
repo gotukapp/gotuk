@@ -1,7 +1,7 @@
 // ignore_for_file: camel_case_types, avoid_print
 
 import 'package:dm/Providers/userProvider.dart';
-import 'package:dm/Utils/customwidget%20.dart';
+import 'package:dm/Utils/customwidget.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';

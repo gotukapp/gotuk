@@ -14,7 +14,7 @@ import '../Guide/account.dart';
 import '../Guide/timetable.dart';
 import '../Providers/userProvider.dart';
 import '../Utils/Colors.dart';
-import '../Utils/customwidget .dart';
+import '../Utils/customwidget.dart';
 
 class profile extends StatefulWidget {
   const profile({super.key});

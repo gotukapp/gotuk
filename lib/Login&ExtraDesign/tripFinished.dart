@@ -5,7 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../Domain/trip.dart';
 import '../Profile/rateTour.dart';
-import '../Utils/customwidget .dart';
+import '../Utils/customwidget.dart';
 import '../Utils/dark_lightmode.dart'; // Import your rating screen
 
 class TourFinishedScreen extends StatefulWidget {

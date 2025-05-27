@@ -5,7 +5,7 @@ import 'package:dm/Login&ExtraDesign/tripDetail.dart';
 import 'package:dm/Profile/NotificationSetting.dart';
 import 'package:dm/Profile/Settings.dart';
 import 'package:dm/Utils/Colors.dart';
-import 'package:dm/Utils/customwidget%20.dart';
+import 'package:dm/Utils/customwidget.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

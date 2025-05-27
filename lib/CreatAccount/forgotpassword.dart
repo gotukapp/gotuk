@@ -1,7 +1,7 @@
 // ignore_for_file: camel_case_types
 
 import 'package:dm/CreatAccount/newpassword.dart';
-import 'package:dm/Utils/customwidget%20.dart';
+import 'package:dm/Utils/customwidget.dart';
 import 'package:dm/Utils/dark_lightmode.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
