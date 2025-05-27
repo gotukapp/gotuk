@@ -8,6 +8,7 @@ import 'package:maplibre_gl/maplibre_gl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:dm/Utils/Colors.dart';
 
 import '../Utils/customwidget.dart';
 import '../Utils/dark_lightmode.dart';
@@ -30,6 +31,7 @@ class FullMapState extends State<FullMap> {
   bool showStarPointIsActive = false;
   int index = 0;
   List<LatLng> routeCoordinates = [];
+  List pickupPoints = [];
 
   Future<void> addImageFromAsset(String name, String assetName) async {
     final bytes = await rootBundle.load(assetName);
@@ -46,12 +48,27 @@ class FullMapState extends State<FullMap> {
         .doc(tourId)
         .collection('route');
 
-    for (int i = 0; i < rawCoords.length; i++) {
-      final coord = rawCoords[i];
+    GeoPoint? lastPoint;
+
+    int order = 0; // Maintain a separate counter for actual uploads
+
+    for (final coord in rawCoords) {
+      final currentPoint = GeoPoint(coord[1], coord[0]); // lat, lng
+
+      // Skip if the same as the last one
+      if (lastPoint != null &&
+          currentPoint.latitude == lastPoint.latitude &&
+          currentPoint.longitude == lastPoint.longitude) {
+        continue;
+      }
+
       await routeRef.add({
-        'order': i,
-        'coordinates': GeoPoint(coord[1], coord[0]), // lat, lng
+        'order': order,
+        'coordinates': currentPoint,
       });
+
+      lastPoint = currentPoint;
+      order++; // Only increment if a point was added
     }
   }
 
@@ -64,10 +81,31 @@ class FullMapState extends State<FullMap> {
         .orderBy('order') // ensure correct sequence
         .get();
 
+    final snapshotPickupPoints = await FirebaseFirestore.instance
+        .collection('tours')
+        .doc(tourId)
+        .collection('pickupPoints')
+        .get();
+
     setState(() {
       routeCoordinates = snapshot.docs.map((doc) {
         final geoPoint = doc['coordinates'] as GeoPoint;
         return LatLng(geoPoint.latitude, geoPoint.longitude);
+      }).toList();
+
+      pickupPoints = snapshotPickupPoints.docs.map((doc) {
+        final geoPoint = doc['coordinates'] as GeoPoint;
+        return {
+          "type": "Feature",
+          "id": snapshotPickupPoints.docs.indexOf(doc),
+          "properties": {
+            "name": doc['name'],
+          },
+          "geometry": {
+            "type": "Point",
+            "coordinates": [geoPoint.longitude, geoPoint.latitude]
+          }
+        };
       }).toList();
     });
   }
@@ -141,10 +179,47 @@ class FullMapState extends State<FullMap> {
 
   Symbol? movingSymbol;
 
+  Map<String, dynamic> _movingFeature(double t) {
+    List<double> makeLatLong(double t) {
+      final angle = t * 2 * pi;
+      const r = 0.025;
+      const centerX = -9.135987696425;
+      const centerY = 38.70905945908;
+      return [
+        centerX + r * sin(angle),
+        centerY + r * cos(angle),
+      ];
+    }
+
+    return {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "properties": {"name": "POGAČAR Tadej"},
+          "id": 10,
+          "geometry": {"type": "Point", "coordinates": makeLatLong(t)}
+        },
+        {
+          "type": "Feature",
+          "properties": {"name": "VAN AERT Wout"},
+          "id": 11,
+          "geometry": {"type": "Point", "coordinates": makeLatLong(t + 0.15)}
+        },
+      ]
+    };
+  }
 
   _onStyleLoadedCallback() async {
     await loadRoute();
     if (routeCoordinates.isNotEmpty) {
+      addImageFromAsset("custom-marker", "assets/images/custom-marker.png");
+      await mapController?.addGeoJsonSource("points", {
+        "type": "FeatureCollection",
+        "features": pickupPoints
+      });
+      await mapController?.addGeoJsonSource("moving", _movingFeature(0));
+
       final routeLine = <LatLng>[...routeCoordinates];
       mapController?.addLine(
         LineOptions(
@@ -170,6 +245,39 @@ class FullMapState extends State<FullMap> {
           )
         , duration: const Duration(seconds: 3));
 
+        await mapController?.addSymbolLayer(
+          "points",
+          "symbols",
+          const SymbolLayerProperties(
+            iconImage: "custom-marker", //  "{type}-15",
+            iconSize: 2,
+            iconAllowOverlap: true,
+          ),
+        );
+
+        await mapController?.addSymbolLayer(
+          "moving",
+          "moving",
+          SymbolLayerProperties(
+            textField: [Expressions.get, "name"],
+            textHaloWidth: 1,
+            textSize: 10,
+            textHaloColor: Colors.white.toHexStringRGB(),
+            textOffset: [
+              Expressions.literal,
+              [0, 2]
+            ],
+            iconImage: "custom-marker",
+            // "bicycle-15",
+            iconSize: 2,
+            iconAllowOverlap: true,
+            textAllowOverlap: true,
+          ),
+          minzoom: 11,
+        );
+
+
+
         await tourRoute(widget.tourId);
       }
     }
@@ -194,12 +302,74 @@ class FullMapState extends State<FullMap> {
               leadingiconcolor: notifier.getwhiteblackcolor,
               titlecolor: notifier.getwhiteblackcolor)),
       backgroundColor: notifier.getblackwhitecolor,
-      body: MapLibreMap(
-        styleString: 'https://maps.geo.eu-south-2.amazonaws.com/maps/v0/maps/gotuk/style-descriptor?key=v1.public.eyJqdGkiOiIxNTc3NWE1NS00NjJmLTQzMGUtOTkxZS0zMjM4ODVjMjc3ZWIifbXmeDGXMAZqEl2sUE6KYfKX_E4EqSN4RpOtV84uQDoivjwmekY429E6K4EYjOxYDLhdXwpOO-qR4-zHkDsuzb_Eb6BbKLzkr6nO27fG13B59qntX34q7FXlFnrKpTMNNLE2uQNBq0DmsU6loGCTooT6wYnytCorv5JJ7z7sMCgULmR_e2fiMcasLKSaQkt5fDzh7TAVz4-22ENzJCt7xdXGGuv6gEeqSmuCer8B7ewj73f-7AdHZNmOuupQu3ExoApvY4WEe5WjolGv18qqL9x1PfKFp_mx3UQjhYwkbtSbcTy29QTaTsMsxpsE4015Nt--JbyKG73cj0mP6MaCMHs.MmMzNmNhMzctMTc3ZC00YTI2LWIwOTItZWE3NGI0OWVhMWM1',
-        onMapCreated: _onMapCreated,
-        initialCameraPosition: kInitialPosition,
-        onStyleLoadedCallback: _onStyleLoadedCallback,
-      ));
+      body: Stack(
+        children: [
+          MapLibreMap(
+            styleString: 'https://maps.geo.eu-south-2.amazonaws.com/maps/v0/maps/gotuk/style-descriptor?key=v1.public.eyJqdGkiOiIxNTc3NWE1NS00NjJmLTQzMGUtOTkxZS0zMjM4ODVjMjc3ZWIifbXmeDGXMAZqEl2sUE6KYfKX_E4EqSN4RpOtV84uQDoivjwmekY429E6K4EYjOxYDLhdXwpOO-qR4-zHkDsuzb_Eb6BbKLzkr6nO27fG13B59qntX34q7FXlFnrKpTMNNLE2uQNBq0DmsU6loGCTooT6wYnytCorv5JJ7z7sMCgULmR_e2fiMcasLKSaQkt5fDzh7TAVz4-22ENzJCt7xdXGGuv6gEeqSmuCer8B7ewj73f-7AdHZNmOuupQu3ExoApvY4WEe5WjolGv18qqL9x1PfKFp_mx3UQjhYwkbtSbcTy29QTaTsMsxpsE4015Nt--JbyKG73cj0mP6MaCMHs.MmMzNmNhMzctMTc3ZC00YTI2LWIwOTItZWE3NGI0OWVhMWM1',
+            onMapCreated: _onMapCreated,
+            initialCameraPosition: kInitialPosition,
+            onStyleLoadedCallback: _onStyleLoadedCallback,
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.85),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 10,
+                    offset: Offset(0, -2),
+                  )
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Image.asset(
+                        "assets/images/location.png",
+                        color: BlackColor,
+                        height: 18,
+                      ),
+                      Text(
+                          AppLocalizations.of(context)!.pickupPoint,
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: BlackColor,
+                          ))
+                    ],
+                  ),
+                  ...pickupPoints.map((point) {
+                  return Padding(
+                    padding: const EdgeInsets.only(left: 30, bottom: 2),
+                    child: InkWell(
+                      onTap: () {
+                        rotateCamera(LatLng(point["geometry"]["coordinates"][1], point["geometry"]["coordinates"][0]), 260.0, 6, 16.0);
+                      },
+                      child: Text(
+                        point["properties"]["name"],
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: darkGrey,
+                        ),
+                      ),
+                    )
+                  );
+                }),
+                  const SizedBox(height: 10)
+                ]
+              )
+            ),
+          ),
+        ]
+      )
+    );
   }
 
   @override
@@ -222,9 +392,6 @@ class FullMapState extends State<FullMap> {
 
   Future<void> tourRoute(String tourId) async {
     if (tourId == 'iFeHZGf61ZR6RsCxZFUf') {
-      addImageFromAsset("star-marker", "assets/images/star.png");
-
-
 
       await rotateCamera(routeCoordinates[2], 160.0, 4, 17.0);
       rotateCamera(routeCoordinates[105], 260.0, 9, 15.0);
@@ -266,6 +433,23 @@ class FullMapState extends State<FullMap> {
       rotateCamera(routeCoordinates[320], 100.0, 8, 15.0);
       await Future.delayed(const Duration(seconds: 6));
       rotateCamera(routeCoordinates[315], 190.0, 8, 14.0);
+    }
+
+    if (tourId == 's8xkuv1KCEfOAvOe5V8W') {
+      await rotateCamera(routeCoordinates[2], 320.0, 4, 17.0);
+      rotateCamera(routeCoordinates[30], 260.0, 9, 16.0);
+      await Future.delayed(const Duration(seconds: 8));
+      rotateCamera(routeCoordinates[110], 340.0, 9, 16.0);
+      await Future.delayed(const Duration(seconds: 8));
+      rotateCamera(routeCoordinates[160], 320.0, 6, 15.0);
+      await Future.delayed(const Duration(seconds: 6));
+      rotateCamera(routeCoordinates[210], 30.0, 8, 15.0);
+      await Future.delayed(const Duration(seconds: 6));
+      rotateCamera(routeCoordinates[295], 5.0, 8, 15.0);
+      await Future.delayed(const Duration(seconds: 6));
+      rotateCamera(routeCoordinates[320], 100.0, 8, 15.0);
+      await Future.delayed(const Duration(seconds: 6));
+      rotateCamera(routeCoordinates[315], 270.0, 8, 13.0);
     }
   }
 }
