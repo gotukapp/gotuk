@@ -2,8 +2,10 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'Colors.dart';
@@ -114,6 +116,20 @@ void sendEmail(String email, String subject, String body) async {
     await launchUrl(emailUri);
   } else {
     throw 'Could not launch $emailUri';
+  }
+}
+
+Future<void> setSentryUserFromFirebase() async {
+  final user = FirebaseAuth.instance.currentUser;
+
+  if (user != null) {
+    await Sentry.configureScope((scope) {
+      scope.setUser(SentryUser(
+        id: user.uid,
+        username: user.displayName,
+        email: user.email,
+      ));
+    });
   }
 }
 
