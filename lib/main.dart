@@ -1,5 +1,7 @@
 // ignore_for_file: use_key_in_widget_constructors
 
+import 'dart:async';
+
 import 'package:dm/IntroScreen/onbording.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -23,8 +25,6 @@ void main() async {
 
   Stripe.publishableKey = 'pk_live_51RBeS1Deaim5Yl16fKW8HuUfqwcCz0WtYL7tGnnwDHC95oSdakh3NmrmgYLOZKk7WzzDm4Efw2MS8DNNcBvP8lHs007NQDkrxp';
 
-  await Stripe.instance.applySettings();
-
   await SentryFlutter.init(
         (options) {
       options.dsn = 'https://cb0b9bfde90c6f924714674c28e39324@o4508120479039488.ingest.de.sentry.io/4508120483102800';
@@ -33,18 +33,29 @@ void main() async {
     },
     appRunner: () async
     {
-      await Stripe.instance.applySettings();
+      FlutterError.onError = (FlutterErrorDetails details) {
+        // Send Flutter framework errors
+        Sentry.captureException(details.exception, stackTrace: details.stack);
+      };
 
-      runApp(
-        MultiProvider(
-          providers: [
-            ChangeNotifierProvider(create: (_) => ColorNotifier()),
-            ChangeNotifierProvider(create: (_) => UserProvider())
-          ],
-          child: BoardingScreen(),
-        ),
-      );
-    });
+      runZonedGuarded( () async {
+        await Stripe.instance.applySettings();
+
+        runApp(
+          MultiProvider(
+            providers: [
+              ChangeNotifierProvider(create: (_) => ColorNotifier()),
+              ChangeNotifierProvider(create: (_) => UserProvider())
+            ],
+            child: BoardingScreen(),
+          ),
+        );
+      },
+      (Object error, StackTrace stack) {
+        Sentry.captureException(error, stackTrace: stack);
+      });
+    }
+  );
 }
 
 class BoardingScreen extends StatelessWidget {
