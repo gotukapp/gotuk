@@ -343,11 +343,12 @@ class _loginpageState extends State<loginpage> {
     notifier = Provider.of<ColorNotifier>(context, listen: true);
     return Scaffold(
       backgroundColor: notifier.getbgcolor,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12),
+      body: SingleChildScrollView(
+        child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
         child: Column(
           children: [
-            SizedBox(height: MediaQuery.of(context).size.height / 10),
+            const SizedBox(height: 30),
             Center(
               child: Image.asset(
                 "assets/images/applogo.png",
@@ -424,8 +425,8 @@ class _loginpageState extends State<loginpage> {
                 ),
                 // ignore: sized_box_for_whitespace
                 Container(
-                  height: 80.0,
-                  width: 120.0,
+                  height: 60.0,
+                  width: 80.0,
                   child: FittedBox(
                     fit: BoxFit.fill,
                     child: Padding(
@@ -515,7 +516,8 @@ class _loginpageState extends State<loginpage> {
             )
           ],
         ),
-      ),
+      )
+      )
     );
   }
 

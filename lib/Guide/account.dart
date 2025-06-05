@@ -525,11 +525,7 @@ class _AccountState extends State<account> {
 
                           if (queryOrganizationData.docs.isNotEmpty) {
                             AppUser user = userProvider.user!;
-                            await user.submitOrganizationData({
-                              "organizationCode": organizationCode.text,
-                              "organizationName": queryOrganizationData.docs[0].get("name"),
-                              "organizationRef": queryOrganizationData.docs[0].reference
-                            });
+                            await user.submitOrganizationData(organizationCode.text, queryOrganizationData.docs[0]);
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(AppLocalizations.of(context)!
@@ -926,7 +922,6 @@ class _AccountState extends State<account> {
                 child: Image.file(imageList[index], height: 100, width: 100, fit: BoxFit.cover),
               ),
 
-              // ❌ Remove Button
               Positioned(
                 top: 0,
                 right: 0,
