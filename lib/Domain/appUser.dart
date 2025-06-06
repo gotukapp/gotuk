@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dm/Domain/tour.dart';
 import 'package:dm/Domain/trip.dart';
+import 'package:dm/Utils/email.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -159,10 +160,14 @@ class AppUser {
 
   Future<bool> submitPersonalData(data) async {
     try {
-      final personalDataDocRef = await FirebaseFirestore.instance
+      WriteBatch batch = FirebaseFirestore.instance.batch();
+
+      final personalDataDocRef = FirebaseFirestore.instance
           .collection('users')
           .doc(FirebaseAuth.instance.currentUser?.uid)
-          .collection('personalData').add({
+          .collection('personalData').doc();
+
+      batch.set(personalDataDocRef, {
         "language": data["language"],
         "identificationNumber": data["identificationNumber"],
         "identificationNumberExpirationDate": data["identificationNumberExpirationDate"],
@@ -171,6 +176,10 @@ class AppUser {
         "status": 'pending',
         "submitDate": FieldValue.serverTimestamp()
       });
+
+      sendTicket(batch, "Documento de Identificação");
+
+      await batch.commit();
 
       for(File image in data["selectedImages"]) {
         await uploadImage("personalData", personalDataDocRef, image);
@@ -188,36 +197,83 @@ class AppUser {
     }
   }
 
-  Future<void> submitOrganizationData(data) async {
-    await FirebaseFirestore.instance
+  Future<void> submitOrganizationData(orgCode, org) async {
+    WriteBatch batch = FirebaseFirestore.instance.batch();
+
+    final newOrgDataRef = FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser?.uid)
-        .collection('organizationData').add({
-      "code": data["organizationCode"],
-      "name": data["organizationName"],
+        .collection('organizationData')
+        .doc();
+
+    batch.set(newOrgDataRef ,{
+      "code": orgCode,
+      "name": org.get("name"),
       "status": 'pending',
       "submitDate": FieldValue.serverTimestamp()
     });
 
-    await FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser?.uid)
-          .update({ "organizationRef": data["organizationRef"]});
+    final userDocRef = FirebaseFirestore.instance.collection('users')
+        .doc(FirebaseAuth.instance.currentUser?.uid);
+    batch.update(userDocRef,
+        {
+          "organizationRef": org.reference,
+          "accountAccepted": false
+        });
+
+
+    sendEmail(batch, org.get("email"),
+        "Novo guide associado - à espera de aceitação",
+        """<p>Olá ${org.get("name")},</p>
+        <p>Informamos que um novo guide se associou à tua empresa e encontra-se agora à
+espera da tua aceitação.</p>
+        <p><strong>Nome: $name</strong></p>
+        <p>Podes aceitar o guide através da tua área de utilizador, clica no link
+        abaixo:<br>
+        <a href="https://business.gotuk.pt/">https://business.gotuk.pt</a>
+        </p>
+        <p>Após aceitares, iremos proceder à validação da documentação do guide.<br>
+        Assim que a validação estiver concluída, este guide ficará associado à tua empresa,
+podendo utilizar os teus tuk tuks e ficará pronto a aceitar reservas na nossa plataforma.</p>
+        <p>Caso necessites de apoio ou tenhas alguma dúvida, estamos inteiramente disponíveis
+        para ajudar.</p>
+        <p>Com os melhores cumprimentos,</p>
+        <p><img alt="logo" width="50" height="50" src="https://firebasestorage.googleapis.com/v0/b/app-gotuk.appspot.com/o/images%2Fapplogo.png?alt=media&token=882b99c8-8caa-42d4-a580-18f47671f677" />
+        <br>
+        <strong>Customer Care</strong><br>
+        <span style="font-size: 10px">WhatsApp: +351917773031<br>
+        Email: suporte@gotuk.pt<br>
+        </span></p>
+        <p><span style="font-size: 10px">Este é um email automático. Por favor, não respondas a esta mensagem.</span></p>
+        <p><span style="font-size: 8px; display: block; line-height:1.0">Este e-mail, assim como os ficheiros eventualmente anexos, é reservado aos seus destinatários, e pode conter informação confidencial
+        ou estar sujeito a restrições legais. Se não é o seu destinatário ou se recebeu esta mensagem por motivo de erro, solicitamos que não
+        faça qualquer uso ou divulgação do seu conteúdo e proceda à eliminação permanente desta mensagem e respetivos anexos.</span></p>
+        """);
+
+    await batch.commit();
   }
 
   Future<bool> submitWorkAccidentInsurance(data) async {
     try {
-      final workAccidentInsuranceDocRef = await FirebaseFirestore.instance
+      WriteBatch batch = FirebaseFirestore.instance.batch();
+
+      final workAccidentInsuranceDocRef = FirebaseFirestore.instance
           .collection('users')
           .doc(FirebaseAuth.instance.currentUser?.uid)
-          .collection('workAccidentInsurance').add({
-        "name": data["insuranceWorkAccidentCompanyName"],
-        "number": data["insuranceWorkAccidentPolicyNumber"],
-        "expirationDate": data["insuranceWorkAccidentExpirationDate"],
+          .collection('workAccidentInsurance').doc();
+
+      batch.set(workAccidentInsuranceDocRef, {
+        "name": data["name"],
+        "number": data["number"],
+        "expirationDate": data["expirationDate"],
         "useOrganizationInsurance": data["useWorkAccidentOrganizationInsurance"],
         "status": 'pending',
         "submitDate": FieldValue.serverTimestamp()
       });
+
+      sendTicket(batch, "Apólice de Seguro de Acidentes de Trabalho");
+
+      await batch.commit();
 
       for(File image in data["selectedImages"]) {
         await uploadImage("workAccidentInsurance", workAccidentInsuranceDocRef, image);
@@ -232,13 +288,21 @@ class AppUser {
 
   Future<bool> submitCriminalRecord(data) async {
     try {
+      WriteBatch batch = FirebaseFirestore.instance.batch();
+
       final criminalRecordDocRef = await FirebaseFirestore.instance
           .collection('users')
           .doc(FirebaseAuth.instance.currentUser?.uid)
-          .collection('criminalRecord').add({
+          .collection('criminalRecord').doc();
+
+      batch.set(criminalRecordDocRef, {
         "status": 'pending',
         "submitDate": FieldValue.serverTimestamp()
       });
+
+      sendTicket(batch, "Registo Criminal");
+
+      await batch.commit();
 
       for(File image in data["selectedImages"]) {
         await uploadImage("criminalRecord", criminalRecordDocRef, image);
@@ -420,6 +484,19 @@ class AppUser {
         .collection('users')
         .doc(id)
         .update({"appLanguage": value});
+  }
+
+  void sendTicket(WriteBatch batch, type) {
+    const subject= "Novos Documentos Submetidos para Verificação";
+    final body = """
+      <p>Olá,</p>
+      <p>O guide <strong>$name</strong> enviou novos documentos para verificação.</p>
+      <p><strong>Tipo de Documentos:</strong> $type.</p>
+      <p>Para aceder e verificar os documentos submetidos, clique no link abaixo:</p>
+      <p><a href="http://backoffice.gotuk.pt/guides/$id" target="_blank">Verificar Documentos</a></p>
+    """;
+
+    sendEmail(batch, "support@gotuk.freshdesk.com", subject, body);
   }
 }
 
