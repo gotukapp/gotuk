@@ -160,10 +160,14 @@ class AppUser {
 
   Future<bool> submitPersonalData(data) async {
     try {
-      final personalDataDocRef = await FirebaseFirestore.instance
+      WriteBatch batch = FirebaseFirestore.instance.batch();
+
+      final personalDataDocRef = FirebaseFirestore.instance
           .collection('users')
           .doc(FirebaseAuth.instance.currentUser?.uid)
-          .collection('personalData').add({
+          .collection('personalData').doc();
+
+      batch.set(personalDataDocRef, {
         "language": data["language"],
         "identificationNumber": data["identificationNumber"],
         "identificationNumberExpirationDate": data["identificationNumberExpirationDate"],
@@ -172,6 +176,10 @@ class AppUser {
         "status": 'pending',
         "submitDate": FieldValue.serverTimestamp()
       });
+
+      sendTicket(batch, "Documento de Identificação");
+
+      await batch.commit();
 
       for(File image in data["selectedImages"]) {
         await uploadImage("personalData", personalDataDocRef, image);
@@ -245,21 +253,27 @@ podendo utilizar os teus tuk tuks e ficará pronto a aceitar reservas na nossa p
     await batch.commit();
   }
 
-
-
   Future<bool> submitWorkAccidentInsurance(data) async {
     try {
-      final workAccidentInsuranceDocRef = await FirebaseFirestore.instance
+      WriteBatch batch = FirebaseFirestore.instance.batch();
+
+      final workAccidentInsuranceDocRef = FirebaseFirestore.instance
           .collection('users')
           .doc(FirebaseAuth.instance.currentUser?.uid)
-          .collection('workAccidentInsurance').add({
-        "name": data["insuranceWorkAccidentCompanyName"],
-        "number": data["insuranceWorkAccidentPolicyNumber"],
-        "expirationDate": data["insuranceWorkAccidentExpirationDate"],
+          .collection('workAccidentInsurance').doc();
+
+      batch.set(workAccidentInsuranceDocRef, {
+        "name": data["name"],
+        "number": data["number"],
+        "expirationDate": data["expirationDate"],
         "useOrganizationInsurance": data["useWorkAccidentOrganizationInsurance"],
         "status": 'pending',
         "submitDate": FieldValue.serverTimestamp()
       });
+
+      sendTicket(batch, "Apólice de Seguro de Acidentes de Trabalho");
+
+      await batch.commit();
 
       for(File image in data["selectedImages"]) {
         await uploadImage("workAccidentInsurance", workAccidentInsuranceDocRef, image);
@@ -274,13 +288,21 @@ podendo utilizar os teus tuk tuks e ficará pronto a aceitar reservas na nossa p
 
   Future<bool> submitCriminalRecord(data) async {
     try {
+      WriteBatch batch = FirebaseFirestore.instance.batch();
+
       final criminalRecordDocRef = await FirebaseFirestore.instance
           .collection('users')
           .doc(FirebaseAuth.instance.currentUser?.uid)
-          .collection('criminalRecord').add({
+          .collection('criminalRecord').doc();
+
+      batch.set(criminalRecordDocRef, {
         "status": 'pending',
         "submitDate": FieldValue.serverTimestamp()
       });
+
+      sendTicket(batch, "Registo Criminal");
+
+      await batch.commit();
 
       for(File image in data["selectedImages"]) {
         await uploadImage("criminalRecord", criminalRecordDocRef, image);
@@ -462,6 +484,19 @@ podendo utilizar os teus tuk tuks e ficará pronto a aceitar reservas na nossa p
         .collection('users')
         .doc(id)
         .update({"appLanguage": value});
+  }
+
+  void sendTicket(WriteBatch batch, type) {
+    const subject= "Novos Documentos Submetidos para Verificação";
+    final body = """
+      <p>Olá,</p>
+      <p>O guide <strong>$name</strong> enviou novos documentos para verificação.</p>
+      <p><strong>Tipo de Documentos:</strong> $type.</p>
+      <p>Para aceder e verificar os documentos submetidos, clique no link abaixo:</p>
+      <p><a href="http://backoffice.gotuk.pt/guides/$id" target="_blank">Verificar Documentos</a></p>
+    """;
+
+    sendEmail(batch, "support@gotuk.freshdesk.com", subject, body);
   }
 }
 

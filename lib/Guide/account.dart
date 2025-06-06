@@ -771,19 +771,6 @@ class _AccountState extends State<account> {
     );
   }
 
-  /*Future<void> uploadFile(String url, File file) async {
-    var request = http.MultipartRequest('POST', Uri.parse(url));
-    request.files.add(await http.MultipartFile.fromPath('file', file.path));
-
-    var response = await request.send();
-    if (response.statusCode == 200) {
-      // Upload successful
-    } else {
-      // Handle error
-    }
-  }*/
-
-
   Widget identificationDocumentWidget(ColorNotifier notifier, BuildContext context, List<dynamic> fields) {
     return Padding(
         padding: const EdgeInsets.only(left: 10, right: 10, bottom: 20),
