@@ -525,11 +525,7 @@ class _AccountState extends State<account> {
 
                           if (queryOrganizationData.docs.isNotEmpty) {
                             AppUser user = userProvider.user!;
-                            await user.submitOrganizationData({
-                              "organizationCode": organizationCode.text,
-                              "organizationName": queryOrganizationData.docs[0].get("name"),
-                              "organizationRef": queryOrganizationData.docs[0].reference
-                            });
+                            await user.submitOrganizationData(organizationCode.text, queryOrganizationData.docs[0]);
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(AppLocalizations.of(context)!
@@ -775,19 +771,6 @@ class _AccountState extends State<account> {
     );
   }
 
-  /*Future<void> uploadFile(String url, File file) async {
-    var request = http.MultipartRequest('POST', Uri.parse(url));
-    request.files.add(await http.MultipartFile.fromPath('file', file.path));
-
-    var response = await request.send();
-    if (response.statusCode == 200) {
-      // Upload successful
-    } else {
-      // Handle error
-    }
-  }*/
-
-
   Widget identificationDocumentWidget(ColorNotifier notifier, BuildContext context, List<dynamic> fields) {
     return Padding(
         padding: const EdgeInsets.only(left: 10, right: 10, bottom: 20),
@@ -926,7 +909,6 @@ class _AccountState extends State<account> {
                 child: Image.file(imageList[index], height: 100, width: 100, fit: BoxFit.cover),
               ),
 
-              // ❌ Remove Button
               Positioned(
                 top: 0,
                 right: 0,

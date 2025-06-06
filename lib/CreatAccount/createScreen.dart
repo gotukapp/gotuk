@@ -282,7 +282,8 @@ class _createScreenState extends State<createScreen> {
               "language": null,
               "appLanguage": Localizations.localeOf(context).toString(),
               "rating": 3,
-              "disabled": false
+              "disabled": false,
+              "creationDate": FieldValue.serverTimestamp()
             });
 
             await credentialsOk(credential);
