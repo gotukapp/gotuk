@@ -207,8 +207,16 @@ class _AccountState extends State<account> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                   child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildPanel()
+                        _buildPanel(),
+                        const SizedBox(height: 10),
+                        Text("* ${AppLocalizations.of(context)!.optionalDocumentsWarning}",
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: BlackColor,
+                              fontFamily: "Gilroy Bold"),
+                        )
                       ]
                   )
               ),
@@ -567,7 +575,7 @@ class _AccountState extends State<account> {
         return
           ListTile(
             title: Text(
-              AppLocalizations.of(context)!.workAccidentInsurance,
+              "${AppLocalizations.of(context)!.workAccidentInsurance} *",
               style: TextStyle(
                   fontSize: 16,
                   color: BlackColor,
@@ -716,7 +724,7 @@ class _AccountState extends State<account> {
         return
           ListTile(
             title: Text(
-              AppLocalizations.of(context)!.criminalRecord,
+              "${AppLocalizations.of(context)!.criminalRecord} *",
               style: TextStyle(
                   fontSize: 16,
                   color: BlackColor,

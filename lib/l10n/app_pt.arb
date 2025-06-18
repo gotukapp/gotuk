@@ -239,5 +239,6 @@
     "selectPickupPointWarning": "Por favor selecciona um ponto de recolha para prosseguir.",
     "tourDetails": "Detalhes do Tour",
     "doYouHaveTukTukCompany": "Tens uma empresa de Tuk-Tuks?",
-    "registerHere": "Regista-te aqui!"
+    "registerHere": "Estes documentos são facultativos. Ao submetê-los, o guia recebe um bónus na classificação.",
+    "optionalDocumentsWarning": "These documents are optional. Submitting them gives the guide a rating bonus."
 }
