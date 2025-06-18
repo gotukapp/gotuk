@@ -229,7 +229,10 @@ class Trip {
         .collection("notifications")
         .doc();
     WriteBatch batch = FirebaseFirestore.instance.batch();
-    batch.update(tripRef, {"status": "started", "startedDate": FieldValue.serverTimestamp()});
+    batch.update(tripRef, {
+      "status": "started",
+      "startedDate": FieldValue.serverTimestamp()
+    });
     batch.set(notificationRef, {
           "type": "trip started",
           "tripRef": tripRef,
