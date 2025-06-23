@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dm/Utils/stripe.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,13 @@ DocumentReference? selectGuide(List<QueryDocumentSnapshot<Object?>> filteredGuid
 
     // Select a guide based on weights
     QueryDocumentSnapshot selectedGuide = weightedRandomSelection(topGuides, weights);
+
+    if (isTestUser()) {
+      print("Teste Guide: zCzuaTSQi1aNsM4IIOOz1XjUfxg2");
+      return FirebaseFirestore.instance
+          .collection('users')
+          .doc("zCzuaTSQi1aNsM4IIOOz1XjUfxg2");
+    }
 
     print("Selected Guide: ${selectedGuide.id}");
     return selectedGuide.reference;

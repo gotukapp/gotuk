@@ -506,22 +506,8 @@ Future<bool> userExists(String phone) async {
   return snapshot.docs.isNotEmpty;
 }
 
-Future<AppUser> getUserFirebaseInstance(bool guideMode, User user) async {
-  AppUser? appUser;
-  final ref = FirebaseFirestore.instance.collection("users").doc(user.uid)
-      .withConverter(
-    fromFirestore: AppUser.fromFirestore,
-    toFirestore: (AppUser user, _) => user.toFirestore(),
-  );
-  final docSnap = await ref.get();
-  if (!docSnap.exists) {
-    appUser = AppUser(user.uid, user.displayName, user.email, user.phoneNumber, false, false, 3, null, null, null, null);
-    await FirebaseFirestore.instance.collection("users")
-        .doc(user.uid)
-        .set(appUser.toFirestore());
-  } else {
-    appUser = docSnap.data();
-  }
+Future<AppUser> initUserFirebaseInstance(bool guideMode, User user) async {
+  AppUser? appUser = await getUserFirebaseInstance(user);
 
   appUser!.setFirebaseToken();
 
@@ -537,6 +523,25 @@ Future<AppUser> getUserFirebaseInstance(bool guideMode, User user) async {
         .update({"clientMode": true});
   }
 
+  return appUser;
+}
+
+Future<AppUser?> getUserFirebaseInstance(User user) async {
+  AppUser? appUser;
+  final ref = FirebaseFirestore.instance.collection("users").doc(user.uid)
+      .withConverter(
+    fromFirestore: AppUser.fromFirestore,
+    toFirestore: (AppUser user, _) => user.toFirestore(),
+  );
+  final docSnap = await ref.get();
+  if (!docSnap.exists) {
+    appUser = AppUser(user.uid, user.displayName, user.email, user.phoneNumber, false, false, 3, null, null, null, null);
+    await FirebaseFirestore.instance.collection("users")
+        .doc(user.uid)
+        .set(appUser.toFirestore());
+  } else {
+    appUser = docSnap.data();
+  }
   return appUser;
 }
 

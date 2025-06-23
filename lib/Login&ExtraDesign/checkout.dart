@@ -1090,6 +1090,10 @@ class _checkoutState extends State<checkout> {
     final tomorrow = today.add(const Duration(days: 1));
     final inputDate = DateTime(value.year, value.month, value.day);
 
+    if (isTestUser()) {
+      return false;
+    }
+
     if (inputDate == today && now.hour <= 19) {
       return true;
     } else if (inputDate == tomorrow && now.hour >= 19) {
