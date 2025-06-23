@@ -18,6 +18,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../Domain/trip.dart';
 import '../Utils/customwidget.dart';
+import '../Utils/stripe.dart';
 import '../Utils/util.dart';
 import 'checkout.dart';
 import 'tourDetail.dart';
@@ -38,6 +39,8 @@ class _homeState extends State<home> {
   void initState() {
     getdarkmodepreviousstate();
     setSentryUserFromFirebase();
+    initStripeForUser();
+
     Firebase.initializeApp().whenComplete(() {
       final db = FirebaseFirestore.instance.collection("trips");
       final userDocRef = FirebaseFirestore.instance

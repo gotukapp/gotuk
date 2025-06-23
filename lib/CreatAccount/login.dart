@@ -400,7 +400,7 @@ class _loginscreenState extends State<loginscreen> {
   }
 
   Future<void> credentialsOk(UserCredential credential) async {
-    AppUser user = await getUserFirebaseInstance(
+    AppUser user = await initUserFirebaseInstance(
         guideMode, credential.user!);
     userProvider.setUser(user);
     Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
@@ -418,7 +418,7 @@ class _loginscreenState extends State<loginscreen> {
     );
 
     UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-    return await getUserFirebaseInstance(guideMode, userCredential.user!);
+    return await initUserFirebaseInstance(guideMode, userCredential.user!);
   }
 
   Future<AppUser?> signInWithApple() async {
@@ -427,7 +427,7 @@ class _loginscreenState extends State<loginscreen> {
       await FirebaseAuth.instance.signInWithPopup(appleProvider) :
       await FirebaseAuth.instance.signInWithProvider(appleProvider);
     Sentry.captureMessage(userCredential.toString());
-    return await getUserFirebaseInstance(guideMode, userCredential.user!);
+    return await initUserFirebaseInstance(guideMode, userCredential.user!);
   }
 
 
