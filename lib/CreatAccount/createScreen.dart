@@ -330,7 +330,7 @@ class _createScreenState extends State<createScreen> {
   }
 
   Future<void> credentialsOk(UserCredential credential) async {
-    AppUser user = await getUserFirebaseInstance(
+    AppUser user = await initUserFirebaseInstance(
         guideMode, credential.user!);
     userProvider.setUser(user);
     user.setFirebaseToken();
